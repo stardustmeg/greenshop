@@ -1,0 +1,38 @@
+{
+  "name": "ecommerce-application",
+  "version": "1.0.0",
+  "description": "The Best e-Commerce-Project",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "deploy": "npm run build && gh-pages",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stardustmeg/ecommerce-application.git"
+  },
+  "keywords": [
+    "ecommerce"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/stardustmeg/ecommerce-application#readme",
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "sass": "^1.75.0",
+    "svgo": "^3.2.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10",
+    "vite-plugin-sass": "^0.1.0"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.19",
+    "modern-normalize": "^2.0.0",
+    "vite-plugin-checker": "^0.6.4",
+    "vite-plugin-image-optimizer": "^1.1.7",
+    "vite-plugin-svg-spriter": "^1.0.0",
+    "vite-tsconfig-paths": "^4.3.2"
+  }
+}
