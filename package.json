@@ -25,6 +25,7 @@
     "eslint": "^9.1.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-perfectionist": "^2.9.0",
+    "prettier": "^3.2.5",
     "sass": "^1.75.0",
     "sonarlint": "^1.1.0",
     "stylelint": "^16.4.0",
