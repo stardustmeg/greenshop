@@ -1,2 +1,1 @@
-code 1
 npx --no -- commitlint --edit ${1}
