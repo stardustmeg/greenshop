@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "deploy": "npm run build && gh-pages -d dist -e fun-chat",
     "preview": "vite preview",
     "format": "prettier --write .",
     "ci:format": "prettier --check .",
