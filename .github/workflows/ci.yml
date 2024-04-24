@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  format-and-lint:
+  format:
     runs-on: ubuntu-latest
 
     steps:
