@@ -9,7 +9,7 @@ const SRC_PATH = path.resolve(__dirname, 'src');
 const SVG_FOLDER_PATH = path.resolve(SRC_PATH, 'img');
 
 export default {
-  base: './',
+  base: '',
   build: {
     compact: false,
     minify: false,
@@ -44,5 +44,5 @@ export default {
     }),
   ],
   publicDir: 'assets',
-  root: 'src',
+  root: '',
 };
