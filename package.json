@@ -17,15 +17,10 @@
   "keywords": [
     "ecommerce"
   ],
-  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/stardustmeg/ecommerce-application/issues"
-  },
   "homepage": "https://github.com/stardustmeg/ecommerce-application#readme",
   "devDependencies": {
     "dotenv": "^16.4.5",
-    "gh-pages": "^6.1.1",
     "sass": "^1.75.0",
     "svgo": "^3.2.0",
     "typescript": "^5.4.5",
