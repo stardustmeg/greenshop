@@ -6,9 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "deploy": "npm run build && gh-pages",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "format": "prettier --write .",
+    "ci:format": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint --ext ts --fix .",
+    "lint-styles": "stylelint \"./src/**/*.scss\""
   },
   "repository": {
     "type": "git",
