@@ -5,6 +5,7 @@ module.exports = {
   env: {
     browser: true,
     es2022: true,
+    jest: true,
   },
   extends: [
     'airbnb-base',
@@ -23,7 +24,8 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
-    project: true,
+    extraFileExtensions: ['.cjs'],
+    project: './tsconfig.json',
     sourceType: 'module',
     tsconfigRootDir: __dirname,
   },
