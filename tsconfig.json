@@ -25,7 +25,10 @@
     "baseUrl": "",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+
+    /* Jest - testing */
+    "types": ["jest"]
   },
   "include": ["src"]
 }
