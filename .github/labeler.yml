@@ -35,17 +35,13 @@ style:
       - any-glob-to-any-file: '**/*.scss'
 
 sprint1:
-  - head-branch:
-      - 'ECOMM-1'
+  - head-branch: ['ECOMM-1']
 
 sprint2:
-  - head-branch:
-      - 'ECOMM-2'
+  - head-branch: ['ECOMM-2']
 
 sprint3:
-  - head-branch:
-      - 'ECOMM-3'
+  - head-branch: ['ECOMM-3']
 
 sprint4:
-  - head-branch:
-      - 'ECOMM-4'
+  - head-branch: ['ECOMM-4']
