@@ -1,15 +1,11 @@
-root:
-  - changed-files:
-      - any-glob-to-any-file: '*'
-
 documentation:
   - changed-files:
-      - any-glob-to-any-file: '*.md'
+      - any-glob-to-any-file: '**/*.md'
 
 chore:
   - any:
       - changed-files:
-          - any-glob-to-all-files: ['*']
+          - any-glob-to-all-files: '*'
       - head-branch:
           - '^chore'
 
@@ -36,16 +32,16 @@ revert:
 
 style:
   - changed-files:
-      - any-glob-to-any-file: '*.scss'
+      - any-glob-to-any-file: '**/*.scss'
 
 sprint1:
-  - pull-request-title: 'ECOMM-1'
+  - head-branch: 'ECOMM-1'
 
 sprint2:
-  - pull-request-title: 'ECOMM-2'
+  - head-branch: 'ECOMM-2'
 
 sprint3:
-  - pull-request-title: 'ECOMM-3'
+  - head-branch: 'ECOMM-3'
 
 sprint4:
-  - pull-request-title: 'ECOMM-4'
+  - head-branch: 'ECOMM-4'
