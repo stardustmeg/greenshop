@@ -4,7 +4,7 @@ root:
 
 documentation:
   - changed-files:
-      - any-glob-to-any-file: 'README.md'
+      - any-glob-to-any-file: '*.md'
 
 chore:
   - any:
@@ -30,18 +30,22 @@ test:
   - head-branch:
       - '^test'
 
+revert:
+  - head-branch:
+      - '^revert'
+
 style:
   - changed-files:
       - any-glob-to-any-file: '*.scss'
 
 sprint1:
-  - pull-request-title: 'sprint 1'
+  - pull-request-title: 'ECOMM-1'
 
 sprint2:
-  - pull-request-title: 'sprint 2'
+  - pull-request-title: 'ECOMM-2'
 
 sprint3:
-  - pull-request-title: 'sprint 3'
+  - pull-request-title: 'ECOMM-3'
 
 sprint4:
-  - pull-request-title: 'sprint 4'
+  - pull-request-title: 'ECOMM-4'
