@@ -34,14 +34,14 @@ style:
   - changed-files:
       - any-glob-to-any-file: '**/*.scss'
 
-sprint1:
+sprint#1:
   - head-branch: ECOMM-1
 
-sprint2:
+sprint#2:
   - head-branch: ECOMM-2
 
-sprint3:
+sprint#3:
   - head-branch: ECOMM-3
 
-sprint4:
+sprint#4:
   - head-branch: ECOMM-4
