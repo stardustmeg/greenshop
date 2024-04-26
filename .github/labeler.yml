@@ -1,0 +1,47 @@
+root:
+  - changed-files:
+      - any-glob-to-any-file: '*'
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: 'README.md'
+
+chore:
+  - any:
+      - changed-files:
+          - any-glob-to-all-files: ['*']
+      - head-branch:
+          - '^chore'
+
+feature:
+  - head-branch:
+      - '^feat'
+
+fix:
+  - head-branch:
+      - '^fix'
+      - '^hotfix'
+
+refactor:
+  - head-branch:
+      - '^refactor'
+
+test:
+  - head-branch:
+      - '^test'
+
+style:
+  - changed-files:
+      - any-glob-to-any-file: '*.scss'
+
+sprint1:
+  - pull-request-title: 'sprint 1'
+
+sprint2:
+  - pull-request-title: 'sprint 2'
+
+sprint3:
+  - pull-request-title: 'sprint 3'
+
+sprint4:
+  - pull-request-title: 'sprint 4'
