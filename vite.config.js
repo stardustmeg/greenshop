@@ -6,7 +6,7 @@ import createSvgSpritePlugin from 'vite-plugin-svg-spriter';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 const SRC_PATH = path.resolve(__dirname, 'src');
-const SVG_FOLDER_PATH = path.resolve(SRC_PATH, 'img');
+const SVG_FOLDER_PATH = path.resolve(SRC_PATH, 'shared/img/svg');
 
 export default {
   base: '',

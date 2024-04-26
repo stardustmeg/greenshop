@@ -8,7 +8,7 @@
 
 👀 Example: `feat(RSS-ECOMM-1_01): description`
 
-## PR Decription 🧙‍♂️
+## PR Description 🧙‍♂️
 
 _Add a description of the changes in the PR_ 🤔
 
