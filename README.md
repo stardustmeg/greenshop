@@ -1,4 +1,6 @@
-## eCommerce Application 🛍️🌐
+# Greenshop 🌿
+
+## General Overview
 
 Welcome to our eCommerce application! This platform replicates real-world shopping experiences in a digital environment 🏪. It's a comprehensive online shopping portal that provides an interactive and seamless experience to users. From product discovery to checkout, the application ensures a smooth journey for the user, enhancing their engagement and boosting their purchasing confidence 🚀.
 
@@ -6,7 +8,7 @@ Users can browse through a vast range of products 📚👗👟, view detailed de
 
 An important aspect of our application is that it's responsive 📲, ensuring it looks great on various devices with a minimum resolution of 390px. This feature makes the shopping experience enjoyable, irrespective of the device users prefer.
 
-Key pages in the application include:
+Key pages in the application include: 🪴
 
 - Login and Registration pages 🖥️
 - Main page 🏠
@@ -17,3 +19,19 @@ Key pages in the application include:
 - About Us page 🙋‍♂️🙋‍♀️
 
 The application is powered by CommerceTools 🌐, a leading provider of commerce solutions for B2C and B2B enterprises. CommerceTools offers a cloud-native, microservices-based commerce platform that enables brands to create unique and engaging digital commerce experiences.
+
+## Availabile Scripts 📑
+
+_you can run the following scripts in the project directory:_
+
+- `npm run dev`: Initiates the Vite development server.
+- `npm run build`: Transpiles TypeScript files using TypeScript compiler and builds the project using Vite.
+- `npm run preview`: Launches a production server to preview the project built with Vite.
+- `npm run format`: Applies code formatting using Prettier.
+- `npm run ci:format`: Checks code formatting compliance using Prettier.
+- `npm run typecheck`: Performs TypeScript type checking without emitting any files.
+- `npm run lint`: Lints the codebase using ESLint.
+- `npm run lint:fix`: Fixes linting errors automatically using ESLint for TypeScript files.
+- `npm run lint-styles`: Lints SCSS stylesheets using Stylelint.
+- `npm run prepare`: Sets up Husky for managing git hooks.
+- `npm run test`: Runs tests using Jest with a specific configuration file (`jest.config.cjs`).
