@@ -2,25 +2,25 @@
 
 ## General Overview
 
-Welcome to our eCommerce application! This platform replicates real-world shopping experiences in a digital environment 🏪. It's a comprehensive online shopping portal that provides an interactive and seamless experience to users. From product discovery to checkout, the application ensures a smooth journey for the user, enhancing their engagement and boosting their purchasing confidence 🚀.
+Welcome to Greenshop, your digital haven for all things green! 🌿🛍️
 
-Users can browse through a vast range of products 📚👗👟, view detailed descriptions, add their favorite items to the basket 🛒, and proceed to checkout 💳. It includes features such as user registration and login 📝🔐, product search 🔍, product categorization, and sorting to make the shopping experience more streamlined and convenient.
+- Features
+- How to Run the Project Locally
+- Availabile Scripts
+- Contact us
 
-An important aspect of our application is that it's responsive 📲, ensuring it looks great on various devices with a minimum resolution of 390px. This feature makes the shopping experience enjoyable, irrespective of the device users prefer.
+## Technical Stack 💻
 
-Key pages in the application include: 🪴
+_in our project we used the following technologies:_
 
-- Login and Registration pages 🖥️
-- Main page 🏠
-- Catalog Product page 📋
-- Detailed Product page 🔎
-- User Profile page 👤
-- Basket page 🛒
-- About Us page 🙋‍♂️🙋‍♀️
+- **Frontend**: Utilizes [HTML](https://www.w3schools.com/html/), [SASS](https://sass-lang.com/), and [Typescript](https://www.typescriptlang.org/) to craft a dynamic and engaging user interface 🎨
+- **Bundling**: Employs [Vite](https://vitejs.dev/) as the bundler, ensuring swift development server startup time and seamless module replacement 🌳
+- **Deployment**: Hosted on [Netlify](https://www.netlify.com/), enabling efficient and hassle-free deployment of the application 🌟
+- **Code Quality**: Ensured code quality through rigorous checks by [Husky](https://typicode.github.io/husky/), [Prettier](https://prettier.io/), [ESLint](https://eslint.org/), [Stylelint](https://stylelint.io/), [SonarLint](https://www.sonarsource.com/products/sonarlint/), and [EditorConfig](https://editorconfig.org/), maintaining consistency and best practices throughout the codebase 🐶
+- **Testing**: Thorough testing conducted with [Jest](https://jestjs.io/), ensuring the reliability and robustness of the application's functionalities 🃏
+- **Backend**: Supported by [CommerceTools](https://commercetools.com/), a leading provider of commerce solutions, offering a robust and scalable platform for creating immersive digital commerce experiences 🌐
 
-The application is powered by CommerceTools 🌐, a leading provider of commerce solutions for B2C and B2B enterprises. CommerceTools offers a cloud-native, microservices-based commerce platform that enables brands to create unique and engaging digital commerce experiences.
-
-## How to Run the Project Locally
+## How to Run the Project Locally ⚙️
 
 _to run the project locally, you can follow the following steps:_
 
