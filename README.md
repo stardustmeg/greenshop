@@ -20,6 +20,15 @@ Key pages in the application include: 🪴
 
 The application is powered by CommerceTools 🌐, a leading provider of commerce solutions for B2C and B2B enterprises. CommerceTools offers a cloud-native, microservices-based commerce platform that enables brands to create unique and engaging digital commerce experiences.
 
+## How to Run the Project Locally
+
+_to run the project locally, you can follow the following steps:_
+
+- Clone the repository: `git clone https://github.com/stardustmeg/greenshop.git`
+- Navigate to the project directory: `cd greenshop`
+- Install dependencies: `npm install`
+- Run the project: `npm run dev`
+
 ## Availabile Scripts 📑
 
 _you can run the following scripts in the project directory:_
@@ -36,7 +45,7 @@ _you can run the following scripts in the project directory:_
 - `npm run prepare`: Sets up Husky for managing git hooks.
 - `npm run test`: Runs tests using Jest with a specific configuration file (`jest.config.cjs`).
 
-## Contact us 📨
+## Contact us 📩
 
 - Margarita Golubeva (my GitHub: [stardustmeg](https://github.com/stardustmeg))
 - Maxim Zabaluev (my GitHub: [Kleostro](https://github.com/kleostro))
