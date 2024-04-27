@@ -4,12 +4,12 @@
 
 Welcome to [Greenshop](https://mad-wizards-greenshop.netlify.app/), your digital haven for all things green! 🪴
 
-- [Our Mission](#our-mission-🌸)
-- [Key Features](#key-features-of-greenshop-include-🗝️)
-- [Technical Stack](#technical-stack-💻)
-- [How to Run the Project Locally](#how-to-run-the-project-locally-⚙️)
-- [Availabile Scripts](#availabile-scripts-📑)
-- [Contact us](#contact-us-📩)
+- Our Mission 🌸
+- Key Features 🗝️
+- Technical Stack 💻
+- How to Run the Project Locally ⚙️
+- Availabile Scripts 📑
+- Contact us 📩
 
 ### Our Mission 🌸
 
