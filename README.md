@@ -17,7 +17,7 @@ At Greenshop, we're on a mission to cultivate a greener, more vibrant world, one
 
 Our modern and minimalist website offers a sleek and intuitive shopping experience, designed to delight and inspire. From our clean and uncluttered design to our seamless navigation and user-friendly interface, we're committed to making your shopping experience as effortless and enjoyable as possible.
 
-### Key features of Greenshop include 🗝️
+### Key Features of Greenshop Include 🗝️
 
 🔎 **Comprehensive Product Selection**: Explore our extensive catalog of potted plants, seeds, soil, and gardening essentials, handpicked to ensure the highest quality and variety.
 
