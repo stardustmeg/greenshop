@@ -2,15 +2,15 @@
 
 📍 conforms with the following format:
 
-- [ ] prefix (following the [convention](https://www.conventionalcommits.org/en/v1.0.0-beta.2/): feat, fix, hotfix, chore, refactor, revert, docs, style, test)
-- [ ] issue number (e.g. RSS-ECOMM-1_01, where 1 - is the sprint number and 01 - is the issue number)
-- [ ] description
+- [ ] prefix (following the [convention](https://www.conventionalcommits.org/en/v1.0.0-beta.2/): `feat`, `fix`, `hotfix`, `chore`, `refactor`, `revert`, `docs`, `style`, `test`)
+- [ ] sprint and issue number (e.g. `RSS-ECOMM-1_01`, where `1` - is the sprint number and `01` - is the issue number)
+- [ ] short escription
 
 👀 Example: `feat(RSS-ECOMM-1_01): description`
 
 ## PR Description 🧙‍♂️
 
-_Add a description of the changes in the PR_ 🤔
+_Add a comprehensive description of the changes in the PR_ 🤔
 
 #### Affected Scope 💡
 
