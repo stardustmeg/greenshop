@@ -9,6 +9,18 @@ Welcome to Greenshop, your digital haven for all things green! 🌿🛍️
 - Availabile Scripts
 - Contact us
 
+At Greenshop, we're on a mission to cultivate a greener, more vibrant world, one plant at a time. Our curated collection features a diverse array of potted plants, seeds, soil, and accessories, meticulously selected to cater to the needs and desires of both novice gardeners and seasoned green thumbs alike. Whether you're looking to transform your living space into a lush oasis or embark on a journey of cultivating your own botanical wonders, Greenshop has everything you need to bring your green dreams to life.
+
+Our modern and minimalist website offers a sleek and intuitive shopping experience, designed to delight and inspire. From our clean and uncluttered design to our seamless navigation and user-friendly interface, we're committed to making your shopping experience as effortless and enjoyable as possible.
+
+Key features of Greenshop include:
+
+Comprehensive Product Selection: Explore our extensive catalog of potted plants, seeds, soil, and gardening essentials, handpicked to ensure the highest quality and variety.
+User-friendly Navigation: Our intuitive navigation system makes it easy for you to find the plants, seeds, soil, and accessories you need.
+Elegance and Functionality: Our intuitive design and intuitive features make it easy to shop for plants, seeds, soil, and accessories.
+Responsive Design: Whether you're browsing on a desktop, tablet, or smartphone, our website adapts seamlessly to provide a visually stunning and immersive experience on any device.
+Secure checkout process: Secure checkout ensures you can shop with confidence and peace of mind.
+
 ## Technical Stack 💻
 
 _in our project we used the following technologies:_
