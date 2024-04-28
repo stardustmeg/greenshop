@@ -45,7 +45,7 @@ export default {
   ],
   test: {
     coverage: {
-      reporter: ['html'],
+      reporter: ['html', 'text'],
     },
     environment: 'jsdom',
     globals: true,
