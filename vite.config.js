@@ -43,4 +43,11 @@ export default {
       typescript: true,
     }),
   ],
+  test: {
+    coverage: {
+      reporter: ['html'],
+    },
+    environment: 'jsdom',
+    globals: true,
+  },
 };
