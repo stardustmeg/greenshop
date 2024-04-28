@@ -41,3 +41,6 @@ jobs:
 
       - name: Run Vitest tests
         run: npm test
+
+      - name: Generate coverage report
+        run: npm run coverage
