@@ -43,6 +43,11 @@
         "selector": "&:active"
       },
       {
+        "type": "at-rule",
+        "name": "media",
+        "hasBlock": true
+      },
+      {
         "type": "rule",
         "selector": "&:disabled"
       },
