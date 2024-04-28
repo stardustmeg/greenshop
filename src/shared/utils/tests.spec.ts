@@ -1,8 +1,10 @@
 /* eslint-disable max-lines-per-function */
+import { BaseComponent } from './baseComponent.ts';
 import BaseElement from './baseElement.ts';
 import createBaseElement from './createBaseElement.ts';
 import createSVGUse from './createSVGUse.ts';
 import { isNotNullable, isNullable } from './isNullable.ts';
+import { a, div, h2, h3, iconFromCode, img, input, label, main, span } from './tags.ts';
 
 const baseElement = new BaseElement(
   'a',
@@ -21,6 +23,11 @@ const elem = createBaseElement({
   cssClasses: ['test'],
   innerContent: 'test',
   tag: 'div',
+});
+
+const baseComponent = new BaseComponent({
+  tag: 'div',
+  txt: 'test',
 });
 
 describe('Checking createBaseElement function', () => {
@@ -98,6 +105,12 @@ describe('Checking BaseElement class', () => {
     expect(addEventListenerSpy).toBeInstanceOf(Function);
   });
 
+  it('add event listener should return true', () => {
+    baseElement.addEventListener('click', () => {});
+    const addEventListenerSpy = vi.spyOn(baseElement.getNode(), 'addEventListener');
+    expect(addEventListenerSpy).toBeInstanceOf(Function);
+  });
+
   it('remove event listener should return true', () => {
     baseElement.removeListener('click', () => {});
     const removeEventListenerSpy = vi.spyOn(baseElement.getNode(), 'removeEventListener');
@@ -121,5 +134,98 @@ describe('Checking BaseElement class', () => {
   it('inner text is equal to test2', () => {
     baseElement.setTextContent('test2');
     expect(baseElement.getNode().innerText).toBe('test2');
+  });
+
+  it('append should return true', () => {
+    baseElement.append(elem);
+    expect(baseElement.getNode().contains(elem)).toBe(true);
+  });
+});
+
+describe('Checking BaseComponent class', () => {
+  it('getNode should return instance of HTMLDivElement', () => {
+    expect(baseComponent.getNode()).toBeInstanceOf(HTMLDivElement);
+  });
+
+  it('destroy should return true', () => {
+    baseComponent.destroy();
+    expect(baseComponent.getNode().parentElement).toBe(null);
+  });
+
+  it('destroyAllChildren should return true', () => {
+    baseComponent.destroyAllChildren();
+    expect(baseComponent.getNode().children.length).toBe(0);
+  });
+
+  it('append should return true', () => {
+    baseComponent.append(elem);
+    expect(baseComponent.getNode().contains(elem)).toBe(true);
+  });
+
+  it('appendChildren should return true', () => {
+    baseComponent.appendChildren([elem]);
+    expect(baseComponent.getNode().contains(elem)).toBe(true);
+  });
+
+  it('set text content should return test', () => {
+    baseComponent.stc('test');
+    expect(baseComponent.getNode().textContent).toBe('test');
+  });
+
+  it('add css class should return test', () => {
+    baseComponent.addClass('test');
+    expect(baseComponent.getNode().classList.contains('test')).toBe(true);
+  });
+
+  it('remove css class should return test', () => {
+    baseComponent.removeClass('test');
+    expect(baseComponent.getNode().classList.contains('test')).toBe(false);
+  });
+
+  it('toggle css class should return test', () => {
+    baseComponent.toggleClass('test');
+    expect(baseComponent.getNode().classList.contains('test')).toBe(true);
+  });
+});
+
+describe('Checking tags functions', () => {
+  it('span should return instance of HTMLSpanElement', () => {
+    expect(span({ txt: 'test' }).getNode()).toBeInstanceOf(HTMLSpanElement);
+  });
+
+  it('main should return instance of HTMLDivElement', () => {
+    expect(main({ txt: 'test' }).getNode()).toBeInstanceOf(HTMLElement);
+  });
+
+  it('label should return instance of HTMLLabelElement', () => {
+    expect(label({ txt: 'test' }).getNode()).toBeInstanceOf(HTMLLabelElement);
+  });
+
+  it('input should return instance of HTMLInputElement', () => {
+    expect(input({ txt: 'test' }).getNode()).toBeInstanceOf(HTMLInputElement);
+  });
+
+  it('iconFromCode should return instance of HTMLElement', () => {
+    expect(iconFromCode({ txt: 'test' }, 'test').getNode()).toBeInstanceOf(HTMLElement);
+  });
+
+  it('h2 should return instance of HTMLHeadingElement', () => {
+    expect(h2('test', 'test').getNode()).toBeInstanceOf(HTMLHeadingElement);
+  });
+
+  it('h3 should return instance of HTMLHeadingElement', () => {
+    expect(h3('test', 'test').getNode()).toBeInstanceOf(HTMLHeadingElement);
+  });
+
+  it('div should return instance of HTMLDivElement', () => {
+    expect(div({ txt: 'test' }, null).getNode()).toBeInstanceOf(HTMLDivElement);
+  });
+
+  it('a should return instance of HTMLAnchorElement', () => {
+    expect(a({ txt: 'test' }).getNode()).toBeInstanceOf(HTMLAnchorElement);
+  });
+
+  it('img should return instance of HTMLImageElement', () => {
+    expect(img({ src: 'test' }).getNode()).toBeInstanceOf(HTMLImageElement);
   });
 });
