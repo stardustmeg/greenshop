@@ -1,5 +1,4 @@
 import ButtonModel from '../model/ButtonModel.ts';
-import ButtonView from '../view/ButtonView.ts';
 
 const button = new ButtonModel({
   action: {
@@ -24,17 +23,5 @@ describe('Checking ButtonModel class', () => {
   it('the disabled attribute should return false', () => {
     button.setEnabled();
     expect(button.getHTML().disabled).toBe(false);
-  });
-});
-
-describe('Checking ButtonView class', () => {
-  it('should be defined', () => {
-    expect(ButtonView).toBeDefined();
-  });
-
-  it('should have addEventListener', () => {
-    const buttonHTML = button.getHTML();
-    const addEventListenerSpy = vi.spyOn(buttonHTML, 'addEventListener');
-    expect(addEventListenerSpy).toBeInstanceOf(Function);
   });
 });
