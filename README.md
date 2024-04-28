@@ -37,7 +37,7 @@ _in our project we used the following technologies:_
 - **Bundling**: Employs [Vite](https://vitejs.dev/) as the bundler, ensuring swift development server startup time and seamless module replacement 🌳
 - **Deployment**: Hosted on [Netlify](https://www.netlify.com/), enabling efficient and hassle-free deployment of the application 🌟
 - **Code Quality**: Ensured code quality through rigorous checks by [Husky](https://typicode.github.io/husky/), [Prettier](https://prettier.io/), [ESLint](https://eslint.org/), [Stylelint](https://stylelint.io/), [SonarLint](https://www.sonarsource.com/products/sonarlint/), and [EditorConfig](https://editorconfig.org/), maintaining consistency and best practices throughout the codebase 🐶
-- **Testing**: Thorough testing conducted with [Jest](https://jestjs.io/), ensuring the reliability and robustness of the application's functionalities 🃏
+- **Testing**: Thorough testing conducted with [Vitest](https://vitest.dev/), ensuring the reliability and robustness of the application's functionalities ⚡
 - **Backend**: Supported by [CommerceTools](https://commercetools.com/), a leading provider of commerce solutions, offering a robust and scalable platform for creating immersive digital commerce experiences 🌐
 
 ## How to Run the Project Locally ⚙️
