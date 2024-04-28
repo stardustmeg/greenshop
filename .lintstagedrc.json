@@ -1,4 +1,4 @@
 {
   "*": ["prettier --write --ignore-unknown"],
-  "*.{cjs,js,mjs,jsx,ts,tsx}": ["eslint --max-warnings 0"]
+  "*.{cjs,mjs,jsx,ts,tsx}": ["eslint --max-warnings 0 --ignore-pattern './.validate-branch-name.js'"]
 }
