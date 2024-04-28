@@ -11,7 +11,7 @@ const initialState: State = {
   currentUser: null,
 };
 
-class Store<S, A> implements ReduxStore<S, A> {
+export class Store<S, A> implements ReduxStore<S, A> {
   private listeners: VoidFunction[] = [];
 
   private rootReducer: Reducer<S, A>;
