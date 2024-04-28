@@ -1,0 +1,47 @@
+:root {
+  // offsets
+  --extra-small-offset: 20px;
+  --small-offset: 40px;
+  --medium-offset: 60px;
+  --large-offset: 80px;
+
+  // border-radius
+  --small-br: 5px;
+  --medium-br: 10px;
+  --large-br: 20px;
+
+  // colors
+  --white: #fff;
+  --black: #000;
+  --noble-white-100: #f5f5f5;
+  --noble-gray-300: #cbcbcb;
+  --noble-gray-400: #c4c4c4;
+  --noble-gray-500: #acacac;
+  --noble-gray-600: #a5a5a5;
+  --noble-gray-700: #727272;
+  --noble-gray-800: #3d3d3d;
+  --red-power-600: #d0302f;
+  --steam-green-400: #c8f4b4;
+  --steam-green-500: #b6f09c;
+  --steam-green-800: #46a358;
+
+  // fonts
+  --regular-font: 400 16px 'Cerapro', sans-serif;
+  --extra-regular-font: 400 24px 'Cerapro', sans-serif;
+  --medium-font: 500 24px 'Cerapro', sans-serif;
+  --extra-medium-font: 500 30px 'Cerapro', sans-serif;
+  --bold-font: 700 30px 'Cerapro', sans-serif;
+  --extra-bold-font: 700 35px 'Cerapro', sans-serif;
+  --black-font: 900 35px 'Cerapro', sans-serif;
+  --extra-black-font: 900 40px 'Cerapro', sans-serif;
+
+  @media (max-width: 768px) {
+    --extra-small-offset: 10px;
+    --small-offset: 20px;
+    --medium-offset: 30px;
+    --large-offset: 40px;
+    --small-br: 2px;
+    --medium-br: 5px;
+    --large-br: 10px;
+  }
+}
