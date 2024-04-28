@@ -64,6 +64,7 @@ _you can run the following scripts in the project directory:_
 - `npm run lint-styles`: Lints SCSS stylesheets using Stylelint.
 - `npm run prepare`: Sets up Husky for managing git hooks.
 - `npm run test`: Runs tests using Vitest.
+- `npm run test-ui`: Runs tests in the browser using Vitest.
 - `npm run coverage`: Runs tests and generates a code coverage report using Vitest.
 
 ## Contact us 📩
