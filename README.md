@@ -68,6 +68,6 @@ _you can run the following scripts in the project directory:_
 
 ## Contact us 📩
 
-- Margarita Golubeva (my GitHub: [stardustmeg](https://github.com/stardustmeg))
-- Maxim Zabaluev (my GitHub: [Kleostro](https://github.com/kleostro))
-- Yuliya Kursevich (my GitHub: [YulikK](https://github.com/yulikk))
+- 🧙‍♀️ Margarita Golubeva (my GitHub: [stardustmeg](https://github.com/stardustmeg))
+- 🧙 Maxim Zabaluev (my GitHub: [Kleostro](https://github.com/kleostro))
+- 🧙‍♀️ Yuliya Kursevich (my GitHub: [YulikK](https://github.com/yulikk))
