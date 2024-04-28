@@ -63,7 +63,8 @@ _you can run the following scripts in the project directory:_
 - `npm run lint:fix`: Fixes linting errors automatically using ESLint for TypeScript files.
 - `npm run lint-styles`: Lints SCSS stylesheets using Stylelint.
 - `npm run prepare`: Sets up Husky for managing git hooks.
-- `npm run test`: Runs tests using Jest with a specific configuration file (`jest.config.cjs`).
+- `npm run test`: Runs tests using Vitest.
+- `npm run coverage`: Runs tests and generates a code coverage report using Vitest.
 
 ## Contact us 📩
 
