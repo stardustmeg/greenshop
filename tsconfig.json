@@ -27,8 +27,7 @@
       "@/*": ["src/*"]
     },
 
-    /* Jest - testing */
-    "types": ["jest"]
+    "types": ["vitest/globals"]
   },
   "include": ["src"]
 }
