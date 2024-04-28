@@ -590,6 +590,7 @@
         "ignore": ["between-comments", "stylelint-commands"]
       }
     ],
+    "media-feature-range-notation": "prefix",
     "scss/double-slash-comment-inline": null,
     "scss/double-slash-comment-whitespace-inside": "always",
     "scss/media-feature-value-dollar-variable": null,
