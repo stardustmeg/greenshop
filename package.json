@@ -16,6 +16,7 @@
     "lint-styles": "stylelint \"./src/**/*.scss\"",
     "prepare": "husky",
     "test": "vitest",
+    "test-ui": "npx vitest --ui",
     "coverage": "vitest run --coverage"
   },
   "devDependencies": {
