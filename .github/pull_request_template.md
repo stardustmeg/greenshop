@@ -3,10 +3,10 @@
 📍 conforms with the following format:
 
 - [ ] prefix (following the [convention](https://www.conventionalcommits.org/en/v1.0.0-beta.2/): `feat`, `fix`, `hotfix`, `chore`, `refactor`, `revert`, `docs`, `style`, `test`)
-- [ ] sprint and issue number (e.g. `RSS-ECOMM-1_01`, where `1` - is the sprint number and `01` - is the issue number)
+- [ ] sprint and issue number (e.g. `RSS-ECOMM-2_01`, where `2` - is the sprint number and `01` - is the issue number)
 - [ ] short description
 
-👀 Example: `feat(RSS-ECOMM-1_01): description`
+👀 Example: `feat(RSS-ECOMM-2_01): description`
 
 ## PR Description 🧙‍♂️
 
