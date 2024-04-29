@@ -25,6 +25,11 @@ export default {
       plugins: [autoprefixer()],
     },
   },
+  define: {
+    // By default, Vite doesn't include shims for NodeJS/
+    // necessary for segment analytics lib to work
+    global: {},
+  },
   plugins: [
     createSvgSpritePlugin({ svgFolder: SVG_FOLDER_PATH }),
     ViteImageOptimizer({
@@ -43,6 +48,11 @@ export default {
       typescript: true,
     }),
   ],
+  resolve: {
+    alias: {
+      'node-fetch': 'isomorphic-fetch',
+    },
+  },
   test: {
     coverage: {
       reporter: ['html', 'text'],
