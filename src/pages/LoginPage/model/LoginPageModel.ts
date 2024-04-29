@@ -3,14 +3,14 @@ import type { PageInterface } from '@/shared/types/interfaces.ts';
 import LoginPageView from '../view/LoginPageView.ts';
 
 class LoginPageModel implements PageInterface {
-  private loginPageView: LoginPageView;
+  private view: LoginPageView;
 
   constructor(parent: HTMLDivElement) {
-    this.loginPageView = new LoginPageView(parent);
+    this.view = new LoginPageView(parent);
   }
 
   public getHTML(): HTMLDivElement {
-    return this.loginPageView.getHTML();
+    return this.view.getHTML();
   }
 }
 
