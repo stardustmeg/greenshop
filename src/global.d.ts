@@ -25,5 +25,8 @@ interface ImportMeta {
     VITE_APP_CTP_PROJECT_KEY: string;
     VITE_APP_CTP_REGION: string;
     VITE_APP_CTP_SCOPES: string;
+    VITE_APP_DEFAULT_SEGMENT: string;
+    VITE_APP_NEXT_SEGMENT: number;
+    VITE_APP_PATH_SEGMENTS_TO_KEEP: number;
   };
 }
