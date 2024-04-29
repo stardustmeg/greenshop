@@ -109,3 +109,7 @@ export const PAGES_IDS = {
   NOT_FOUND_PAGE: '404',
   REGISTRATION_PAGE: 'registration',
 } as const;
+
+export const MEDIATOR_EVENTS = {
+  CHANGE_PAGE: 'changePage',
+} as const;

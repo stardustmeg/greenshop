@@ -1,4 +1,4 @@
-import type ButtonActionType from './types.ts';
+import type { ButtonActionType } from './types.ts';
 
 export interface ButtonAttributesInterface {
   action?: ButtonActionType;

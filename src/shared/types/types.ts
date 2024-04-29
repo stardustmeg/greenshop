@@ -24,5 +24,5 @@ type ActionsType =
   | 'transitionrun'
   | 'transitionstart';
 
-type ButtonActionType = { key: ActionsType; value: () => void };
-export default ButtonActionType;
+export type ButtonActionType = { key: ActionsType; value: () => void };
+export type ListenerCallback<T> = (params: T) => void;
