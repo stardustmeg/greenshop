@@ -2,7 +2,7 @@ import type { PageInterface } from '@/shared/types/interfaces.ts';
 
 import MainPageView from '../view/MainPageView.ts';
 
-class LoginPageModel implements PageInterface {
+class MainPageModel implements PageInterface {
   private view: MainPageView;
 
   constructor(parent: HTMLDivElement) {
@@ -14,4 +14,4 @@ class LoginPageModel implements PageInterface {
   }
 }
 
-export default LoginPageModel;
+export default MainPageModel;
