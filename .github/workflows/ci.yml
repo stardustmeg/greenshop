@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - develop
+      - sprint-2
+      - sprint-3
+      - sprint-4
 
 jobs:
   format:

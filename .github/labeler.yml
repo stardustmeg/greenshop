@@ -23,8 +23,11 @@ refactor:
       - '^refactor'
 
 test:
-  - head-branch:
-      - '^test'
+  - any:
+      - head-branch:
+          - '^test'
+      - changed-files:
+          - any-glob-to-any-file: '**/*.spec.ts'
 
 revert:
   - head-branch:
