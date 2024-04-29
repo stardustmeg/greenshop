@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import { BaseComponent } from './baseComponent.ts';
 import BaseElement from './baseElement.ts';
 import createBaseElement from './createBaseElement.ts';

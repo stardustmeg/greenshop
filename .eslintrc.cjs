@@ -20,6 +20,12 @@ module.exports = {
       extends: ['plugin:@typescript-eslint/disable-type-checked'],
       files: ['*.js', '*.cjs'],
     },
+    {
+      files: ['*.spec.ts'],
+      rules: {
+        'max-lines-per-function': 'off',
+      },
+    },
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
