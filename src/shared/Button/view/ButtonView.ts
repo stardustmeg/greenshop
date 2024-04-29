@@ -1,4 +1,4 @@
-import type ButtonAttributesInterface from '@/shared/types/interfaces.ts';
+import type { ButtonAttributesInterface } from '@/shared/types/interfaces.ts';
 
 import { TAG_NAMES } from '@/shared/constants/enums.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';

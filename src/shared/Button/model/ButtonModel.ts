@@ -1,4 +1,4 @@
-import type ButtonAttributesInterface from '@/shared/types/interfaces.ts';
+import type { ButtonAttributesInterface } from '@/shared/types/interfaces.ts';
 
 import { IS_DISABLED } from '@/shared/constants/enums.ts';
 
