@@ -101,3 +101,11 @@ export const EVENT_NAMES = {
   SUBMIT: 'submit',
   TRANSITIONEND: 'transitionend',
 } as const;
+
+export const PAGES_IDS = {
+  DEFAULT_PAGE: '',
+  LOGIN_PAGE: 'login',
+  MAIN_PAGE: 'main',
+  NOT_FOUND_PAGE: '404',
+  REGISTRATION_PAGE: 'registration',
+} as const;
