@@ -2,7 +2,7 @@ import type { PageInterface } from '@/shared/types/interfaces.ts';
 
 import RegistrationPageView from '../view/RegistrationPageView.ts';
 
-class LoginPageModel implements PageInterface {
+class RegistrationPageModel implements PageInterface {
   private view: RegistrationPageView;
 
   constructor(parent: HTMLDivElement) {
@@ -14,4 +14,4 @@ class LoginPageModel implements PageInterface {
   }
 }
 
-export default LoginPageModel;
+export default RegistrationPageModel;
