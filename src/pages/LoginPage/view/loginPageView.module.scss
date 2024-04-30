@@ -48,7 +48,36 @@
 }
 
 .registerLink {
+  position: relative;
   color: var(--noble-gray-800);
+  transition: color 0.2s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 2px;
+    background-color: currentcolor;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition:
+      transform 0.2s,
+      opacity 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--steam-green-800);
+
+      &::after {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+  }
 }
 
 .authDescription {
