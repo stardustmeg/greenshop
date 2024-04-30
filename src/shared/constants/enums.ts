@@ -123,7 +123,7 @@ export const LOGIN_FORM_EMAIL_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'email',
-    text: 'Enter your email',
+    text: '',
   },
 } as const;
 
@@ -136,7 +136,7 @@ export const LOGIN_FORM_PASSWORD_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'password',
-    text: 'Enter your password',
+    text: '',
   },
 } as const;
 

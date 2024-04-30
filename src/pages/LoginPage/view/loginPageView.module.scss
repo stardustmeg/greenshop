@@ -7,3 +7,52 @@
     display: none;
   }
 }
+
+.authWrapper {
+  margin: 0 auto;
+  border-bottom: 10px solid var(--steam-green-800);
+  padding: calc(var(--extra-large-offset) / 2) var(--extra-large-offset);
+  max-width: 500px;
+  background-color: var(--white);
+}
+
+.linksWrapper {
+  position: relative;
+  display: flex;
+  align-self: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  margin-bottom: calc(var(--extra-large-offset) / 2);
+  max-width: 160px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: calc(50% - 3px);
+    top: 50%;
+    width: 3px;
+    height: 16px;
+    background-color: var(--noble-gray-800);
+    transform: translate(calc(-50% - 14px), -50%);
+  }
+}
+
+.loginSpan,
+.registerLink {
+  font: var(--medium-font);
+  letter-spacing: 1px;
+}
+
+.loginSpan {
+  color: var(--steam-green-800);
+}
+
+.registerLink {
+  color: var(--noble-gray-800);
+}
+
+.authDescription {
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  text-align: center;
+}
