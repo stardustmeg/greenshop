@@ -15,6 +15,7 @@
   --white: #fff;
   --black: #000;
   --noble-white-100: #f5f5f5;
+  --noble-gray-200: #eaeaea;
   --noble-gray-300: #cbcbcb;
   --noble-gray-400: #c4c4c4;
   --noble-gray-500: #acacac;
@@ -24,6 +25,7 @@
   --red-power-600: #d0302f;
   --steam-green-400: #c8f4b4;
   --steam-green-500: #b6f09c;
+  --steam-green-700: #70d27a;
   --steam-green-800: #46a358;
 
   // fonts
@@ -31,7 +33,7 @@
   --extra-regular-font: 400 24px 'Cerapro', sans-serif;
   --medium-font: 500 20px 'Cerapro', sans-serif;
   --extra-medium-font: 500 30px 'Cerapro', sans-serif;
-  --bold-font: 700 30px 'Cerapro', sans-serif;
+  --bold-font: 700 16px 'Cerapro', sans-serif;
   --extra-bold-font: 700 35px 'Cerapro', sans-serif;
   --black-font: 900 35px 'Cerapro', sans-serif;
   --extra-black-font: 900 40px 'Cerapro', sans-serif;
@@ -42,7 +44,7 @@
     --medium-offset: 30px;
     --large-offset: 40px;
     --extra-large-offset: 50px;
-    --small-br: 2px;
+    --small-br: 5px;
     --medium-br: 5px;
     --large-br: 10px;
   }
