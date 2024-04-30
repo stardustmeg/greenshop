@@ -35,11 +35,11 @@ class RouterModel {
     const pathParts = path.split(DEFAULT_SEGMENT);
     const hasRoute = this.pages.has(pathParts.join(''));
     if (!hasRoute) {
-      this.navigateTo(PAGES_IDS.NOT_FOUND_PAGE);
+      window.location.pathname = PAGES_IDS.NOT_FOUND_PAGE;
       return null;
     }
 
-    this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, pathParts.join());
+    this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, pathParts.join(''));
     return pathParts.join('');
   }
 
@@ -50,8 +50,10 @@ class RouterModel {
       .split(DEFAULT_SEGMENT)
       .slice(NEXT_SEGMENT, PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
       .join(DEFAULT_SEGMENT);
-    const url = `/${pathnameApp}/${route}`;
-    window.history.pushState({}, '', url);
+    const url = `${pathnameApp}/${route}`;
+
+    history.pushState({}, '', url);
+
     return window.history;
   }
 

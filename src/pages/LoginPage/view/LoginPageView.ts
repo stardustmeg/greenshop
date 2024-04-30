@@ -101,6 +101,10 @@ class LoginPageView {
     return this.page;
   }
 
+  public getRegisterLink(): HTMLAnchorElement {
+    return this.registerLink;
+  }
+
   public hide(): boolean {
     this.page.classList.add(LOGIN_PAGE_STYLES.loginPage_hidden);
     return true;
