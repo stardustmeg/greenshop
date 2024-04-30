@@ -15,7 +15,7 @@ class LoginPageModel implements PageInterface {
   }
 
   private init(): boolean {
-    this.getHTML().append(this.loginForm.getHTML());
+    this.view.getAuthWrapper().append(this.loginForm.getHTML());
     return true;
   }
 
