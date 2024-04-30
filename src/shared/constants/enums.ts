@@ -192,5 +192,208 @@ export const PAGE_LINK_TEXT = {
 } as const;
 
 export const PAGE_DESCRIPTION = {
-  LOGIN: 'Enter your email and password to register.',
+  LOGIN: 'Enter your email and password to login.',
+  REGISTRATION: 'Enter your email and password to register.',
 } as const;
+
+export const REGISTRATION_FORM_EMAIL_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'email',
+    placeholder: 'user@example.com',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'email',
+    text: '',
+  },
+} as const;
+
+export const REGISTRATION_FORM_PASSWORD_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'password',
+    placeholder: '***********',
+    type: 'password',
+  },
+  labelParams: {
+    for: 'password',
+    text: '',
+  },
+} as const;
+
+export const REGISTRATION_FORM_FIRST_NAME_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'firstName',
+    placeholder: 'John',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'firstName',
+    text: '',
+  },
+} as const;
+
+export const REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'lastName',
+    placeholder: 'Doe',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'lastName',
+    text: '',
+  },
+} as const;
+
+export const REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'birthday',
+    lang: 'en',
+    placeholder: '01.01.2000',
+    type: 'date',
+  },
+  labelParams: {
+    for: 'birthday',
+    text: '',
+  },
+} as const;
+
+export const REGISTRATION_FORM_STREET_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'street',
+    placeholder: 'Street',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'street',
+    text: '',
+  },
+};
+
+export const REGISTRATION_FORM_CITY_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'city',
+    placeholder: 'City',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'city',
+    text: '',
+  },
+};
+
+export const REGISTRATION_FORM_INPUT_FIELD_PARAMS = [
+  REGISTRATION_FORM_EMAIL_FIELD_PARAMS,
+  REGISTRATION_FORM_PASSWORD_FIELD_PARAMS,
+  REGISTRATION_FORM_FIRST_NAME_FIELD_PARAMS,
+  REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS,
+  REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS,
+  REGISTRATION_FORM_STREET_FIELD_PARAMS,
+  REGISTRATION_FORM_CITY_FIELD_PARAMS,
+];
+
+const REGISTRATION_FORM_EMAIL_FIELD_VALIDATE_PARAMS = {
+  key: 'email',
+  notWhitespace: {
+    message: 'Email must not contain whitespaces',
+    pattern: /^\S+$/,
+  },
+  required: true,
+  validMail: {
+    message: 'Enter correct email (user@example.com)',
+    pattern: /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/,
+  },
+} as const;
+
+const REGISTRATION_FORM_PASSWORD_FIELD_VALIDATE_PARAMS = {
+  key: 'password',
+  minLength: 8,
+  notWhitespace: {
+    message: 'Password must not contain whitespaces',
+    pattern: /^\S+$/,
+  },
+  required: true,
+  requiredSymbols: {
+    message: 'Password must contain English letters, at least 1 letter in upper and lower case and at least 1 number',
+    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+/,
+  },
+} as const;
+
+const REGISTRATION_FORM_FIRST_NAME_FIELD_VALIDATE_PARAMS = {
+  key: 'firstName',
+  minLength: 1,
+  notSpecialSymbols: {
+    message: 'First name must contain only letters',
+    pattern: /^[a-zA-Z]*$/,
+  },
+  notWhitespace: {
+    message: 'First name must not contain whitespaces',
+    pattern: /^\S+$/,
+  },
+  required: true,
+} as const;
+
+const REGISTRATION_FORM_LAST_NAME_FIELD_VALIDATE_PARAMS = {
+  key: 'lastName',
+  minLength: 1,
+  notSpecialSymbols: {
+    message: 'Last name must contain only letters',
+    pattern: /^[a-zA-Z]*$/,
+  },
+  notWhitespace: {
+    message: 'Last name must not contain whitespaces',
+    pattern: /^\S+$/,
+  },
+  required: true,
+} as const;
+
+const REGISTRATION_FORM_BIRTHDAY_FIELD_VALIDATE_PARAMS = {
+  key: 'birthday',
+  required: true,
+  validBirthday: {
+    maxAge: 120,
+    message: 'Enter correct birthday (01.01.2000)',
+    minAge: 18,
+    pattern: /^\d{4}-\d{2}-\d{2}$/,
+  },
+} as const;
+
+export const REGISTRATION_FORM_STREET_FIELD_VALIDATE_PARAMS = {
+  key: 'street',
+  minLength: 1,
+  notWhitespace: {
+    message: 'Street must not contain whitespaces',
+    pattern: /^\S.*\S$/,
+  },
+  required: true,
+};
+
+export const REGISTRATION_FORM_CITY_FIELD_VALIDATE_PARAMS = {
+  key: 'city',
+  minLength: 1,
+  notSpecialSymbols: {
+    message: 'City must contain only letters',
+    pattern: /^[a-zA-Z]*$/,
+  },
+  notWhitespace: {
+    message: 'City must not contain whitespaces',
+    pattern: /^\S.*\S$/,
+  },
+  required: true,
+};
+
+export const REGISTRATION_FORM_INPUT_FIELD_VALIDATION_PARAMS = [
+  REGISTRATION_FORM_EMAIL_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_PASSWORD_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_FIRST_NAME_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_LAST_NAME_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_BIRTHDAY_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_STREET_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_CITY_FIELD_VALIDATE_PARAMS,
+];

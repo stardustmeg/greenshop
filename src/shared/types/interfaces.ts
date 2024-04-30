@@ -12,10 +12,11 @@ export interface PageInterface {
 }
 
 export interface InputParams {
-  autocomplete: 'off' | 'on';
+  autocomplete: string;
   id: string;
+  lang?: string;
   placeholder: null | string;
-  type: 'color' | 'date' | 'email' | 'number' | 'password' | 'range' | 'text';
+  type: string;
 }
 
 export interface LabelParams {
@@ -43,6 +44,12 @@ export interface InputFieldValidatorParams {
   required?: boolean | null;
   requiredSymbols?: {
     message: string;
+    pattern: RegExp;
+  } | null;
+  validBirthday?: {
+    maxAge: number;
+    message: string;
+    minAge: number;
     pattern: RegExp;
   } | null;
   validMail?: {

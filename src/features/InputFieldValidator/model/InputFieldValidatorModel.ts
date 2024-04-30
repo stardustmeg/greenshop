@@ -10,9 +10,33 @@ class InputFieldValidatorModel {
     this.isValid = isValid;
   }
 
+  private checkMaxAge(value: string): boolean | string {
+    const today = new Date();
+    const birthDate = new Date(value);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    if (this.validParams.validBirthday && age > this.validParams.validBirthday.maxAge) {
+      const errorMessage = `You must be at most ${this.validParams.validBirthday.maxAge} years old`;
+      return errorMessage;
+    }
+
+    return true;
+  }
+
   private checkMaxLength(value: string): boolean | string {
     if (this.validParams.maxLength && value.length > this.validParams.maxLength) {
       const errorMessage = `Max length should not exceed ${this.validParams.maxLength}`;
+      return errorMessage;
+    }
+
+    return true;
+  }
+
+  private checkMinAge(value: string): boolean | string {
+    const today = new Date();
+    const birthDate = new Date(value);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    if (this.validParams.validBirthday && age < this.validParams.validBirthday.minAge) {
+      const errorMessage = `You must be at least ${this.validParams.validBirthday.minAge} years old`;
       return errorMessage;
     }
 
@@ -55,6 +79,15 @@ class InputFieldValidatorModel {
     return true;
   }
 
+  private checkValidAge(value: string): boolean | string {
+    if (this.validParams.validBirthday && !this.validParams.validBirthday.pattern.test(value)) {
+      const errorMessage = this.validParams.validBirthday.message;
+      return errorMessage;
+    }
+
+    return true;
+  }
+
   private checkValidMail(value: string): boolean | string {
     if (this.validParams.validMail && !this.validParams.validMail.pattern.test(value)) {
       const errorMessage = this.validParams.validMail.message;
@@ -82,6 +115,9 @@ class InputFieldValidatorModel {
       this.checkMaxLength(value),
       this.checkRequiredSymbols(value),
       this.checkValidMail(value),
+      this.checkValidAge(value),
+      this.checkMinAge(value),
+      this.checkMaxAge(value),
     ];
 
     const errorMessages: string[] = [];
