@@ -1,7 +1,7 @@
 import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types/interfaces.ts';
 
 import InputFieldValidatorModel from '@/features/InputFieldValidator/model/InputFieldValidatorModel.ts';
-import { EVENT_NAMES } from '@/shared/constants/enums.ts';
+import { EVENT_NAMES, INPUT_TYPES } from '@/shared/constants/enums.ts';
 
 import InputFieldView from '../view/InputFieldView.ts';
 
@@ -19,6 +19,8 @@ class InputFieldModel {
       this.validator = new InputFieldValidatorModel(validParams, this.isValid);
       this.setInputHandler();
     }
+
+    this.setShowPasswordHandler();
   }
 
   private inputHandler(): boolean {
@@ -46,6 +48,19 @@ class InputFieldModel {
       this.inputHandler();
     });
 
+    return true;
+  }
+
+  private setShowPasswordHandler(): boolean {
+    const button = this.view.getShowPasswordButton().getHTML();
+    button.addEventListener(EVENT_NAMES.CLICK, () => this.showPasswordHandler());
+    return true;
+  }
+
+  private showPasswordHandler(): boolean {
+    const input = this.view.getInput().getHTML();
+    input.type = input.type === INPUT_TYPES.PASSWORD ? INPUT_TYPES.TEXT : INPUT_TYPES.PASSWORD;
+    this.view.switchPasswordButtonSVG(input.type);
     return true;
   }
 

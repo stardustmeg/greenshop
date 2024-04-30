@@ -178,3 +178,9 @@ export const FORM_SUBMIT_BUTTON_TEXT = {
   LOGIN: 'Login',
   REGISTRATION: 'Register',
 } as const;
+
+export const SVG_DETAILS = {
+  CLOSE_EYE: 'closeEye',
+  OPEN_EYE: 'openEye',
+  SVG_URL: 'http://www.w3.org/2000/svg',
+} as const;
