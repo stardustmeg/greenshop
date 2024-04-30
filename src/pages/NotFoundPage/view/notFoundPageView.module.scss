@@ -1,0 +1,9 @@
+.notFoundPage {
+  position: relative;
+  display: block;
+  padding: 0 var(--small-offset);
+
+  &_hidden {
+    display: none;
+  }
+}

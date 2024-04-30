@@ -1,11 +1,10 @@
 import type { InputFieldParams, InputParams, LabelParams } from '@/shared/types/interfaces.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import InputModel from '@/shared/Input/model/InputModel.ts';
 import { INPUT_TYPES, SVG_DETAILS, TAG_NAMES } from '@/shared/constants/enums.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
-
-import InputModel from '@/shared/Input/model/InputModel.ts';
 
 class InputFieldView {
   private errorField: HTMLSpanElement | null = null;

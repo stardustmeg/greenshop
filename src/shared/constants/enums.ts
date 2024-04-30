@@ -184,3 +184,13 @@ export const SVG_DETAILS = {
   OPEN_EYE: 'openEye',
   SVG_URL: 'http://www.w3.org/2000/svg',
 } as const;
+
+export const PAGE_LINK_TEXT = {
+  LOGIN: 'Login',
+  MAIN: 'Main',
+  REGISTRATION: 'Register',
+} as const;
+
+export const PAGE_DESCRIPTION = {
+  LOGIN: 'Enter your email and password to register.',
+} as const;

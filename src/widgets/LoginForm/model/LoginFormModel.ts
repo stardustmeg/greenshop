@@ -1,6 +1,6 @@
-import { EVENT_NAMES } from '@/shared/constants/enums.ts';
-
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
+
+import { EVENT_NAMES } from '@/shared/constants/enums.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
 
