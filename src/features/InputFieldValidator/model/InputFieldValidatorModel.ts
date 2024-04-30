@@ -55,13 +55,33 @@ class InputFieldValidatorModel {
     return true;
   }
 
+  private checkValidMail(value: string): boolean | string {
+    if (this.validParams.validMail && !this.validParams.validMail.pattern.test(value)) {
+      const errorMessage = this.validParams.validMail.message;
+      return errorMessage;
+    }
+
+    return true;
+  }
+
+  private checkWhitespace(value: string): boolean | string {
+    if (this.validParams.notWhitespace && !this.validParams.notWhitespace.pattern.test(value) && value.trim() !== '') {
+      const errorMessage = this.validParams.notWhitespace.message;
+      return errorMessage;
+    }
+
+    return true;
+  }
+
   public validate(value: string): boolean | string[] {
     const errors = [
+      this.checkWhitespace(value),
       this.checkRequired(value),
       this.checkNotSpecialSymbols(value),
       this.checkMinLength(value),
       this.checkMaxLength(value),
       this.checkRequiredSymbols(value),
+      this.checkValidMail(value),
     ];
 
     const errorMessages: string[] = [];

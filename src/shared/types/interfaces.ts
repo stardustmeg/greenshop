@@ -36,8 +36,16 @@ export interface InputFieldValidatorParams {
     message: string;
     pattern: RegExp;
   } | null;
+  notWhitespace?: {
+    message: string;
+    pattern: RegExp;
+  } | null;
   required?: boolean | null;
   requiredSymbols?: {
+    message: string;
+    pattern: RegExp;
+  } | null;
+  validMail?: {
     message: string;
     pattern: RegExp;
   } | null;
