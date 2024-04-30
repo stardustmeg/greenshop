@@ -1,0 +1,129 @@
+.registrationForm {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  gap: var(--extra-small-offset);
+
+  label {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--extra-small-offset) / 2);
+
+    button {
+      position: absolute;
+      right: 0;
+      top: 7px;
+      border-radius: var(--small-br);
+      padding: calc(var(--extra-small-offset) / 8);
+      width: 24px;
+      height: 24px;
+      background-color: transparent;
+      transform: translate(-12%, 0);
+
+      svg {
+        width: 20px;
+        height: 20px;
+        stroke: var(--noble-gray-600);
+        transition: stroke 0.2s;
+      }
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: var(--noble-gray-200);
+
+          svg {
+            stroke: var(--steam-green-800);
+          }
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      button {
+        top: 2px;
+      }
+    }
+  }
+
+  input {
+    border: 1px solid var(--noble-gray-200);
+    border-radius: var(--small-br);
+    padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
+    font: var(--regular-font);
+    letter-spacing: 1px;
+    color: var(--noble-gray-800);
+    transition: border 0.2s;
+    cursor: text;
+
+    &::placeholder {
+      color: var(--noble-gray-600);
+    }
+
+    &:focus {
+      border: 1px solid var(--steam-green-800);
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        border: 1px solid var(--steam-green-800);
+      }
+    }
+
+    &[type='date'] {
+      -webkit-appearance: none;
+      appearance: none;
+      padding-right: 0;
+    }
+
+    &[type='date']::-webkit-calendar-picker-indicator {
+      background-image: url('../../../shared/img/svg/calendar.svg');
+      background-position: -3px 0;
+      cursor: pointer;
+    }
+
+    &[type='date']::-webkit-inner-spin-button,
+    &[type='date']::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    &::-webkit-datetime-edit-day-field:focus,
+    &::-webkit-datetime-edit-month-field:focus,
+    &::-webkit-datetime-edit-year-field:focus {
+      outline: none;
+      border-radius: var(--small-br);
+      color: var(--steam-green-800);
+      background-color: var(--noble-gray-200);
+    }
+  }
+
+  span {
+    font: var(--regular-font);
+    letter-spacing: 1px;
+    text-align: center;
+    color: var(--red-power-600);
+  }
+
+  button {
+    border-radius: var(--small-br);
+    padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
+    font: var(--bold-font);
+    letter-spacing: 1px;
+    color: var(--white);
+    background-color: var(--steam-green-800);
+    transition:
+      color 0.2s,
+      background-color 0.2s;
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--steam-green-700);
+      }
+    }
+
+    &:disabled {
+      background-color: var(--noble-gray-300);
+      pointer-events: none;
+    }
+  }
+}
