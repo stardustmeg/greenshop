@@ -44,9 +44,7 @@ class InputFieldModel {
 
   private setInputHandler(): boolean {
     const input = this.view.getInput().getHTML();
-    input.addEventListener(EVENT_NAMES.INPUT, () => {
-      this.inputHandler();
-    });
+    input.addEventListener(EVENT_NAMES.INPUT, () => this.inputHandler());
 
     return true;
   }

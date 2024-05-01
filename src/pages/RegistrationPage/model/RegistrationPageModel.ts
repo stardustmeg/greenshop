@@ -44,6 +44,7 @@ class RegistrationPageModel implements PageInterface {
   private switchPageVisibility(route: unknown): boolean {
     if (route === PAGES_IDS.REGISTRATION_PAGE) {
       this.view.show();
+      this.registerForm.getFirstInputField().getView().getInput().getHTML().focus();
     } else {
       this.view.hide();
       return false;

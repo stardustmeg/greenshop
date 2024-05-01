@@ -1,5 +1,7 @@
 import type { InputFieldValidatorParams } from '@/shared/types/interfaces';
 
+import { COUNTRIES } from '@/shared/constants/enums.ts';
+
 class InputFieldValidatorModel {
   private isValid: boolean;
 
@@ -88,6 +90,17 @@ class InputFieldValidatorModel {
     return true;
   }
 
+  private checkValidCountry(value: string): boolean | string {
+    if (this.validParams.validCountry) {
+      if (!Object.keys(COUNTRIES).find((countryCode) => countryCode === value)) {
+        const errorMessage = 'Invalid country';
+        return errorMessage;
+      }
+    }
+
+    return true;
+  }
+
   private checkValidMail(value: string): boolean | string {
     if (this.validParams.validMail && !this.validParams.validMail.pattern.test(value)) {
       const errorMessage = this.validParams.validMail.message;
@@ -98,7 +111,7 @@ class InputFieldValidatorModel {
   }
 
   private checkWhitespace(value: string): boolean | string {
-    if (this.validParams.notWhitespace && !this.validParams.notWhitespace.pattern.test(value) && value.trim() !== '') {
+    if (this.validParams.notWhitespace && !this.validParams.notWhitespace.pattern.test(value)) {
       const errorMessage = this.validParams.notWhitespace.message;
       return errorMessage;
     }
@@ -118,6 +131,7 @@ class InputFieldValidatorModel {
       this.checkValidAge(value),
       this.checkMinAge(value),
       this.checkMaxAge(value),
+      this.checkValidCountry(value),
     ];
 
     const errorMessages: string[] = [];
