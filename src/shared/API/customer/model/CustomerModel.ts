@@ -172,12 +172,8 @@ export class CustomerModel {
     return this.getCustomerFromData(data);
   }
 
-  public async editCustomer(
-    actions: CustomerUpdateAction[],
-    version: number,
-    id: string,
-  ): Promise<UserInterface | null> {
-    const data = await this.root.editCustomer(actions, version, id);
+  public async editCustomer(actions: CustomerUpdateAction[], customer: UserInterface): Promise<UserInterface | null> {
+    const data = await this.root.editCustomer(actions, customer.version, customer.id);
     return this.getCustomerFromData(data);
   }
 
