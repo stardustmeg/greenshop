@@ -113,3 +113,84 @@ export const PAGES_IDS = {
 export const MEDIATOR_EVENTS = {
   CHANGE_PAGE: 'changePage',
 } as const;
+
+export const LOGIN_FORM_EMAIL_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'email',
+    placeholder: 'user@example.com',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'email',
+    text: '',
+  },
+} as const;
+
+export const LOGIN_FORM_PASSWORD_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'password',
+    placeholder: '***********',
+    type: 'password',
+  },
+  labelParams: {
+    for: 'password',
+    text: '',
+  },
+} as const;
+
+export const LOGIN_FORM_INPUT_FIELD_PARAMS = [LOGIN_FORM_EMAIL_FIELD_PARAMS, LOGIN_FORM_PASSWORD_FIELD_PARAMS];
+
+const LOGIN_FORM_EMAIL_FIELD_VALIDATE_PARAMS = {
+  key: 'email',
+  notWhitespace: {
+    message: 'Email must not contain whitespaces',
+    pattern: /^\S+$/,
+  },
+  required: true,
+  validMail: {
+    message: 'Enter correct email (user@example.com)',
+    pattern: /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/,
+  },
+} as const;
+
+const LOGIN_FORM_PASSWORD_FIELD_VALIDATE_PARAMS = {
+  key: 'password',
+  minLength: 8,
+  notWhitespace: {
+    message: 'Password must not contain whitespaces',
+    pattern: /^\S+$/,
+  },
+  required: true,
+  requiredSymbols: {
+    message: 'Password must contain English letters, at least 1 letter in upper and lower case and at least 1 number',
+    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+/,
+  },
+} as const;
+
+export const LOGIN_FORM_INPUT_FIELD_VALIDATION_PARAMS = [
+  LOGIN_FORM_EMAIL_FIELD_VALIDATE_PARAMS,
+  LOGIN_FORM_PASSWORD_FIELD_VALIDATE_PARAMS,
+];
+
+export const FORM_SUBMIT_BUTTON_TEXT = {
+  LOGIN: 'Login',
+  REGISTRATION: 'Register',
+} as const;
+
+export const SVG_DETAILS = {
+  CLOSE_EYE: 'closeEye',
+  OPEN_EYE: 'openEye',
+  SVG_URL: 'http://www.w3.org/2000/svg',
+} as const;
+
+export const PAGE_LINK_TEXT = {
+  LOGIN: 'Login',
+  MAIN: 'Main',
+  REGISTRATION: 'Register',
+} as const;
+
+export const PAGE_DESCRIPTION = {
+  LOGIN: 'Enter your email and password to register.',
+} as const;
