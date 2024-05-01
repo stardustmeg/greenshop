@@ -34,6 +34,7 @@ export interface UserInterface {
   lastName: string;
   password: string;
   version: number;
+}
 
 export interface InputParams {
   autocomplete: 'off' | 'on';
