@@ -2,10 +2,10 @@ import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts
 import type { UserLoginData } from '@/shared/types/interfaces.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
-import errorMessageModel from '@/shared/ErrorMessage/model/ErrorMessageModel.ts';
+import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
-import { EVENT_NAMES, LOGIN_FORM_KEY } from '@/shared/constants/enums.ts';
+import { EVENT_NAMES, LOGIN_FORM_KEY, MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/enums.ts';
 import isKeyOfLoginData from '@/shared/utils/isKeyOfLoginData.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
@@ -82,10 +82,11 @@ class LoginFormModel {
         .authCustomer(formData)
         .then((data) => {
           getStore().dispatch(setCurrentUser(data));
+          serverMessageModel.showServerMessage(SERVER_MESSAGE.SUCCESSFUL_LOGIN, MESSAGE_STATUS.SUCCESS);
         })
         .catch(() => {
           // TBD: fix error message
-          errorMessageModel.showErrorMessage('Incorrect email or password');
+          serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_LOGIN, MESSAGE_STATUS.ERROR);
         });
     });
     return true;

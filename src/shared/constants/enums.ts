@@ -27,6 +27,18 @@ export const IS_DISABLED = {
   ENABLED: false,
 } as const;
 
+export const MESSAGE_STATUS = {
+  ERROR: 'error',
+  SUCCESS: 'success',
+} as const;
+
+export type MessageStatusType = (typeof MESSAGE_STATUS)[keyof typeof MESSAGE_STATUS];
+
+export const SERVER_MESSAGE = {
+  INCORRECT_LOGIN: 'Incorrect login or password',
+  SUCCESSFUL_LOGIN: 'Your login was successful',
+};
+
 export const TAG_NAMES = {
   A: 'a',
   ADDRESS: 'address',
@@ -674,7 +686,7 @@ export const COUNTRIES: Record<string, string> = {
   Zimbabwe: 'ZW',
 } as const;
 
-const ERROR_MESSAGE_ANIMATE_PARAMS = [
+const SERVER_MESSAGE_ANIMATE_PARAMS = [
   { transform: 'translateX(110%)' },
   { transform: 'translateX(-10%)' },
   { transform: 'translateX(-10%)' },
@@ -682,8 +694,8 @@ const ERROR_MESSAGE_ANIMATE_PARAMS = [
   { opacity: 0, transform: 'translate(-10%, -110%)' },
 ];
 
-export const ERROR_MESSAGE_ANIMATE_DETAILS = {
+export const SERVER_MESSAGE_ANIMATE_DETAILS = {
   duration: 5500,
   easing: 'cubic-bezier(0, 0.2, 0.58, 0.7)',
-  params: ERROR_MESSAGE_ANIMATE_PARAMS,
+  params: SERVER_MESSAGE_ANIMATE_PARAMS,
 };
