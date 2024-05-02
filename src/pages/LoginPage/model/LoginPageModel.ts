@@ -2,6 +2,7 @@ import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { PageInterface } from '@/shared/types/interfaces.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
+import getStore from '@/shared/Store/Store.ts';
 import { EVENT_NAMES, MEDIATOR_EVENTS, PAGES_IDS } from '@/shared/constants/enums.ts';
 import LoginFormModel from '@/widgets/LoginForm/model/LoginFormModel.ts';
 
@@ -20,6 +21,16 @@ class LoginPageModel implements PageInterface {
     this.router = router;
     this.view = new LoginPageView(parent);
     this.init();
+  }
+
+  private checkAuthUser(): boolean {
+    if (!getStore().getState().currentUser) {
+      this.view.show();
+      this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
+      return false;
+    }
+    this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
+    return true;
   }
 
   private init(): boolean {
@@ -44,8 +55,7 @@ class LoginPageModel implements PageInterface {
 
   private switchPageVisibility(route: unknown): boolean {
     if (route === PAGES_IDS.LOGIN_PAGE) {
-      this.view.show();
-      this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
+      this.checkAuthUser();
     } else {
       this.view.hide();
       return false;
