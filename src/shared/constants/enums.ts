@@ -1,3 +1,10 @@
+import type { State } from '../Store/reducer';
+
+export const initialState: State = {
+  currentUser: null,
+  registerFormCountry: '',
+};
+
 export const INPUT_TYPES = {
   COLOR: 'color',
   DATE: 'date',
@@ -205,7 +212,7 @@ export const REGISTRATION_FORM_EMAIL_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'registration_email',
-    text: '',
+    text: 'Email',
   },
 } as const;
 
@@ -218,7 +225,7 @@ export const REGISTRATION_FORM_PASSWORD_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'registration_password',
-    text: '',
+    text: 'Password',
   },
 } as const;
 
@@ -231,7 +238,7 @@ export const REGISTRATION_FORM_FIRST_NAME_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'firstName',
-    text: '',
+    text: 'First name',
   },
 } as const;
 
@@ -244,7 +251,7 @@ export const REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'lastName',
-    text: '',
+    text: 'Last name',
   },
 } as const;
 
@@ -258,7 +265,7 @@ export const REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'birthday',
-    text: '',
+    text: 'Date of Birth',
   },
 } as const;
 
@@ -266,12 +273,12 @@ export const REGISTRATION_FORM_STREET_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
     id: 'street',
-    placeholder: 'Street',
+    placeholder: '595 Hornby St. 5th Floor',
     type: 'text',
   },
   labelParams: {
     for: 'street',
-    text: '',
+    text: 'Address',
   },
 } as const;
 
@@ -279,12 +286,12 @@ export const REGISTRATION_FORM_CITY_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
     id: 'city',
-    placeholder: 'City',
+    placeholder: 'Vancouver',
     type: 'text',
   },
   labelParams: {
     for: 'city',
-    text: '',
+    text: 'City',
   },
 } as const;
 
@@ -292,12 +299,25 @@ export const REGISTRATION_FORM_COUNTRY_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
     id: 'country',
-    placeholder: 'Country',
+    placeholder: 'Canada',
     type: 'text',
   },
   labelParams: {
     for: 'country',
-    text: '',
+    text: 'Country',
+  },
+} as const;
+
+export const REGISTRATION_FORM_POSTAL_CODE_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'postalCode',
+    placeholder: 'A1B 2C3',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'postalCode',
+    text: 'Postal code',
   },
 } as const;
 
@@ -310,6 +330,7 @@ export const REGISTRATION_FORM_INPUT_FIELD_PARAMS = [
   REGISTRATION_FORM_STREET_FIELD_PARAMS,
   REGISTRATION_FORM_CITY_FIELD_PARAMS,
   REGISTRATION_FORM_COUNTRY_FIELD_PARAMS,
+  REGISTRATION_FORM_POSTAL_CODE_FIELD_PARAMS,
 ];
 
 const REGISTRATION_FORM_EMAIL_FIELD_VALIDATE_PARAMS = {
@@ -401,6 +422,12 @@ export const REGISTRATION_FORM_COUNTRY_FIELD_VALIDATE_PARAMS = {
   validCountry: true,
 };
 
+export const REGISTRATION_FORM_POSTAL_CODE_FIELD_VALIDATE_PARAMS = {
+  key: 'postalCode',
+  required: true,
+  validPostalCode: true,
+};
+
 export const REGISTRATION_FORM_INPUT_FIELD_VALIDATION_PARAMS = [
   REGISTRATION_FORM_EMAIL_FIELD_VALIDATE_PARAMS,
   REGISTRATION_FORM_PASSWORD_FIELD_VALIDATE_PARAMS,
@@ -410,9 +437,15 @@ export const REGISTRATION_FORM_INPUT_FIELD_VALIDATION_PARAMS = [
   REGISTRATION_FORM_STREET_FIELD_VALIDATE_PARAMS,
   REGISTRATION_FORM_CITY_FIELD_VALIDATE_PARAMS,
   REGISTRATION_FORM_COUNTRY_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_POSTAL_CODE_FIELD_VALIDATE_PARAMS,
 ];
 
-export const COUNTRIES = {
+export const PASSWORD_TEXT = {
+  HIDDEN: '********',
+  SHOWN: 'Password123',
+};
+
+export const COUNTRIES: Record<string, string> = {
   'Bonaire, Sint Eustatius and Saba': 'BQ',
   'Bosnia and Herzegovina': 'BA',
   Botswana: 'BW',

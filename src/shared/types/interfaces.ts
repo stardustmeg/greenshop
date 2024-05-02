@@ -57,4 +57,5 @@ export interface InputFieldValidatorParams {
     message: string;
     pattern: RegExp;
   } | null;
+  validPostalCode?: boolean;
 }

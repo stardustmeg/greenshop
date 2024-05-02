@@ -1,7 +1,7 @@
 import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types/interfaces.ts';
 
 import InputFieldValidatorModel from '@/features/InputFieldValidator/model/InputFieldValidatorModel.ts';
-import { EVENT_NAMES, INPUT_TYPES } from '@/shared/constants/enums.ts';
+import { EVENT_NAMES, INPUT_TYPES, PASSWORD_TEXT } from '@/shared/constants/enums.ts';
 
 import InputFieldView from '../view/InputFieldView.ts';
 
@@ -20,7 +20,7 @@ class InputFieldModel {
       this.setInputHandler();
     }
 
-    this.setShowPasswordHandler();
+    this.setSwitchPasswordVisibilityHandler();
   }
 
   private inputHandler(): boolean {
@@ -49,15 +49,16 @@ class InputFieldModel {
     return true;
   }
 
-  private setShowPasswordHandler(): boolean {
+  private setSwitchPasswordVisibilityHandler(): boolean {
     const button = this.view.getShowPasswordButton().getHTML();
-    button.addEventListener(EVENT_NAMES.CLICK, () => this.showPasswordHandler());
+    button.addEventListener(EVENT_NAMES.CLICK, () => this.switchPasswordVisibilityHandler());
     return true;
   }
 
-  private showPasswordHandler(): boolean {
+  private switchPasswordVisibilityHandler(): boolean {
     const input = this.view.getInput().getHTML();
     input.type = input.type === INPUT_TYPES.PASSWORD ? INPUT_TYPES.TEXT : INPUT_TYPES.PASSWORD;
+    input.placeholder = input.type === INPUT_TYPES.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
     this.view.switchPasswordButtonSVG(input.type);
     return true;
   }

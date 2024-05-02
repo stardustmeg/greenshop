@@ -9,12 +9,15 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    font: var(--regular-font);
+    letter-spacing: 1px;
+    color: var(--noble-gray-800);
     gap: calc(var(--extra-small-offset) / 2);
 
     button {
       position: absolute;
       right: 0;
-      top: 7px;
+      top: 34px;
       border-radius: var(--small-br);
       padding: calc(var(--extra-small-offset) / 8);
       width: 24px;
@@ -27,6 +30,14 @@
         height: 20px;
         stroke: var(--noble-gray-600);
         transition: stroke 0.2s;
+      }
+
+      &:focus {
+        background-color: var(--noble-gray-200);
+
+        svg {
+          stroke: var(--steam-green-800);
+        }
       }
 
       @media (hover: hover) {
@@ -42,7 +53,7 @@
 
     @media (max-width: 768px) {
       button {
-        top: 2px;
+        top: 24px;
       }
     }
   }
@@ -106,8 +117,11 @@
   }
 
   button {
+    grid-column: 2 span;
+    grid-row: 7;
     border-radius: var(--small-br);
     padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
+    max-height: 40px;
     font: var(--bold-font);
     letter-spacing: 1px;
     color: var(--white);
@@ -115,6 +129,11 @@
     transition:
       color 0.2s,
       background-color 0.2s;
+
+    @media (max-width: 768px) {
+      grid-column: 1;
+      grid-row: 11;
+    }
 
     @media (hover: hover) {
       &:hover {
@@ -130,7 +149,6 @@
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(1, 1fr);
-    grid-template-rows: repeat((auto, max-content));
   }
 }
 

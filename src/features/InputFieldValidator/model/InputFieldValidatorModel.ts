@@ -1,6 +1,8 @@
 import type { InputFieldValidatorParams } from '@/shared/types/interfaces';
 
+import getStore from '@/shared/Store/Store.ts';
 import { COUNTRIES } from '@/shared/constants/enums.ts';
+import { postcodeValidator } from 'postcode-validator';
 
 class InputFieldValidatorModel {
   private isValid: boolean;
@@ -110,6 +112,25 @@ class InputFieldValidatorModel {
     return true;
   }
 
+  private checkValidPostalCode(value: string): boolean | string {
+    if (this.validParams.validPostalCode) {
+      const { registerFormCountry } = getStore().getState();
+
+      try {
+        const result = postcodeValidator(value, registerFormCountry);
+        if (!result) {
+          const errorMessage = 'Invalid postal code';
+          return errorMessage;
+        }
+      } catch (error) {
+        const errorMessage = "Sorry, we don't deliver to your region yet";
+        return errorMessage;
+      }
+    }
+
+    return true;
+  }
+
   private checkWhitespace(value: string): boolean | string {
     if (this.validParams.notWhitespace && !this.validParams.notWhitespace.pattern.test(value)) {
       const errorMessage = this.validParams.notWhitespace.message;
@@ -132,6 +153,7 @@ class InputFieldValidatorModel {
       this.checkMinAge(value),
       this.checkMaxAge(value),
       this.checkValidCountry(value),
+      this.checkValidPostalCode(value),
     ];
 
     const errorMessages: string[] = [];

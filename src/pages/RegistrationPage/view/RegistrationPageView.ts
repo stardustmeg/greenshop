@@ -50,7 +50,7 @@ class RegistrationPageView {
 
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
-      cssClasses: [REGISTRATION_PAGE_STYLES.mainPage],
+      cssClasses: [REGISTRATION_PAGE_STYLES.registrationPage],
       tag: TAG_NAMES.DIV,
     });
 

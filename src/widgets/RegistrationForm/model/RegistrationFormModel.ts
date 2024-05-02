@@ -1,6 +1,9 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 
+import getStore from '@/shared/Store/Store.ts';
+import { setRegisterFormCountry } from '@/shared/Store/actions.ts';
 import { EVENT_NAMES, REGISTRATION_FORM_COUNTRY_FIELD_VALIDATE_PARAMS } from '@/shared/constants/enums.ts';
+import getCountryIndex from '@/shared/utils/getCountryIndex.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 import REGISTRATION_FORM_STYLES from '../view/registrationForm.module.scss';
@@ -31,6 +34,9 @@ class RegisterFormModel {
       currentItem.addEventListener(EVENT_NAMES.CLICK, () => {
         if (currentItem.textContent) {
           inputHTML.value = currentItem.textContent;
+          const store = getStore();
+          const currentCountryIndex = getCountryIndex(currentItem.textContent);
+          store.dispatch(setRegisterFormCountry(currentCountryIndex));
           const event = new Event(EVENT_NAMES.INPUT);
           inputHTML.dispatchEvent(event);
           this.view.hideCountryDropList();
