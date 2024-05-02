@@ -66,6 +66,7 @@ class LoginFormView {
       attrs: {
         type: BUTTON_TYPES.SUBMIT,
       },
+      classes: [LOGIN_FORM_STYLES.submitFormButton],
       text: FORM_SUBMIT_BUTTON_TEXT.LOGIN,
     });
 

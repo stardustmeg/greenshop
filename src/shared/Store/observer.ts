@@ -1,23 +1,23 @@
-import type { Action, State } from './reducer.ts';
-import type { ReduxStore } from './types';
+import type { UserInterface } from '../types/interfaces.ts';
+import type { State } from './reducer.ts';
 
-function observeStore<T>(
-  store: ReduxStore<State, Action>,
-  select: (state: State) => T,
-  onChange: (selectedState: T) => void,
-): VoidFunction {
-  let currentState = select(store.getState());
+import getStore from './Store.ts';
+
+function observeStore<T>(select: (state: State) => T, onChange: (selectedState: T) => void): VoidFunction {
+  let currentState = select(getStore().getState());
 
   function handleChange(): void {
-    const nextState = select(store.getState());
+    const nextState = select(getStore().getState());
     if (nextState !== currentState) {
       currentState = nextState;
       onChange(currentState);
     }
   }
 
-  const unsubscribe = store.subscribe(handleChange);
+  const unsubscribe = getStore().subscribe(handleChange);
   return unsubscribe;
 }
+
+export const selectCurrentUser = (state: State): UserInterface | null => state.currentUser;
 
 export default observeStore;

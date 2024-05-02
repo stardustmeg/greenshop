@@ -1,6 +1,8 @@
+import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { PageInterface } from '@/shared/types/interfaces.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
+import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
 import { MEDIATOR_EVENTS, PAGES_IDS } from '@/shared/constants/enums.ts';
 
 import MainPageView from '../view/MainPageView.ts';
@@ -8,19 +10,30 @@ import MainPageView from '../view/MainPageView.ts';
 class MainPageModel implements PageInterface {
   private eventMediator = EventMediatorModel.getInstance();
 
+  private router: RouterModel;
+
   private view: MainPageView;
 
-  constructor(parent: HTMLDivElement) {
+  constructor(parent: HTMLDivElement, router: RouterModel) {
+    this.router = router;
     this.view = new MainPageView(parent);
     this.init();
   }
 
   private init(): void {
     this.subscribeToEventMediator();
+    this.subscribeToStore();
   }
 
   private subscribeToEventMediator(): void {
     this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (route) => this.switchPageVisibility(route));
+  }
+
+  private subscribeToStore(): boolean {
+    observeStore(selectCurrentUser, () => {
+      this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
+    });
+    return true;
   }
 
   private switchPageVisibility(route: unknown): boolean {

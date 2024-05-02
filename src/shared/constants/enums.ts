@@ -121,15 +121,17 @@ export const MEDIATOR_EVENTS = {
   CHANGE_PAGE: 'changePage',
 } as const;
 
+export const LOGIN_FORM_KEY = 'login_';
+
 export const LOGIN_FORM_EMAIL_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
-    id: 'login_email',
+    id: `${LOGIN_FORM_KEY}email`,
     placeholder: 'user@example.com',
     type: 'text',
   },
   labelParams: {
-    for: 'login_email',
+    for: `${LOGIN_FORM_KEY}email`,
     text: '',
   },
 } as const;
@@ -137,12 +139,12 @@ export const LOGIN_FORM_EMAIL_FIELD_PARAMS = {
 export const LOGIN_FORM_PASSWORD_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
-    id: 'login_password',
+    id: `${LOGIN_FORM_KEY}password`,
     placeholder: '***********',
     type: 'password',
   },
   labelParams: {
-    for: 'login_password',
+    for: `${LOGIN_FORM_KEY}password`,
     text: '',
   },
 } as const;
@@ -150,7 +152,7 @@ export const LOGIN_FORM_PASSWORD_FIELD_PARAMS = {
 export const LOGIN_FORM_INPUT_FIELD_PARAMS = [LOGIN_FORM_EMAIL_FIELD_PARAMS, LOGIN_FORM_PASSWORD_FIELD_PARAMS];
 
 const LOGIN_FORM_EMAIL_FIELD_VALIDATE_PARAMS = {
-  key: 'login_email',
+  key: `${LOGIN_FORM_KEY}email`,
   notWhitespace: {
     message: 'Email must not contain whitespaces',
     pattern: /^\S+$/,
@@ -163,7 +165,7 @@ const LOGIN_FORM_EMAIL_FIELD_VALIDATE_PARAMS = {
 } as const;
 
 const LOGIN_FORM_PASSWORD_FIELD_VALIDATE_PARAMS = {
-  key: 'login_password',
+  key: `${LOGIN_FORM_KEY}password`,
   minLength: 8,
   notWhitespace: {
     message: 'Password must not contain whitespaces',
@@ -202,6 +204,8 @@ export const PAGE_DESCRIPTION = {
   LOGIN: 'Enter your email and password to login.',
   REGISTRATION: 'Enter your information to register.',
 } as const;
+
+export const REGISTRATION_FORM_KEY = 'registration_';
 
 export const REGISTRATION_FORM_EMAIL_FIELD_PARAMS = {
   inputParams: {
@@ -669,3 +673,17 @@ export const COUNTRIES: Record<string, string> = {
   Zambia: 'ZM',
   Zimbabwe: 'ZW',
 } as const;
+
+const ERROR_MESSAGE_ANIMATE_PARAMS = [
+  { transform: 'translateX(110%)' },
+  { transform: 'translateX(-10%)' },
+  { transform: 'translateX(-10%)' },
+  { opacity: 1, transform: 'translateX(-10%)' },
+  { opacity: 0, transform: 'translate(-10%, -110%)' },
+];
+
+export const ERROR_MESSAGE_ANIMATE_DETAILS = {
+  duration: 5500,
+  easing: 'cubic-bezier(0, 0.2, 0.58, 0.7)',
+  params: ERROR_MESSAGE_ANIMATE_PARAMS,
+};

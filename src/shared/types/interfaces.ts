@@ -84,3 +84,8 @@ export interface InputFieldValidatorParams {
   } | null;
   validPostalCode?: boolean;
 }
+
+export interface UserLoginData {
+  email: string;
+  password: string;
+}

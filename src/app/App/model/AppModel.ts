@@ -21,7 +21,7 @@ class AppModel {
   private initPages(): Map<string, PageInterface> {
     const root = this.getHTML();
     const loginPage = new LoginPageModel(root, this.router);
-    const mainPage = new MainPageModel(root);
+    const mainPage = new MainPageModel(root, this.router);
     const registrationPage = new RegistrationPageModel(root, this.router);
     const notFoundPage = new NotFoundPageModel(root);
     const pages: Map<string, PageInterface> = new Map(
