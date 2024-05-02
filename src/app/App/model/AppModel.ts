@@ -23,7 +23,7 @@ class AppModel {
     const loginPage = new LoginPageModel(root, this.router);
     const mainPage = new MainPageModel(root, this.router);
     const registrationPage = new RegistrationPageModel(root, this.router);
-    const notFoundPage = new NotFoundPageModel(root);
+    const notFoundPage = new NotFoundPageModel(root, this.router);
     const pages: Map<string, PageInterface> = new Map(
       Object.entries({
         [PAGES_IDS.DEFAULT_PAGE]: mainPage,
