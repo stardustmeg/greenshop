@@ -1,6 +1,11 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
+import type { UserLoginData } from '@/shared/types/interfaces.ts';
 
-import { EVENT_NAMES } from '@/shared/constants/enums.ts';
+import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
+import getStore from '@/shared/Store/Store.ts';
+import { setCurrentUser } from '@/shared/Store/actions.ts';
+import { EVENT_NAMES, LOGIN_FORM_KEY } from '@/shared/constants/enums.ts';
+import isKeyOfLoginData from '@/shared/utils/isKeyOfLoginData.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
 
@@ -9,16 +14,42 @@ class LoginFormModel {
 
   private isValidInputFields: Record<string, boolean> = {};
 
+  private userData: UserLoginData = {
+    email: '',
+    password: '',
+  };
+
   private view: LoginFormView = new LoginFormView();
 
   constructor() {
     this.init();
   }
 
+  private getFormData(): UserLoginData {
+    this.inputFields.forEach((inputField) => {
+      const input = inputField.getView().getInput();
+      const inputHTML = input.getHTML();
+      const inputValue = input.getValue();
+
+      const key = inputHTML.id.replace(LOGIN_FORM_KEY, '');
+
+      if (isKeyOfLoginData(this.userData, key)) {
+        this.userData[key] = inputValue;
+        this.isValidInputFields[inputHTML.id] = false;
+      }
+
+      input.clear();
+    });
+
+    this.view.getSubmitFormButton().setDisabled();
+    return this.userData;
+  }
+
   private init(): boolean {
     this.inputFields = this.view.getInputFields();
     this.inputFields.forEach((inputField) => this.setInputFieldHandlers(inputField));
     this.setPreventDefaultToForm();
+    this.setSubmitFormHandler();
 
     return true;
   }
@@ -41,9 +72,25 @@ class LoginFormModel {
     return true;
   }
 
+  private setSubmitFormHandler(): boolean {
+    const submitButton = this.view.getSubmitFormButton().getHTML();
+    submitButton.addEventListener(EVENT_NAMES.CLICK, () => {
+      const formData = this.getFormData();
+      const customerModel = getCustomerModel();
+      customerModel
+        .authCustomer(formData)
+        .then((data) => {
+          getStore().dispatch(setCurrentUser(data));
+        })
+        .catch(() => {});
+    });
+    return true;
+  }
+
   private switchSubmitFormButtonAccess(): boolean {
     if (Object.values(this.isValidInputFields).every((value) => value)) {
       this.view.getSubmitFormButton().setEnabled();
+      this.view.getSubmitFormButton().getHTML().focus();
     } else {
       this.view.getSubmitFormButton().setDisabled();
     }

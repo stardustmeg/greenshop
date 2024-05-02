@@ -1,4 +1,4 @@
-import type { AddressInterface, UserInterface } from '@/shared/types/interfaces.ts';
+import type { AddressInterface, UserInterface, UserLoginData } from '@/shared/types/interfaces.ts';
 import type {
   BaseAddress,
   ClientResponse,
@@ -101,15 +101,11 @@ export class CustomerModel {
 
     if (data.defaultBillingAddressId) {
       const address = adaptedCustomer.addresses.find((address) => address.id === data.defaultBillingAddressId);
-      if (address) {
-        adaptedCustomer.defaultBillingAddressId = address;
-      }
+      adaptedCustomer.defaultBillingAddressId = address || null;
     }
     if (data.defaultShippingAddressId) {
       const address = adaptedCustomer.addresses.find((address) => address.id === data.defaultShippingAddressId);
-      if (address) {
-        adaptedCustomer.defaultShippingAddressId = address;
-      }
+      adaptedCustomer.defaultShippingAddressId = address || null;
     }
     return adaptedCustomer;
   }
@@ -167,8 +163,8 @@ export class CustomerModel {
     return customer;
   }
 
-  public async authCustomer(email: string, password: string): Promise<UserInterface | null> {
-    const data = await this.root.authenticateUser(email, password);
+  public async authCustomer(userLoginData: UserLoginData): Promise<UserInterface | null> {
+    const data = await this.root.authenticateUser(userLoginData);
     return this.getCustomerFromData(data);
   }
 

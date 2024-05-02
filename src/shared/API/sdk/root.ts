@@ -1,3 +1,5 @@
+import type { UserLoginData } from '@/shared/types/interfaces.ts';
+
 import {
   type ByProjectKeyRequestBuilder,
   type CategoryPagedQueryResponse,
@@ -56,15 +58,8 @@ export class RootApi {
     return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
   }
 
-  public async authenticateUser(
-    email: string,
-    password: string,
-  ): Promise<ClientResponse<CustomerSignInResult> | Error> {
-    const data = await this.connection
-      .login()
-      .post({ body: { email, password } })
-      .execute()
-      .catch((err: Error) => err);
+  public async authenticateUser(userLoginData: UserLoginData): Promise<ClientResponse<CustomerSignInResult> | Error> {
+    const data = await this.connection.login().post({ body: userLoginData }).execute();
     return data;
   }
 
