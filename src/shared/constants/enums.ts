@@ -190,6 +190,7 @@ export const FORM_SUBMIT_BUTTON_TEXT = {
 
 export const SVG_DETAILS = {
   CLOSE_EYE: 'closeEye',
+  LOGO: 'logo',
   OPEN_EYE: 'openEye',
   SVG_URL: 'http://www.w3.org/2000/svg',
 } as const;
@@ -201,6 +202,7 @@ export const PAGE_LINK_TEXT = {
 } as const;
 
 export const PAGE_DESCRIPTION = {
+  404: 'This is not the page you are looking for. Please go back to the main page.',
   LOGIN: 'Enter your email and password to login.',
   REGISTRATION: 'Enter your information to register.',
 } as const;
