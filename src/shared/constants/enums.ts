@@ -200,7 +200,7 @@ export const PAGE_LINK_TEXT = {
 
 export const PAGE_DESCRIPTION = {
   LOGIN: 'Enter your email and password to login.',
-  REGISTRATION: 'Enter your email and password to register.',
+  REGISTRATION: 'Enter your information to register.',
 } as const;
 
 export const REGISTRATION_FORM_EMAIL_FIELD_PARAMS = {
