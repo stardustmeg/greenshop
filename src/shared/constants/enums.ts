@@ -36,8 +36,10 @@ export type MessageStatusType = (typeof MESSAGE_STATUS)[keyof typeof MESSAGE_STA
 
 export const SERVER_MESSAGE = {
   INCORRECT_LOGIN: 'Incorrect login or password',
+  INCORRECT_REGISTRATION: 'User with this email already exists, please check your email',
   SUCCESSFUL_LOGIN: 'Your login was successful',
-};
+  SUCCESSFUL_REGISTRATION: 'Your registration was successful',
+} as const;
 
 export const TAG_NAMES = {
   A: 'a',
@@ -203,6 +205,7 @@ export const FORM_SUBMIT_BUTTON_TEXT = {
 export const SVG_DETAILS = {
   CLOSE_EYE: 'closeEye',
   OPEN_EYE: 'openEye',
+
   SVG_URL: 'http://www.w3.org/2000/svg',
 } as const;
 

@@ -89,3 +89,13 @@ export interface UserLoginData {
   email: string;
   password: string;
 }
+
+export interface UserRegisterData extends UserLoginData {
+  address: string;
+  birthDate: number;
+  city: string;
+  country: string;
+  firstName: string;
+  lastName: string;
+  postalCode: string;
+}

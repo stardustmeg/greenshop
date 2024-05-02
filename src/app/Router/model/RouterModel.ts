@@ -19,7 +19,6 @@ class RouterModel {
         .slice(PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
         .join(DEFAULT_SEGMENT);
       this.handleRequest(currentPath);
-      this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, currentPath.split(DEFAULT_SEGMENT).join());
     });
 
     window.addEventListener(EVENT_NAMES.POPSTATE, () => {
@@ -35,10 +34,9 @@ class RouterModel {
     const pathParts = path.split(DEFAULT_SEGMENT);
     const hasRoute = this.pages.has(pathParts.join(''));
     if (!hasRoute) {
-      window.location.pathname = PAGES_IDS.NOT_FOUND_PAGE;
+      this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, PAGES_IDS.NOT_FOUND_PAGE);
       return null;
     }
-
     this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, pathParts.join(''));
     return pathParts.join('');
   }
