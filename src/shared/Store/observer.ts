@@ -8,7 +8,7 @@ function observeStore<T>(select: (state: State) => T, onChange: (selectedState: 
 
   function handleChange(): void {
     const nextState = select(getStore().getState());
-    if (nextState !== currentState) {
+    if (JSON.stringify(nextState) !== JSON.stringify(currentState)) {
       currentState = nextState;
       onChange(currentState);
     }
@@ -19,5 +19,7 @@ function observeStore<T>(select: (state: State) => T, onChange: (selectedState: 
 }
 
 export const selectCurrentUser = (state: State): UserInterface | null => state.currentUser;
+
+export const selectRegisterFormCountry = (state: State): string => state.registerFormCountry;
 
 export default observeStore;

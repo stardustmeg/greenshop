@@ -1,22 +1,27 @@
-.errorMessageWrapper {
+.serverMessageWrapper {
   position: fixed;
   right: 0;
   top: 50%;
+  z-index: 1000;
   border: 2px solid var(--steam-green-800);
   border-top: 10px solid var(--steam-green-800);
   border-radius: var(--medium-br);
   padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
   max-width: 200px;
-  background-color: var(--white);
-  transform: translate(110%, -50%);
-}
-
-.errorMessage {
-  display: block;
   font: var(--regular-font);
   letter-spacing: 1px;
   word-break: break-word;
   text-align: center;
-  text-transform: capitalize;
+  background-color: var(--white);
+  transform: translate(110%, -50%);
+}
+
+.error {
+  border-color: var(--red-power-600);
+  color: var(--red-power-600);
+}
+
+.success {
+  border-color: var(--steam-green-800);
   color: var(--steam-green-800);
 }

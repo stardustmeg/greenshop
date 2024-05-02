@@ -27,6 +27,20 @@ export const IS_DISABLED = {
   ENABLED: false,
 } as const;
 
+export const MESSAGE_STATUS = {
+  ERROR: 'error',
+  SUCCESS: 'success',
+} as const;
+
+export type MessageStatusType = (typeof MESSAGE_STATUS)[keyof typeof MESSAGE_STATUS];
+
+export const SERVER_MESSAGE = {
+  INCORRECT_LOGIN: 'Incorrect login or password',
+  INCORRECT_REGISTRATION: 'User with this email already exists, please check your email',
+  SUCCESSFUL_LOGIN: 'Your login was successful',
+  SUCCESSFUL_REGISTRATION: 'Your registration was successful',
+} as const;
+
 export const TAG_NAMES = {
   A: 'a',
   ADDRESS: 'address',
@@ -192,6 +206,7 @@ export const SVG_DETAILS = {
   CLOSE_EYE: 'closeEye',
   LOGO: 'logo',
   OPEN_EYE: 'openEye',
+
   SVG_URL: 'http://www.w3.org/2000/svg',
 } as const;
 
@@ -264,13 +279,13 @@ export const REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS = {
 export const REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
-    id: 'birthday',
+    id: 'birthDate',
     lang: 'en',
     placeholder: '01.01.2000',
     type: 'date',
   },
   labelParams: {
-    for: 'birthday',
+    for: 'birthDate',
     text: 'Date of Birth',
   },
 } as const;
@@ -278,12 +293,12 @@ export const REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS = {
 export const REGISTRATION_FORM_STREET_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
-    id: 'street',
+    id: 'address',
     placeholder: '595 Hornby St. 5th Floor',
     type: 'text',
   },
   labelParams: {
-    for: 'street',
+    for: 'address',
     text: 'Address',
   },
 } as const;
@@ -395,7 +410,7 @@ const REGISTRATION_FORM_LAST_NAME_FIELD_VALIDATE_PARAMS = {
 } as const;
 
 const REGISTRATION_FORM_BIRTHDAY_FIELD_VALIDATE_PARAMS = {
-  key: 'birthday',
+  key: 'birthDate',
   required: true,
   validBirthday: {
     maxAge: 120,
@@ -406,7 +421,7 @@ const REGISTRATION_FORM_BIRTHDAY_FIELD_VALIDATE_PARAMS = {
 } as const;
 
 export const REGISTRATION_FORM_STREET_FIELD_VALIDATE_PARAMS = {
-  key: 'street',
+  key: 'address',
   minLength: 1,
   required: true,
 };
@@ -676,7 +691,7 @@ export const COUNTRIES: Record<string, string> = {
   Zimbabwe: 'ZW',
 } as const;
 
-const ERROR_MESSAGE_ANIMATE_PARAMS = [
+const SERVER_MESSAGE_ANIMATE_PARAMS = [
   { transform: 'translateX(110%)' },
   { transform: 'translateX(-10%)' },
   { transform: 'translateX(-10%)' },
@@ -684,8 +699,8 @@ const ERROR_MESSAGE_ANIMATE_PARAMS = [
   { opacity: 0, transform: 'translate(-10%, -110%)' },
 ];
 
-export const ERROR_MESSAGE_ANIMATE_DETAILS = {
+export const SERVER_MESSAGE_ANIMATE_DETAILS = {
   duration: 5500,
   easing: 'cubic-bezier(0, 0.2, 0.58, 0.7)',
-  params: ERROR_MESSAGE_ANIMATE_PARAMS,
+  params: SERVER_MESSAGE_ANIMATE_PARAMS,
 };
