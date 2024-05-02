@@ -7,3 +7,88 @@
     display: none;
   }
 }
+
+.authWrapper {
+  margin: 0 auto;
+  border-bottom: 10px solid var(--steam-green-800);
+  padding: calc(var(--large-offset) / 2) var(--small-offset);
+  max-width: 500px;
+  background-color: var(--white);
+}
+
+.linksWrapper {
+  position: relative;
+  display: flex;
+  align-self: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  margin-bottom: calc(var(--large-offset) / 2);
+  margin-left: 35%;
+  max-width: 160px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: calc(50% - 3px);
+    top: 50%;
+    width: 3px;
+    height: 16px;
+    background-color: var(--noble-gray-800);
+    transform: translate(calc(-50% - 14px), -50%);
+  }
+
+  @media (max-width: 768px) {
+    margin: 0 auto;
+    margin-bottom: calc(var(--large-offset) / 2);
+  }
+}
+
+.loginLink,
+.registerSpan {
+  font: var(--medium-font);
+  letter-spacing: 1px;
+}
+
+.registerSpan {
+  color: var(--steam-green-800);
+}
+
+.loginLink {
+  position: relative;
+  color: var(--noble-gray-800);
+  transition: color 0.2s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 2px;
+    background-color: currentcolor;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition:
+      transform 0.2s,
+      opacity 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--steam-green-800);
+
+      &::after {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
+.authDescription {
+  margin-bottom: var(--extra-small-offset);
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  text-align: center;
+}

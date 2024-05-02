@@ -1,5 +1,9 @@
 import type { InputFieldValidatorParams } from '@/shared/types/interfaces';
 
+import getStore from '@/shared/Store/Store.ts';
+import { COUNTRIES } from '@/shared/constants/enums.ts';
+import { postcodeValidator } from 'postcode-validator';
+
 class InputFieldValidatorModel {
   private isValid: boolean;
 
@@ -10,9 +14,33 @@ class InputFieldValidatorModel {
     this.isValid = isValid;
   }
 
+  private checkMaxAge(value: string): boolean | string {
+    const today = new Date();
+    const birthDate = new Date(value);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    if (this.validParams.validBirthday && age > this.validParams.validBirthday.maxAge) {
+      const errorMessage = `You must be at most ${this.validParams.validBirthday.maxAge} years old`;
+      return errorMessage;
+    }
+
+    return true;
+  }
+
   private checkMaxLength(value: string): boolean | string {
     if (this.validParams.maxLength && value.length > this.validParams.maxLength) {
       const errorMessage = `Max length should not exceed ${this.validParams.maxLength}`;
+      return errorMessage;
+    }
+
+    return true;
+  }
+
+  private checkMinAge(value: string): boolean | string {
+    const today = new Date();
+    const birthDate = new Date(value);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    if (this.validParams.validBirthday && age < this.validParams.validBirthday.minAge) {
+      const errorMessage = `You must be at least ${this.validParams.validBirthday.minAge} years old`;
       return errorMessage;
     }
 
@@ -55,6 +83,26 @@ class InputFieldValidatorModel {
     return true;
   }
 
+  private checkValidAge(value: string): boolean | string {
+    if (this.validParams.validBirthday && !this.validParams.validBirthday.pattern.test(value)) {
+      const errorMessage = this.validParams.validBirthday.message;
+      return errorMessage;
+    }
+
+    return true;
+  }
+
+  private checkValidCountry(value: string): boolean | string {
+    if (this.validParams.validCountry) {
+      if (!Object.keys(COUNTRIES).find((countryCode) => countryCode === value)) {
+        const errorMessage = 'Invalid country';
+        return errorMessage;
+      }
+    }
+
+    return true;
+  }
+
   private checkValidMail(value: string): boolean | string {
     if (this.validParams.validMail && !this.validParams.validMail.pattern.test(value)) {
       const errorMessage = this.validParams.validMail.message;
@@ -64,8 +112,27 @@ class InputFieldValidatorModel {
     return true;
   }
 
+  private checkValidPostalCode(value: string): boolean | string {
+    if (this.validParams.validPostalCode) {
+      const { registerFormCountry } = getStore().getState();
+
+      try {
+        const result = postcodeValidator(value, registerFormCountry);
+        if (!result) {
+          const errorMessage = 'Invalid postal code';
+          return errorMessage;
+        }
+      } catch (error) {
+        const errorMessage = "Sorry, we don't deliver to your region yet";
+        return errorMessage;
+      }
+    }
+
+    return true;
+  }
+
   private checkWhitespace(value: string): boolean | string {
-    if (this.validParams.notWhitespace && !this.validParams.notWhitespace.pattern.test(value) && value.trim() !== '') {
+    if (this.validParams.notWhitespace && !this.validParams.notWhitespace.pattern.test(value)) {
       const errorMessage = this.validParams.notWhitespace.message;
       return errorMessage;
     }
@@ -82,6 +149,11 @@ class InputFieldValidatorModel {
       this.checkMaxLength(value),
       this.checkRequiredSymbols(value),
       this.checkValidMail(value),
+      this.checkValidAge(value),
+      this.checkMinAge(value),
+      this.checkMaxAge(value),
+      this.checkValidCountry(value),
+      this.checkValidPostalCode(value),
     ];
 
     const errorMessages: string[] = [];

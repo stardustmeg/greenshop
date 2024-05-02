@@ -12,6 +12,10 @@ class MainPageModel implements PageInterface {
 
   constructor(parent: HTMLDivElement) {
     this.view = new MainPageView(parent);
+    this.init();
+  }
+
+  private init(): void {
     this.subscribeToEventMediator();
   }
 

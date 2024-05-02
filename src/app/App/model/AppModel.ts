@@ -22,7 +22,7 @@ class AppModel {
     const root = this.getHTML();
     const loginPage = new LoginPageModel(root, this.router);
     const mainPage = new MainPageModel(root);
-    const registrationPage = new RegistrationPageModel(root);
+    const registrationPage = new RegistrationPageModel(root, this.router);
     const notFoundPage = new NotFoundPageModel(root);
     const pages: Map<string, PageInterface> = new Map(
       Object.entries({

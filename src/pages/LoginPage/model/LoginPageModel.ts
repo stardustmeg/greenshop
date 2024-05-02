@@ -45,6 +45,7 @@ class LoginPageModel implements PageInterface {
   private switchPageVisibility(route: unknown): boolean {
     if (route === PAGES_IDS.LOGIN_PAGE) {
       this.view.show();
+      this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
     } else {
       this.view.hide();
       return false;
