@@ -5,11 +5,8 @@
 import type { Action, State } from './reducer.ts';
 import type { Reducer, ReduxStore } from './types';
 
+import { initialState } from '../constants/enums.ts';
 import { rootReducer } from './reducer.ts';
-
-const initialState: State = {
-  currentUser: null,
-};
 
 export class Store<S, A> implements ReduxStore<S, A> {
   private listeners: VoidFunction[] = [];

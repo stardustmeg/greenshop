@@ -4,6 +4,7 @@ import type { Reducer } from './types.ts';
 
 export interface State {
   currentUser: null | string;
+  registerFormCountry: string;
 }
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
@@ -15,6 +16,11 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         currentUser: action.payload,
+      };
+    case 'setRegisterFormCountry':
+      return {
+        ...state,
+        registerFormCountry: action.payload,
       };
     default:
       return state;
