@@ -673,3 +673,17 @@ export const COUNTRIES: Record<string, string> = {
   Zambia: 'ZM',
   Zimbabwe: 'ZW',
 } as const;
+
+const ERROR_MESSAGE_ANIMATE_PARAMS = [
+  { transform: 'translateX(110%)' },
+  { transform: 'translateX(-10%)' },
+  { transform: 'translateX(-10%)' },
+  { opacity: 1, transform: 'translateX(-10%)' },
+  { opacity: 0, transform: 'translate(-10%, -110%)' },
+];
+
+export const ERROR_MESSAGE_ANIMATE_DETAILS = {
+  duration: 5500,
+  easing: 'cubic-bezier(0, 0.2, 0.58, 0.7)',
+  params: ERROR_MESSAGE_ANIMATE_PARAMS,
+};

@@ -11,6 +11,7 @@
 .authWrapper {
   margin: 0 auto;
   border-bottom: 10px solid var(--steam-green-800);
+  border-radius: var(--medium-br);
   padding: calc(var(--extra-large-offset) / 2) var(--extra-large-offset);
   max-width: 500px;
   background-color: var(--white);
