@@ -1,4 +1,4 @@
-import type { AddressInterface, UserInterface, UserLoginData } from '@/shared/types/interfaces.ts';
+import type { AddressInterface, UserInterface, UserLoginData, UserRegisterData } from '@/shared/types/interfaces.ts';
 import type {
   BaseAddress,
   ClientResponse,
@@ -173,8 +173,8 @@ export class CustomerModel {
     return this.getCustomerFromData(data);
   }
 
-  public async registrationNewCustomer(email: string, password: string): Promise<UserInterface | null> {
-    const data = await this.root.registrationUser(email, password);
+  public async registrationNewCustomer(userRegisterData: UserRegisterData): Promise<UserInterface | null> {
+    const data = await this.root.registrationUser(userRegisterData);
     return this.getCustomerFromData(data);
   }
 }
