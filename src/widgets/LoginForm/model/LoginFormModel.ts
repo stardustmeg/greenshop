@@ -2,6 +2,7 @@ import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts
 import type { UserLoginData } from '@/shared/types/interfaces.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
+import errorMessageModel from '@/shared/ErrorMessage/model/ErrorMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
 import { EVENT_NAMES, LOGIN_FORM_KEY } from '@/shared/constants/enums.ts';
@@ -82,7 +83,10 @@ class LoginFormModel {
         .then((data) => {
           getStore().dispatch(setCurrentUser(data));
         })
-        .catch(() => {});
+        .catch(() => {
+          // TBD: fix error message
+          errorMessageModel.showErrorMessage('Incorrect email or password');
+        });
     });
     return true;
   }
