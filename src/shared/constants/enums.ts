@@ -277,13 +277,13 @@ export const REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS = {
 export const REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
-    id: 'birthday',
+    id: 'birthDate',
     lang: 'en',
     placeholder: '01.01.2000',
     type: 'date',
   },
   labelParams: {
-    for: 'birthday',
+    for: 'birthDate',
     text: 'Date of Birth',
   },
 } as const;
@@ -291,12 +291,12 @@ export const REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS = {
 export const REGISTRATION_FORM_STREET_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
-    id: 'street',
+    id: 'address',
     placeholder: '595 Hornby St. 5th Floor',
     type: 'text',
   },
   labelParams: {
-    for: 'street',
+    for: 'address',
     text: 'Address',
   },
 } as const;
@@ -408,7 +408,7 @@ const REGISTRATION_FORM_LAST_NAME_FIELD_VALIDATE_PARAMS = {
 } as const;
 
 const REGISTRATION_FORM_BIRTHDAY_FIELD_VALIDATE_PARAMS = {
-  key: 'birthday',
+  key: 'birthDate',
   required: true,
   validBirthday: {
     maxAge: 120,
@@ -419,7 +419,7 @@ const REGISTRATION_FORM_BIRTHDAY_FIELD_VALIDATE_PARAMS = {
 } as const;
 
 export const REGISTRATION_FORM_STREET_FIELD_VALIDATE_PARAMS = {
-  key: 'street',
+  key: 'address',
   minLength: 1,
   required: true,
 };
