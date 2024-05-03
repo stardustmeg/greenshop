@@ -1,9 +1,14 @@
+import type { InputParams } from '@/shared/types/interfaces';
+
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import {
   BUTTON_TYPES,
+  CHECKBOX_PARAMS,
   FORM_SUBMIT_BUTTON_TEXT,
+  FORM_TEXT,
+  INPUT_TYPES,
   REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS,
   REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS,
   REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
@@ -29,6 +34,10 @@ import REGISTRATION_FORM_STYLES from './registrationForm.module.scss';
 class RegistrationFormView {
   private billingAddressWrapper: HTMLDivElement;
 
+  private checkboxDefaultBillingAddress: InputModel;
+
+  private checkboxDefaultShippingAddress: InputModel;
+
   private credentialsWrapper: HTMLDivElement;
 
   private form: HTMLFormElement;
@@ -45,7 +54,9 @@ class RegistrationFormView {
     this.inputFields = this.createInputFields();
     this.credentialsWrapper = this.createCredentialsWrapper();
     this.personalDataWrapper = this.createPersonalDataWrapper();
+    this.checkboxDefaultShippingAddress = this.createCheckboxDefaultShippingAddress();
     this.shippingAddressWrapper = this.createShippingAddressWrapper();
+    this.checkboxDefaultBillingAddress = this.createCheckboxDefaultBillingAddress();
     this.billingAddressWrapper = this.createBillingAddressWrapper();
     this.submitFormButton = this.createSubmitFormButton();
     this.form = this.createHTML();
@@ -71,7 +82,44 @@ class RegistrationFormView {
       filteredInputFields,
     );
 
+    const checkBoxLabel = createBaseElement({
+      cssClasses: [REGISTRATION_FORM_STYLES.checkboxLabel],
+      tag: TAG_NAMES.LABEL,
+    });
+
+    const checkBoxText = createBaseElement({
+      cssClasses: [REGISTRATION_FORM_STYLES.checkboxText],
+      innerContent: FORM_TEXT.DEFAULT_ADDRESS,
+      tag: TAG_NAMES.SPAN,
+    });
+
+    checkBoxLabel.append(checkBoxText, this.checkboxDefaultBillingAddress.getHTML());
+
+    this.billingAddressWrapper.append(checkBoxLabel);
+
     return this.billingAddressWrapper;
+  }
+
+  private createCheckboxDefaultBillingAddress(): InputModel {
+    const checkboxParams: InputParams = {
+      autocomplete: CHECKBOX_PARAMS.AUTOCOMPLETE,
+      id: CHECKBOX_PARAMS.BILLING_ID,
+      placeholder: '',
+      type: INPUT_TYPES.CHECK_BOX,
+    };
+    this.checkboxDefaultBillingAddress = new InputModel(checkboxParams);
+    return this.checkboxDefaultBillingAddress;
+  }
+
+  private createCheckboxDefaultShippingAddress(): InputModel {
+    const checkboxParams: InputParams = {
+      autocomplete: CHECKBOX_PARAMS.AUTOCOMPLETE,
+      id: CHECKBOX_PARAMS.SHIPPING_ID,
+      placeholder: '',
+      type: INPUT_TYPES.CHECK_BOX,
+    };
+    this.checkboxDefaultShippingAddress = new InputModel(checkboxParams);
+    return this.checkboxDefaultShippingAddress;
   }
 
   private createCredentialsWrapper(): HTMLDivElement {
@@ -161,6 +209,21 @@ class RegistrationFormView {
       [REGISTRATION_FORM_STYLES.shippingAddressWrapper],
       filteredInputFields,
     );
+
+    const checkBoxLabel = createBaseElement({
+      cssClasses: [REGISTRATION_FORM_STYLES.checkboxLabel],
+      tag: TAG_NAMES.LABEL,
+    });
+
+    const checkBoxText = createBaseElement({
+      cssClasses: [REGISTRATION_FORM_STYLES.checkboxText],
+      innerContent: FORM_TEXT.DEFAULT_ADDRESS,
+      tag: TAG_NAMES.SPAN,
+    });
+
+    checkBoxLabel.append(checkBoxText, this.checkboxDefaultShippingAddress.getHTML());
+
+    this.shippingAddressWrapper.append(checkBoxLabel);
 
     return this.shippingAddressWrapper;
   }

@@ -7,6 +7,7 @@ export const initialState: State = {
 };
 
 export const INPUT_TYPES = {
+  CHECK_BOX: 'checkbox',
   COLOR: 'color',
   DATE: 'date',
   EMAIL: 'email',
@@ -27,6 +28,10 @@ export const IS_DISABLED = {
   DISABLED: true,
   ENABLED: false,
 } as const;
+
+export const FORM_TEXT = {
+  DEFAULT_ADDRESS: 'Use as default address',
+};
 
 export const MESSAGE_STATUS = {
   ERROR: 'error',
@@ -796,3 +801,9 @@ export const SERVER_MESSAGE_ANIMATE_DETAILS = {
   easing: 'cubic-bezier(0, 0.2, 0.58, 0.7)',
   params: SERVER_MESSAGE_ANIMATE_PARAMS,
 };
+
+export const CHECKBOX_PARAMS = {
+  AUTOCOMPLETE: 'off',
+  BILLING_ID: 'billingDefault',
+  SHIPPING_ID: 'shippingDefault',
+} as const;

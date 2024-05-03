@@ -5,6 +5,34 @@
   margin: 0 auto;
   gap: var(--extra-small-offset);
 
+  .checkboxLabel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: calc(var(--extra-small-offset) / 4);
+
+    input {
+      cursor: pointer;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        .checkboxText {
+          color: var(--steam-green-800);
+        }
+      }
+    }
+  }
+
+  .checkboxText {
+    font: var(--regular-font);
+    letter-spacing: 1px;
+    color: var(--noble-gray-800);
+    transition: color 0.2s;
+  }
+
   label {
     position: relative;
     display: flex;
