@@ -1,0 +1,109 @@
+.countryChoice {
+  position: sticky;
+  z-index: 5;
+  grid-column: 1;
+  grid-row: 4;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+    grid-row: 5;
+  }
+}
+
+.countryItem {
+  padding: calc(var(--extra-small-offset) / 4) calc(var(--extra-small-offset) / 2);
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  text-align: end;
+  color: var(--noble-gray-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+  animation: show 0.5s ease-in forwards;
+  cursor: pointer;
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--steam-green-800);
+      background-color: var(--noble-gray-200);
+    }
+  }
+
+  @media (max-width: 768px) {
+    text-align: start;
+  }
+
+  &.hidden {
+    animation: hide 0.5s ease-in forwards;
+  }
+}
+
+@keyframes hide {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  50% {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    display: none;
+  }
+}
+
+@keyframes show {
+  0% {
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.countryDropList {
+  position: absolute;
+  right: 0;
+  overflow-y: scroll;
+  border: 1px solid var(--noble-gray-300);
+  border-radius: var(--small-br);
+  width: 100%;
+  min-height: 200px;
+  max-height: 200px;
+  background-color: var(--white);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--noble-gray-200);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: var(--small-br);
+    background-color: var(--steam-green-800);
+    cursor: pointer;
+  }
+}
+
+.stopScroll {
+  overflow-y: hidden;
+}
