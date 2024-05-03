@@ -21,14 +21,6 @@ class RouterModel {
         .join(DEFAULT_SEGMENT);
       this.handleRequest(currentPath);
     });
-
-    window.addEventListener(EVENT_NAME.POPSTATE, () => {
-      const currentPath = window.location.pathname
-        .split(DEFAULT_SEGMENT)
-        .slice(PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
-        .join(DEFAULT_SEGMENT);
-      this.handleRequest(currentPath);
-    });
   }
 
   private handleRequest(path: string): null | string {
@@ -44,19 +36,16 @@ class RouterModel {
 
   public navigateTo(route: string): History {
     if (this.pages.has(route)) {
-      window.location.pathname = route;
+      const pathnameApp = window.location.pathname
+        .split(DEFAULT_SEGMENT)
+        .slice(NEXT_SEGMENT, PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
+        .join(DEFAULT_SEGMENT);
+      const url = `${pathnameApp}/${route}`;
+
+      history.pushState(route, '', url);
+
+      this.eventMediator.notify(MEDIATOR_EVENT.CHANGE_PAGE, route);
     }
-
-    this.handleRequest(route);
-
-    const pathnameApp = window.location.pathname
-      .split(DEFAULT_SEGMENT)
-      .slice(NEXT_SEGMENT, PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
-      .join(DEFAULT_SEGMENT);
-    const url = `${pathnameApp}/${route}`;
-
-    history.pushState({}, '', url);
-
     return window.history;
   }
 
