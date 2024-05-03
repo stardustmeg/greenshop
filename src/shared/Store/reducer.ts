@@ -1,10 +1,10 @@
 /* eslint-disable max-lines-per-function */
-import type { UserInterface } from '../types/interfaces.ts';
+import type { User } from '../types/user.ts';
 import type * as actions from './actions.ts';
 import type { Reducer } from './types.ts';
 
 export interface State {
-  currentUser: UserInterface | null;
+  currentUser: User | null;
   registerFormCountry: string;
 }
 

@@ -1,4 +1,4 @@
-import type { PageInterface } from '@/shared/types/interfaces.ts';
+import type { Page } from '@/shared/types/common.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import LoginPageModel from '@/pages/LoginPage/model/LoginPageModel.ts';
@@ -18,13 +18,13 @@ class AppModel {
     this.router.setPages(this.initPages());
   }
 
-  private initPages(): Map<string, PageInterface> {
+  private initPages(): Map<string, Page> {
     const root = this.getHTML();
     const loginPage = new LoginPageModel(root, this.router);
     const mainPage = new MainPageModel(root, this.router);
     const registrationPage = new RegistrationPageModel(root, this.router);
     const notFoundPage = new NotFoundPageModel(root, this.router);
-    const pages: Map<string, PageInterface> = new Map(
+    const pages: Map<string, Page> = new Map(
       Object.entries({
         [PAGES_IDS.DEFAULT_PAGE]: mainPage,
         [PAGES_IDS.LOGIN_PAGE]: loginPage,

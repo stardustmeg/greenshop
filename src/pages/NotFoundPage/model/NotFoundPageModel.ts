@@ -1,5 +1,5 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
-import type { PageInterface } from '@/shared/types/interfaces.ts';
+import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
@@ -7,7 +7,7 @@ import { EVENT_NAMES, MEDIATOR_EVENTS, PAGE_DESCRIPTION, PAGES_IDS } from '@/sha
 
 import NotFoundPageView from '../view/NotFoundPageView.ts';
 
-class NotFoundPageModel implements PageInterface {
+class NotFoundPageModel implements Page {
   private eventMediator = EventMediatorModel.getInstance();
 
   private router: RouterModel;

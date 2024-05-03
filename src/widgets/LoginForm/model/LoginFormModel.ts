@@ -1,5 +1,5 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
-import type { UserLoginData } from '@/shared/types/interfaces.ts';
+import type { UserLoginData } from '@/shared/types/user.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';

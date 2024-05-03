@@ -1,4 +1,4 @@
-import type { UserInterface } from '../types/interfaces.ts';
+import type { User } from '../types/user.ts';
 import type { State } from './reducer.ts';
 
 import getStore from './Store.ts';
@@ -18,7 +18,7 @@ function observeStore<T>(select: (state: State) => T, onChange: (selectedState: 
   return unsubscribe;
 }
 
-export const selectCurrentUser = (state: State): UserInterface | null => state.currentUser;
+export const selectCurrentUser = (state: State): User | null => state.currentUser;
 
 export const selectRegisterFormCountry = (state: State): string => state.registerFormCountry;
 

@@ -1,4 +1,4 @@
-import type { ListenerCallback } from '@/shared/types/types';
+import type { ListenerCallback } from '@/shared/types/action';
 
 class EventMediatorModel<T> {
   private listeners: Map<string, Array<ListenerCallback<T>>> = new Map();

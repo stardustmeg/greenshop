@@ -1,4 +1,4 @@
-import type { PageInterface } from '@/shared/types/interfaces.ts';
+import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import { EVENT_NAMES, MEDIATOR_EVENTS, PAGES_IDS } from '@/shared/constants/enums.ts';
@@ -10,7 +10,7 @@ const PATH_SEGMENTS_TO_KEEP = import.meta.env.VITE_APP_PATH_SEGMENTS_TO_KEEP;
 class RouterModel {
   private eventMediator = EventMediatorModel.getInstance();
 
-  private pages: Map<string, PageInterface> = new Map();
+  private pages: Map<string, Page> = new Map();
 
   constructor() {
     document.addEventListener(EVENT_NAMES.DOM_CONTENT_LOADED, () => {
@@ -59,7 +59,7 @@ class RouterModel {
     return window.history;
   }
 
-  public setPages(pages: Map<string, PageInterface>): Map<string, PageInterface> {
+  public setPages(pages: Map<string, Page>): Map<string, Page> {
     this.pages = pages;
     return this.pages;
   }

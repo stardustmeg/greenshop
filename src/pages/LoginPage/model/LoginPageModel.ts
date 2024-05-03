@@ -1,5 +1,5 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
-import type { PageInterface } from '@/shared/types/interfaces.ts';
+import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
@@ -8,7 +8,7 @@ import LoginFormModel from '@/widgets/LoginForm/model/LoginFormModel.ts';
 
 import LoginPageView from '../view/LoginPageView.ts';
 
-class LoginPageModel implements PageInterface {
+class LoginPageModel implements Page {
   private eventMediator = EventMediatorModel.getInstance();
 
   private loginForm = new LoginFormModel();

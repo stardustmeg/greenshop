@@ -1,4 +1,4 @@
-import type { ButtonAttributesInterface } from '@/shared/types/interfaces.ts';
+import type { ButtonAttributes } from '@/shared/types/button.ts';
 
 import { IS_DISABLED } from '@/shared/constants/enums.ts';
 
@@ -7,7 +7,7 @@ import ButtonView from '../view/ButtonView.ts';
 class ButtonModel {
   private view: ButtonView;
 
-  constructor(params: ButtonAttributesInterface) {
+  constructor(params: ButtonAttributes) {
     this.view = new ButtonView(params);
   }
 

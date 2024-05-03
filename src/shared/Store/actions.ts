@@ -1,4 +1,4 @@
-import type { UserInterface } from '../types/interfaces';
+import type { User } from '../types/user';
 
 /* eslint-disable import/prefer-default-export */
 const ACTION = {
@@ -13,9 +13,7 @@ interface ActionWithPayload<T, U extends ActionType> {
   type: U;
 }
 
-export const setCurrentUser = (
-  value: UserInterface | null,
-): ActionWithPayload<UserInterface | null, typeof ACTION.SET_CURRENT_USER> => ({
+export const setCurrentUser = (value: User | null): ActionWithPayload<User | null, typeof ACTION.SET_CURRENT_USER> => ({
   payload: value,
   type: ACTION.SET_CURRENT_USER,
 });

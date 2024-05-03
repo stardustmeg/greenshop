@@ -1,4 +1,4 @@
-import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types/interfaces.ts';
+import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types/form.ts';
 
 import InputFieldValidatorModel from '@/features/InputFieldValidator/model/InputFieldValidatorModel.ts';
 import { EVENT_NAMES, INPUT_TYPES, PASSWORD_TEXT } from '@/shared/constants/enums.ts';

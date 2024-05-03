@@ -1,4 +1,4 @@
-import type { InputFieldParams, InputParams, LabelParams } from '@/shared/types/interfaces.ts';
+import type { InputFieldParams, InputParams, LabelParams } from '@/shared/types/form';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';

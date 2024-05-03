@@ -1,5 +1,5 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
-import type { PageInterface } from '@/shared/types/interfaces.ts';
+import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
@@ -7,7 +7,7 @@ import { MEDIATOR_EVENTS, PAGES_IDS } from '@/shared/constants/enums.ts';
 
 import MainPageView from '../view/MainPageView.ts';
 
-class MainPageModel implements PageInterface {
+class MainPageModel implements Page {
   private eventMediator = EventMediatorModel.getInstance();
 
   private router: RouterModel;

@@ -1,5 +1,5 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
-import type { PageInterface } from '@/shared/types/interfaces.ts';
+import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import { EVENT_NAMES, MEDIATOR_EVENTS, PAGES_IDS } from '@/shared/constants/enums.ts';
@@ -7,7 +7,7 @@ import RegisterFormModel from '@/widgets/RegistrationForm/model/RegistrationForm
 
 import RegistrationPageView from '../view/RegistrationPageView.ts';
 
-class RegistrationPageModel implements PageInterface {
+class RegistrationPageModel implements Page {
   private eventMediator = EventMediatorModel.getInstance();
 
   private registerForm = new RegisterFormModel();

@@ -1,4 +1,4 @@
-import type { AddressInterface, UserInterface, UserLoginData, UserRegisterData } from '@/shared/types/interfaces.ts';
+import type { Address, User, UserLoginData, UserRegisterData } from '@/shared/types/user.ts';
 import type {
   BaseAddress,
   ClientResponse,
@@ -17,11 +17,11 @@ export class CustomerModel {
     this.root = getRoot();
   }
 
-  public static actionAddAddress(value: AddressInterface): CustomerUpdateAction {
+  public static actionAddAddress(value: Address): CustomerUpdateAction {
     return { action: 'addAddress', address: CustomerModel.adaptAddressToServer(value) };
   }
 
-  public static actionEditAddress(value: AddressInterface): CustomerUpdateAction {
+  public static actionEditAddress(value: Address): CustomerUpdateAction {
     return { action: 'changeAddress', address: CustomerModel.adaptAddressToServer(value), addressId: value.id };
   }
 
@@ -49,19 +49,19 @@ export class CustomerModel {
     return { action: 'setLastName', lastName: value };
   }
 
-  public static actionRemoveAddress(value: AddressInterface): CustomerUpdateAction {
+  public static actionRemoveAddress(value: Address): CustomerUpdateAction {
     return { action: 'removeAddress', addressId: value.id };
   }
 
-  public static actionRemoveBillingAddress(value: AddressInterface): CustomerUpdateAction {
+  public static actionRemoveBillingAddress(value: Address): CustomerUpdateAction {
     return { action: 'removeBillingAddressId', addressId: value.id };
   }
 
-  public static actionRemoveShippingAddress(value: AddressInterface): CustomerUpdateAction {
+  public static actionRemoveShippingAddress(value: Address): CustomerUpdateAction {
     return { action: 'removeShippingAddressId', addressId: value.id };
   }
 
-  private static adaptAddressToServer(data: AddressInterface): BaseAddress {
+  private static adaptAddressToServer(data: Address): BaseAddress {
     return {
       city: data.city,
       country: data.country,
@@ -75,8 +75,8 @@ export class CustomerModel {
     };
   }
 
-  private adaptCustomerToClient(data: Customer): UserInterface {
-    const adaptedCustomer: UserInterface = {
+  private adaptCustomerToClient(data: Customer): User {
+    const adaptedCustomer: User = {
       addresses: data.addresses.map((address) => ({
         city: address.city || '',
         country: address.country || '',
@@ -110,8 +110,8 @@ export class CustomerModel {
     return adaptedCustomer;
   }
 
-  private adaptSignInToClient(data: CustomerSignInResult): UserInterface {
-    const adaptedCustomer: UserInterface = {
+  private adaptSignInToClient(data: CustomerSignInResult): User {
+    const adaptedCustomer: User = {
       addresses: data.customer.addresses.map((address) => ({
         city: address.city || '',
         country: address.country || '',
@@ -151,8 +151,8 @@ export class CustomerModel {
     return adaptedCustomer;
   }
 
-  private getCustomerFromData(data: ClientResponse<Customer | CustomerSignInResult> | Error): UserInterface | null {
-    let customer: UserInterface | null = null;
+  private getCustomerFromData(data: ClientResponse<Customer | CustomerSignInResult> | Error): User | null {
+    let customer: User | null = null;
     if (isClientResponse(data)) {
       if (isCustomerSignInResultResponse(data.body)) {
         customer = this.adaptSignInToClient(data.body);
@@ -163,17 +163,17 @@ export class CustomerModel {
     return customer;
   }
 
-  public async authCustomer(userLoginData: UserLoginData): Promise<UserInterface | null> {
+  public async authCustomer(userLoginData: UserLoginData): Promise<User | null> {
     const data = await this.root.authenticateUser(userLoginData);
     return this.getCustomerFromData(data);
   }
 
-  public async editCustomer(actions: CustomerUpdateAction[], customer: UserInterface): Promise<UserInterface | null> {
+  public async editCustomer(actions: CustomerUpdateAction[], customer: User): Promise<User | null> {
     const data = await this.root.editCustomer(actions, customer.version, customer.id);
     return this.getCustomerFromData(data);
   }
 
-  public async registrationNewCustomer(userRegisterData: UserRegisterData): Promise<UserInterface | null> {
+  public async registrationNewCustomer(userRegisterData: UserRegisterData): Promise<User | null> {
     const data = await this.root.registrationUser(userRegisterData);
     return this.getCustomerFromData(data);
   }

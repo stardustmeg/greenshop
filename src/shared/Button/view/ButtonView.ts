@@ -1,4 +1,4 @@
-import type { ButtonAttributesInterface } from '@/shared/types/interfaces.ts';
+import type { ButtonAttributes } from '@/shared/types/button.ts';
 
 import { TAG_NAMES } from '@/shared/constants/enums.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -6,11 +6,11 @@ import createBaseElement from '@/shared/utils/createBaseElement.ts';
 class ButtonView {
   private button: HTMLButtonElement;
 
-  constructor(params: ButtonAttributesInterface) {
+  constructor(params: ButtonAttributes) {
     this.button = this.createHTML(params);
   }
 
-  private createHTML(params: ButtonAttributesInterface): HTMLButtonElement {
+  private createHTML(params: ButtonAttributes): HTMLButtonElement {
     this.button = createBaseElement({
       attributes: params.attrs,
       cssClasses: params.classes,

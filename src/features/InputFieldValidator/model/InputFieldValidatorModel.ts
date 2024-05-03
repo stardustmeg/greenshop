@@ -1,4 +1,4 @@
-import type { InputFieldValidatorParams } from '@/shared/types/interfaces';
+import type { InputFieldValidatorParams } from '@/shared/types/form';
 
 import getStore from '@/shared/Store/Store.ts';
 import { COUNTRIES } from '@/shared/constants/enums.ts';

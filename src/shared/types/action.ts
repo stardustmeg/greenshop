@@ -1,4 +1,4 @@
-type ActionsType =
+type ActionType =
   | 'animationend'
   | 'animationiteration'
   | 'animationstart'
@@ -24,5 +24,5 @@ type ActionsType =
   | 'transitionrun'
   | 'transitionstart';
 
-export type ButtonActionType = { key: ActionsType; value: () => void };
+export type ButtonActionType = { key: ActionType; value: () => void };
 export type ListenerCallback<T> = (params: T) => void;
