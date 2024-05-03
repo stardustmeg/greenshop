@@ -41,7 +41,7 @@ export interface InputParams {
   id: string;
   lang?: string;
   placeholder: null | string;
-  type: 'color' | 'date' | 'email' | 'number' | 'password' | 'search' | 'tel' | 'text';
+  type: 'checkbox' | 'color' | 'date' | 'email' | 'number' | 'password' | 'search' | 'tel' | 'text';
 }
 
 export interface LabelParams {

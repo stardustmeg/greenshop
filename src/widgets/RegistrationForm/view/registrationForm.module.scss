@@ -5,6 +5,34 @@
   margin: 0 auto;
   gap: var(--extra-small-offset);
 
+  .checkboxLabel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: calc(var(--extra-small-offset) / 4);
+
+    input {
+      cursor: pointer;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        .checkboxText {
+          color: var(--steam-green-800);
+        }
+      }
+    }
+  }
+
+  .checkboxText {
+    font: var(--regular-font);
+    letter-spacing: 1px;
+    color: var(--noble-gray-800);
+    transition: color 0.2s;
+  }
+
   label {
     position: relative;
     display: flex;
@@ -118,7 +146,7 @@
 
   button {
     grid-column: 2 span;
-    grid-row: 7;
+    grid-row: 5;
     border-radius: var(--small-br);
     padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
     max-height: 40px;
@@ -132,7 +160,6 @@
 
     @media (max-width: 768px) {
       grid-column: 1;
-      grid-row: 11;
     }
 
     @media (hover: hover) {
@@ -152,111 +179,53 @@
   }
 }
 
-.countryWrapper {
-  position: sticky;
-  grid-column: 2 span;
-  grid-row: 5;
-
-  @media (max-width: 768px) {
-    grid-column: 1 span;
-    grid-row: 8;
-  }
-}
-
-.countryDropList {
-  position: absolute;
-  right: 0;
-  overflow-y: scroll;
-  border: 1px solid var(--noble-gray-300);
+.credentialsWrapper,
+.personalDataWrapper,
+.shippingAddressWrapper,
+.billingAddressWrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 2px solid var(--noble-gray-200);
+  border-right: 0;
+  border-left: 0;
   border-radius: var(--small-br);
-  width: 100%;
-  min-height: 200px;
-  max-height: 200px;
-  background-color: var(--white);
-  opacity: 1;
-  visibility: visible;
-  transition:
-    opacity 0.2s,
-    visibility 0.2s;
+  padding: var(--extra-small-offset);
+  gap: var(--extra-small-offset);
 
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
+  .title {
+    grid-column: 2 span;
+    font: var(--medium-font);
+    letter-spacing: 1px;
+    text-align: center;
+    color: var(--noble-gray-500);
 
-  &::-webkit-scrollbar-track {
-    background: var(--noble-gray-200);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: var(--small-br);
-    background-color: var(--steam-green-800);
-    cursor: pointer;
-  }
-
-  @media (max-width: 768px) {
-    bottom: 0;
-  }
-}
-
-.countryItem {
-  padding: calc(var(--extra-small-offset) / 4) calc(var(--extra-small-offset) / 2);
-  font: var(--regular-font);
-  letter-spacing: 1px;
-  text-align: end;
-  color: var(--noble-gray-800);
-  transition:
-    color 0.2s,
-    background-color 0.2s;
-  animation: show 0.5s ease-in forwards;
-  cursor: pointer;
-
-  @media (hover: hover) {
-    &:hover {
-      color: var(--steam-green-800);
-      background-color: var(--noble-gray-200);
+    @media (max-width: 768px) {
+      grid-column: 1 span;
     }
   }
 
   @media (max-width: 768px) {
-    text-align: start;
-  }
-
-  &.hidden {
-    animation: hide 0.5s ease-in forwards;
+    grid-column: 1 span;
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 
-@keyframes hide {
-  0% {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  50% {
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  100% {
-    display: none;
-  }
+.credentialsWrapper {
+  grid-column: 2 span;
+  grid-row: 1;
 }
 
-@keyframes show {
-  0% {
-    display: block;
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  100% {
-    opacity: 1;
-    visibility: visible;
-  }
+.personalDataWrapper {
+  grid-column: 2 span;
+  grid-row: 2;
 }
 
-.hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+.shippingAddressWrapper {
+  grid-column: 2 span;
+  grid-row: 3;
+}
+
+.billingAddressWrapper {
+  grid-column: 2 span;
+  grid-row: 4;
 }

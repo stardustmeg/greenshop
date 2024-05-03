@@ -1,11 +1,13 @@
 import type { State } from '../Store/reducer';
 
 export const initialState: State = {
+  billingCountry: '',
   currentUser: null,
-  registerFormCountry: '',
+  shippingCountry: '',
 };
 
 export const INPUT_TYPES = {
+  CHECK_BOX: 'checkbox',
   COLOR: 'color',
   DATE: 'date',
   EMAIL: 'email',
@@ -27,9 +29,30 @@ export const IS_DISABLED = {
   ENABLED: false,
 } as const;
 
+export const FORM_TEXT = {
+  DEFAULT_ADDRESS: 'Use as default address',
+};
+
 export const MESSAGE_STATUS = {
   ERROR: 'error',
   SUCCESS: 'success',
+} as const;
+
+export const ERROR_MESSAGE = {
+  INVALID_COUNTRY: 'Invalid country',
+  INVALID_POSTAL_CODE: 'Invalid postal code',
+  REQUIRED_FIELD: 'Field is required',
+  WRONG_REGION: "Sorry, we don't deliver to your region yet",
+} as const;
+
+export const USER_COUNTRY_ADDRESS = {
+  BILLING: 'billingCountry',
+  SHIPPING: 'shippingCountry',
+} as const;
+
+export const USER_POSTAL_CODE = {
+  BILLING_POSTAL_CODE: 'billing_PostalCode',
+  POSTAL_CODE: 'postalCode',
 } as const;
 
 export type MessageStatusType = (typeof MESSAGE_STATUS)[keyof typeof MESSAGE_STATUS];
@@ -78,6 +101,7 @@ export const TAG_NAMES = {
   SELECT: 'select',
   SOURCE: 'source',
   SPAN: 'span',
+  STRONG: 'strong',
   SUMMARY: 'summary',
   SVG: 'svg',
   TABLE: 'table',
@@ -168,7 +192,7 @@ export const LOGIN_FORM_INPUT_FIELD_PARAMS = [LOGIN_FORM_EMAIL_FIELD_PARAMS, LOG
 const LOGIN_FORM_EMAIL_FIELD_VALIDATE_PARAMS = {
   key: `${LOGIN_FORM_KEY}email`,
   notWhitespace: {
-    message: 'Email must not contain whitespaces',
+    message: 'Email must not contain white spaces',
     pattern: /^\S+$/,
   },
   required: true,
@@ -182,7 +206,7 @@ const LOGIN_FORM_PASSWORD_FIELD_VALIDATE_PARAMS = {
   key: `${LOGIN_FORM_KEY}password`,
   minLength: 8,
   notWhitespace: {
-    message: 'Password must not contain whitespaces',
+    message: 'Password must not contain white spaces',
     pattern: /^\S+$/,
   },
   required: true,
@@ -290,7 +314,7 @@ export const REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS = {
   },
 } as const;
 
-export const REGISTRATION_FORM_STREET_FIELD_PARAMS = {
+export const REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
     id: 'address',
@@ -303,7 +327,7 @@ export const REGISTRATION_FORM_STREET_FIELD_PARAMS = {
   },
 } as const;
 
-export const REGISTRATION_FORM_CITY_FIELD_PARAMS = {
+export const REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
     id: 'city',
@@ -316,20 +340,20 @@ export const REGISTRATION_FORM_CITY_FIELD_PARAMS = {
   },
 } as const;
 
-export const REGISTRATION_FORM_COUNTRY_FIELD_PARAMS = {
+export const REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
-    id: 'country',
+    id: 'shippingCountry',
     placeholder: 'Canada',
     type: 'text',
   },
   labelParams: {
-    for: 'country',
+    for: 'shippingCountry',
     text: 'Country',
   },
 } as const;
 
-export const REGISTRATION_FORM_POSTAL_CODE_FIELD_PARAMS = {
+export const REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS = {
   inputParams: {
     autocomplete: 'off',
     id: 'postalCode',
@@ -342,22 +366,78 @@ export const REGISTRATION_FORM_POSTAL_CODE_FIELD_PARAMS = {
   },
 } as const;
 
+export const REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'billing_address',
+    placeholder: '595 Hornby St. 5th Floor',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'billing_address',
+    text: 'Address',
+  },
+} as const;
+
+export const REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'billing_city',
+    placeholder: 'Vancouver',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'billing_city',
+    text: 'City',
+  },
+} as const;
+
+export const REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'billing_country',
+    placeholder: 'Canada',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'billing_country',
+    text: 'Country',
+  },
+} as const;
+
+export const REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS = {
+  inputParams: {
+    autocomplete: 'off',
+    id: 'billing_postalCode',
+    placeholder: 'A1B 2C3',
+    type: 'text',
+  },
+  labelParams: {
+    for: 'billing_postalCode',
+    text: 'Postal code',
+  },
+} as const;
+
 export const REGISTRATION_FORM_INPUT_FIELD_PARAMS = [
   REGISTRATION_FORM_EMAIL_FIELD_PARAMS,
   REGISTRATION_FORM_PASSWORD_FIELD_PARAMS,
   REGISTRATION_FORM_FIRST_NAME_FIELD_PARAMS,
   REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS,
   REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS,
-  REGISTRATION_FORM_STREET_FIELD_PARAMS,
-  REGISTRATION_FORM_CITY_FIELD_PARAMS,
-  REGISTRATION_FORM_COUNTRY_FIELD_PARAMS,
-  REGISTRATION_FORM_POSTAL_CODE_FIELD_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
 ];
 
 const REGISTRATION_FORM_EMAIL_FIELD_VALIDATE_PARAMS = {
   key: 'registration_email',
   notWhitespace: {
-    message: 'Email must not contain whitespaces',
+    message: 'Email must not contain white spaces',
     pattern: /^\S+$/,
   },
   required: true,
@@ -371,7 +451,7 @@ const REGISTRATION_FORM_PASSWORD_FIELD_VALIDATE_PARAMS = {
   key: 'registration_password',
   minLength: 8,
   notWhitespace: {
-    message: 'Password must not contain whitespaces',
+    message: 'Password must not contain white spaces',
     pattern: /^\S+$/,
   },
   required: true,
@@ -389,7 +469,7 @@ const REGISTRATION_FORM_FIRST_NAME_FIELD_VALIDATE_PARAMS = {
     pattern: /^[a-zA-Z]*$/,
   },
   notWhitespace: {
-    message: 'First name must not contain whitespaces',
+    message: 'First name must not contain white spaces',
     pattern: /^\S+$/,
   },
   required: true,
@@ -403,7 +483,7 @@ const REGISTRATION_FORM_LAST_NAME_FIELD_VALIDATE_PARAMS = {
     pattern: /^[a-zA-Z]*$/,
   },
   notWhitespace: {
-    message: 'Last name must not contain whitespaces',
+    message: 'Last name must not contain white spaces',
     pattern: /^\S+$/,
   },
   required: true,
@@ -420,13 +500,13 @@ const REGISTRATION_FORM_BIRTHDAY_FIELD_VALIDATE_PARAMS = {
   },
 } as const;
 
-export const REGISTRATION_FORM_STREET_FIELD_VALIDATE_PARAMS = {
+export const REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_VALIDATE_PARAMS = {
   key: 'address',
   minLength: 1,
   required: true,
 };
 
-export const REGISTRATION_FORM_CITY_FIELD_VALIDATE_PARAMS = {
+export const REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_VALIDATE_PARAMS = {
   key: 'city',
   minLength: 1,
   notSpecialSymbols: {
@@ -437,14 +517,42 @@ export const REGISTRATION_FORM_CITY_FIELD_VALIDATE_PARAMS = {
   required: true,
 };
 
-export const REGISTRATION_FORM_COUNTRY_FIELD_VALIDATE_PARAMS = {
-  key: 'country',
+export const REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_VALIDATE_PARAMS = {
+  key: 'shippingCountry',
   required: true,
   validCountry: true,
 };
 
-export const REGISTRATION_FORM_POSTAL_CODE_FIELD_VALIDATE_PARAMS = {
+export const REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_VALIDATE_PARAMS = {
   key: 'postalCode',
+  required: true,
+  validPostalCode: true,
+};
+
+export const REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_VALIDATE_PARAMS = {
+  key: 'billing_address',
+  minLength: 1,
+  required: true,
+};
+
+export const REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_VALIDATE_PARAMS = {
+  key: 'billing_city',
+  minLength: 1,
+  notSpecialSymbols: {
+    message: 'City must contain only letters',
+    pattern: /^[a-zA-Z]*$/,
+  },
+  required: true,
+};
+
+export const REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_VALIDATE_PARAMS = {
+  key: 'billing_country',
+  required: true,
+  validCountry: true,
+};
+
+export const REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_VALIDATE_PARAMS = {
+  key: 'billing_postalCode',
   required: true,
   validPostalCode: true,
 };
@@ -455,11 +563,22 @@ export const REGISTRATION_FORM_INPUT_FIELD_VALIDATION_PARAMS = [
   REGISTRATION_FORM_FIRST_NAME_FIELD_VALIDATE_PARAMS,
   REGISTRATION_FORM_LAST_NAME_FIELD_VALIDATE_PARAMS,
   REGISTRATION_FORM_BIRTHDAY_FIELD_VALIDATE_PARAMS,
-  REGISTRATION_FORM_STREET_FIELD_VALIDATE_PARAMS,
-  REGISTRATION_FORM_CITY_FIELD_VALIDATE_PARAMS,
-  REGISTRATION_FORM_COUNTRY_FIELD_VALIDATE_PARAMS,
-  REGISTRATION_FORM_POSTAL_CODE_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_VALIDATE_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_VALIDATE_PARAMS,
 ];
+
+export const REGISTRATION_FORM_TITLE_TEXT = {
+  BILLING_ADDRESS: 'Billing address',
+  CREDENTIALS: 'Credentials',
+  PERSONAL: 'Personal',
+  SHIPPING_ADDRESS: 'Shipping address',
+} as const;
 
 export const PASSWORD_TEXT = {
   HIDDEN: '********',
@@ -682,3 +801,9 @@ export const SERVER_MESSAGE_ANIMATE_DETAILS = {
   easing: 'cubic-bezier(0, 0.2, 0.58, 0.7)',
   params: SERVER_MESSAGE_ANIMATE_PARAMS,
 };
+
+export const CHECKBOX_PARAMS = {
+  AUTOCOMPLETE: 'off',
+  BILLING_ID: 'billingDefault',
+  SHIPPING_ID: 'shippingDefault',
+} as const;

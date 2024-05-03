@@ -20,6 +20,8 @@ function observeStore<T>(select: (state: State) => T, onChange: (selectedState: 
 
 export const selectCurrentUser = (state: State): UserInterface | null => state.currentUser;
 
-export const selectRegisterFormCountry = (state: State): string => state.registerFormCountry;
+export const selectBillingCountry = (state: State): string => state.billingCountry;
+
+export const selectShippingCountry = (state: State): string => state.shippingCountry;
 
 export default observeStore;

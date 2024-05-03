@@ -1,3 +1,5 @@
+import type { InputParams } from '@/shared/types/interfaces.ts';
+
 import { IS_DISABLED } from '@/shared/constants/enums.ts';
 
 import InputView from '../view/InputView.ts';
@@ -5,7 +7,7 @@ import InputView from '../view/InputView.ts';
 class InputModel {
   private view: InputView;
 
-  constructor(attrs: Record<string, string>) {
+  constructor(attrs: InputParams) {
     this.view = new InputView(attrs);
   }
 

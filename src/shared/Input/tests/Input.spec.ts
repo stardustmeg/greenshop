@@ -1,9 +1,16 @@
+import type { InputParams } from '@/shared/types/interfaces.ts';
+
 import InputModel from '../model/InputModel.ts';
 
-const input = new InputModel({
-  id: 'test',
+const params: InputParams = {
+  autocomplete: 'on',
+  id: 'password',
+  lang: 'en',
+  placeholder: 'Enter password',
   type: 'password',
-});
+};
+
+const input = new InputModel(params);
 describe('Checking InputModel class', () => {
   it('should be defined', () => {
     expect(InputModel).toBeDefined();
