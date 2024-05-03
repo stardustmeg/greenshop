@@ -1,7 +1,7 @@
 import type { InputFieldValidatorParams } from '@/shared/types/interfaces';
 
 import getStore from '@/shared/Store/Store.ts';
-import { COUNTRIES } from '@/shared/constants/enums.ts';
+import { COUNTRIES, ERROR_MESSAGE, USER_POSTAL_CODE } from '@/shared/constants/enums.ts';
 import { postcodeValidator } from 'postcode-validator';
 
 class InputFieldValidatorModel {
@@ -67,8 +67,7 @@ class InputFieldValidatorModel {
 
   private checkRequired(value: string): boolean | string {
     if (this.validParams.required && value.trim() === '') {
-      const errorMessage = 'Field is required';
-      return errorMessage;
+      return ERROR_MESSAGE.REQUIRED_FIELD;
     }
 
     return true;
@@ -95,8 +94,7 @@ class InputFieldValidatorModel {
   private checkValidCountry(value: string): boolean | string {
     if (this.validParams.validCountry) {
       if (!Object.keys(COUNTRIES).find((countryCode) => countryCode === value)) {
-        const errorMessage = 'Invalid country';
-        return errorMessage;
+        return ERROR_MESSAGE.INVALID_COUNTRY;
       }
     }
 
@@ -114,17 +112,16 @@ class InputFieldValidatorModel {
 
   private checkValidPostalCode(value: string): boolean | string {
     if (this.validParams.validPostalCode) {
-      const { registerFormCountry } = getStore().getState();
+      const { billingCountry, shippingCountry } = getStore().getState();
+      const currentCountry = this.validParams.key === USER_POSTAL_CODE.POSTAL_CODE ? shippingCountry : billingCountry;
 
       try {
-        const result = postcodeValidator(value, registerFormCountry);
+        const result = postcodeValidator(value, currentCountry);
         if (!result) {
-          const errorMessage = 'Invalid postal code';
-          return errorMessage;
+          return ERROR_MESSAGE.INVALID_POSTAL_CODE;
         }
       } catch (error) {
-        const errorMessage = "Sorry, we don't deliver to your region yet";
-        return errorMessage;
+        return ERROR_MESSAGE.WRONG_REGION;
       }
     }
 
