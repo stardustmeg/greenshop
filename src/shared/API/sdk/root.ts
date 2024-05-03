@@ -5,6 +5,7 @@ import {
   type CategoryPagedQueryResponse,
   type ClientResponse,
   type Customer,
+  type CustomerPagedQueryResponse,
   type CustomerSignInResult,
   type CustomerUpdateAction,
   type Product,
@@ -105,6 +106,15 @@ export class RootApi {
     const data = await this.connection
       .categories()
       .get()
+      .execute()
+      .catch((err: Error) => err);
+    return data;
+  }
+
+  public async getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse> | Error> {
+    const data = await this.connection
+      .customers()
+      .get({ queryArgs: { where: `email="${email}"` } })
       .execute()
       .catch((err: Error) => err);
     return data;

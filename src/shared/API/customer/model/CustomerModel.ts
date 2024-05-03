@@ -3,12 +3,18 @@ import type {
   BaseAddress,
   ClientResponse,
   Customer,
+  CustomerPagedQueryResponse,
   CustomerSignInResult,
   CustomerUpdateAction,
 } from '@commercetools/platform-sdk';
 
 import getRoot, { type RootApi } from '../../sdk/root.ts';
-import { isClientResponse, isCustomerResponse, isCustomerSignInResultResponse } from '../../types/validation.ts';
+import {
+  isClientResponse,
+  isCustomerPagedQueryResponse,
+  isCustomerResponse,
+  isCustomerSignInResultResponse,
+} from '../../types/validation.ts';
 
 export class CustomerModel {
   private root: RootApi;
@@ -151,13 +157,17 @@ export class CustomerModel {
     return adaptedCustomer;
   }
 
-  private getCustomerFromData(data: ClientResponse<Customer | CustomerSignInResult> | Error): User | null {
+  private getCustomerFromData(
+    data: ClientResponse<Customer | CustomerPagedQueryResponse | CustomerSignInResult> | Error,
+  ): User | null {
     let customer: User | null = null;
     if (isClientResponse(data)) {
       if (isCustomerSignInResultResponse(data.body)) {
         customer = this.adaptSignInToClient(data.body);
       } else if (isCustomerResponse(data.body)) {
         customer = this.adaptCustomerToClient(data.body);
+      } else if (isCustomerPagedQueryResponse(data.body)) {
+        customer = data.body.results.length > 0 ? this.adaptCustomerToClient(data.body.results[0]) : null;
       }
     }
     return customer;
@@ -171,6 +181,11 @@ export class CustomerModel {
   public async editCustomer(actions: CustomerUpdateAction[], customer: User): Promise<User | null> {
     const data = await this.root.editCustomer(actions, customer.version, customer.id);
     return this.getCustomerFromData(data);
+  }
+
+  public async isValidEmail(email: string): Promise<boolean> {
+    const data = await this.root.getCustomerByEmail(email);
+    return this.getCustomerFromData(data) !== null;
   }
 
   public async registrationNewCustomer(userRegisterData: UserRegisterData): Promise<User | null> {
