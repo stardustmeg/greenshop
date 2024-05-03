@@ -9,7 +9,7 @@ import {
 } from '@/shared/constants/enums.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import LOGIN_FORM_STYLES from './loginForm.module.scss';
+import styles from './loginForm.module.scss';
 
 class LoginFormView {
   private form: HTMLFormElement;
@@ -26,7 +26,7 @@ class LoginFormView {
 
   private createHTML(): HTMLFormElement {
     this.form = createBaseElement({
-      cssClasses: [LOGIN_FORM_STYLES.loginForm],
+      cssClasses: [styles.loginForm],
       tag: TAG_NAMES.FORM,
     });
 
@@ -66,7 +66,7 @@ class LoginFormView {
       attrs: {
         type: BUTTON_TYPES.SUBMIT,
       },
-      classes: [LOGIN_FORM_STYLES.submitFormButton],
+      classes: [styles.submitFormButton],
       text: FORM_SUBMIT_BUTTON_TEXT.LOGIN,
     });
 

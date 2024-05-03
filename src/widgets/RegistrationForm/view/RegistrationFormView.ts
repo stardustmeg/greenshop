@@ -29,7 +29,7 @@ import {
 } from '@/shared/constants/enums.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import REGISTRATION_FORM_STYLES from './registrationForm.module.scss';
+import styles from './registrationForm.module.scss';
 
 class RegistrationFormView {
   private billingAddressWrapper: HTMLDivElement;
@@ -78,17 +78,17 @@ class RegistrationFormView {
 
     this.billingAddressWrapper = this.createWrapperElement(
       REGISTRATION_FORM_TITLE_TEXT.BILLING_ADDRESS,
-      [REGISTRATION_FORM_STYLES.billingAddressWrapper],
+      [styles.billingAddressWrapper],
       filteredInputFields,
     );
 
     const checkBoxLabel = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.checkboxLabel],
+      cssClasses: [styles.checkboxLabel],
       tag: TAG_NAMES.LABEL,
     });
 
     const checkBoxText = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.checkboxText],
+      cssClasses: [styles.checkboxText],
       innerContent: FORM_TEXT.DEFAULT_ADDRESS,
       tag: TAG_NAMES.SPAN,
     });
@@ -132,7 +132,7 @@ class RegistrationFormView {
 
     this.credentialsWrapper = this.createWrapperElement(
       REGISTRATION_FORM_TITLE_TEXT.CREDENTIALS,
-      [REGISTRATION_FORM_STYLES.credentialsWrapper],
+      [styles.credentialsWrapper],
       filteredInputFields,
     );
 
@@ -141,7 +141,7 @@ class RegistrationFormView {
 
   private createHTML(): HTMLFormElement {
     this.form = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.registrationForm],
+      cssClasses: [styles.registrationForm],
       tag: TAG_NAMES.FORM,
     });
 
@@ -183,7 +183,7 @@ class RegistrationFormView {
 
     this.personalDataWrapper = this.createWrapperElement(
       REGISTRATION_FORM_TITLE_TEXT.PERSONAL,
-      [REGISTRATION_FORM_STYLES.personalDataWrapper],
+      [styles.personalDataWrapper],
       filteredInputFields,
     );
 
@@ -206,17 +206,17 @@ class RegistrationFormView {
 
     this.shippingAddressWrapper = this.createWrapperElement(
       REGISTRATION_FORM_TITLE_TEXT.SHIPPING_ADDRESS,
-      [REGISTRATION_FORM_STYLES.shippingAddressWrapper],
+      [styles.shippingAddressWrapper],
       filteredInputFields,
     );
 
     const checkBoxLabel = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.checkboxLabel],
+      cssClasses: [styles.checkboxLabel],
       tag: TAG_NAMES.LABEL,
     });
 
     const checkBoxText = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.checkboxText],
+      cssClasses: [styles.checkboxText],
       innerContent: FORM_TEXT.DEFAULT_ADDRESS,
       tag: TAG_NAMES.SPAN,
     });
@@ -247,7 +247,7 @@ class RegistrationFormView {
       tag: TAG_NAMES.DIV,
     });
     const titleElement = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.title],
+      cssClasses: [styles.title],
       innerContent: title,
       tag: TAG_NAMES.H3,
     });

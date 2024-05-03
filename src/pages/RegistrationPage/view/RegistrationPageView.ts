@@ -1,7 +1,7 @@
 import { PAGE_DESCRIPTION, PAGE_LINK_TEXT, PAGES_IDS, TAG_NAMES } from '@/shared/constants/enums.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import REGISTRATION_PAGE_STYLES from './registrationPageView.module.scss';
+import styles from './registrationPageView.module.scss';
 
 class RegistrationPageView {
   private authDescription: HTMLHeadingElement;
@@ -30,7 +30,7 @@ class RegistrationPageView {
 
   private createAuthDescription(): HTMLHeadingElement {
     this.authDescription = createBaseElement({
-      cssClasses: [REGISTRATION_PAGE_STYLES.authDescription],
+      cssClasses: [styles.authDescription],
       innerContent: PAGE_DESCRIPTION.REGISTRATION,
       tag: TAG_NAMES.H3,
     });
@@ -40,7 +40,7 @@ class RegistrationPageView {
 
   private createAuthWrapper(): HTMLDivElement {
     this.authWrapper = createBaseElement({
-      cssClasses: [REGISTRATION_PAGE_STYLES.authWrapper],
+      cssClasses: [styles.authWrapper],
       tag: TAG_NAMES.DIV,
     });
 
@@ -50,7 +50,7 @@ class RegistrationPageView {
 
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
-      cssClasses: [REGISTRATION_PAGE_STYLES.registrationPage],
+      cssClasses: [styles.registrationPage],
       tag: TAG_NAMES.DIV,
     });
 
@@ -62,7 +62,7 @@ class RegistrationPageView {
 
   private createLinksWrapper(): HTMLDivElement {
     this.linksWrapper = createBaseElement({
-      cssClasses: [REGISTRATION_PAGE_STYLES.linksWrapper],
+      cssClasses: [styles.linksWrapper],
       tag: TAG_NAMES.DIV,
     });
 
@@ -75,7 +75,7 @@ class RegistrationPageView {
       attributes: {
         href: PAGES_IDS.LOGIN_PAGE,
       },
-      cssClasses: [REGISTRATION_PAGE_STYLES.loginLink],
+      cssClasses: [styles.loginLink],
       innerContent: PAGE_LINK_TEXT.LOGIN,
       tag: TAG_NAMES.A,
     });
@@ -85,7 +85,7 @@ class RegistrationPageView {
 
   private createRegisterSpan(): HTMLSpanElement {
     this.registerSpan = createBaseElement({
-      cssClasses: [REGISTRATION_PAGE_STYLES.registerSpan],
+      cssClasses: [styles.registerSpan],
       innerContent: PAGE_LINK_TEXT.REGISTRATION,
       tag: TAG_NAMES.SPAN,
     });
@@ -106,12 +106,12 @@ class RegistrationPageView {
   }
 
   public hide(): boolean {
-    this.page.classList.add(REGISTRATION_PAGE_STYLES.registrationPage_hidden);
+    this.page.classList.add(styles.registrationPage_hidden);
     return true;
   }
 
   public show(): boolean {
-    this.page.classList.remove(REGISTRATION_PAGE_STYLES.registrationPage_hidden);
+    this.page.classList.remove(styles.registrationPage_hidden);
     return true;
   }
 }

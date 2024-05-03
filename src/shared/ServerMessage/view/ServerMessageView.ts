@@ -3,7 +3,7 @@ import type { MessageStatusType } from '@/shared/constants/enums.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_ANIMATE_DETAILS, TAG_NAMES } from '@/shared/constants/enums.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import SERVER_MESSAGE_STYLES from './serverMessageView.module.scss';
+import styles from './serverMessageView.module.scss';
 
 class ServerMessageView {
   private serverMessage: HTMLSpanElement;
@@ -17,7 +17,7 @@ class ServerMessageView {
 
   private createHTML(): HTMLDivElement {
     this.serverWrapper = createBaseElement({
-      cssClasses: [SERVER_MESSAGE_STYLES.serverMessageWrapper],
+      cssClasses: [styles.serverMessageWrapper],
       tag: TAG_NAMES.DIV,
     });
 
@@ -28,7 +28,7 @@ class ServerMessageView {
 
   private createServerMessage(): HTMLSpanElement {
     this.serverMessage = createBaseElement({
-      cssClasses: [SERVER_MESSAGE_STYLES.serverMessage],
+      cssClasses: [styles.serverMessage],
       tag: TAG_NAMES.SPAN,
     });
 
@@ -48,8 +48,8 @@ class ServerMessageView {
   }
 
   public setServerMessage(message: string, status: MessageStatusType): boolean {
-    this.serverWrapper.classList.toggle(SERVER_MESSAGE_STYLES.error, status === MESSAGE_STATUS.ERROR);
-    this.serverWrapper.classList.toggle(SERVER_MESSAGE_STYLES.success, status === MESSAGE_STATUS.SUCCESS);
+    this.serverWrapper.classList.toggle(styles.error, status === MESSAGE_STATUS.ERROR);
+    this.serverWrapper.classList.toggle(styles.success, status === MESSAGE_STATUS.SUCCESS);
     this.serverMessage.textContent = message;
     this.startAnimation();
     return true;
