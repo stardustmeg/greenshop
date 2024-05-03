@@ -1,11 +1,25 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import InputModel from '@/shared/Input/model/InputModel.ts';
 import {
   BUTTON_TYPES,
-  COUNTRIES,
   FORM_SUBMIT_BUTTON_TEXT,
+  REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS,
+  REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS,
+  REGISTRATION_FORM_EMAIL_FIELD_PARAMS,
+  REGISTRATION_FORM_FIRST_NAME_FIELD_PARAMS,
   REGISTRATION_FORM_INPUT_FIELD_PARAMS,
   REGISTRATION_FORM_INPUT_FIELD_VALIDATION_PARAMS,
+  REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS,
+  REGISTRATION_FORM_PASSWORD_FIELD_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS,
+  REGISTRATION_FORM_TITLE_TEXT,
   TAG_NAMES,
 } from '@/shared/constants/enums.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -13,58 +27,68 @@ import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import REGISTRATION_FORM_STYLES from './registrationForm.module.scss';
 
 class RegistrationFormView {
-  private countryDropList: HTMLDivElement;
+  private billingAddressWrapper: HTMLDivElement;
 
-  private countryItems: HTMLDivElement[] = [];
-
-  private countryWrapper: HTMLDivElement;
+  private credentialsWrapper: HTMLDivElement;
 
   private form: HTMLFormElement;
 
   private inputFields: InputFieldModel[] = [];
 
+  private personalDataWrapper: HTMLDivElement;
+
+  private shippingAddressWrapper: HTMLDivElement;
+
   private submitFormButton: ButtonModel;
 
   constructor() {
     this.inputFields = this.createInputFields();
+    this.credentialsWrapper = this.createCredentialsWrapper();
+    this.personalDataWrapper = this.createPersonalDataWrapper();
+    this.shippingAddressWrapper = this.createShippingAddressWrapper();
+    this.billingAddressWrapper = this.createBillingAddressWrapper();
     this.submitFormButton = this.createSubmitFormButton();
-    this.countryDropList = this.createCountryDropList();
-    this.countryWrapper = this.createCountryWrapper();
     this.form = this.createHTML();
   }
 
-  private createCountryDropList(): HTMLDivElement {
-    this.countryDropList = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.countryDropList, REGISTRATION_FORM_STYLES.hidden],
-      tag: TAG_NAMES.DIV,
-    });
+  private createBillingAddressWrapper(): HTMLDivElement {
+    const copyInputFields = this.inputFields;
+    const filteredInputFields = copyInputFields.filter(
+      (inputField) =>
+        inputField.getView().getInput().getHTML().id ===
+          REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS.inputParams.id ||
+        inputField.getView().getInput().getHTML().id ===
+          REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS.inputParams.id ||
+        inputField.getView().getInput().getHTML().id ===
+          REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id ||
+        inputField.getView().getInput().getHTML().id ===
+          REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS.inputParams.id,
+    );
 
-    Object.entries(COUNTRIES).forEach(([countryCode]) => {
-      this.countryDropList.append(this.createCountryItem(countryCode));
-    });
+    this.billingAddressWrapper = this.createWrapperElement(
+      REGISTRATION_FORM_TITLE_TEXT.BILLING_ADDRESS,
+      [REGISTRATION_FORM_STYLES.billingAddressWrapper],
+      filteredInputFields,
+    );
 
-    return this.countryDropList;
+    return this.billingAddressWrapper;
   }
 
-  private createCountryItem(countryCode: string): HTMLDivElement {
-    const countryItem = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.countryItem],
-      innerContent: countryCode,
-      tag: TAG_NAMES.DIV,
-    });
+  private createCredentialsWrapper(): HTMLDivElement {
+    const copyInputFields = this.inputFields;
+    const filteredInputFields = copyInputFields.filter(
+      (inputField) =>
+        inputField.getView().getInput().getHTML().id === REGISTRATION_FORM_PASSWORD_FIELD_PARAMS.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === REGISTRATION_FORM_EMAIL_FIELD_PARAMS.inputParams.id,
+    );
 
-    this.countryItems.push(countryItem);
+    this.credentialsWrapper = this.createWrapperElement(
+      REGISTRATION_FORM_TITLE_TEXT.CREDENTIALS,
+      [REGISTRATION_FORM_STYLES.credentialsWrapper],
+      filteredInputFields,
+    );
 
-    return countryItem;
-  }
-
-  private createCountryWrapper(): HTMLDivElement {
-    this.countryWrapper = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.countryWrapper],
-      tag: TAG_NAMES.DIV,
-    });
-
-    return this.countryWrapper;
+    return this.credentialsWrapper;
   }
 
   private createHTML(): HTMLFormElement {
@@ -73,18 +97,13 @@ class RegistrationFormView {
       tag: TAG_NAMES.FORM,
     });
 
-    this.inputFields.forEach((inputField) => {
-      const inputFieldElement = inputField.getView().getHTML();
-
-      if (inputFieldElement instanceof HTMLLabelElement) {
-        this.form.append(inputFieldElement);
-      } else {
-        this.form.append(inputFieldElement.getHTML());
-      }
-    });
-
-    this.countryWrapper.append(this.countryDropList);
-    this.form.append(this.countryWrapper, this.submitFormButton.getHTML());
+    this.form.append(
+      this.credentialsWrapper,
+      this.personalDataWrapper,
+      this.shippingAddressWrapper,
+      this.billingAddressWrapper,
+      this.submitFormButton.getHTML(),
+    );
     return this.form;
   }
 
@@ -105,6 +124,47 @@ class RegistrationFormView {
     return this.inputFields;
   }
 
+  private createPersonalDataWrapper(): HTMLDivElement {
+    const copyInputFields = this.inputFields;
+    const filteredInputFields = copyInputFields.filter(
+      (inputField) =>
+        inputField.getView().getInput().getHTML().id === REGISTRATION_FORM_FIRST_NAME_FIELD_PARAMS.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS.inputParams.id,
+    );
+
+    this.personalDataWrapper = this.createWrapperElement(
+      REGISTRATION_FORM_TITLE_TEXT.PERSONAL,
+      [REGISTRATION_FORM_STYLES.personalDataWrapper],
+      filteredInputFields,
+    );
+
+    return this.personalDataWrapper;
+  }
+
+  private createShippingAddressWrapper(): HTMLDivElement {
+    const copyInputFields = this.inputFields;
+    const filteredInputFields = copyInputFields.filter(
+      (inputField) =>
+        inputField.getView().getInput().getHTML().id ===
+          REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS.inputParams.id ||
+        inputField.getView().getInput().getHTML().id ===
+          REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_PARAMS.inputParams.id ||
+        inputField.getView().getInput().getHTML().id ===
+          REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id ||
+        inputField.getView().getInput().getHTML().id ===
+          REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS.inputParams.id,
+    );
+
+    this.shippingAddressWrapper = this.createWrapperElement(
+      REGISTRATION_FORM_TITLE_TEXT.SHIPPING_ADDRESS,
+      [REGISTRATION_FORM_STYLES.shippingAddressWrapper],
+      filteredInputFields,
+    );
+
+    return this.shippingAddressWrapper;
+  }
+
   private createSubmitFormButton(): ButtonModel {
     this.submitFormButton = new ButtonModel({
       attrs: {
@@ -118,12 +178,31 @@ class RegistrationFormView {
     return this.submitFormButton;
   }
 
-  public getCountryDropList(): HTMLDivElement {
-    return this.countryDropList;
+  private createWrapperElement(title: string, cssClasses: string[], inputFields: InputFieldModel[]): HTMLDivElement {
+    const wrapperElement = createBaseElement({
+      cssClasses,
+      tag: TAG_NAMES.DIV,
+    });
+    const titleElement = createBaseElement({
+      cssClasses: [REGISTRATION_FORM_STYLES.title],
+      innerContent: title,
+      tag: TAG_NAMES.H3,
+    });
+    wrapperElement.append(titleElement);
+
+    inputFields.forEach((inputField) => {
+      const inputFieldElement = inputField.getView().getHTML();
+      if (inputFieldElement instanceof HTMLLabelElement) {
+        wrapperElement.append(inputFieldElement);
+      } else if (inputFieldElement instanceof InputModel) {
+        wrapperElement.append(inputFieldElement.getHTML());
+      }
+    });
+    return wrapperElement;
   }
 
-  public getCountryItems(): HTMLDivElement[] {
-    return this.countryItems;
+  public getBillingAddressWrapper(): HTMLDivElement {
+    return this.billingAddressWrapper;
   }
 
   public getHTML(): HTMLFormElement {
@@ -134,26 +213,12 @@ class RegistrationFormView {
     return this.inputFields;
   }
 
+  public getShippingAddressWrapper(): HTMLDivElement {
+    return this.shippingAddressWrapper;
+  }
+
   public getSubmitFormButton(): ButtonModel {
     return this.submitFormButton;
-  }
-
-  public hideCountryDropList(): void {
-    this.countryDropList.classList.add(REGISTRATION_FORM_STYLES.hidden);
-  }
-
-  public showCountryDropList(): void {
-    this.countryDropList.classList.remove(REGISTRATION_FORM_STYLES.hidden);
-  }
-
-  public switchVisibilityCountryItems(inputHTML: HTMLInputElement): boolean {
-    const filterValue = inputHTML.value.toLowerCase();
-    this.countryItems.forEach((countryItem) => {
-      const itemValue = countryItem.textContent?.toLowerCase();
-      countryItem.classList.toggle(REGISTRATION_FORM_STYLES.hidden, !itemValue?.includes(filterValue));
-    });
-
-    return true;
   }
 }
 

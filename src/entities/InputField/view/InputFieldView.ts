@@ -49,16 +49,7 @@ class InputFieldView {
   }
 
   private createInput(inputParams: InputParams): InputModel {
-    const { autocomplete, id, lang, placeholder, type } = inputParams;
-
-    this.input = new InputModel({
-      autocomplete,
-      id,
-      lang: lang || '',
-      placeholder: placeholder || '',
-      type,
-    });
-
+    this.input = new InputModel(inputParams);
     return this.input;
   }
 
