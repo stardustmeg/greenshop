@@ -42,6 +42,10 @@ class RouterModel {
   }
 
   public navigateTo(route: string): History {
+    if (this.pages.has(route)) {
+      window.location.pathname = route;
+    }
+
     this.handleRequest(route);
 
     const pathnameApp = window.location.pathname
