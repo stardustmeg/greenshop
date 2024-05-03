@@ -1,7 +1,8 @@
 import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types/form.ts';
 
 import InputFieldValidatorModel from '@/features/InputFieldValidator/model/InputFieldValidatorModel.ts';
-import { EVENT_NAMES, INPUT_TYPES, PASSWORD_TEXT } from '@/shared/constants/enums.ts';
+import { EVENT_NAME } from '@/shared/constants/events.ts';
+import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 
 import InputFieldView from '../view/InputFieldView.ts';
 
@@ -44,21 +45,21 @@ class InputFieldModel {
 
   private setInputHandler(): boolean {
     const input = this.view.getInput().getHTML();
-    input.addEventListener(EVENT_NAMES.INPUT, () => this.inputHandler());
+    input.addEventListener(EVENT_NAME.INPUT, () => this.inputHandler());
 
     return true;
   }
 
   private setSwitchPasswordVisibilityHandler(): boolean {
     const button = this.view.getShowPasswordButton().getHTML();
-    button.addEventListener(EVENT_NAMES.CLICK, () => this.switchPasswordVisibilityHandler());
+    button.addEventListener(EVENT_NAME.CLICK, () => this.switchPasswordVisibilityHandler());
     return true;
   }
 
   private switchPasswordVisibilityHandler(): boolean {
     const input = this.view.getInput().getHTML();
-    input.type = input.type === INPUT_TYPES.PASSWORD ? INPUT_TYPES.TEXT : INPUT_TYPES.PASSWORD;
-    input.placeholder = input.type === INPUT_TYPES.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
+    input.type = input.type === INPUT_TYPE.PASSWORD ? INPUT_TYPE.TEXT : INPUT_TYPE.PASSWORD;
+    input.placeholder = input.type === INPUT_TYPE.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
     this.view.switchPasswordButtonSVG(input.type);
     return true;
   }

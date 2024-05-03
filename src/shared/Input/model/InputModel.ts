@@ -1,6 +1,6 @@
 import type { InputParams } from '@/shared/types/interfaces.ts';
 
-import { IS_DISABLED } from '@/shared/constants/enums.ts';
+import { IS_DISABLED } from '@/shared/constants/buttons.ts';
 
 import InputView from '../view/InputView.ts';
 

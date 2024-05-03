@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
-
 import type { Action, State } from './reducer.ts';
 import type { Reducer, ReduxStore } from './types';
 
-import { EVENT_NAMES, initialState } from '../constants/enums.ts';
+import { EVENT_NAME } from '../constants/events.ts';
+import initialState from '../constants/initialState.ts';
 import { STORAGE_KEY, saveCurrentStateToLocalStorage } from '../services/localStorage.ts';
 import { rootReducer } from './reducer.ts';
 
@@ -28,7 +28,7 @@ export class Store<S, A> implements ReduxStore<S, A> {
     this.state = structuredClone(stateToSet);
     this.rootReducer = rootReducer;
 
-    window.addEventListener(EVENT_NAMES.BEFOREUNLOAD, () => saveCurrentStateToLocalStorage(this.state));
+    window.addEventListener(EVENT_NAME.BEFOREUNLOAD, () => saveCurrentStateToLocalStorage(this.state));
   }
 
   public dispatch(action: A): A {

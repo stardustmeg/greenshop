@@ -6,14 +6,13 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
+import { EVENT_NAME } from '@/shared/constants/events.ts';
 import {
-  EVENT_NAMES,
-  MESSAGE_STATUS,
   REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS,
   REGISTRATION_FORM_KEY,
   REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS,
-  SERVER_MESSAGE,
-} from '@/shared/constants/enums.ts';
+} from '@/shared/constants/forms.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import isKeyOfUserData from '@/shared/utils/isKeyOfUserData.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
@@ -115,7 +114,7 @@ class RegisterFormModel {
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
     const inputHTML = inputField.getView().getInput().getHTML();
     this.isValidInputFields[inputHTML.id] = false;
-    inputHTML.addEventListener(EVENT_NAMES.INPUT, () => {
+    inputHTML.addEventListener(EVENT_NAME.INPUT, () => {
       this.isValidInputFields[inputHTML.id] = inputField.getIsValid();
       this.switchSubmitFormButtonAccess();
     });
@@ -123,7 +122,7 @@ class RegisterFormModel {
   }
 
   private setPreventDefaultToForm(): boolean {
-    this.getHTML().addEventListener(EVENT_NAMES.SUBMIT, (event) => {
+    this.getHTML().addEventListener(EVENT_NAME.SUBMIT, (event) => {
       event.preventDefault();
     });
 
@@ -132,7 +131,7 @@ class RegisterFormModel {
 
   private setSubmitFormHandler(): boolean {
     const submitButton = this.view.getSubmitFormButton().getHTML();
-    submitButton.addEventListener(EVENT_NAMES.CLICK, () => {
+    submitButton.addEventListener(EVENT_NAME.CLICK, () => {
       const formData = this.getFormData();
       const customerModel = getCustomerModel();
       customerModel

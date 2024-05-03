@@ -3,7 +3,8 @@ import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { EVENT_NAMES, MEDIATOR_EVENTS, PAGE_DESCRIPTION, PAGES_IDS } from '@/shared/constants/enums.ts';
+import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import { PAGE_DESCRIPTION, PAGE_ID } from '@/shared/constants/pages.ts';
 
 import NotFoundPageView from '../view/NotFoundPageView.ts';
 
@@ -36,11 +37,11 @@ class NotFoundPageModel implements Page {
   }
 
   private subscribeToEventMediator(): void {
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (route) => this.switchPageVisibility(route));
+    this.eventMediator.subscribe(MEDIATOR_EVENT.CHANGE_PAGE, (route) => this.switchPageVisibility(route));
   }
 
   private switchPageVisibility(route: unknown): boolean {
-    if (route === PAGES_IDS.NOT_FOUND_PAGE) {
+    if (route === PAGE_ID.NOT_FOUND_PAGE) {
       this.view.show();
       this.view.setPageDescription(this.createPageDescription());
     } else {
@@ -52,7 +53,7 @@ class NotFoundPageModel implements Page {
 
   private toMainButtonHandler(): boolean {
     const toMainButton = this.view.getToMainButton().getHTML();
-    toMainButton.addEventListener(EVENT_NAMES.CLICK, this.router.navigateTo.bind(this.router, PAGES_IDS.MAIN_PAGE));
+    toMainButton.addEventListener(EVENT_NAME.CLICK, this.router.navigateTo.bind(this.router, PAGE_ID.MAIN_PAGE));
     return true;
   }
 

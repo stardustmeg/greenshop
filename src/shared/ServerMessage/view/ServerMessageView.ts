@@ -1,6 +1,6 @@
-import type { MessageStatusType } from '@/shared/constants/enums.ts';
-
-import { MESSAGE_STATUS, SERVER_MESSAGE_ANIMATE_DETAILS, TAG_NAMES } from '@/shared/constants/enums.ts';
+import SERVER_MESSAGE_ANIMATE_DETAILS from '@/shared/constants/animations.ts';
+import { MESSAGE_STATUS, type MessageStatusType } from '@/shared/constants/messages.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './serverMessageView.module.scss';
@@ -18,7 +18,7 @@ class ServerMessageView {
   private createHTML(): HTMLDivElement {
     this.serverWrapper = createBaseElement({
       cssClasses: [styles.serverMessageWrapper],
-      tag: TAG_NAMES.DIV,
+      tag: TAG_NAME.DIV,
     });
 
     this.serverWrapper.append(this.serverMessage);
@@ -29,7 +29,7 @@ class ServerMessageView {
   private createServerMessage(): HTMLSpanElement {
     this.serverMessage = createBaseElement({
       cssClasses: [styles.serverMessage],
-      tag: TAG_NAMES.SPAN,
+      tag: TAG_NAME.SPAN,
     });
 
     return this.serverMessage;

@@ -1,0 +1,33 @@
+export const EVENT_NAME = {
+  ANIMATIONEND: 'animationend',
+  ANIMATIONITERATION: 'animationiteration',
+  ANIMATIONSTART: 'animationstart',
+  BEFOREUNLOAD: 'beforeunload',
+  BLUR: 'blur',
+  CHANGE: 'change',
+  CLICK: 'click',
+  CLOSE: 'close',
+  CONTEXTMENU: 'contextmenu',
+  DOM_CONTENT_LOADED: 'DOMContentLoaded',
+  ERROR: 'error',
+  FOCUS: 'focus',
+  HASHCHANGE: 'hashchange',
+  INPUT: 'input',
+  KEYDOWN: 'keydown',
+  KEYUP: 'keyup',
+  LOAD: 'load',
+  MESSAGE: 'message',
+  MOUSEENTER: 'mouseenter',
+  MOUSELEAVE: 'mouseleave',
+  MOUSEWHEEL: 'mousewheel',
+  OPEN: 'open',
+  POPSTATE: 'popstate',
+  RESIZE: 'resize',
+  SCROLL: 'scroll',
+  SUBMIT: 'submit',
+  TRANSITIONEND: 'transitionend',
+} as const;
+
+export const MEDIATOR_EVENT = {
+  CHANGE_PAGE: 'changePage',
+} as const;

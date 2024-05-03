@@ -1,4 +1,4 @@
-import { TAG_NAMES } from '@/shared/constants/enums.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './mainPageView.module.scss';
@@ -16,7 +16,7 @@ class MainPageView {
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
       cssClasses: [styles.mainPage],
-      tag: TAG_NAMES.DIV,
+      tag: TAG_NAME.DIV,
     });
 
     this.parent.append(this.page);

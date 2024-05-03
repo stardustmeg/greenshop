@@ -1,6 +1,6 @@
 import type { ButtonAttributes } from '@/shared/types/button.ts';
 
-import { TAG_NAMES } from '@/shared/constants/enums.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 class ButtonView {
@@ -15,7 +15,7 @@ class ButtonView {
       attributes: params.attrs,
       cssClasses: params.classes,
       innerContent: params.text,
-      tag: TAG_NAMES.BUTTON,
+      tag: TAG_NAME.BUTTON,
     });
 
     if (params.action) {

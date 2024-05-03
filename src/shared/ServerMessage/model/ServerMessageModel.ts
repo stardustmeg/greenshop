@@ -1,4 +1,4 @@
-import type { MessageStatusType } from '@/shared/constants/enums.ts';
+import type { MessageStatusType } from '@/shared/constants/messages.ts';
 
 import ServerMessageView from '../view/ServerMessageView.ts';
 

@@ -1,4 +1,6 @@
-import { COUNTRIES, EVENT_NAMES, TAG_NAMES } from '@/shared/constants/enums.ts';
+import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
+import { EVENT_NAME } from '@/shared/constants/events.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './countryChoiceView.module.scss';
@@ -15,7 +17,7 @@ class CountryChoiceView {
     this.countryChoice = this.createHTML();
 
     // TBD replace node document with some element because listener works two times (twice)
-    document.addEventListener(EVENT_NAMES.CLICK, (event) => {
+    document.addEventListener(EVENT_NAME.CLICK, (event) => {
       if (!this.countryDropList.classList.contains(styles.hidden) && event.target !== input) {
         this.hideCountryChoice();
       }
@@ -25,10 +27,10 @@ class CountryChoiceView {
   private createCountryDropList(): HTMLDivElement {
     this.countryDropList = createBaseElement({
       cssClasses: [styles.countryDropList],
-      tag: TAG_NAMES.DIV,
+      tag: TAG_NAME.DIV,
     });
 
-    Object.entries(COUNTRIES).forEach(([countryCode]) =>
+    Object.entries(COUNTRIES_LIST).forEach(([countryCode]) =>
       this.countryDropList.append(this.createCountryItem(countryCode)),
     );
 
@@ -39,7 +41,7 @@ class CountryChoiceView {
     const countryItem = createBaseElement({
       cssClasses: [styles.countryItem],
       innerContent: countryCode,
-      tag: TAG_NAMES.DIV,
+      tag: TAG_NAME.DIV,
     });
 
     this.countryItems.push(countryItem);
@@ -50,7 +52,7 @@ class CountryChoiceView {
   private createHTML(): HTMLDivElement {
     this.countryChoice = createBaseElement({
       cssClasses: [styles.countryChoice, styles.hidden],
-      tag: TAG_NAMES.DIV,
+      tag: TAG_NAME.DIV,
     });
 
     this.countryChoice.append(this.countryDropList);

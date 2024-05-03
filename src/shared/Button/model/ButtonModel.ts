@@ -1,6 +1,6 @@
 import type { ButtonAttributes } from '@/shared/types/button.ts';
 
-import { IS_DISABLED } from '@/shared/constants/enums.ts';
+import { IS_DISABLED } from '@/shared/constants/buttons.ts';
 
 import ButtonView from '../view/ButtonView.ts';
 

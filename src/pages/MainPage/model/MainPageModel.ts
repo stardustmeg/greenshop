@@ -3,7 +3,8 @@ import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
-import { MEDIATOR_EVENTS, PAGES_IDS } from '@/shared/constants/enums.ts';
+import { MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 import MainPageView from '../view/MainPageView.ts';
 
@@ -26,18 +27,18 @@ class MainPageModel implements Page {
   }
 
   private subscribeToEventMediator(): void {
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (route) => this.switchPageVisibility(route));
+    this.eventMediator.subscribe(MEDIATOR_EVENT.CHANGE_PAGE, (route) => this.switchPageVisibility(route));
   }
 
   private subscribeToStore(): boolean {
     observeStore(selectCurrentUser, () => {
-      this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
+      this.router.navigateTo(PAGE_ID.MAIN_PAGE);
     });
     return true;
   }
 
   private switchPageVisibility(route: unknown): boolean {
-    if (route === PAGES_IDS.MAIN_PAGE || route === PAGES_IDS.DEFAULT_PAGE) {
+    if (route === PAGE_ID.MAIN_PAGE || route === PAGE_ID.DEFAULT_PAGE) {
       this.view.show();
     } else {
       this.view.hide();
