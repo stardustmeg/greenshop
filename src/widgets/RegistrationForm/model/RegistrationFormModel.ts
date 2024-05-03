@@ -4,7 +4,7 @@ import type { UserRegisterData } from '@/shared/types/interfaces.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setRegisterFormCountry } from '@/shared/Store/actions.ts';
+import { setCurrentUser, setRegisterFormCountry } from '@/shared/Store/actions.ts';
 import observeStore, { selectRegisterFormCountry } from '@/shared/Store/observer.ts';
 import {
   EVENT_NAMES,
@@ -139,13 +139,19 @@ class RegisterFormModel {
       const customerModel = getCustomerModel();
       customerModel
         .registrationNewCustomer(formData)
-        .then(() => {
+        .then((data) => {
           const userInfo = {
             email: formData.email,
             password: formData.password,
           };
-          customerModel.authCustomer(userInfo).catch(() => {});
+          customerModel
+            .authCustomer(userInfo)
+            .then(() => getStore().dispatch(setCurrentUser(data)))
+            .catch(() => {});
           serverMessageModel.showServerMessage(SERVER_MESSAGE.SUCCESSFUL_REGISTRATION, MESSAGE_STATUS.SUCCESS);
+          Object.entries(this.isValidInputFields).forEach(([key]) => {
+            this.isValidInputFields[key] = false;
+          });
         })
         .catch(() => serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_REGISTRATION, MESSAGE_STATUS.ERROR));
     });
@@ -155,6 +161,7 @@ class RegisterFormModel {
   private switchSubmitFormButtonAccess(): boolean {
     if (Object.values(this.isValidInputFields).every((value) => value)) {
       this.view.getSubmitFormButton().setEnabled();
+      this.view.getSubmitFormButton().getHTML().focus();
     } else {
       this.view.getSubmitFormButton().setDisabled();
     }
