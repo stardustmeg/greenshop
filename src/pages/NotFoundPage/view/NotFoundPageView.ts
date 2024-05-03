@@ -1,5 +1,6 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import { SVG_DETAILS, TAG_NAMES } from '@/shared/constants/enums.ts';
+import SVG_DETAILS from '@/shared/constants/svg.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
@@ -32,7 +33,7 @@ class NotFoundPageView {
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
       cssClasses: [styles.notFoundPage],
-      tag: TAG_NAMES.DIV,
+      tag: TAG_NAME.DIV,
     });
 
     this.page.append(this.logo, this.title, this.description, this.toMainButton.getHTML());
@@ -44,14 +45,14 @@ class NotFoundPageView {
   private createPageDescription(): HTMLParagraphElement {
     this.description = createBaseElement({
       cssClasses: [styles.pageDescription],
-      tag: TAG_NAMES.P,
+      tag: TAG_NAME.P,
     });
     return this.description;
   }
 
   private createPageLogo(): HTMLDivElement {
-    this.logo = createBaseElement({ cssClasses: [styles.pageLogo], tag: TAG_NAMES.DIV });
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, TAG_NAMES.SVG);
+    this.logo = createBaseElement({ cssClasses: [styles.pageLogo], tag: TAG_NAME.DIV });
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, TAG_NAME.SVG);
     svg.append(createSVGUse(SVG_DETAILS.LOGO));
 
     this.logo.append(svg);
@@ -63,7 +64,7 @@ class NotFoundPageView {
     this.title = createBaseElement({
       cssClasses: [styles.pageTitle],
       innerContent: '404',
-      tag: TAG_NAMES.H1,
+      tag: TAG_NAME.H1,
     });
     return this.title;
   }

@@ -1,7 +1,8 @@
-import { PAGE_DESCRIPTION, PAGE_LINK_TEXT, PAGES_IDS, TAG_NAMES } from '@/shared/constants/enums.ts';
+import { PAGE_DESCRIPTION, PAGE_ID, PAGE_LINK_TEXT } from '@/shared/constants/pages.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import LOGIN_PAGE_STYLES from './loginPageView.module.scss';
+import styles from './loginPageView.module.scss';
 
 class LoginPageView {
   private authDescription: HTMLHeadingElement;
@@ -30,9 +31,9 @@ class LoginPageView {
 
   private createAuthDescription(): HTMLHeadingElement {
     this.authDescription = createBaseElement({
-      cssClasses: [LOGIN_PAGE_STYLES.authDescription],
+      cssClasses: [styles.authDescription],
       innerContent: PAGE_DESCRIPTION.LOGIN,
-      tag: TAG_NAMES.H3,
+      tag: TAG_NAME.H3,
     });
 
     return this.authDescription;
@@ -40,8 +41,8 @@ class LoginPageView {
 
   private createAuthWrapper(): HTMLDivElement {
     this.authWrapper = createBaseElement({
-      cssClasses: [LOGIN_PAGE_STYLES.authWrapper],
-      tag: TAG_NAMES.DIV,
+      cssClasses: [styles.authWrapper],
+      tag: TAG_NAME.DIV,
     });
 
     this.authWrapper.append(this.linksWrapper, this.authDescription);
@@ -50,8 +51,8 @@ class LoginPageView {
 
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
-      cssClasses: [LOGIN_PAGE_STYLES.loginPage],
-      tag: TAG_NAMES.DIV,
+      cssClasses: [styles.loginPage],
+      tag: TAG_NAME.DIV,
     });
 
     this.page.append(this.authWrapper);
@@ -62,8 +63,8 @@ class LoginPageView {
 
   private createLinksWrapper(): HTMLDivElement {
     this.linksWrapper = createBaseElement({
-      cssClasses: [LOGIN_PAGE_STYLES.linksWrapper],
-      tag: TAG_NAMES.DIV,
+      cssClasses: [styles.linksWrapper],
+      tag: TAG_NAME.DIV,
     });
 
     this.linksWrapper.append(this.loginSpan, this.registerLink);
@@ -72,9 +73,9 @@ class LoginPageView {
 
   private createLoginSpan(): HTMLSpanElement {
     this.loginSpan = createBaseElement({
-      cssClasses: [LOGIN_PAGE_STYLES.loginSpan],
+      cssClasses: [styles.loginSpan],
       innerContent: PAGE_LINK_TEXT.LOGIN,
-      tag: TAG_NAMES.SPAN,
+      tag: TAG_NAME.SPAN,
     });
 
     return this.loginSpan;
@@ -83,11 +84,11 @@ class LoginPageView {
   private createRegisterLink(): HTMLAnchorElement {
     this.registerLink = createBaseElement({
       attributes: {
-        href: PAGES_IDS.REGISTRATION_PAGE,
+        href: PAGE_ID.REGISTRATION_PAGE,
       },
-      cssClasses: [LOGIN_PAGE_STYLES.registerLink],
+      cssClasses: [styles.registerLink],
       innerContent: PAGE_LINK_TEXT.REGISTRATION,
-      tag: TAG_NAMES.A,
+      tag: TAG_NAME.A,
     });
 
     return this.registerLink;
@@ -106,12 +107,12 @@ class LoginPageView {
   }
 
   public hide(): boolean {
-    this.page.classList.add(LOGIN_PAGE_STYLES.loginPage_hidden);
+    this.page.classList.add(styles.loginPage_hidden);
     return true;
   }
 
   public show(): boolean {
-    this.page.classList.remove(LOGIN_PAGE_STYLES.loginPage_hidden);
+    this.page.classList.remove(styles.loginPage_hidden);
     return true;
   }
 }

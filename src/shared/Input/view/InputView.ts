@@ -1,6 +1,6 @@
-import type { InputParams } from '@/shared/types/interfaces';
+import type { InputParams } from '@/shared/types/form';
 
-import { TAG_NAMES } from '@/shared/constants/enums.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 class InputView {
@@ -19,7 +19,7 @@ class InputView {
         placeholder: attrs.placeholder || '',
         type: attrs.type,
       },
-      tag: TAG_NAMES.INPUT,
+      tag: TAG_NAME.INPUT,
     });
 
     return this.input;

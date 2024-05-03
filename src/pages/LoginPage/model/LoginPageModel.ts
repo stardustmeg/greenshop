@@ -1,14 +1,15 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
-import type { PageInterface } from '@/shared/types/interfaces.ts';
+import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { EVENT_NAMES, MEDIATOR_EVENTS, PAGES_IDS } from '@/shared/constants/enums.ts';
+import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 import LoginFormModel from '@/widgets/LoginForm/model/LoginFormModel.ts';
 
 import LoginPageView from '../view/LoginPageView.ts';
 
-class LoginPageModel implements PageInterface {
+class LoginPageModel implements Page {
   private eventMediator = EventMediatorModel.getInstance();
 
   private loginForm = new LoginFormModel();
@@ -29,7 +30,7 @@ class LoginPageModel implements PageInterface {
       this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
       return false;
     }
-    this.router.navigateTo(PAGES_IDS.MAIN_PAGE);
+    this.router.navigateTo(PAGE_ID.MAIN_PAGE);
     return true;
   }
 
@@ -43,18 +44,18 @@ class LoginPageModel implements PageInterface {
   private registerLinkHandler(): void {
     const registerLink = this.view.getRegisterLink();
 
-    registerLink.addEventListener(EVENT_NAMES.CLICK, (event) => {
+    registerLink.addEventListener(EVENT_NAME.CLICK, (event) => {
       event.preventDefault();
-      this.router.navigateTo(PAGES_IDS.REGISTRATION_PAGE);
+      this.router.navigateTo(PAGE_ID.REGISTRATION_PAGE);
     });
   }
 
   private subscribeToEventMediator(): void {
-    this.eventMediator.subscribe(MEDIATOR_EVENTS.CHANGE_PAGE, (route) => this.switchPageVisibility(route));
+    this.eventMediator.subscribe(MEDIATOR_EVENT.CHANGE_PAGE, (route) => this.switchPageVisibility(route));
   }
 
   private switchPageVisibility(route: unknown): boolean {
-    if (route === PAGES_IDS.LOGIN_PAGE) {
+    if (route === PAGE_ID.LOGIN_PAGE) {
       this.checkAuthUser();
     } else {
       this.view.hide();

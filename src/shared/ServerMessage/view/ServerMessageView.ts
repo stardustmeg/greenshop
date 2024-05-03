@@ -1,9 +1,9 @@
-import type { MessageStatusType } from '@/shared/constants/enums.ts';
-
-import { MESSAGE_STATUS, SERVER_MESSAGE_ANIMATE_DETAILS, TAG_NAMES } from '@/shared/constants/enums.ts';
+import SERVER_MESSAGE_ANIMATE_DETAILS from '@/shared/constants/animations.ts';
+import { MESSAGE_STATUS, type MessageStatusType } from '@/shared/constants/messages.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import SERVER_MESSAGE_STYLES from './serverMessageView.module.scss';
+import styles from './serverMessageView.module.scss';
 
 class ServerMessageView {
   private serverMessage: HTMLSpanElement;
@@ -17,8 +17,8 @@ class ServerMessageView {
 
   private createHTML(): HTMLDivElement {
     this.serverWrapper = createBaseElement({
-      cssClasses: [SERVER_MESSAGE_STYLES.serverMessageWrapper],
-      tag: TAG_NAMES.DIV,
+      cssClasses: [styles.serverMessageWrapper],
+      tag: TAG_NAME.DIV,
     });
 
     this.serverWrapper.append(this.serverMessage);
@@ -28,8 +28,8 @@ class ServerMessageView {
 
   private createServerMessage(): HTMLSpanElement {
     this.serverMessage = createBaseElement({
-      cssClasses: [SERVER_MESSAGE_STYLES.serverMessage],
-      tag: TAG_NAMES.SPAN,
+      cssClasses: [styles.serverMessage],
+      tag: TAG_NAME.SPAN,
     });
 
     return this.serverMessage;
@@ -48,8 +48,8 @@ class ServerMessageView {
   }
 
   public setServerMessage(message: string, status: MessageStatusType): boolean {
-    this.serverWrapper.classList.toggle(SERVER_MESSAGE_STYLES.error, status === MESSAGE_STATUS.ERROR);
-    this.serverWrapper.classList.toggle(SERVER_MESSAGE_STYLES.success, status === MESSAGE_STATUS.SUCCESS);
+    this.serverWrapper.classList.toggle(styles.error, status === MESSAGE_STATUS.ERROR);
+    this.serverWrapper.classList.toggle(styles.success, status === MESSAGE_STATUS.SUCCESS);
     this.serverMessage.textContent = message;
     this.startAnimation();
     return true;

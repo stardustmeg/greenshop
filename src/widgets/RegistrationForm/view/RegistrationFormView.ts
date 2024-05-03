@@ -1,14 +1,13 @@
-import type { InputParams } from '@/shared/types/interfaces';
+import type { InputParams } from '@/shared/types/form';
 
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
+import { BUTTON_TYPE, FORM_SUBMIT_BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import {
-  BUTTON_TYPES,
   CHECKBOX_PARAMS,
-  FORM_SUBMIT_BUTTON_TEXT,
   FORM_TEXT,
-  INPUT_TYPES,
+  INPUT_TYPE,
   REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS,
   REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS,
   REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
@@ -25,11 +24,11 @@ import {
   REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
   REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS,
   REGISTRATION_FORM_TITLE_TEXT,
-  TAG_NAMES,
-} from '@/shared/constants/enums.ts';
+} from '@/shared/constants/forms.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import REGISTRATION_FORM_STYLES from './registrationForm.module.scss';
+import styles from './registrationForm.module.scss';
 
 class RegistrationFormView {
   private billingAddressWrapper: HTMLDivElement;
@@ -78,19 +77,19 @@ class RegistrationFormView {
 
     this.billingAddressWrapper = this.createWrapperElement(
       REGISTRATION_FORM_TITLE_TEXT.BILLING_ADDRESS,
-      [REGISTRATION_FORM_STYLES.billingAddressWrapper],
+      [styles.billingAddressWrapper],
       filteredInputFields,
     );
 
     const checkBoxLabel = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.checkboxLabel],
-      tag: TAG_NAMES.LABEL,
+      cssClasses: [styles.checkboxLabel],
+      tag: TAG_NAME.LABEL,
     });
 
     const checkBoxText = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.checkboxText],
+      cssClasses: [styles.checkboxText],
       innerContent: FORM_TEXT.DEFAULT_ADDRESS,
-      tag: TAG_NAMES.SPAN,
+      tag: TAG_NAME.SPAN,
     });
 
     checkBoxLabel.append(checkBoxText, this.checkboxDefaultBillingAddress.getHTML());
@@ -105,7 +104,7 @@ class RegistrationFormView {
       autocomplete: CHECKBOX_PARAMS.AUTOCOMPLETE,
       id: CHECKBOX_PARAMS.BILLING_ID,
       placeholder: '',
-      type: INPUT_TYPES.CHECK_BOX,
+      type: INPUT_TYPE.CHECK_BOX,
     };
     this.checkboxDefaultBillingAddress = new InputModel(checkboxParams);
     return this.checkboxDefaultBillingAddress;
@@ -116,7 +115,7 @@ class RegistrationFormView {
       autocomplete: CHECKBOX_PARAMS.AUTOCOMPLETE,
       id: CHECKBOX_PARAMS.SHIPPING_ID,
       placeholder: '',
-      type: INPUT_TYPES.CHECK_BOX,
+      type: INPUT_TYPE.CHECK_BOX,
     };
     this.checkboxDefaultShippingAddress = new InputModel(checkboxParams);
     return this.checkboxDefaultShippingAddress;
@@ -132,7 +131,7 @@ class RegistrationFormView {
 
     this.credentialsWrapper = this.createWrapperElement(
       REGISTRATION_FORM_TITLE_TEXT.CREDENTIALS,
-      [REGISTRATION_FORM_STYLES.credentialsWrapper],
+      [styles.credentialsWrapper],
       filteredInputFields,
     );
 
@@ -141,8 +140,8 @@ class RegistrationFormView {
 
   private createHTML(): HTMLFormElement {
     this.form = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.registrationForm],
-      tag: TAG_NAMES.FORM,
+      cssClasses: [styles.registrationForm],
+      tag: TAG_NAME.FORM,
     });
 
     this.form.append(
@@ -183,7 +182,7 @@ class RegistrationFormView {
 
     this.personalDataWrapper = this.createWrapperElement(
       REGISTRATION_FORM_TITLE_TEXT.PERSONAL,
-      [REGISTRATION_FORM_STYLES.personalDataWrapper],
+      [styles.personalDataWrapper],
       filteredInputFields,
     );
 
@@ -206,19 +205,19 @@ class RegistrationFormView {
 
     this.shippingAddressWrapper = this.createWrapperElement(
       REGISTRATION_FORM_TITLE_TEXT.SHIPPING_ADDRESS,
-      [REGISTRATION_FORM_STYLES.shippingAddressWrapper],
+      [styles.shippingAddressWrapper],
       filteredInputFields,
     );
 
     const checkBoxLabel = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.checkboxLabel],
-      tag: TAG_NAMES.LABEL,
+      cssClasses: [styles.checkboxLabel],
+      tag: TAG_NAME.LABEL,
     });
 
     const checkBoxText = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.checkboxText],
+      cssClasses: [styles.checkboxText],
       innerContent: FORM_TEXT.DEFAULT_ADDRESS,
-      tag: TAG_NAMES.SPAN,
+      tag: TAG_NAME.SPAN,
     });
 
     checkBoxLabel.append(checkBoxText, this.checkboxDefaultShippingAddress.getHTML());
@@ -231,7 +230,7 @@ class RegistrationFormView {
   private createSubmitFormButton(): ButtonModel {
     this.submitFormButton = new ButtonModel({
       attrs: {
-        type: BUTTON_TYPES.SUBMIT,
+        type: BUTTON_TYPE.SUBMIT,
       },
       text: FORM_SUBMIT_BUTTON_TEXT.REGISTRATION,
     });
@@ -244,12 +243,12 @@ class RegistrationFormView {
   private createWrapperElement(title: string, cssClasses: string[], inputFields: InputFieldModel[]): HTMLDivElement {
     const wrapperElement = createBaseElement({
       cssClasses,
-      tag: TAG_NAMES.DIV,
+      tag: TAG_NAME.DIV,
     });
     const titleElement = createBaseElement({
-      cssClasses: [REGISTRATION_FORM_STYLES.title],
+      cssClasses: [styles.title],
       innerContent: title,
-      tag: TAG_NAMES.H3,
+      tag: TAG_NAME.H3,
     });
     wrapperElement.append(titleElement);
 

@@ -1,4 +1,4 @@
-import type { UserLoginData, UserRegisterData } from '@/shared/types/interfaces.ts';
+import type { UserLoginData, UserRegisterData } from '@/shared/types/user.ts';
 
 import {
   type ByProjectKeyRequestBuilder,

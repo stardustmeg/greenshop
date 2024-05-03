@@ -1,7 +1,8 @@
-import type { PageInterface } from '@/shared/types/interfaces.ts';
+import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
-import { EVENT_NAMES, MEDIATOR_EVENTS, PAGES_IDS } from '@/shared/constants/enums.ts';
+import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
 const NEXT_SEGMENT = import.meta.env.VITE_APP_NEXT_SEGMENT;
@@ -10,10 +11,10 @@ const PATH_SEGMENTS_TO_KEEP = import.meta.env.VITE_APP_PATH_SEGMENTS_TO_KEEP;
 class RouterModel {
   private eventMediator = EventMediatorModel.getInstance();
 
-  private pages: Map<string, PageInterface> = new Map();
+  private pages: Map<string, Page> = new Map();
 
   constructor() {
-    document.addEventListener(EVENT_NAMES.DOM_CONTENT_LOADED, () => {
+    document.addEventListener(EVENT_NAME.DOM_CONTENT_LOADED, () => {
       const currentPath = window.location.pathname
         .split(DEFAULT_SEGMENT)
         .slice(PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
@@ -21,7 +22,7 @@ class RouterModel {
       this.handleRequest(currentPath);
     });
 
-    window.addEventListener(EVENT_NAMES.POPSTATE, () => {
+    window.addEventListener(EVENT_NAME.POPSTATE, () => {
       const currentPath = window.location.pathname
         .split(DEFAULT_SEGMENT)
         .slice(PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
@@ -34,10 +35,10 @@ class RouterModel {
     const pathParts = path.split(DEFAULT_SEGMENT);
     const hasRoute = this.pages.has(pathParts.join(''));
     if (!hasRoute) {
-      this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, PAGES_IDS.NOT_FOUND_PAGE);
+      this.eventMediator.notify(MEDIATOR_EVENT.CHANGE_PAGE, PAGE_ID.NOT_FOUND_PAGE);
       return null;
     }
-    this.eventMediator.notify(MEDIATOR_EVENTS.CHANGE_PAGE, pathParts.join(''));
+    this.eventMediator.notify(MEDIATOR_EVENT.CHANGE_PAGE, pathParts.join(''));
     return pathParts.join('');
   }
 
@@ -59,7 +60,7 @@ class RouterModel {
     return window.history;
   }
 
-  public setPages(pages: Map<string, PageInterface>): Map<string, PageInterface> {
+  public setPages(pages: Map<string, Page>): Map<string, Page> {
     this.pages = pages;
     return this.pages;
   }

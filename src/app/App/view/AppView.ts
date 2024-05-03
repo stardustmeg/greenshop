@@ -1,7 +1,7 @@
-import { TAG_NAMES } from '@/shared/constants/enums.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import APP_STYLES from './appView.module.scss';
+import styles from './appView.module.scss';
 
 class AppView {
   private pagesContainer: HTMLDivElement;
@@ -12,8 +12,8 @@ class AppView {
 
   private createHTML(): HTMLDivElement {
     this.pagesContainer = createBaseElement({
-      cssClasses: [APP_STYLES.siteWrapper],
-      tag: TAG_NAMES.DIV,
+      cssClasses: [styles.siteWrapper],
+      tag: TAG_NAME.DIV,
     });
 
     return this.pagesContainer;

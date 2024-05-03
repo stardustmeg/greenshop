@@ -1,8 +1,10 @@
-import type { InputFieldParams, InputParams, LabelParams } from '@/shared/types/interfaces.ts';
+import type { InputFieldParams, InputParams, LabelParams } from '@/shared/types/form';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import { INPUT_TYPES, SVG_DETAILS, TAG_NAMES } from '@/shared/constants/enums.ts';
+import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import SVG_DETAILS from '@/shared/constants/svg.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
@@ -25,7 +27,7 @@ class InputFieldView {
 
   private createErrorField(): HTMLSpanElement {
     this.errorField = createBaseElement({
-      tag: TAG_NAMES.SPAN,
+      tag: TAG_NAME.SPAN,
     });
 
     return this.errorField;
@@ -41,7 +43,7 @@ class InputFieldView {
       this.inputField = this.input;
     }
 
-    if (this.getInput().getHTML().type === INPUT_TYPES.PASSWORD) {
+    if (this.getInput().getHTML().type === INPUT_TYPE.PASSWORD) {
       this.label?.append(this.showPasswordButton.getHTML());
     }
 
@@ -60,7 +62,7 @@ class InputFieldView {
         for: htmlFor,
       },
       innerContent: text || '',
-      tag: TAG_NAMES.LABEL,
+      tag: TAG_NAME.LABEL,
     });
 
     return this.label;
@@ -68,7 +70,7 @@ class InputFieldView {
 
   private createShowPasswordButton(): ButtonModel {
     this.showPasswordButton = new ButtonModel({});
-    this.switchPasswordButtonSVG(INPUT_TYPES.PASSWORD);
+    this.switchPasswordButtonSVG(INPUT_TYPE.PASSWORD);
     return this.showPasswordButton;
   }
 
@@ -96,9 +98,9 @@ class InputFieldView {
   }
 
   public switchPasswordButtonSVG(type: string): SVGSVGElement {
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, TAG_NAMES.SVG);
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, TAG_NAME.SVG);
     this.showPasswordButton.getHTML().innerHTML = '';
-    svg.append(createSVGUse(type === INPUT_TYPES.PASSWORD ? SVG_DETAILS.CLOSE_EYE : SVG_DETAILS.OPEN_EYE));
+    svg.append(createSVGUse(type === INPUT_TYPE.PASSWORD ? SVG_DETAILS.CLOSE_EYE : SVG_DETAILS.OPEN_EYE));
     this.showPasswordButton.getHTML().append(svg);
     return svg;
   }

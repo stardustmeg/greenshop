@@ -1,15 +1,11 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import {
-  BUTTON_TYPES,
-  FORM_SUBMIT_BUTTON_TEXT,
-  LOGIN_FORM_INPUT_FIELD_PARAMS,
-  LOGIN_FORM_INPUT_FIELD_VALIDATION_PARAMS,
-  TAG_NAMES,
-} from '@/shared/constants/enums.ts';
+import { BUTTON_TYPE, FORM_SUBMIT_BUTTON_TEXT } from '@/shared/constants/buttons.ts';
+import { LOGIN_FORM_INPUT_FIELD_PARAMS, LOGIN_FORM_INPUT_FIELD_VALIDATION_PARAMS } from '@/shared/constants/forms.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import LOGIN_FORM_STYLES from './loginForm.module.scss';
+import styles from './loginForm.module.scss';
 
 class LoginFormView {
   private form: HTMLFormElement;
@@ -26,8 +22,8 @@ class LoginFormView {
 
   private createHTML(): HTMLFormElement {
     this.form = createBaseElement({
-      cssClasses: [LOGIN_FORM_STYLES.loginForm],
-      tag: TAG_NAMES.FORM,
+      cssClasses: [styles.loginForm],
+      tag: TAG_NAME.FORM,
     });
 
     this.inputFields.forEach((inputField) => {
@@ -64,9 +60,9 @@ class LoginFormView {
   private createSubmitFormButton(): ButtonModel {
     this.submitFormButton = new ButtonModel({
       attrs: {
-        type: BUTTON_TYPES.SUBMIT,
+        type: BUTTON_TYPE.SUBMIT,
       },
-      classes: [LOGIN_FORM_STYLES.submitFormButton],
+      classes: [styles.submitFormButton],
       text: FORM_SUBMIT_BUTTON_TEXT.LOGIN,
     });
 

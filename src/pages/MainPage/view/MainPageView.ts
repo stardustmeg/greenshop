@@ -1,7 +1,7 @@
-import { TAG_NAMES } from '@/shared/constants/enums.ts';
+import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import MAIN_PAGE_STYLES from './mainPageView.module.scss';
+import styles from './mainPageView.module.scss';
 
 class MainPageView {
   private page: HTMLDivElement;
@@ -15,8 +15,8 @@ class MainPageView {
 
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
-      cssClasses: [MAIN_PAGE_STYLES.mainPage],
-      tag: TAG_NAMES.DIV,
+      cssClasses: [styles.mainPage],
+      tag: TAG_NAME.DIV,
     });
 
     this.parent.append(this.page);
@@ -29,12 +29,12 @@ class MainPageView {
   }
 
   public hide(): boolean {
-    this.page.classList.add(MAIN_PAGE_STYLES.mainPage_hidden);
+    this.page.classList.add(styles.mainPage_hidden);
     return true;
   }
 
   public show(): boolean {
-    this.page.classList.remove(MAIN_PAGE_STYLES.mainPage_hidden);
+    this.page.classList.remove(styles.mainPage_hidden);
     return true;
   }
 }

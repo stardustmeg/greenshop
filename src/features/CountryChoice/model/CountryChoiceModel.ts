@@ -1,7 +1,8 @@
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, setShippingCountry } from '@/shared/Store/actions.ts';
 import observeStore, { selectBillingCountry, selectShippingCountry } from '@/shared/Store/observer.ts';
-import { EVENT_NAMES, REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS } from '@/shared/constants/enums.ts';
+import { EVENT_NAME } from '@/shared/constants/events.ts';
+import { REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS } from '@/shared/constants/forms.ts';
 import getCountryIndex from '@/shared/utils/getCountryIndex.ts';
 
 import CountryChoiceView from '../view/CountryChoiceView.ts';
@@ -20,7 +21,7 @@ class CountryChoiceModel {
         : selectShippingCountry;
 
     observeStore(action, () => {
-      const event = new Event(EVENT_NAMES.INPUT);
+      const event = new Event(EVENT_NAME.INPUT);
       input.dispatchEvent(event);
     });
   }
@@ -29,11 +30,11 @@ class CountryChoiceModel {
     const inputHTML = input;
     this.view.getCountryItems().forEach((countryItem) => {
       const currentItem = countryItem;
-      currentItem.addEventListener(EVENT_NAMES.CLICK, () => {
+      currentItem.addEventListener(EVENT_NAME.CLICK, () => {
         if (currentItem.textContent) {
           inputHTML.value = currentItem.textContent;
           this.setCountryToStore(currentItem, inputHTML.id);
-          const event = new Event(EVENT_NAMES.INPUT);
+          const event = new Event(EVENT_NAME.INPUT);
           inputHTML.dispatchEvent(event);
           this.view.hideCountryChoice();
         }
@@ -56,8 +57,8 @@ class CountryChoiceModel {
   }
 
   private setInputHandler(input: HTMLInputElement): boolean {
-    input.addEventListener(EVENT_NAMES.FOCUS, () => this.view.showCountryChoice());
-    input.addEventListener(EVENT_NAMES.INPUT, () => {
+    input.addEventListener(EVENT_NAME.FOCUS, () => this.view.showCountryChoice());
+    input.addEventListener(EVENT_NAME.INPUT, () => {
       this.view.switchVisibilityCountryItems(input);
       this.setCountryToStore(input, input.id);
     });

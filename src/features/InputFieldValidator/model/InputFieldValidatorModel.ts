@@ -1,7 +1,9 @@
-import type { InputFieldValidatorParams } from '@/shared/types/interfaces';
+import type { InputFieldValidatorParams } from '@/shared/types/form';
 
 import getStore from '@/shared/Store/Store.ts';
-import { COUNTRIES, ERROR_MESSAGE, USER_POSTAL_CODE } from '@/shared/constants/enums.ts';
+import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
+import { USER_POSTAL_CODE } from '@/shared/constants/forms.ts';
+import { ERROR_MESSAGE } from '@/shared/constants/messages.ts';
 import { postcodeValidator } from 'postcode-validator';
 
 class InputFieldValidatorModel {
@@ -93,7 +95,7 @@ class InputFieldValidatorModel {
 
   private checkValidCountry(value: string): boolean | string {
     if (this.validParams.validCountry) {
-      if (!Object.keys(COUNTRIES).find((countryCode) => countryCode === value)) {
+      if (!Object.keys(COUNTRIES_LIST).find((countryCode) => countryCode === value)) {
         return ERROR_MESSAGE.INVALID_COUNTRY;
       }
     }
