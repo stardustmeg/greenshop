@@ -1,4 +1,4 @@
-import type { InputParams } from '@/shared/types/interfaces.ts';
+import type { InputParams } from '@/shared/types/form.ts';
 
 import { IS_DISABLED } from '@/shared/constants/buttons.ts';
 

@@ -1,4 +1,4 @@
-import type { InputParams } from '@/shared/types/interfaces';
+import type { InputParams } from '@/shared/types/form';
 
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';

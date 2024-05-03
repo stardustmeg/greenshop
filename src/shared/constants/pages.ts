@@ -15,5 +15,5 @@ export const PAGE_ID = {
   LOGIN_PAGE: 'login',
   MAIN_PAGE: 'main',
   NOT_FOUND_PAGE: '404',
-  REGISTRATION_PAGE: 'registration',
+  REGISTRATION_PAGE: 'register',
 } as const;
