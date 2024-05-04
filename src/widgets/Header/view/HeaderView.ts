@@ -1,3 +1,4 @@
+import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
@@ -12,7 +13,10 @@ class HeaderView {
 
   private linkLogo: LinkModel;
 
+  private logoutButton: ButtonModel;
+
   constructor() {
+    this.logoutButton = this.createLogoutButton();
     this.linkLogo = this.createLinkLogo();
     this.header = this.createHTML();
   }
@@ -23,7 +27,7 @@ class HeaderView {
       tag: TAG_NAME.HEADER,
     });
 
-    this.header.append(this.linkLogo.getHTML());
+    this.header.append(this.linkLogo.getHTML(), this.logoutButton.getHTML());
     return this.header;
   }
 
@@ -41,12 +45,25 @@ class HeaderView {
     return this.linkLogo;
   }
 
+  private createLogoutButton(): ButtonModel {
+    this.logoutButton = new ButtonModel({
+      classes: [styles.logoutButton],
+      text: 'Logout',
+    });
+
+    return this.logoutButton;
+  }
+
   public getHTML(): HTMLElement {
     return this.header;
   }
 
   public getLinkLogo(): LinkModel {
     return this.linkLogo;
+  }
+
+  public getLogoutButton(): ButtonModel {
+    return this.logoutButton;
   }
 }
 

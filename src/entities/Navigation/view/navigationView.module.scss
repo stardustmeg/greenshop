@@ -2,12 +2,15 @@
   display: flex;
   align-self: center;
   justify-content: center;
+  grid-column: 2;
+  grid-row: 1;
   gap: var(--extra-small-offset);
 }
 
 .link {
   position: relative;
   font: var(--regular-font);
+  letter-spacing: 1px;
   color: var(--noble-gray-800);
   transition: color 0.2s;
 
