@@ -129,7 +129,9 @@ class LoginPageView {
   }
 
   public show(): boolean {
-    this.page.classList.remove(styles.loginPage_hidden);
+    setTimeout(() => {
+      this.page.classList.remove(styles.loginPage_hidden);
+    }, 200);
     return true;
   }
 }

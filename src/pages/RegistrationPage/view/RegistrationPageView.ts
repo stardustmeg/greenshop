@@ -129,7 +129,9 @@ class RegistrationPageView {
   }
 
   public show(): boolean {
-    this.page.classList.remove(styles.registrationPage_hidden);
+    setTimeout(() => {
+      this.page.classList.remove(styles.registrationPage_hidden);
+    }, 200);
     return true;
   }
 }

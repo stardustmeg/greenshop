@@ -8,10 +8,33 @@
   padding-bottom: calc(var(--extra-large-offset) / 2 + calc(var(--extra-small-offset) / 2));
   max-width: 500px;
   background-color: var(--white);
-  gap: var(--medium-offset);
+  animation: show 0.2s ease-out forwards;
+  gap: var(--extra-small-offset);
 
   &_hidden {
+    animation: hide 0.2s ease-in forwards;
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    display: flex;
+    opacity: 1;
+  }
+}
+
+@keyframes hide {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
     display: none;
+    opacity: 0;
   }
 }
 
