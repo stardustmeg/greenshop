@@ -139,7 +139,7 @@ export class ProductModel {
     return product;
   }
 
-  private getCategoriesFromData(data: ClientResponse<CategoryPagedQueryResponse> | Error): Category[] | null {
+  private getCategoriesFromData(data: ClientResponse<CategoryPagedQueryResponse>): Category[] | null {
     let category: Category[] | null = null;
     if (isClientResponse(data)) {
       if (isCategoryPagedQueryResponse(data.body)) {
@@ -150,7 +150,7 @@ export class ProductModel {
     return category;
   }
 
-  private getProductFromData(data: ClientResponse<ProductResponse> | Error): Product | null {
+  private getProductFromData(data: ClientResponse<ProductResponse>): Product | null {
     let product: Product | null = null;
     if (isClientResponse(data) && isProductResponse(data.body)) {
       product = this.adaptProductToClient(data.body);
@@ -158,7 +158,7 @@ export class ProductModel {
     return product;
   }
 
-  private getProductsFromData(data: ClientResponse<ProductPagedQueryResponse> | Error): Product[] | null {
+  private getProductsFromData(data: ClientResponse<ProductPagedQueryResponse>): Product[] | null {
     let productList: Product[] | null = null;
     if (isClientResponse(data) && isProductPagedQueryResponse(data.body)) {
       productList = this.adaptProductPagedQueryToClient(data.body);

@@ -1,5 +1,6 @@
 import type { Address, User, UserLoginData, UserRegisterData } from '@/shared/types/user.ts';
 import type {
+  Address as AddressResponse,
   BaseAddress,
   ClientResponse,
   Customer,
@@ -67,6 +68,21 @@ export class CustomerModel {
     return { action: 'removeShippingAddressId', addressId: address.id };
   }
 
+  private adaptAddress(address: AddressResponse[]): Address[] {
+    return address.map((addressItem) => ({
+      city: addressItem?.city || '',
+      country: addressItem?.country || '',
+      email: addressItem?.email || '',
+      firstName: addressItem?.firstName || '',
+      id: addressItem?.id || '',
+      lastName: addressItem?.lastName || '',
+      postalCode: addressItem?.postalCode || '',
+      state: addressItem?.state || '',
+      streetName: addressItem?.streetName || '',
+      streetNumber: addressItem?.streetNumber || '',
+    }));
+  }
+
   private static adaptAddressToServer(data: Address): BaseAddress {
     return {
       city: data.city,
@@ -81,84 +97,62 @@ export class CustomerModel {
     };
   }
 
-  private adaptCustomerToClient(data: Customer): User {
-    const adaptedCustomer: User = {
-      addresses: data.addresses.map((address) => ({
-        city: address.city || '',
-        country: address.country || '',
-        email: address.email || '',
-        firstName: address.firstName || '',
-        id: address.id || '',
-        lastName: address.lastName || '',
-        postalCode: address.postalCode || '',
-        state: address.state || '',
-        streetName: address.streetName || '',
-        streetNumber: address.streetNumber || '',
-      })),
+  private adaptCustomerData(customerData: { customer: Customer } | Customer): User {
+    const data = 'customer' in customerData ? customerData.customer : customerData;
+
+    return {
+      addresses: this.adaptAddress(data.addresses),
+      birthDate: data.dateOfBirth || '',
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
       email: data.email || '',
       firstName: data.firstName || '',
       id: data.id || '',
       lastName: data.lastName || '',
+      locale: data.locale || 'en',
       password: data.password || '',
       version: data.version || 0,
     };
+  }
 
-    if (data.defaultBillingAddressId) {
-      const address = adaptedCustomer.addresses.find((address) => address.id === data.defaultBillingAddressId);
-      adaptedCustomer.defaultBillingAddressId = address || null;
-    }
-    if (data.defaultShippingAddressId) {
-      const address = adaptedCustomer.addresses.find((address) => address.id === data.defaultShippingAddressId);
-      adaptedCustomer.defaultShippingAddressId = address || null;
-    }
+  private adaptCustomerToClient(data: Customer): User {
+    const adaptedCustomer = this.adaptCustomerData(data);
+
+    adaptedCustomer.defaultBillingAddressId = this.adaptDefaultAddress(
+      data.defaultBillingAddressId,
+      adaptedCustomer.addresses,
+    );
+    adaptedCustomer.defaultShippingAddressId = this.adaptDefaultAddress(
+      data.defaultShippingAddressId,
+      adaptedCustomer.addresses,
+    );
     return adaptedCustomer;
   }
 
-  private adaptSignInToClient(data: CustomerSignInResult): User {
-    const adaptedCustomer: User = {
-      addresses: data.customer.addresses.map((address) => ({
-        city: address.city || '',
-        country: address.country || '',
-        email: address.email || '',
-        firstName: address.firstName || '',
-        id: address.id || '',
-        lastName: address.lastName || '',
-        postalCode: address.postalCode || '',
-        state: address.state || '',
-        streetName: address.streetName || '',
-        streetNumber: address.streetNumber || '',
-      })),
-      defaultBillingAddressId: null,
-      defaultShippingAddressId: null,
-      email: data.customer.email || '',
-      firstName: data.customer.firstName || '',
-      id: data.customer.id || '',
-      lastName: data.customer.lastName || '',
-      password: data.customer.password || '',
-      version: data.customer.version || 0,
-    };
+  private adaptDefaultAddress(addressId: string | undefined, address: Address[]): Address | null {
+    if (addressId) {
+      const addressFound = address.find((address) => address.id === addressId);
+      return addressFound || null;
+    }
+    return null;
+  }
 
-    if (data.customer.defaultBillingAddressId) {
-      const address = adaptedCustomer.addresses.find((address) => address.id === data.customer.defaultBillingAddressId);
-      if (address) {
-        adaptedCustomer.defaultBillingAddressId = address;
-      }
-    }
-    if (data.customer.defaultShippingAddressId) {
-      const address = adaptedCustomer.addresses.find(
-        (address) => address.id === data.customer.defaultShippingAddressId,
-      );
-      if (address) {
-        adaptedCustomer.defaultShippingAddressId = address;
-      }
-    }
+  private adaptSignInToClient(data: CustomerSignInResult): User {
+    const adaptedCustomer = this.adaptCustomerData(data);
+
+    adaptedCustomer.defaultBillingAddressId = this.adaptDefaultAddress(
+      data.customer.defaultBillingAddressId,
+      adaptedCustomer.addresses,
+    );
+    adaptedCustomer.defaultShippingAddressId = this.adaptDefaultAddress(
+      data.customer.defaultShippingAddressId,
+      adaptedCustomer.addresses,
+    );
     return adaptedCustomer;
   }
 
   private getCustomerFromData(
-    data: ClientResponse<Customer | CustomerPagedQueryResponse | CustomerSignInResult> | Error,
+    data: ClientResponse<Customer | CustomerPagedQueryResponse | CustomerSignInResult>,
   ): User | null {
     let customer: User | null = null;
     if (isClientResponse(data)) {

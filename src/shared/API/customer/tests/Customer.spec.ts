@@ -16,12 +16,13 @@ describe('Checking Customer Model', () => {
   beforeAll(() => {
     user = {
       address: 'Test address',
-      birthDate: 1234567890,
+      birthDate: '1990-01-01',
       city: 'Test city',
       country: 'Test country',
       email: 'test-test-test@example.com',
       firstName: 'Test first name',
       lastName: 'Test last name',
+      locale: 'en',
       password: 'Qqq11',
       postalCode: 'Test postal code',
     };

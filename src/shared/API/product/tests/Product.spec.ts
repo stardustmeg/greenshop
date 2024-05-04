@@ -1,4 +1,5 @@
-import type { localization } from '@/shared/types/product.ts';
+import { Size, type localization } from '@/shared/types/product.ts';
+import getSize from '@/shared/utils/size.ts';
 
 import getProductModel, { ProductModel } from '../model/ProductModel.ts';
 
@@ -83,5 +84,22 @@ describe('Checking Product Model', () => {
       expect(Array.isArray(product.category)).toBe(true);
       expect(Array.isArray(product.variant)).toBe(true);
     }
+  });
+});
+
+describe('getSize function', () => {
+  it('should return Size.S when called with "S"', () => {
+    const result = getSize('S');
+    expect(result).toBe(Size.S);
+  });
+
+  it('should return Size.M when called with "M"', () => {
+    const result = getSize('M');
+    expect(result).toBe(Size.M);
+  });
+
+  it('should return null when called with an unknown size', () => {
+    const result = getSize('unknown size');
+    expect(result).toBeNull();
   });
 });

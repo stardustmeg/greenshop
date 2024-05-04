@@ -5,9 +5,12 @@ import {
   type HttpMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
 
+const URL_AUTH = 'https://auth.europe-west1.gcp.commercetools.com';
+const URL_HTTP = 'https://api.europe-west1.gcp.commercetools.com';
+
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
   fetch,
-  host: 'https://api.europe-west1.gcp.commercetools.com',
+  host: URL_HTTP,
 };
 
 export default function client(projectKey: string, clientID: string, clientSecret: string, scopes: string): Client {
@@ -18,7 +21,7 @@ export default function client(projectKey: string, clientID: string, clientSecre
       clientSecret,
     },
     fetch,
-    host: 'https://auth.europe-west1.gcp.commercetools.com',
+    host: URL_AUTH,
     projectKey,
     scopes: scopesArr,
   };
