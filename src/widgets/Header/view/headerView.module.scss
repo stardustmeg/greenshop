@@ -1,0 +1,33 @@
+.header {
+  position: sticky;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--medium-offset);
+  border-bottom: 10px solid var(--steam-green-800);
+  border-radius: var(--medium-br);
+  padding: calc(var(--small-offset) / 4) var(--small-offset);
+  width: 100%;
+  background-color: var(--white);
+}
+
+.logo {
+  svg {
+    width: 40px;
+    height: 40px;
+    fill: var(--steam-green-800);
+    transition: fill 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        fill: var(--steam-green-700);
+      }
+    }
+  }
+}
