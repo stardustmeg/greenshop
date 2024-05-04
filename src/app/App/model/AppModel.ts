@@ -6,6 +6,7 @@ import MainPageModel from '@/pages/MainPage/model/MainPageModel.ts';
 import NotFoundPageModel from '@/pages/NotFoundPage/model/NotFoundPageModel.ts';
 import RegistrationPageModel from '@/pages/RegistrationPage/model/RegistrationPageModel.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import HeaderModel from '@/widgets/Header/model/HeaderModel.ts';
 
 import AppView from '../view/AppView.ts';
 
@@ -20,6 +21,7 @@ class AppModel {
 
   private initPages(): Map<string, Page> {
     const root = this.getHTML();
+    root.append(new HeaderModel(this.router).getHTML());
     const loginPage = new LoginPageModel(root, this.router);
     const mainPage = new MainPageModel(root, this.router);
     const registrationPage = new RegistrationPageModel(root, this.router);
