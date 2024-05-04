@@ -4,9 +4,10 @@
   right: 0;
   top: 0;
   z-index: 1;
-  display: flex;
+  display: grid;
   align-items: center;
   justify-content: space-between;
+  grid-template-columns: repeat(3, max-content);
   margin-bottom: var(--medium-offset);
   border-bottom: 10px solid var(--steam-green-800);
   border-radius: var(--medium-br);
@@ -16,6 +17,8 @@
 }
 
 .logo {
+  grid-column: 1;
+
   svg {
     width: 40px;
     height: 40px;
@@ -29,5 +32,33 @@
         fill: var(--steam-green-700);
       }
     }
+  }
+}
+
+.logoutButton {
+  grid-column: 3;
+  border-radius: var(--small-br);
+  padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--white);
+  background-color: var(--steam-green-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  &:focus {
+    background-color: var(--steam-green-700);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--steam-green-700);
+    }
+  }
+
+  &:disabled {
+    background-color: var(--noble-gray-300);
+    pointer-events: none;
   }
 }
