@@ -43,9 +43,9 @@ class HeaderModel {
   }
 
   private logoutHandler(): boolean {
-    this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
+    this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
     return true;
   }
 
