@@ -1,8 +1,10 @@
 .registrationForm {
   display: grid;
+  grid-column: 2 span;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat((6, max-content));
   margin: 0 auto;
+  width: 100%;
   gap: var(--extra-small-offset);
 
   .checkboxLabel {
