@@ -48,7 +48,6 @@ class NavigationModel {
     navigationLinks.forEach((link, route) => {
       link.getHTML().addEventListener(EVENT_NAME.CLICK, (event) => {
         event.preventDefault();
-        navigationLinks.forEach((link) => link.setEnabled());
         this.router.navigateTo(route);
       });
     });
@@ -60,7 +59,9 @@ class NavigationModel {
     this.eventMediator.subscribe(MEDIATOR_EVENT.CHANGE_PAGE, (route) => {
       const navigationLinks = this.view.getNavigationLinks();
       const currentLink = navigationLinks.get(String(route));
+      navigationLinks.forEach((link) => link.setEnabled());
       currentLink?.setDisabled();
+      this.checkCurrentUser();
     });
     return true;
   }
