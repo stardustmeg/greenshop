@@ -6,6 +6,7 @@ import MainPageModel from '@/pages/MainPage/model/MainPageModel.ts';
 import NotFoundPageModel from '@/pages/NotFoundPage/model/NotFoundPageModel.ts';
 import RegistrationPageModel from '@/pages/RegistrationPage/model/RegistrationPageModel.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import FooterModel from '@/widgets/Footer/model/FooterModel.ts';
 import HeaderModel from '@/widgets/Header/model/HeaderModel.ts';
 
 import AppView from '../view/AppView.ts';
@@ -35,6 +36,7 @@ class AppModel {
         [PAGE_ID.REGISTRATION_PAGE]: registrationPage,
       }),
     );
+    root.append(new FooterModel(this.router).getHTML());
     return pages;
   }
 
