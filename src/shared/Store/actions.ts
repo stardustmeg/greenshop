@@ -1,7 +1,6 @@
 import type { Category, Product } from '../types/product';
 import type { User } from '../types/user';
 
-/* eslint-disable import/prefer-default-export */
 const ACTION = {
   SET_BILLING_COUNTRY: 'setBillingCountry',
   SET_CATEGORIES: 'setCategories',
