@@ -1,0 +1,27 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--medium-offset);
+  border-bottom: 10px solid var(--steam-green-800);
+  border-radius: var(--medium-br);
+  padding: calc(var(--small-offset) / 2) var(--small-offset);
+  background-color: var(--white);
+}
+
+.logo {
+  svg {
+    width: 40px;
+    height: 40px;
+    fill: var(--steam-green-800);
+    transition: fill 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        fill: var(--steam-green-700);
+      }
+    }
+  }
+}
