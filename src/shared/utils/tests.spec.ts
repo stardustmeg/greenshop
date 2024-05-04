@@ -2,6 +2,8 @@ import { BaseComponent } from './baseComponent.ts';
 import BaseElement from './baseElement.ts';
 import createBaseElement from './createBaseElement.ts';
 import createSVGUse from './createSVGUse.ts';
+import getCountryIndex from './getCountryIndex.ts';
+import isKeyOfUserData from './isKeyOfUserData.ts';
 import { isNotNullable, isNullable } from './isNullable.ts';
 import { a, div, h2, h3, iconFromCode, img, input, label, main, span } from './tags.ts';
 
@@ -226,5 +228,26 @@ describe('Checking tags functions', () => {
 
   it('img should return instance of HTMLImageElement', () => {
     expect(img({ src: 'test' }).getNode()).toBeInstanceOf(HTMLImageElement);
+  });
+});
+
+describe('Checking getCountryIndex function', () => {
+  it('Afghanistan country should return AF', () => {
+    expect(getCountryIndex('Afghanistan')).toBe('AF');
+  });
+
+  it('Canada country should return CA', () => {
+    expect(getCountryIndex('Canada')).toBe('CA');
+  });
+});
+
+const userData = {
+  email: 'user@example.com',
+  password: 'test',
+};
+
+describe('Checking isKeyOfUserData function', () => {
+  it('Email should return true', () => {
+    expect(isKeyOfUserData(userData, 'email')).toBe(true);
   });
 });
