@@ -23,48 +23,48 @@ export class CustomerModel {
     this.root = getRoot();
   }
 
-  public static actionAddAddress(value: Address): CustomerUpdateAction {
-    return { action: 'addAddress', address: CustomerModel.adaptAddressToServer(value) };
+  public static actionAddAddress(address: Address): CustomerUpdateAction {
+    return { action: 'addAddress', address: CustomerModel.adaptAddressToServer(address) };
   }
 
-  public static actionEditAddress(value: Address): CustomerUpdateAction {
-    return { action: 'changeAddress', address: CustomerModel.adaptAddressToServer(value), addressId: value.id };
+  public static actionEditAddress(address: Address): CustomerUpdateAction {
+    return { action: 'changeAddress', address: CustomerModel.adaptAddressToServer(address), addressId: address.id };
   }
 
-  public static actionEditDateOfBirth(value: string): CustomerUpdateAction {
-    return { action: 'setDateOfBirth', dateOfBirth: value };
+  public static actionEditDateOfBirth(dateOfBirth: string): CustomerUpdateAction {
+    return { action: 'setDateOfBirth', dateOfBirth };
   }
 
-  public static actionEditDefaultBillingAddress(value: string): CustomerUpdateAction {
-    return { action: 'setDefaultBillingAddress', addressId: value };
+  public static actionEditDefaultBillingAddress(addressId: string): CustomerUpdateAction {
+    return { action: 'setDefaultBillingAddress', addressId };
   }
 
-  public static actionEditDefaultShippingAddress(value: string): CustomerUpdateAction {
-    return { action: 'setDefaultShippingAddress', addressId: value };
+  public static actionEditDefaultShippingAddress(addressId: string): CustomerUpdateAction {
+    return { action: 'setDefaultShippingAddress', addressId };
   }
 
-  public static actionEditEmail(value: string): CustomerUpdateAction {
-    return { action: 'changeEmail', email: value };
+  public static actionEditEmail(email: string): CustomerUpdateAction {
+    return { action: 'changeEmail', email };
   }
 
-  public static actionEditFirstName(value: string): CustomerUpdateAction {
-    return { action: 'setFirstName', firstName: value };
+  public static actionEditFirstName(firstName: string): CustomerUpdateAction {
+    return { action: 'setFirstName', firstName };
   }
 
-  public static actionEditLastName(value: string): CustomerUpdateAction {
-    return { action: 'setLastName', lastName: value };
+  public static actionEditLastName(lastName: string): CustomerUpdateAction {
+    return { action: 'setLastName', lastName };
   }
 
-  public static actionRemoveAddress(value: Address): CustomerUpdateAction {
-    return { action: 'removeAddress', addressId: value.id };
+  public static actionRemoveAddress(address: Address): CustomerUpdateAction {
+    return { action: 'removeAddress', addressId: address.id };
   }
 
-  public static actionRemoveBillingAddress(value: Address): CustomerUpdateAction {
-    return { action: 'removeBillingAddressId', addressId: value.id };
+  public static actionRemoveBillingAddress(address: Address): CustomerUpdateAction {
+    return { action: 'removeBillingAddressId', addressId: address.id };
   }
 
-  public static actionRemoveShippingAddress(value: Address): CustomerUpdateAction {
-    return { action: 'removeShippingAddressId', addressId: value.id };
+  public static actionRemoveShippingAddress(address: Address): CustomerUpdateAction {
+    return { action: 'removeShippingAddressId', addressId: address.id };
   }
 
   private static adaptAddressToServer(data: Address): BaseAddress {
@@ -178,8 +178,23 @@ export class CustomerModel {
     return this.getCustomerFromData(data);
   }
 
+  public async deleteCustomer(customer: User): Promise<boolean> {
+    const data = await this.root.deleteCustomer(customer.id, customer.version);
+    return this.getCustomerFromData(data) !== null;
+  }
+
   public async editCustomer(actions: CustomerUpdateAction[], customer: User): Promise<User | null> {
     const data = await this.root.editCustomer(actions, customer.version, customer.id);
+    return this.getCustomerFromData(data);
+  }
+
+  public async editPassword(customer: User, currentPassword: string, newPassword: string): Promise<User | null> {
+    const data = await this.root.editPassword(customer.id, customer.version, currentPassword, newPassword);
+    return this.getCustomerFromData(data);
+  }
+
+  public async getCustomerByID(id: string): Promise<User | null> {
+    const data = await this.root.getCustomerByID(id);
     return this.getCustomerFromData(data);
   }
 

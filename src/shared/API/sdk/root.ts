@@ -64,6 +64,16 @@ export class RootApi {
     return data;
   }
 
+  public async deleteCustomer(ID: string, version: number): Promise<ClientResponse<Customer> | Error> {
+    const data = await this.connection
+      .customers()
+      .withId({ ID })
+      .delete({ queryArgs: { version } })
+      .execute()
+      .catch((err: Error) => err);
+    return data;
+  }
+
   public async editCustomer(
     actions: CustomerUpdateAction[],
     version: number,
