@@ -5,22 +5,25 @@ export interface UserLoginData {
 
 export interface UserRegisterData extends UserLoginData {
   address: string;
-  birthDate: number;
+  birthDate: string;
   city: string;
   country: string;
   firstName: string;
   lastName: string;
+  locale: string;
   postalCode: string;
 }
 
 export interface User {
   addresses: Address[];
+  birthDate: string;
   defaultBillingAddressId: Address | null;
   defaultShippingAddressId: Address | null;
   email: string;
   firstName: string;
   id: string;
   lastName: string;
+  locale: string;
   password: string;
   version: number;
 }

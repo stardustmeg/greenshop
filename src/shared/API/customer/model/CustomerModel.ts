@@ -1,5 +1,6 @@
 import type { Address, User, UserLoginData, UserRegisterData } from '@/shared/types/user.ts';
 import type {
+  Address as AddressResponse,
   BaseAddress,
   ClientResponse,
   Customer,
@@ -23,48 +24,63 @@ export class CustomerModel {
     this.root = getRoot();
   }
 
-  public static actionAddAddress(value: Address): CustomerUpdateAction {
-    return { action: 'addAddress', address: CustomerModel.adaptAddressToServer(value) };
+  public static actionAddAddress(address: Address): CustomerUpdateAction {
+    return { action: 'addAddress', address: CustomerModel.adaptAddressToServer(address) };
   }
 
-  public static actionEditAddress(value: Address): CustomerUpdateAction {
-    return { action: 'changeAddress', address: CustomerModel.adaptAddressToServer(value), addressId: value.id };
+  public static actionEditAddress(address: Address): CustomerUpdateAction {
+    return { action: 'changeAddress', address: CustomerModel.adaptAddressToServer(address), addressId: address.id };
   }
 
-  public static actionEditDateOfBirth(value: string): CustomerUpdateAction {
-    return { action: 'setDateOfBirth', dateOfBirth: value };
+  public static actionEditDateOfBirth(dateOfBirth: string): CustomerUpdateAction {
+    return { action: 'setDateOfBirth', dateOfBirth };
   }
 
-  public static actionEditDefaultBillingAddress(value: string): CustomerUpdateAction {
-    return { action: 'setDefaultBillingAddress', addressId: value };
+  public static actionEditDefaultBillingAddress(addressId: string): CustomerUpdateAction {
+    return { action: 'setDefaultBillingAddress', addressId };
   }
 
-  public static actionEditDefaultShippingAddress(value: string): CustomerUpdateAction {
-    return { action: 'setDefaultShippingAddress', addressId: value };
+  public static actionEditDefaultShippingAddress(addressId: string): CustomerUpdateAction {
+    return { action: 'setDefaultShippingAddress', addressId };
   }
 
-  public static actionEditEmail(value: string): CustomerUpdateAction {
-    return { action: 'changeEmail', email: value };
+  public static actionEditEmail(email: string): CustomerUpdateAction {
+    return { action: 'changeEmail', email };
   }
 
-  public static actionEditFirstName(value: string): CustomerUpdateAction {
-    return { action: 'setFirstName', firstName: value };
+  public static actionEditFirstName(firstName: string): CustomerUpdateAction {
+    return { action: 'setFirstName', firstName };
   }
 
-  public static actionEditLastName(value: string): CustomerUpdateAction {
-    return { action: 'setLastName', lastName: value };
+  public static actionEditLastName(lastName: string): CustomerUpdateAction {
+    return { action: 'setLastName', lastName };
   }
 
-  public static actionRemoveAddress(value: Address): CustomerUpdateAction {
-    return { action: 'removeAddress', addressId: value.id };
+  public static actionRemoveAddress(address: Address): CustomerUpdateAction {
+    return { action: 'removeAddress', addressId: address.id };
   }
 
-  public static actionRemoveBillingAddress(value: Address): CustomerUpdateAction {
-    return { action: 'removeBillingAddressId', addressId: value.id };
+  public static actionRemoveBillingAddress(address: Address): CustomerUpdateAction {
+    return { action: 'removeBillingAddressId', addressId: address.id };
   }
 
-  public static actionRemoveShippingAddress(value: Address): CustomerUpdateAction {
-    return { action: 'removeShippingAddressId', addressId: value.id };
+  public static actionRemoveShippingAddress(address: Address): CustomerUpdateAction {
+    return { action: 'removeShippingAddressId', addressId: address.id };
+  }
+
+  private adaptAddress(address: AddressResponse[]): Address[] {
+    return address.map((addressItem) => ({
+      city: addressItem?.city || '',
+      country: addressItem?.country || '',
+      email: addressItem?.email || '',
+      firstName: addressItem?.firstName || '',
+      id: addressItem?.id || '',
+      lastName: addressItem?.lastName || '',
+      postalCode: addressItem?.postalCode || '',
+      state: addressItem?.state || '',
+      streetName: addressItem?.streetName || '',
+      streetNumber: addressItem?.streetNumber || '',
+    }));
   }
 
   private static adaptAddressToServer(data: Address): BaseAddress {
@@ -81,84 +97,62 @@ export class CustomerModel {
     };
   }
 
-  private adaptCustomerToClient(data: Customer): User {
-    const adaptedCustomer: User = {
-      addresses: data.addresses.map((address) => ({
-        city: address.city || '',
-        country: address.country || '',
-        email: address.email || '',
-        firstName: address.firstName || '',
-        id: address.id || '',
-        lastName: address.lastName || '',
-        postalCode: address.postalCode || '',
-        state: address.state || '',
-        streetName: address.streetName || '',
-        streetNumber: address.streetNumber || '',
-      })),
+  private adaptCustomerData(customerData: { customer: Customer } | Customer): User {
+    const data = 'customer' in customerData ? customerData.customer : customerData;
+
+    return {
+      addresses: this.adaptAddress(data.addresses),
+      birthDate: data.dateOfBirth || '',
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
       email: data.email || '',
       firstName: data.firstName || '',
       id: data.id || '',
       lastName: data.lastName || '',
+      locale: data.locale || 'en',
       password: data.password || '',
       version: data.version || 0,
     };
+  }
 
-    if (data.defaultBillingAddressId) {
-      const address = adaptedCustomer.addresses.find((address) => address.id === data.defaultBillingAddressId);
-      adaptedCustomer.defaultBillingAddressId = address || null;
-    }
-    if (data.defaultShippingAddressId) {
-      const address = adaptedCustomer.addresses.find((address) => address.id === data.defaultShippingAddressId);
-      adaptedCustomer.defaultShippingAddressId = address || null;
-    }
+  private adaptCustomerToClient(data: Customer): User {
+    const adaptedCustomer = this.adaptCustomerData(data);
+
+    adaptedCustomer.defaultBillingAddressId = this.adaptDefaultAddress(
+      data.defaultBillingAddressId,
+      adaptedCustomer.addresses,
+    );
+    adaptedCustomer.defaultShippingAddressId = this.adaptDefaultAddress(
+      data.defaultShippingAddressId,
+      adaptedCustomer.addresses,
+    );
     return adaptedCustomer;
   }
 
-  private adaptSignInToClient(data: CustomerSignInResult): User {
-    const adaptedCustomer: User = {
-      addresses: data.customer.addresses.map((address) => ({
-        city: address.city || '',
-        country: address.country || '',
-        email: address.email || '',
-        firstName: address.firstName || '',
-        id: address.id || '',
-        lastName: address.lastName || '',
-        postalCode: address.postalCode || '',
-        state: address.state || '',
-        streetName: address.streetName || '',
-        streetNumber: address.streetNumber || '',
-      })),
-      defaultBillingAddressId: null,
-      defaultShippingAddressId: null,
-      email: data.customer.email || '',
-      firstName: data.customer.firstName || '',
-      id: data.customer.id || '',
-      lastName: data.customer.lastName || '',
-      password: data.customer.password || '',
-      version: data.customer.version || 0,
-    };
+  private adaptDefaultAddress(addressId: string | undefined, address: Address[]): Address | null {
+    if (addressId) {
+      const addressFound = address.find((address) => address.id === addressId);
+      return addressFound || null;
+    }
+    return null;
+  }
 
-    if (data.customer.defaultBillingAddressId) {
-      const address = adaptedCustomer.addresses.find((address) => address.id === data.customer.defaultBillingAddressId);
-      if (address) {
-        adaptedCustomer.defaultBillingAddressId = address;
-      }
-    }
-    if (data.customer.defaultShippingAddressId) {
-      const address = adaptedCustomer.addresses.find(
-        (address) => address.id === data.customer.defaultShippingAddressId,
-      );
-      if (address) {
-        adaptedCustomer.defaultShippingAddressId = address;
-      }
-    }
+  private adaptSignInToClient(data: CustomerSignInResult): User {
+    const adaptedCustomer = this.adaptCustomerData(data);
+
+    adaptedCustomer.defaultBillingAddressId = this.adaptDefaultAddress(
+      data.customer.defaultBillingAddressId,
+      adaptedCustomer.addresses,
+    );
+    adaptedCustomer.defaultShippingAddressId = this.adaptDefaultAddress(
+      data.customer.defaultShippingAddressId,
+      adaptedCustomer.addresses,
+    );
     return adaptedCustomer;
   }
 
   private getCustomerFromData(
-    data: ClientResponse<Customer | CustomerPagedQueryResponse | CustomerSignInResult> | Error,
+    data: ClientResponse<Customer | CustomerPagedQueryResponse | CustomerSignInResult>,
   ): User | null {
     let customer: User | null = null;
     if (isClientResponse(data)) {
@@ -178,8 +172,23 @@ export class CustomerModel {
     return this.getCustomerFromData(data);
   }
 
+  public async deleteCustomer(customer: User): Promise<boolean> {
+    const data = await this.root.deleteCustomer(customer.id, customer.version);
+    return this.getCustomerFromData(data) !== null;
+  }
+
   public async editCustomer(actions: CustomerUpdateAction[], customer: User): Promise<User | null> {
     const data = await this.root.editCustomer(actions, customer.version, customer.id);
+    return this.getCustomerFromData(data);
+  }
+
+  public async editPassword(customer: User, currentPassword: string, newPassword: string): Promise<User | null> {
+    const data = await this.root.editPassword(customer.id, customer.version, currentPassword, newPassword);
+    return this.getCustomerFromData(data);
+  }
+
+  public async getCustomerByID(id: string): Promise<User | null> {
+    const data = await this.root.getCustomerByID(id);
     return this.getCustomerFromData(data);
   }
 

@@ -59,8 +59,13 @@ export class RootApi {
     return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
   }
 
-  public async authenticateUser(userLoginData: UserLoginData): Promise<ClientResponse<CustomerSignInResult> | Error> {
+  public async authenticateUser(userLoginData: UserLoginData): Promise<ClientResponse<CustomerSignInResult>> {
     const data = await this.connection.login().post({ body: userLoginData }).execute();
+    return data;
+  }
+
+  public async deleteCustomer(ID: string, version: number): Promise<ClientResponse<Customer>> {
+    const data = await this.connection.customers().withId({ ID }).delete({ queryArgs: { version } }).execute();
     return data;
   }
 
@@ -68,13 +73,8 @@ export class RootApi {
     actions: CustomerUpdateAction[],
     version: number,
     ID: string,
-  ): Promise<ClientResponse<Customer> | Error> {
-    const data = await this.connection
-      .customers()
-      .withId({ ID })
-      .post({ body: { actions, version } })
-      .execute()
-      .catch((err: Error) => err);
+  ): Promise<ClientResponse<Customer>> {
+    const data = await this.connection.customers().withId({ ID }).post({ body: { actions, version } }).execute();
     return data;
   }
 
@@ -83,35 +83,26 @@ export class RootApi {
     version: number,
     currentPassword: string,
     newPassword: string,
-  ): Promise<ClientResponse<Customer> | Error> {
+  ): Promise<ClientResponse<Customer>> {
     const data = await this.connection
       .customers()
       .password()
       .post({ body: { currentPassword, id, newPassword, version } })
-      .execute()
-      .catch((err: Error) => err);
+      .execute();
     return data;
   }
 
-  public async getAllProducts(): Promise<ClientResponse<ProductPagedQueryResponse> | Error> {
-    const data = await this.connection
-      .products()
-      .get()
-      .execute()
-      .catch((err: Error) => err);
+  public async getAllProducts(): Promise<ClientResponse<ProductPagedQueryResponse>> {
+    const data = await this.connection.products().get().execute();
     return data;
   }
 
-  public async getCategories(): Promise<ClientResponse<CategoryPagedQueryResponse> | Error> {
-    const data = await this.connection
-      .categories()
-      .get()
-      .execute()
-      .catch((err: Error) => err);
+  public async getCategories(): Promise<ClientResponse<CategoryPagedQueryResponse>> {
+    const data = await this.connection.categories().get().execute();
     return data;
   }
 
-  public async getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse> | Error> {
+  public async getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
     const data = await this.connection
       .customers()
       .get({ queryArgs: { where: `email="${email}"` } })
@@ -119,29 +110,17 @@ export class RootApi {
     return data;
   }
 
-  public async getCustomerByID(ID: string): Promise<ClientResponse<Customer> | Error> {
-    const data = await this.connection
-      .customers()
-      .withId({ ID })
-      .get()
-      .execute()
-      .catch((err: Error) => err);
+  public async getCustomerByID(ID: string): Promise<ClientResponse<Customer>> {
+    const data = await this.connection.customers().withId({ ID }).get().execute();
     return data;
   }
 
-  public async getProductByID(ID: string): Promise<ClientResponse<Product> | Error> {
-    const data = await this.connection
-      .products()
-      .withId({ ID })
-      .get()
-      .execute()
-      .catch((err: Error) => err);
+  public async getProductByID(ID: string): Promise<ClientResponse<Product>> {
+    const data = await this.connection.products().withId({ ID }).get().execute();
     return data;
   }
 
-  public async registrationUser(
-    userRegisterData: UserRegisterData,
-  ): Promise<ClientResponse<CustomerSignInResult> | Error> {
+  public async registrationUser(userRegisterData: UserRegisterData): Promise<ClientResponse<CustomerSignInResult>> {
     const userInfo = {
       email: userRegisterData.email,
       password: userRegisterData.password,

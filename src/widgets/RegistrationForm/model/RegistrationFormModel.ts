@@ -27,12 +27,13 @@ class RegisterFormModel {
 
   private userData: UserRegisterData = {
     address: '',
-    birthDate: 0,
+    birthDate: '',
     city: '',
     country: '',
     email: '',
     firstName: '',
     lastName: '',
+    locale: 'en',
     password: '',
     postalCode: '',
   };
