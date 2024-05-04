@@ -1,4 +1,4 @@
-import { PAGE_DESCRIPTION, PAGE_ID, PAGE_LINK_TEXT } from '@/shared/constants/pages.ts';
+import { PAGE_ANSWER, PAGE_DESCRIPTION, PAGE_ID, PAGE_LINK_TEXT } from '@/shared/constants/pages.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
@@ -45,7 +45,7 @@ class RegistrationPageView {
       tag: TAG_NAME.DIV,
     });
 
-    this.authWrapper.append(this.linksWrapper, this.authDescription);
+    this.authWrapper.append(this.linksWrapper, this.authDescription, this.createToLoginPageWrapper());
     return this.authWrapper;
   }
 
@@ -92,6 +92,17 @@ class RegistrationPageView {
     });
 
     return this.registerSpan;
+  }
+
+  private createToLoginPageWrapper(): HTMLSpanElement {
+    const toLoginPageWrapper = createBaseElement({
+      cssClasses: [styles.toLoginPageWrapper],
+      innerContent: PAGE_ANSWER.REGISTRATION,
+      tag: TAG_NAME.SPAN,
+    });
+    const copyLoginLink = this.loginLink.cloneNode(true);
+    toLoginPageWrapper.append(copyLoginLink);
+    return toLoginPageWrapper;
   }
 
   public getAuthWrapper(): HTMLDivElement {

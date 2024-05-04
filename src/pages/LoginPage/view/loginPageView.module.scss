@@ -9,6 +9,9 @@
 }
 
 .authWrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(4, max-content);
   margin: 0 auto;
   border-bottom: 10px solid var(--steam-green-800);
   border-radius: var(--medium-br);
@@ -22,6 +25,8 @@
   display: flex;
   align-self: center;
   justify-content: space-between;
+  grid-column: 2 span;
+  grid-row: 1;
   margin: 0 auto;
   margin-bottom: calc(var(--extra-large-offset) / 2);
   max-width: 160px;
@@ -82,8 +87,26 @@
 }
 
 .authDescription {
+  grid-column: 2 span;
+  grid-row: 2;
   margin-bottom: calc(var(--extra-small-offset) / 2);
   font: var(--regular-font);
   letter-spacing: 1px;
   text-align: center;
+}
+
+.toRegisterPageWrapper {
+  display: flex;
+  justify-content: center;
+  grid-column: 2 span;
+  grid-row: 4;
+  font: var(--regular-font);
+  text-align: center;
+  color: var(--steam-green-800);
+  gap: calc(var(--extra-small-offset) / 4);
+
+  a {
+    margin-right: 0;
+    font: var(--regular-font);
+  }
 }

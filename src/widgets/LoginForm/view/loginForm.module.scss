@@ -1,7 +1,10 @@
 .loginForm {
   display: flex;
   flex-direction: column;
+  grid-column: 2 span;
   margin: 0 auto;
+  margin-bottom: calc(var(--extra-small-offset) / 2);
+  width: 100%;
   gap: var(--extra-small-offset);
 
   label {

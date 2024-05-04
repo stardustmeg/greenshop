@@ -10,6 +10,11 @@ export const PAGE_DESCRIPTION = {
   REGISTRATION: 'Enter your information to register.',
 } as const;
 
+export const PAGE_ANSWER = {
+  LOGIN: `Don't have an account yet?`,
+  REGISTRATION: `Already have an account?`,
+} as const;
+
 export const PAGE_ID = {
   DEFAULT_PAGE: '',
   LOGIN_PAGE: 'login',
