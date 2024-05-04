@@ -8,7 +8,10 @@ import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
 import { EVENT_NAME } from '@/shared/constants/events.ts';
 import {
+  REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS,
   REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
+  REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS,
   REGISTRATION_FORM_KEY,
   REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS,
 } from '@/shared/constants/forms.ts';
@@ -107,7 +110,10 @@ class RegisterFormModel {
     this.setSubmitFormHandler();
     this.createBillingCountryChoice();
     this.createShippingCountryChoice();
-
+    const checkboxSingleAddress = this.view.getSingleAddressCheckBox().getHTML();
+    checkboxSingleAddress.addEventListener(EVENT_NAME.CHANGE, () =>
+      this.singleAddressCheckBoxHandler(checkboxSingleAddress.checked),
+    );
     return true;
   }
 
@@ -152,6 +158,36 @@ class RegisterFormModel {
         })
         .catch(() => serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_REGISTRATION, MESSAGE_STATUS.ERROR));
     });
+    return true;
+  }
+
+  private singleAddressCheckBoxHandler(isChecked: boolean): boolean {
+    const billingAddressFieldID = [
+      REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id,
+      REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS.inputParams.id,
+      REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS.inputParams.id,
+      REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS.inputParams.id,
+    ];
+
+    this.view.switchVisibilityBillingAddressWrapper(isChecked);
+
+    if (!isChecked) {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+      });
+    }
+
+    billingAddressFieldID.forEach((id) => {
+      this.inputFields
+        .find((inputField) => inputField.getView().getInput().getHTML().id === id)
+        ?.getView()
+        .getInput()
+        .clear();
+      this.isValidInputFields[id] = isChecked;
+    });
+
+    this.switchSubmitFormButtonAccess();
+
     return true;
   }
 

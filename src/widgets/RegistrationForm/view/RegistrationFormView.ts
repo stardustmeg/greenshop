@@ -37,6 +37,8 @@ class RegistrationFormView {
 
   private checkboxDefaultShippingAddress: InputModel;
 
+  private checkboxSingleAddress: InputModel;
+
   private credentialsWrapper: HTMLDivElement;
 
   private form: HTMLFormElement;
@@ -53,6 +55,7 @@ class RegistrationFormView {
     this.inputFields = this.createInputFields();
     this.credentialsWrapper = this.createCredentialsWrapper();
     this.personalDataWrapper = this.createPersonalDataWrapper();
+    this.checkboxSingleAddress = this.createCheckboxSingleAddress();
     this.checkboxDefaultShippingAddress = this.createCheckboxDefaultShippingAddress();
     this.shippingAddressWrapper = this.createShippingAddressWrapper();
     this.checkboxDefaultBillingAddress = this.createCheckboxDefaultBillingAddress();
@@ -99,6 +102,22 @@ class RegistrationFormView {
     return this.billingAddressWrapper;
   }
 
+  private createCheckBoxLabel(innerContent: string, checkBoxElement: HTMLInputElement): HTMLLabelElement {
+    const checkboxLabel = createBaseElement({
+      cssClasses: [styles.checkboxLabel],
+      tag: TAG_NAME.LABEL,
+    });
+
+    const checkBoxText = createBaseElement({
+      cssClasses: [styles.checkboxText],
+      innerContent,
+      tag: TAG_NAME.SPAN,
+    });
+
+    checkboxLabel.append(checkBoxText, checkBoxElement);
+    return checkboxLabel;
+  }
+
   private createCheckboxDefaultBillingAddress(): InputModel {
     const checkboxParams: InputParams = {
       autocomplete: CHECKBOX_PARAMS.AUTOCOMPLETE,
@@ -119,6 +138,18 @@ class RegistrationFormView {
     };
     this.checkboxDefaultShippingAddress = new InputModel(checkboxParams);
     return this.checkboxDefaultShippingAddress;
+  }
+
+  private createCheckboxSingleAddress(): InputModel {
+    const checkboxParams: InputParams = {
+      autocomplete: CHECKBOX_PARAMS.AUTOCOMPLETE,
+      id: CHECKBOX_PARAMS.SINGLE_ID,
+      placeholder: '',
+      type: INPUT_TYPE.CHECK_BOX,
+    };
+    this.checkboxSingleAddress = new InputModel(checkboxParams);
+
+    return this.checkboxSingleAddress;
   }
 
   private createCredentialsWrapper(): HTMLDivElement {
@@ -189,6 +220,7 @@ class RegistrationFormView {
     return this.personalDataWrapper;
   }
 
+  // eslint-disable-next-line max-lines-per-function
   private createShippingAddressWrapper(): HTMLDivElement {
     const copyInputFields = this.inputFields;
     const filteredInputFields = copyInputFields.filter(
@@ -209,20 +241,17 @@ class RegistrationFormView {
       filteredInputFields,
     );
 
-    const checkBoxLabel = createBaseElement({
-      cssClasses: [styles.checkboxLabel],
-      tag: TAG_NAME.LABEL,
+    const settingsAddressWrapper = createBaseElement({
+      cssClasses: [styles.settingsAddressWrapper],
+      tag: TAG_NAME.DIV,
     });
 
-    const checkBoxText = createBaseElement({
-      cssClasses: [styles.checkboxText],
-      innerContent: FORM_TEXT.DEFAULT_ADDRESS,
-      tag: TAG_NAME.SPAN,
-    });
+    settingsAddressWrapper.append(
+      this.createCheckBoxLabel(FORM_TEXT.DEFAULT_ADDRESS, this.checkboxDefaultShippingAddress.getHTML()),
+      this.createCheckBoxLabel(FORM_TEXT.SINGLE_ADDRESS, this.checkboxSingleAddress.getHTML()),
+    );
 
-    checkBoxLabel.append(checkBoxText, this.checkboxDefaultShippingAddress.getHTML());
-
-    this.shippingAddressWrapper.append(checkBoxLabel);
+    this.shippingAddressWrapper.append(settingsAddressWrapper);
 
     return this.shippingAddressWrapper;
   }
@@ -279,8 +308,16 @@ class RegistrationFormView {
     return this.shippingAddressWrapper;
   }
 
+  public getSingleAddressCheckBox(): InputModel {
+    return this.checkboxSingleAddress;
+  }
+
   public getSubmitFormButton(): ButtonModel {
     return this.submitFormButton;
+  }
+
+  public switchVisibilityBillingAddressWrapper(isVisible: boolean): void {
+    this.billingAddressWrapper.classList.toggle(styles.hidden, isVisible);
   }
 }
 
