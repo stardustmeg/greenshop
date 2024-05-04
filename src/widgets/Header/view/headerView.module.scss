@@ -1,11 +1,17 @@
 .header {
+  position: sticky;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--medium-offset);
   border-bottom: 10px solid var(--steam-green-800);
   border-radius: var(--medium-br);
-  padding: calc(var(--small-offset) / 2) var(--small-offset);
+  padding: calc(var(--small-offset) / 4) var(--small-offset);
+  width: 100%;
   background-color: var(--white);
 }
 
