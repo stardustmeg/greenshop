@@ -228,4 +228,32 @@
 .billingAddressWrapper {
   grid-column: 2 span;
   grid-row: 4;
+  transition: transform 0.2s;
+  animation: show 0.5s ease-in forwards;
+}
+
+.hidden {
+  animation: hide 0.5s ease-in forwards;
+}
+
+@keyframes hide {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    display: none;
+    transform: scale(0);
+  }
+}
+
+@keyframes show {
+  0% {
+    display: grid;
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }

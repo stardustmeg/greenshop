@@ -12,6 +12,7 @@ export const INPUT_TYPE = {
 
 export const FORM_TEXT = {
   DEFAULT_ADDRESS: 'Use as default address',
+  SINGLE_ADDRESS: 'Use as billing address',
 };
 
 export const USER_COUNTRY_ADDRESS = {
@@ -429,4 +430,5 @@ export const CHECKBOX_PARAMS = {
   AUTOCOMPLETE: 'off',
   BILLING_ID: 'billingDefault',
   SHIPPING_ID: 'shippingDefault',
+  SINGLE_ID: 'singleDefault',
 } as const;

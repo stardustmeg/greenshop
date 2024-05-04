@@ -52,6 +52,7 @@ class InputFieldView {
 
   private createInput(inputParams: InputParams): InputModel {
     this.input = new InputModel(inputParams);
+    // TBD fix show password on pressing enter
     return this.input;
   }
 
