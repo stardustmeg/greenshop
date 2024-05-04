@@ -62,6 +62,7 @@ class NavigationModel {
       navigationLinks.forEach((link) => link.setEnabled());
       currentLink?.setDisabled();
       this.checkCurrentUser();
+      this.view.switchActiveLink(String(route));
     });
     return true;
   }

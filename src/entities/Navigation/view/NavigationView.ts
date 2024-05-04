@@ -50,6 +50,7 @@ class NavigationView {
       attrs: {
         href: PAGE_ID.MAIN_PAGE,
       },
+      classes: [styles.link],
       text: PAGE_ID.MAIN_PAGE.toUpperCase(),
     });
     this.navigationLinks.set(PAGE_ID.MAIN_PAGE, this.toMainLink);
@@ -61,6 +62,7 @@ class NavigationView {
       attrs: {
         href: PAGE_ID.REGISTRATION_PAGE,
       },
+      classes: [styles.link],
       text: PAGE_ID.REGISTRATION_PAGE.toUpperCase(),
     });
     this.navigationLinks.set(PAGE_ID.REGISTRATION_PAGE, this.toRegisterLink);
@@ -73,6 +75,14 @@ class NavigationView {
 
   public getNavigationLinks(): Map<string, LinkModel> {
     return this.navigationLinks;
+  }
+
+  public switchActiveLink(route: string): void {
+    this.navigationLinks.forEach((link) => {
+      link.getHTML().classList.remove(styles.active);
+    });
+
+    this.navigationLinks.get(route)?.getHTML().classList.add(styles.active);
   }
 }
 
