@@ -44,6 +44,10 @@ class HeaderView {
   public getHTML(): HTMLElement {
     return this.header;
   }
+
+  public getLinkLogo(): LinkModel {
+    return this.linkLogo;
+  }
 }
 
 export default HeaderView;

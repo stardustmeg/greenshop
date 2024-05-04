@@ -57,12 +57,13 @@ class NavigationModel {
 
   private subscribeToEventMediator(): boolean {
     this.eventMediator.subscribe(MEDIATOR_EVENT.CHANGE_PAGE, (route) => {
+      const currentRoute = route === '' ? PAGE_ID.MAIN_PAGE : route;
       const navigationLinks = this.view.getNavigationLinks();
-      const currentLink = navigationLinks.get(String(route));
+      const currentLink = navigationLinks.get(String(currentRoute));
       navigationLinks.forEach((link) => link.setEnabled());
       currentLink?.setDisabled();
       this.checkCurrentUser();
-      this.view.switchActiveLink(String(route));
+      this.view.switchActiveLink(String(currentRoute));
     });
     return true;
   }
