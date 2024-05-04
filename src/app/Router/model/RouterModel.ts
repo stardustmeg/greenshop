@@ -7,6 +7,7 @@ import { PAGE_ID } from '@/shared/constants/pages.ts';
 const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
 const NEXT_SEGMENT = import.meta.env.VITE_APP_NEXT_SEGMENT;
 const PATH_SEGMENTS_TO_KEEP = import.meta.env.VITE_APP_PATH_SEGMENTS_TO_KEEP;
+const PROJECT_TITLE = import.meta.env.VITE_APP_PROJECT_TITLE;
 
 class RouterModel {
   private eventMediator = EventMediatorModel.getInstance();
@@ -41,6 +42,8 @@ class RouterModel {
         .slice(NEXT_SEGMENT, PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
         .join(DEFAULT_SEGMENT);
       const url = `${pathnameApp}/${route}`;
+      const titleRoute = route === '' ? PAGE_ID.MAIN_PAGE : route;
+      document.title = `${PROJECT_TITLE} | ${titleRoute}`;
 
       history.pushState(route, '', url);
 
