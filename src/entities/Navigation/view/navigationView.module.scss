@@ -1,0 +1,63 @@
+.notFoundPage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  border-bottom: calc(var(--extra-small-offset) / 2) solid var(--steam-green-800);
+  padding: calc(var(--extra-large-offset) / 2) var(--extra-large-offset);
+  padding-bottom: calc(var(--extra-large-offset) / 2 + calc(var(--extra-small-offset) / 2));
+  max-width: 500px;
+  background-color: var(--white);
+  gap: var(--medium-offset);
+
+  &_hidden {
+    display: none;
+  }
+}
+
+.pageLogo {
+  display: flex;
+  margin: 0 auto;
+
+  svg {
+    width: var(--large-offset);
+    height: var(--large-offset);
+  }
+}
+
+.pageTitle {
+  display: flex;
+  margin: 0 auto;
+  font: var(--extra-medium-font);
+  letter-spacing: 1px;
+  color: var(--steam-green-800);
+}
+
+.pageDescription {
+  font: var(--regular-font) '*' 1.5;
+  letter-spacing: 1px;
+  text-align: center;
+  color: var(--noble-gray-700);
+}
+
+.toMainButton {
+  border-radius: var(--small-br);
+  padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
+  font: var(--bold-font);
+  letter-spacing: 1px;
+  color: var(--white);
+  background-color: var(--steam-green-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  &:focus {
+    background-color: var(--steam-green-700);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--steam-green-700);
+    }
+  }
+}
