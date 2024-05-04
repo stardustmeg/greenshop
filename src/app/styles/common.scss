@@ -8,7 +8,6 @@ body {
   margin: 0 auto;
   width: 100%;
   min-width: 320px;
-  max-width: 1440px;
   font-family: 'Cerapro', sans-serif;
   font-weight: 400;
   background-color: var(--noble-white-100);
@@ -22,10 +21,4 @@ body {
 
 img {
   max-width: 100%;
-}
-
-.container {
-  margin: 0 auto;
-  padding: 0 var(--small-offset);
-  max-width: 1440px;
 }
