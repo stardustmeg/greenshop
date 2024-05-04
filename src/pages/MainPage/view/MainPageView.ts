@@ -1,4 +1,4 @@
-import { PAGE_DURATION } from '@/shared/constants/animations.ts';
+import { PAGE_TIMEOUT_DURATION } from '@/shared/constants/animations.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
@@ -37,7 +37,7 @@ class MainPageView {
   public show(): boolean {
     setTimeout(() => {
       this.page.classList.remove(styles.mainPage_hidden);
-    }, PAGE_DURATION);
+    }, PAGE_TIMEOUT_DURATION);
     return true;
   }
 }

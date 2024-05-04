@@ -1,5 +1,5 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import { PAGE_DURATION } from '@/shared/constants/animations.ts';
+import { PAGE_TIMEOUT_DURATION } from '@/shared/constants/animations.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -96,7 +96,7 @@ class NotFoundPageView {
   public show(): boolean {
     setTimeout(() => {
       this.page.classList.remove(styles.notFoundPage_hidden);
-    }, PAGE_DURATION);
+    }, PAGE_TIMEOUT_DURATION);
     return true;
   }
 }

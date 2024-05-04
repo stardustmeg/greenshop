@@ -1,5 +1,5 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import { PAGE_DURATION } from '@/shared/constants/animations.ts';
+import { PAGE_TIMEOUT_DURATION } from '@/shared/constants/animations.ts';
 import { PAGE_ANSWER, PAGE_DESCRIPTION, PAGE_ID, PAGE_LINK_TEXT } from '@/shared/constants/pages.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -132,7 +132,7 @@ class LoginPageView {
   public show(): boolean {
     setTimeout(() => {
       this.page.classList.remove(styles.loginPage_hidden);
-    }, PAGE_DURATION);
+    }, PAGE_TIMEOUT_DURATION);
     return true;
   }
 }
