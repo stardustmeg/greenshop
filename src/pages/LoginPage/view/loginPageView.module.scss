@@ -29,6 +29,7 @@
   grid-row: 1;
   margin: 0 auto;
   margin-bottom: calc(var(--extra-large-offset) / 2);
+  width: 100%;
   max-width: 160px;
 
   &::after {

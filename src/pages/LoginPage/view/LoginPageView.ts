@@ -1,3 +1,4 @@
+import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import { PAGE_ANSWER, PAGE_DESCRIPTION, PAGE_ID, PAGE_LINK_TEXT } from '@/shared/constants/pages.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -17,10 +18,13 @@ class LoginPageView {
 
   private parent: HTMLDivElement;
 
-  private registerLink: HTMLAnchorElement;
+  private registerLink: LinkModel;
+
+  private toRegisterPageWrapper: HTMLSpanElement;
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
+    this.toRegisterPageWrapper = this.createToRegisterPageWrapper();
     this.loginSpan = this.createLoginSpan();
     this.registerLink = this.createRegisterLink();
     this.authDescription = this.createAuthDescription();
@@ -67,7 +71,7 @@ class LoginPageView {
       tag: TAG_NAME.DIV,
     });
 
-    this.linksWrapper.append(this.loginSpan, this.registerLink);
+    this.linksWrapper.append(this.loginSpan, this.registerLink.getHTML());
     return this.linksWrapper;
   }
 
@@ -81,28 +85,26 @@ class LoginPageView {
     return this.loginSpan;
   }
 
-  private createRegisterLink(): HTMLAnchorElement {
-    this.registerLink = createBaseElement({
-      attributes: {
+  private createRegisterLink(): LinkModel {
+    this.registerLink = new LinkModel({
+      attrs: {
         href: PAGE_ID.REGISTRATION_PAGE,
       },
-      cssClasses: [styles.registerLink],
-      innerContent: PAGE_LINK_TEXT.REGISTRATION,
-      tag: TAG_NAME.A,
+      classes: [styles.registerLink],
+      text: PAGE_LINK_TEXT.REGISTRATION,
     });
 
     return this.registerLink;
   }
 
   private createToRegisterPageWrapper(): HTMLSpanElement {
-    const toRegisterPageWrapper = createBaseElement({
+    this.toRegisterPageWrapper = createBaseElement({
       cssClasses: [styles.toRegisterPageWrapper],
       innerContent: PAGE_ANSWER.LOGIN,
       tag: TAG_NAME.SPAN,
     });
-    const copyRegisterLink = this.registerLink.cloneNode(true);
-    toRegisterPageWrapper.append(copyRegisterLink);
-    return toRegisterPageWrapper;
+
+    return this.toRegisterPageWrapper;
   }
 
   public getAuthWrapper(): HTMLDivElement {
@@ -113,8 +115,12 @@ class LoginPageView {
     return this.page;
   }
 
-  public getRegisterLink(): HTMLAnchorElement {
+  public getRegisterLink(): LinkModel {
     return this.registerLink;
+  }
+
+  public getToRegisterPageWrapper(): HTMLSpanElement {
+    return this.toRegisterPageWrapper;
   }
 
   public hide(): boolean {

@@ -37,17 +37,23 @@ class LoginPageModel implements Page {
   private init(): boolean {
     this.subscribeToEventMediator();
     this.view.getAuthWrapper().append(this.loginForm.getHTML());
-    this.registerLinkHandler();
+    this.setRegisterLinkHandler();
     return true;
   }
 
-  private registerLinkHandler(): void {
-    const registerLink = this.view.getRegisterLink();
+  private registerLinkHandler(event: Event): void {
+    event.preventDefault();
+    this.router.navigateTo(PAGE_ID.REGISTRATION_PAGE);
+  }
 
-    registerLink.addEventListener(EVENT_NAME.CLICK, (event) => {
-      event.preventDefault();
-      this.router.navigateTo(PAGE_ID.REGISTRATION_PAGE);
-    });
+  private setRegisterLinkHandler(): void {
+    const toRegisterPageWrapper = this.view.getToRegisterPageWrapper();
+    const registerLink = this.view.getRegisterLink().getHTML();
+    const registerLinkCopy = registerLink.cloneNode(true);
+
+    registerLink.addEventListener(EVENT_NAME.CLICK, (event) => this.registerLinkHandler(event));
+    registerLinkCopy.addEventListener(EVENT_NAME.CLICK, (event) => this.registerLinkHandler(event));
+    toRegisterPageWrapper.append(registerLinkCopy);
   }
 
   private subscribeToEventMediator(): void {
