@@ -115,8 +115,7 @@ export class RootApi {
     const data = await this.connection
       .customers()
       .get({ queryArgs: { where: `email="${email}"` } })
-      .execute()
-      .catch((err: Error) => err);
+      .execute();
     return data;
   }
 

@@ -97,7 +97,7 @@ export const REGISTRATION_FORM_EMAIL_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'registration_email',
-    text: 'Email',
+    text: 'Email *',
   },
 } as const;
 
@@ -110,7 +110,7 @@ export const REGISTRATION_FORM_PASSWORD_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'registration_password',
-    text: 'Password',
+    text: 'Password *',
   },
 } as const;
 
@@ -123,7 +123,7 @@ export const REGISTRATION_FORM_FIRST_NAME_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'firstName',
-    text: 'First name',
+    text: 'First name *',
   },
 } as const;
 
@@ -136,7 +136,7 @@ export const REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'lastName',
-    text: 'Last name',
+    text: 'Last name *',
   },
 } as const;
 
@@ -150,7 +150,7 @@ export const REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'birthDate',
-    text: 'Date of Birth',
+    text: 'Date of Birth *',
   },
 } as const;
 
@@ -163,7 +163,7 @@ export const REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'address',
-    text: 'Address',
+    text: 'Address *',
   },
 } as const;
 
@@ -176,7 +176,7 @@ export const REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'city',
-    text: 'City',
+    text: 'City *',
   },
 } as const;
 
@@ -189,7 +189,7 @@ export const REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'shippingCountry',
-    text: 'Country',
+    text: 'Country *',
   },
 } as const;
 
@@ -202,7 +202,7 @@ export const REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'postalCode',
-    text: 'Postal code',
+    text: 'Postal code *',
   },
 } as const;
 
@@ -215,7 +215,7 @@ export const REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'billing_address',
-    text: 'Address',
+    text: 'Address *',
   },
 } as const;
 
@@ -228,7 +228,7 @@ export const REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'billing_city',
-    text: 'City',
+    text: 'City *',
   },
 } as const;
 
@@ -241,7 +241,7 @@ export const REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'billing_country',
-    text: 'Country',
+    text: 'Country *',
   },
 } as const;
 
@@ -254,7 +254,7 @@ export const REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS = {
   },
   labelParams: {
     for: 'billing_postalCode',
-    text: 'Postal code',
+    text: 'Postal code *',
   },
 } as const;
 
