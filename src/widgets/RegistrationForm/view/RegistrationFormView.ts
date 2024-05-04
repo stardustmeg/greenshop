@@ -220,7 +220,6 @@ class RegistrationFormView {
     return this.personalDataWrapper;
   }
 
-  // eslint-disable-next-line max-lines-per-function
   private createShippingAddressWrapper(): HTMLDivElement {
     const copyInputFields = this.inputFields;
     const filteredInputFields = copyInputFields.filter(
