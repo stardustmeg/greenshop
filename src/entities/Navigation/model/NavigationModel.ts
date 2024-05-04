@@ -61,8 +61,8 @@ class NavigationModel {
       const navigationLinks = this.view.getNavigationLinks();
       const currentLink = navigationLinks.get(String(currentRoute));
       navigationLinks.forEach((link) => link.setEnabled());
-      currentLink?.setDisabled();
       this.checkCurrentUser();
+      currentLink?.setDisabled();
       this.view.switchActiveLink(String(currentRoute));
     });
     return true;
