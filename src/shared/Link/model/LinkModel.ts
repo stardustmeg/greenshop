@@ -17,8 +17,13 @@ class LinkModel {
     return this.view.getHTML();
   }
 
-  public toggleDisabled(): boolean {
-    this.view.toggleDisabled();
+  public setDisabled(): boolean {
+    this.view.setDisabled();
+    return true;
+  }
+
+  public setEnabled(): boolean {
+    this.view.setEnabled();
     return true;
   }
 }

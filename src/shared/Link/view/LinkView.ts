@@ -27,8 +27,13 @@ class LinkView {
     return this.link;
   }
 
-  public toggleDisabled(): boolean {
-    this.link.classList.toggle(styles.disabled);
+  public setDisabled(): boolean {
+    this.link.classList.add(styles.disabled);
+    return true;
+  }
+
+  public setEnabled(): boolean {
+    this.link.classList.remove(styles.disabled);
     return true;
   }
 }
