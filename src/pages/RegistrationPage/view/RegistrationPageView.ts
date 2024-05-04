@@ -132,7 +132,7 @@ class RegistrationPageView {
   public show(): boolean {
     setTimeout(() => {
       this.page.classList.remove(styles.registrationPage_hidden);
-    }, PAGE_TIMEOUT_DURATION );
+    }, PAGE_TIMEOUT_DURATION);
     return true;
   }
 }
