@@ -36,12 +36,16 @@ Specify if any documentation updates are required and provide details on what ne
 - [ ] I wrote the correct description for the PR 📜
 - [ ] I have performed a self-review of my own code ✅
 - [ ] I have commented my code where needed 📝
-- [ ] My code doesn't generate any errors or warnings 🎨 ⛓️
 - [ ] My code successfully builds ⚙️
 - [ ] I am happy with my PR and ready to merge ❤️‍🔥
 
-[![Request Review on PR Open](https://github.com/stardustmeg/greenshop/actions/workflows/request_review.yml/badge.svg)](https://github.com/stardustmeg/greenshop/actions/workflows/request_review.yml)
+## Auto-Review 📝
 
-[![Pull Request Labeler](https://github.com/stardustmeg/greenshop/actions/workflows/labeler.yml/badge.svg)](https://github.com/stardustmeg/greenshop/actions/workflows/labeler.yml)
+- [x] The reviewers have been requested 📝
+      [![Request Review on PR Open](https://github.com/stardustmeg/greenshop/actions/workflows/request_review.yml/badge.svg)](https://github.com/stardustmeg/greenshop/actions/workflows/request_review.yml)
 
-[![Continuous Integration](https://github.com/stardustmeg/greenshop/actions/workflows/ci.yml/badge.svg)](https://github.com/stardustmeg/greenshop/actions/workflows/ci.yml)
+- [x] The labels have been added 🎨
+      [![Pull Request Labeler](https://github.com/stardustmeg/greenshop/actions/workflows/labeler.yml/badge.svg)](https://github.com/stardustmeg/greenshop/actions/workflows/labeler.yml)
+
+- [x] My code doesn't generate any errors or warnings ⛓️
+      [![Continuous Integration](https://github.com/stardustmeg/greenshop/actions/workflows/ci.yml/badge.svg)](https://github.com/stardustmeg/greenshop/actions/workflows/ci.yml)
