@@ -28,9 +28,11 @@ class RouterModel {
     const pathParts = path.split(DEFAULT_SEGMENT);
     const hasRoute = this.pages.has(pathParts.join(''));
     if (!hasRoute) {
+      document.title = `${PROJECT_TITLE} | ${PAGE_ID.NOT_FOUND_PAGE}`;
       this.eventMediator.notify(MEDIATOR_EVENT.CHANGE_PAGE, PAGE_ID.NOT_FOUND_PAGE);
       return null;
     }
+    document.title = `${PROJECT_TITLE} | ${pathParts.join('')}`;
     this.eventMediator.notify(MEDIATOR_EVENT.CHANGE_PAGE, pathParts.join(''));
     return pathParts.join('');
   }
