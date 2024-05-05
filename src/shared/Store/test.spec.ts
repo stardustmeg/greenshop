@@ -5,6 +5,7 @@ import type { State } from './reducer.ts';
 import getStore, { Store } from './Store.ts';
 import * as actions from './actions.ts';
 import observeStore, { selectBillingCountry, selectCurrentUser, selectShippingCountry } from './observer.ts';
+import { rootReducer } from './reducer.ts';
 
 describe('Checking Store', () => {
   const mockStore = getStore();
@@ -148,4 +149,71 @@ it('observeStore should call select and onChange when state changes', () => {
   expect(selelectCurrentUserSpy).toHaveBeenCalledWith(mockUser);
 
   unsubscribe();
+});
+
+describe('rootReducer', () => {
+  let initialState: State;
+
+  beforeEach(() => {
+    initialState = {
+      billingCountry: '',
+      categories: [],
+      currentUser: null,
+      products: [],
+      shippingCountry: '',
+    };
+  });
+
+  it('should handle setCurrentUser action', () => {
+    const user: User = {
+      addresses: [],
+      birthDate: '1990-01-01',
+      defaultBillingAddressId: null,
+      defaultShippingAddressId: null,
+      email: 'test@test.test',
+      firstName: 'Test',
+      id: 'test',
+      lastName: 'Test',
+      locale: 'en',
+      password: 'Testtest1',
+      version: 0,
+    };
+    const action = actions.setCurrentUser(user);
+    const newState = rootReducer(initialState, action);
+    expect(newState.currentUser).toEqual(user);
+  });
+
+  it('should handle setShippingCountry action', () => {
+    const country = 'US';
+    const action = actions.setShippingCountry(country);
+    const newState = rootReducer(initialState, action);
+    expect(newState.shippingCountry).toEqual(country);
+  });
+
+  it('should handle setBillingCountry action', () => {
+    const country = 'UK';
+    const action = actions.setBillingCountry(country);
+    const newState = rootReducer(initialState, action);
+    expect(newState.billingCountry).toEqual(country);
+  });
+
+  it('should handle setCategories action', () => {
+    const categories: Category[] = [];
+    const action = actions.setCategories(categories);
+    const newState = rootReducer(initialState, action);
+    expect(newState.categories).toEqual(categories);
+  });
+
+  it('should handle setProducts action', () => {
+    const products: Product[] = [];
+    const action = actions.setProducts(products);
+    const newState = rootReducer(initialState, action);
+    expect(newState.products).toEqual(products);
+  });
+
+  it('should return the same state for unknown action types', () => {
+    const action = actions.setCurrentUser(null);
+    const newState = rootReducer(initialState, action);
+    expect(newState).toEqual(initialState);
+  });
 });

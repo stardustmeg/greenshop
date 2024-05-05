@@ -9,7 +9,7 @@ const ACTION = {
   SET_SHIPPING_COUNTRY: 'setShippingCountry',
 } as const;
 
-type ActionType = (typeof ACTION)[keyof typeof ACTION];
+export type ActionType = (typeof ACTION)[keyof typeof ACTION];
 
 interface ActionWithPayload<T, U extends ActionType> {
   payload: T;
