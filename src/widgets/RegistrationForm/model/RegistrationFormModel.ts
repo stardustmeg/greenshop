@@ -257,8 +257,7 @@ class RegisterFormModel {
 
   // eslint-disable-next-line max-lines-per-function
   private async updateUserData(newUserData: User): Promise<User> {
-    this.userData.id = newUserData.id;
-    this.userData.locale = newUserData.locale;
+    let currentUserData: User | null = newUserData;
 
     const shippingAddress = this.getAddressDataFromShippingForm();
     const billingAddress = this.getAddressDataFromBillingForm();
@@ -267,67 +266,69 @@ class RegisterFormModel {
     const checkboxDefaultShippingAddress = this.view.getCheckboxDefaultShippingAddress().getHTML();
     const checkboxDefaultBillingAddress = this.view.getCheckboxDefaultBillingAddress().getHTML();
 
-    await getCustomerModel().editCustomer(
-      [CustomerModel.actionEditDateOfBirth(this.userData.birthDate)],
+    currentUserData = await getCustomerModel().editCustomer(
+      [
+        CustomerModel.actionEditFirstName(this.userData.firstName),
+        CustomerModel.actionEditLastName(this.userData.lastName),
+        CustomerModel.actionEditDateOfBirth(this.userData.birthDate),
+        CustomerModel.actionAddAddress(shippingAddress),
+      ],
       this.userData,
     );
 
-    await getCustomerModel().editCustomer([CustomerModel.actionEditFirstName(this.userData.firstName)], this.userData);
-
-    await getCustomerModel().editCustomer([CustomerModel.actionEditLastName(this.userData.lastName)], this.userData);
-
-    const userDataAfterAddShippingAddress = await getCustomerModel().editCustomer(
-      [CustomerModel.actionAddAddress(shippingAddress)],
-      this.userData,
-    );
-
-    if (checkboxDefaultShippingAddress.checked && userDataAfterAddShippingAddress) {
-      await getCustomerModel().editCustomer(
+    if (checkboxDefaultShippingAddress.checked && currentUserData) {
+      currentUserData = await getCustomerModel().editCustomer(
         [
           CustomerModel.actionEditDefaultShippingAddress(
-            userDataAfterAddShippingAddress.addresses[userDataAfterAddShippingAddress.addresses.length - 1].id,
+            currentUserData.addresses[currentUserData.addresses.length - 1].id,
           ),
         ],
-        this.userData,
+        currentUserData,
       );
     }
 
-    if (checkboxSingleAddress.checked && checkboxDefaultShippingAddress.checked) {
-      const userDataAfterAddShippingAddress = await getCustomerModel().editCustomer(
+    if (checkboxSingleAddress.checked && checkboxDefaultShippingAddress.checked && currentUserData) {
+      currentUserData = await getCustomerModel().editCustomer(
         [CustomerModel.actionAddAddress(shippingAddress)],
-        this.userData,
+        currentUserData,
       ); // TBD: add type billing or shipping
 
-      if (userDataAfterAddShippingAddress) {
+      if (currentUserData) {
         await getCustomerModel().editCustomer(
           [
             CustomerModel.actionEditDefaultBillingAddress(
-              userDataAfterAddShippingAddress.addresses[userDataAfterAddShippingAddress.addresses.length - 1].id,
+              currentUserData.addresses[currentUserData.addresses.length - 1].id,
             ),
           ],
-          this.userData,
+          currentUserData,
         );
       }
       return this.userData;
     }
 
-    if (checkboxDefaultBillingAddress.checked) {
-      const userDataAfterAddBillingAddress = await getCustomerModel().editCustomer(
+    if (checkboxDefaultBillingAddress.checked && currentUserData) {
+      currentUserData = await getCustomerModel().editCustomer(
         [CustomerModel.actionAddAddress(billingAddress)],
-        this.userData,
+        currentUserData,
       ); // TBD: add type billing or shipping
 
-      if (userDataAfterAddBillingAddress) {
+      if (currentUserData) {
         await getCustomerModel().editCustomer(
           [
             CustomerModel.actionEditDefaultBillingAddress(
-              userDataAfterAddBillingAddress.addresses[userDataAfterAddBillingAddress.addresses.length - 1].id,
+              currentUserData.addresses[currentUserData.addresses.length - 1].id,
             ),
           ],
-          this.userData,
+          currentUserData,
         );
       }
     }
+
+    if (currentUserData) {
+      this.userData = currentUserData;
+    }
+
+    getStore().dispatch(setCurrentUser(this.userData));
     return this.userData;
   }
 
