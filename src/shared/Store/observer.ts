@@ -24,4 +24,6 @@ export const selectBillingCountry = (state: State): string => state.billingCount
 
 export const selectShippingCountry = (state: State): string => state.shippingCountry;
 
+export const selectCurrentLanguage = (state: State): string => state.currentLanguage;
+
 export default observeStore;

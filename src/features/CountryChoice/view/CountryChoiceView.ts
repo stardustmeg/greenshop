@@ -1,3 +1,4 @@
+import getStore from '@/shared/Store/Store.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { EVENT_NAME } from '@/shared/constants/events.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
@@ -30,17 +31,20 @@ class CountryChoiceView {
       tag: TAG_NAME.DIV,
     });
 
-    Object.entries(COUNTRIES_LIST).forEach(([countryCode]) =>
-      this.countryDropList.append(this.createCountryItem(countryCode)),
+    const currentLang = getStore().getState().currentLanguage;
+
+    Object.entries(COUNTRIES_LIST[currentLang]).forEach(([countryName, countryCode]) =>
+      this.countryDropList.append(this.createCountryItem(countryName, countryCode)),
     );
 
     return this.countryDropList;
   }
 
-  private createCountryItem(countryCode: string): HTMLDivElement {
+  private createCountryItem(countryName: string, countryCode: string): HTMLDivElement {
     const countryItem = createBaseElement({
+      attributes: { id: countryCode },
       cssClasses: [styles.countryItem],
-      innerContent: countryCode,
+      innerContent: countryName,
       tag: TAG_NAME.DIV,
     });
 

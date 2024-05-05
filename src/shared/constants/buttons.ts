@@ -4,7 +4,8 @@ export const BUTTON_TYPE = {
   SUBMIT: 'submit',
 } as const;
 
-export const FORM_SUBMIT_BUTTON_TEXT = {
+export const BUTTON_TEXT = {
+  LOG_OUT: 'Log out',
   LOGIN: 'Login',
   REGISTRATION: 'Register',
 } as const;
@@ -12,4 +13,9 @@ export const FORM_SUBMIT_BUTTON_TEXT = {
 export const IS_DISABLED = {
   DISABLED: true,
   ENABLED: false,
+} as const;
+
+export const LANGUAGE_CHOICE = {
+  EN: 'en',
+  RU: 'ru',
 } as const;

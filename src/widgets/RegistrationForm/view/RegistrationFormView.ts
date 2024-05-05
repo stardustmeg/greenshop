@@ -3,7 +3,7 @@ import type { InputParams } from '@/shared/types/form';
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import { BUTTON_TYPE, FORM_SUBMIT_BUTTON_TEXT } from '@/shared/constants/buttons.ts';
+import { BUTTON_TEXT, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
 import { FORM_TEXT, INPUT_TYPE } from '@/shared/constants/forms.ts';
 import * as FORM_CONSTANT from '@/shared/constants/forms/register/constant.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
@@ -235,7 +235,7 @@ class RegistrationFormView {
       attrs: {
         type: BUTTON_TYPE.SUBMIT,
       },
-      text: FORM_SUBMIT_BUTTON_TEXT.REGISTRATION,
+      text: BUTTON_TEXT.REGISTRATION,
     });
 
     this.submitFormButton.setDisabled();
