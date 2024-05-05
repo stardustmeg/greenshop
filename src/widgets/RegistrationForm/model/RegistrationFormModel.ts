@@ -201,7 +201,7 @@ class RegisterFormModel {
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_REGISTRATION, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(SERVER_MESSAGE.USER_EXISTS, MESSAGE_STATUS.ERROR);
       });
   }
 
@@ -271,7 +271,9 @@ class RegisterFormModel {
       password: this.userData.password,
     };
     this.eventMediator.notify(MEDIATOR_EVENT.USER_LOGIN, userDataWithLogin);
-    this.updateUserData(newUserData).catch(() => {});
+    this.updateUserData(newUserData).catch(() => {
+      serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+    });
     this.resetInputFieldsValidation();
   }
 
