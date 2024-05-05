@@ -9,6 +9,8 @@ import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
 import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
 import * as CONSTANT_FORMS from '@/shared/constants/forms.ts';
+import * as FORM_CONSTANT from '@/shared/constants/forms/register/constant.ts';
+import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import isKeyOfUserData from '@/shared/utils/isKeyOfUserData.ts';
 
@@ -54,7 +56,7 @@ class RegisterFormModel {
 
   private createBillingCountryChoice(): boolean {
     return this.createCountryChoice(
-      CONSTANT_FORMS.REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id,
+      FORM_FIELDS.BILLING_ADDRESS_COUNTRY.inputParams.id,
       this.view.getBillingAddressWrapper(),
     );
   }
@@ -76,7 +78,7 @@ class RegisterFormModel {
 
   private createShippingCountryChoice(): boolean {
     return this.createCountryChoice(
-      CONSTANT_FORMS.REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id,
+      FORM_FIELDS.SHIPPING_ADDRESS_COUNTRY.inputParams.id,
       this.view.getShippingAddressWrapper(),
     );
   }
@@ -108,17 +110,17 @@ class RegisterFormModel {
       key === CONSTANT_FORMS.USER_ADDRESS_TYPE.BILLING
         ? this.getAddressDataHandler(
             [
-              CONSTANT_FORMS.REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS,
-              CONSTANT_FORMS.REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
-              CONSTANT_FORMS.REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS,
+              FORM_FIELDS.BILLING_ADDRESS_CITY,
+              FORM_FIELDS.BILLING_ADDRESS_POSTAL_CODE,
+              FORM_FIELDS.BILLING_ADDRESS_STREET,
             ],
             CONSTANT_FORMS.USER_COUNTRY_ADDRESS.BILLING,
           )
         : this.getAddressDataHandler(
             [
-              CONSTANT_FORMS.REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_PARAMS,
-              CONSTANT_FORMS.REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
-              CONSTANT_FORMS.REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS,
+              FORM_FIELDS.SHIPPING_ADDRESS_CITY,
+              FORM_FIELDS.SHIPPING_ADDRESS_POSTAL_CODE,
+              FORM_FIELDS.SHIPPING_ADDRESS_STREET,
             ],
             CONSTANT_FORMS.USER_COUNTRY_ADDRESS.SHIPPING,
           );
@@ -161,7 +163,7 @@ class RegisterFormModel {
       const inputHTML = input.getHTML();
       const inputValue = input.getValue();
 
-      const key = inputHTML.id.replace(CONSTANT_FORMS.REGISTRATION_FORM_KEY, '');
+      const key = inputHTML.id.replace(FORM_CONSTANT.KEY, '');
 
       if (isKeyOfUserData(this.userData, key)) {
         this.userData[key] = inputValue;
@@ -235,10 +237,10 @@ class RegisterFormModel {
 
   private singleAddressCheckBoxHandler(isChecked: boolean): boolean {
     const billingAddressFieldID = [
-      CONSTANT_FORMS.REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id,
-      CONSTANT_FORMS.REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS.inputParams.id,
-      CONSTANT_FORMS.REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS.inputParams.id,
-      CONSTANT_FORMS.REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS.inputParams.id,
+      FORM_FIELDS.BILLING_ADDRESS_COUNTRY.inputParams.id,
+      FORM_FIELDS.BILLING_ADDRESS_STREET.inputParams.id,
+      FORM_FIELDS.BILLING_ADDRESS_CITY.inputParams.id,
+      FORM_FIELDS.BILLING_ADDRESS_POSTAL_CODE.inputParams.id,
     ];
 
     this.view.switchVisibilityBillingAddressWrapper(isChecked);

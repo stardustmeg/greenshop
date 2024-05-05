@@ -7,7 +7,7 @@ import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
 import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
-import { LOGIN_FORM_KEY } from '@/shared/constants/forms.ts';
+import KEY from '@/shared/constants/forms/login/constants.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { isUserLoginData } from '@/shared/types/validation/user.ts';
 import isKeyOfUserData from '@/shared/utils/isKeyOfUserData.ts';
@@ -48,7 +48,7 @@ class LoginFormModel {
       const inputHTML = input.getHTML();
       const inputValue = input.getValue();
 
-      const key = inputHTML.id.replace(LOGIN_FORM_KEY, '');
+      const key = inputHTML.id.replace(KEY, '');
 
       if (isKeyOfUserData(this.userData, key)) {
         this.userData[key] = inputValue;
