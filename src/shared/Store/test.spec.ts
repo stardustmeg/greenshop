@@ -1,21 +1,23 @@
 import type { Category, Product } from '../types/product.ts';
 import type { User } from '../types/user.ts';
+import type { State } from './reducer.ts';
 
 import getStore, { Store } from './Store.ts';
 import * as actions from './actions.ts';
+import observeStore, { selectBillingCountry, selectCurrentUser, selectShippingCountry } from './observer.ts';
 
-const store = getStore();
 describe('Checking Store', () => {
+  const mockStore = getStore();
   it('should check if store is defined', () => {
-    expect(store).toBeDefined();
+    expect(mockStore).toBeDefined();
   });
 
   it('should check if store is an instance of Store', () => {
-    expect(store).toBeInstanceOf(Store);
+    expect(mockStore).toBeInstanceOf(Store);
   });
 
   it('should check to return an instance of Store', () => {
-    expect(store.getState() instanceof Object).toBe(true);
+    expect(mockStore.getState() instanceof Object).toBe(true);
   });
 });
 
@@ -78,4 +80,72 @@ it('setBillingCountry should create a correct action', () => {
   const action = actions.setBillingCountry(value);
   expect(action.type).toBe('setBillingCountry');
   expect(action.payload).toBe(value);
+});
+
+vi.mock('./Store.ts', async (importOriginal) => {
+  const actual: typeof importOriginal = await importOriginal();
+  return {
+    ...actual,
+    getState: (): State => ({
+      billingCountry: '',
+      categories: [],
+      currentUser: null,
+      products: [],
+      shippingCountry: '',
+    }),
+  };
+});
+
+describe('ObserveStore', () => {
+  it('should check if observeStore is a function', () => {
+    expect(observeStore).toBeInstanceOf(Function);
+  });
+});
+
+it('should check if selectCurrentUser is a function', () => {
+  expect(selectCurrentUser).toBeInstanceOf(Function);
+});
+
+it('should check if selectBillingCountry is a function', () => {
+  expect(selectBillingCountry).toBeInstanceOf(Function);
+});
+
+it('should check if selectShippingCountry is a function', () => {
+  expect(selectShippingCountry).toBeInstanceOf(Function);
+});
+
+it('observeStore should call select and onChange when state changes', () => {
+  const mockUser = {
+    addresses: [],
+    birthDate: '1990-01-01',
+    defaultBillingAddressId: null,
+    defaultShippingAddressId: null,
+    email: 'test@test.test',
+    firstName: 'Test',
+    id: 'test',
+    lastName: 'Test',
+    locale: 'en',
+    password: 'Testtest1',
+    version: 0,
+  };
+
+  const mockState: State = {
+    billingCountry: '',
+    categories: [],
+    currentUser: mockUser,
+    products: [],
+    shippingCountry: '',
+  };
+
+  const mockOnChange = vitest.fn();
+  const selelectCurrentUserSpy = vitest.spyOn(actions, 'setCurrentUser');
+  const mockSelect = vitest.fn(() => selectCurrentUser(mockState));
+  const unsubscribe = observeStore(mockSelect, mockOnChange);
+
+  expect(selectCurrentUser(mockState)).toBe(mockUser);
+  actions.setCurrentUser(mockUser);
+
+  expect(selelectCurrentUserSpy).toHaveBeenCalledWith(mockUser);
+
+  unsubscribe();
 });
