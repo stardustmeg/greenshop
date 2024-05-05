@@ -1,7 +1,8 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import { BUTTON_TYPE, FORM_SUBMIT_BUTTON_TEXT } from '@/shared/constants/buttons.ts';
-import { LOGIN_FORM_INPUT_FIELD_PARAMS, LOGIN_FORM_INPUT_FIELD_VALIDATION_PARAMS } from '@/shared/constants/forms.ts';
+import * as FORM_INPUTS from '@/shared/constants/forms/login/fieldParams.ts';
+import * as FORM_VALIDATION from '@/shared/constants/forms/login/validationParams.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
@@ -41,8 +42,8 @@ class LoginFormView {
   }
 
   private createInputFields(): InputFieldModel[] {
-    LOGIN_FORM_INPUT_FIELD_PARAMS.forEach((inputFieldParams) => {
-      const currentValidateParams = LOGIN_FORM_INPUT_FIELD_VALIDATION_PARAMS.find(
+    FORM_INPUTS.INPUT_FIELD.forEach((inputFieldParams) => {
+      const currentValidateParams = FORM_VALIDATION.default.find(
         (validParams) => validParams.key === inputFieldParams.inputParams.id,
       );
 

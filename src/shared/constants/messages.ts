@@ -6,9 +6,10 @@ export const MESSAGE_STATUS = {
 export type MessageStatusType = (typeof MESSAGE_STATUS)[keyof typeof MESSAGE_STATUS];
 
 export const SERVER_MESSAGE = {
-  INCORRECT_LOGIN: 'Incorrect login or password',
+  INCORRECT_PASSWORD: 'Please, enter a correct password',
   INCORRECT_REGISTRATION: 'User with this email already exists, please check your email',
-  SUCCESSFUL_LOGIN: 'Your login was successful',
+  INVALID_EMAIL: "User with this email doesn't exist. Please, register first",
+  SUCCESSFUL_LOGIN: 'Welcome! And enjoy shopping!',
   SUCCESSFUL_REGISTRATION: 'Your registration was successful',
 } as const;
 

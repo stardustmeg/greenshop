@@ -1,18 +1,22 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
-import type { UserLoginData } from '@/shared/types/user.ts';
+import type { User, UserLoginData } from '@/shared/types/user.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
-import { EVENT_NAME } from '@/shared/constants/events.ts';
-import { LOGIN_FORM_KEY } from '@/shared/constants/forms.ts';
+import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import KEY from '@/shared/constants/forms/login/constants.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
+import { isUserLoginData } from '@/shared/types/validation/user.ts';
 import isKeyOfUserData from '@/shared/utils/isKeyOfUserData.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
 
 class LoginFormModel {
+  private eventMediator = EventMediatorModel.getInstance();
+
   private inputFields: InputFieldModel[] = [];
 
   private isValidInputFields: Record<string, boolean> = {};
@@ -28,13 +32,23 @@ class LoginFormModel {
     this.init();
   }
 
+  private async checkHasEmailHandler(email: string): Promise<User | null> {
+    const response = await getCustomerModel().hasEmail(email);
+    return response;
+  }
+
+  private createGreetingMessage(name: string): string {
+    const greeting = `Hello, ${name}! ${SERVER_MESSAGE.SUCCESSFUL_LOGIN}`;
+    return greeting;
+  }
+
   private getFormData(): UserLoginData {
     this.inputFields.forEach((inputField) => {
       const input = inputField.getView().getInput();
       const inputHTML = input.getHTML();
       const inputValue = input.getValue();
 
-      const key = inputHTML.id.replace(LOGIN_FORM_KEY, '');
+      const key = inputHTML.id.replace(KEY, '');
 
       if (isKeyOfUserData(this.userData, key)) {
         this.userData[key] = inputValue;
@@ -53,8 +67,35 @@ class LoginFormModel {
     this.inputFields.forEach((inputField) => this.setInputFieldHandlers(inputField));
     this.setPreventDefaultToForm();
     this.setSubmitFormHandler();
+    this.subscribeToEventMediator();
 
     return true;
+  }
+
+  private loginUser(userLoginData: UserLoginData): void {
+    this.checkHasEmailHandler(userLoginData.email)
+      .then((response) => {
+        if (response) {
+          this.loginUserHandler(userLoginData);
+        } else {
+          serverMessageModel.showServerMessage(SERVER_MESSAGE.INVALID_EMAIL, MESSAGE_STATUS.ERROR);
+        }
+      })
+      .catch(() => {});
+  }
+
+  private loginUserHandler(userLoginData: UserLoginData): void {
+    getCustomerModel()
+      .authCustomer(userLoginData)
+      .then((data) => {
+        getStore().dispatch(setCurrentUser(data));
+        if (data) {
+          serverMessageModel.showServerMessage(this.createGreetingMessage(data.firstName), MESSAGE_STATUS.SUCCESS);
+        }
+      })
+      .catch(() => {
+        serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_PASSWORD, MESSAGE_STATUS.ERROR);
+      });
   }
 
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
@@ -68,10 +109,7 @@ class LoginFormModel {
   }
 
   private setPreventDefaultToForm(): boolean {
-    this.getHTML().addEventListener(EVENT_NAME.SUBMIT, (event) => {
-      event.preventDefault();
-    });
-
+    this.getHTML().addEventListener(EVENT_NAME.SUBMIT, (event) => event.preventDefault());
     return true;
   }
 
@@ -79,17 +117,16 @@ class LoginFormModel {
     const submitButton = this.view.getSubmitFormButton().getHTML();
     submitButton.addEventListener(EVENT_NAME.CLICK, () => {
       const formData = this.getFormData();
-      const customerModel = getCustomerModel();
-      customerModel
-        .authCustomer(formData)
-        .then((data) => {
-          getStore().dispatch(setCurrentUser(data));
-          serverMessageModel.showServerMessage(SERVER_MESSAGE.SUCCESSFUL_LOGIN, MESSAGE_STATUS.SUCCESS);
-        })
-        .catch(() => {
-          // TBD: fix error message
-          serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_LOGIN, MESSAGE_STATUS.ERROR);
-        });
+      this.loginUser(formData);
+    });
+    return true;
+  }
+
+  private subscribeToEventMediator(): boolean {
+    this.eventMediator.subscribe(MEDIATOR_EVENT.USER_LOGIN, (userLoginData) => {
+      if (isUserLoginData(userLoginData)) {
+        this.loginUser(userLoginData);
+      }
     });
     return true;
   }
