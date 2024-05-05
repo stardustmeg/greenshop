@@ -81,7 +81,9 @@ class LoginFormModel {
           serverMessageModel.showServerMessage(SERVER_MESSAGE.INVALID_EMAIL, MESSAGE_STATUS.ERROR);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+      });
   }
 
   private loginUserHandler(userLoginData: UserLoginData): void {
