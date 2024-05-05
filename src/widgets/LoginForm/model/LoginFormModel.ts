@@ -1,5 +1,5 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
-import type { UserLoginData } from '@/shared/types/user.ts';
+import type { User, UserLoginData } from '@/shared/types/user.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
@@ -26,6 +26,16 @@ class LoginFormModel {
 
   constructor() {
     this.init();
+  }
+
+  private async checkHasEmailHandler(): Promise<User | null> {
+    const response = await getCustomerModel().hasEmail(this.userData.email);
+    return response;
+  }
+
+  private createGreetingMessage(name: string): string {
+    const greeting = `Hello, ${name}! ${SERVER_MESSAGE.SUCCESSFUL_LOGIN}`;
+    return greeting;
   }
 
   private getFormData(): UserLoginData {
@@ -57,6 +67,32 @@ class LoginFormModel {
     return true;
   }
 
+  private loginUser(userLoginData: UserLoginData): void {
+    this.checkHasEmailHandler()
+      .then((response) => {
+        if (response) {
+          this.loginUserHandler(userLoginData);
+        } else {
+          serverMessageModel.showServerMessage(SERVER_MESSAGE.INVALID_EMAIL, MESSAGE_STATUS.ERROR);
+        }
+      })
+      .catch(() => {});
+  }
+
+  private loginUserHandler(userLoginData: UserLoginData): void {
+    getCustomerModel()
+      .authCustomer(userLoginData)
+      .then((data) => {
+        getStore().dispatch(setCurrentUser(data));
+        if (data) {
+          serverMessageModel.showServerMessage(this.createGreetingMessage(data.firstName), MESSAGE_STATUS.SUCCESS);
+        }
+      })
+      .catch(() => {
+        serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_PASSWORD, MESSAGE_STATUS.ERROR);
+      });
+  }
+
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
     const inputHTML = inputField.getView().getInput().getHTML();
     this.isValidInputFields[inputHTML.id] = false;
@@ -68,10 +104,7 @@ class LoginFormModel {
   }
 
   private setPreventDefaultToForm(): boolean {
-    this.getHTML().addEventListener(EVENT_NAME.SUBMIT, (event) => {
-      event.preventDefault();
-    });
-
+    this.getHTML().addEventListener(EVENT_NAME.SUBMIT, (event) => event.preventDefault());
     return true;
   }
 
@@ -79,17 +112,7 @@ class LoginFormModel {
     const submitButton = this.view.getSubmitFormButton().getHTML();
     submitButton.addEventListener(EVENT_NAME.CLICK, () => {
       const formData = this.getFormData();
-      const customerModel = getCustomerModel();
-      customerModel
-        .authCustomer(formData)
-        .then((data) => {
-          getStore().dispatch(setCurrentUser(data));
-          serverMessageModel.showServerMessage(SERVER_MESSAGE.SUCCESSFUL_LOGIN, MESSAGE_STATUS.SUCCESS);
-        })
-        .catch(() => {
-          // TBD: fix error message
-          serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_LOGIN, MESSAGE_STATUS.ERROR);
-        });
+      this.loginUser(formData);
     });
     return true;
   }
