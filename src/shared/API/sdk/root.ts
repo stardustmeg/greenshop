@@ -1,4 +1,4 @@
-import type { UserLoginData, UserRegisterData } from '@/shared/types/user.ts';
+import type { User, UserLoginData } from '@/shared/types/user.ts';
 
 import {
   type ByProjectKeyRequestBuilder,
@@ -120,12 +120,12 @@ export class RootApi {
     return data;
   }
 
-  public async registrationUser(userRegisterData: UserRegisterData): Promise<ClientResponse<CustomerSignInResult>> {
-    const userInfo = {
-      email: userRegisterData.email,
-      password: userRegisterData.password,
+  public async registrationUser(userData: User): Promise<ClientResponse<CustomerSignInResult>> {
+    const userCredentials = {
+      email: userData.email,
+      password: userData.password,
     };
-    const data = await this.connection.customers().post({ body: userInfo }).execute();
+    const data = await this.connection.customers().post({ body: userCredentials }).execute();
     return data;
   }
 }

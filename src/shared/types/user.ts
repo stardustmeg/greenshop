@@ -3,17 +3,6 @@ export interface UserLoginData {
   password: string;
 }
 
-export interface UserRegisterData extends UserLoginData {
-  address: string;
-  birthDate: string;
-  city: string;
-  country: string;
-  firstName: string;
-  lastName: string;
-  locale: string;
-  postalCode: string;
-}
-
 export interface User {
   addresses: Address[];
   birthDate: string;
@@ -28,15 +17,18 @@ export interface User {
   version: number;
 }
 
-export interface Address {
+export interface FormAddress {
   city: string;
   country: string;
+  postalCode: string;
+  streetName: string;
+}
+
+export interface Address extends FormAddress {
   email: string;
   firstName: string;
   id: string;
   lastName: string;
-  postalCode: string;
   state: string;
-  streetName: string;
   streetNumber: string;
 }

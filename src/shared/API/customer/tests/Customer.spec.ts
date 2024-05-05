@@ -1,11 +1,11 @@
-import type { Address, User, UserRegisterData } from '@/shared/types/user.ts';
+import type { Address, User } from '@/shared/types/user.ts';
 
 import getCustomerModel, { CustomerModel } from '../model/CustomerModel.ts';
 
 const customerModel = getCustomerModel();
 
 describe('Checking Customer Model', () => {
-  let user: UserRegisterData;
+  let user: User;
   let address: Address;
   let customer: User | null = null;
   let editCustomer: User | null = null;
@@ -15,16 +15,17 @@ describe('Checking Customer Model', () => {
 
   beforeAll(() => {
     user = {
-      address: 'Test address',
+      addresses: [],
       birthDate: '1990-01-01',
-      city: 'Test city',
-      country: 'Test country',
-      email: 'test-test-test@example.com',
-      firstName: 'Test first name',
-      lastName: 'Test last name',
+      defaultBillingAddressId: null,
+      defaultShippingAddressId: null,
+      email: 'test-test@example.com',
+      firstName: 'Jane',
+      id: '1',
+      lastName: 'Smith',
       locale: 'en',
       password: 'Qqq11',
-      postalCode: 'Test postal code',
+      version: 0,
     };
 
     address = {

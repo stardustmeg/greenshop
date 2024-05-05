@@ -295,6 +295,14 @@ class RegistrationFormView {
     return this.billingAddressWrapper;
   }
 
+  public getCheckboxDefaultBillingAddress(): InputModel {
+    return this.checkboxDefaultBillingAddress;
+  }
+
+  public getCheckboxDefaultShippingAddress(): InputModel {
+    return this.checkboxDefaultShippingAddress;
+  }
+
   public getHTML(): HTMLFormElement {
     return this.form;
   }

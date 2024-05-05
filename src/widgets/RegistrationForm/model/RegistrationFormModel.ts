@@ -1,8 +1,8 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
-import type { UserRegisterData } from '@/shared/types/user.ts';
+import type { Address, User } from '@/shared/types/user.ts';
 
 import CountryChoiceModel from '@/features/CountryChoice/model/CountryChoiceModel.ts';
-import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
+import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
@@ -13,7 +13,10 @@ import {
   REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
   REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS,
   REGISTRATION_FORM_KEY,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_PARAMS,
   REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
+  REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS,
 } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import isKeyOfUserData from '@/shared/utils/isKeyOfUserData.ts';
@@ -25,17 +28,18 @@ class RegisterFormModel {
 
   private isValidInputFields: Record<string, boolean> = {};
 
-  private userData: UserRegisterData = {
-    address: '',
+  private userData: User = {
+    addresses: [],
     birthDate: '',
-    city: '',
-    country: '',
+    defaultBillingAddressId: null,
+    defaultShippingAddressId: null,
     email: '',
     firstName: '',
+    id: '',
     lastName: '',
-    locale: 'en',
+    locale: '',
     password: '',
-    postalCode: '',
+    version: 0,
   };
 
   private view: RegistrationFormView = new RegistrationFormView();
@@ -45,46 +49,76 @@ class RegisterFormModel {
   }
 
   private createBillingCountryChoice(): boolean {
-    const billingAddressInput = this.view
+    return this.createCountryChoice(
+      REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id,
+      this.view.getBillingAddressWrapper(),
+    );
+  }
+
+  private createCountryChoice(inputFieldId: string, wrapper: HTMLElement): boolean {
+    const addressInput = this.view
       .getInputFields()
-      .find(
-        (inputField) =>
-          inputField.getView().getInput().getHTML().id ===
-          REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id,
-      )
+      .find((inputField) => inputField.getView().getInput().getHTML().id === inputFieldId)
       ?.getView()
       .getInput()
       .getHTML();
-    const billingAddressWrapper = this.view.getBillingAddressWrapper();
 
-    if (billingAddressInput) {
-      const countryChoiceModel = new CountryChoiceModel(billingAddressInput);
-      billingAddressWrapper.append(countryChoiceModel.getHTML());
+    if (addressInput) {
+      const countryChoiceModel = new CountryChoiceModel(addressInput);
+      wrapper.append(countryChoiceModel.getHTML());
     }
     return true;
   }
 
   private createShippingCountryChoice(): boolean {
-    const shippingAddressInput = this.view
-      .getInputFields()
-      .find(
-        (inputField) =>
-          inputField.getView().getInput().getHTML().id ===
-          REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id,
-      )
-      ?.getView()
-      .getInput()
-      .getHTML();
-    const shippingAddressWrapper = this.view.getShippingAddressWrapper();
-
-    if (shippingAddressInput) {
-      const countryChoiceModel = new CountryChoiceModel(shippingAddressInput);
-      shippingAddressWrapper.append(countryChoiceModel.getHTML());
-    }
-    return true;
+    return this.createCountryChoice(
+      REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id,
+      this.view.getShippingAddressWrapper(),
+    );
   }
 
-  private getFormData(): UserRegisterData {
+  private getAddressDataFromBillingForm(): Address {
+    const addressData: Address = {
+      city: this.getAddressValue(REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS),
+      country: getStore().getState().billingCountry,
+      email: this.userData.email,
+      firstName: this.userData.firstName,
+      id: '',
+      lastName: this.userData.lastName,
+      postalCode: this.getAddressValue(REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS),
+      state: '',
+      streetName: this.getAddressValue(REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS),
+      streetNumber: '',
+    };
+    return addressData;
+  }
+
+  private getAddressDataFromShippingForm(): Address {
+    const addressData: Address = {
+      city: this.getAddressValue(REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_PARAMS),
+      country: getStore().getState().shippingCountry,
+      email: this.userData.email,
+      firstName: this.userData.firstName,
+      id: '',
+      lastName: this.userData.lastName,
+      postalCode: this.getAddressValue(REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS),
+      state: '',
+      streetName: this.getAddressValue(REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS),
+      streetNumber: '',
+    };
+    return addressData;
+  }
+
+  private getAddressValue(field: { inputParams: { id: string } }): string {
+    return (
+      this.inputFields
+        .find((inputField) => inputField.getView().getInput().getHTML().id === field.inputParams.id)
+        ?.getView()
+        .getValue() || ''
+    );
+  }
+
+  private getFormUserData(): User {
     this.inputFields.forEach((inputField) => {
       const input = inputField.getView().getInput();
       const inputHTML = input.getHTML();
@@ -95,9 +129,8 @@ class RegisterFormModel {
       if (isKeyOfUserData(this.userData, key)) {
         this.userData[key] = inputValue;
         this.isValidInputFields[inputHTML.id] = false;
+        input.clear();
       }
-
-      input.clear();
     });
 
     this.view.getSubmitFormButton().setDisabled();
@@ -116,6 +149,38 @@ class RegisterFormModel {
       this.singleAddressCheckBoxHandler(checkboxSingleAddress.checked),
     );
     return true;
+  }
+
+  private loginUser(): void {
+    const userDataWithLogin = {
+      email: this.userData.email,
+      password: this.userData.password,
+    };
+    getCustomerModel()
+      .authCustomer(userDataWithLogin)
+      .then(() => getStore().dispatch(setCurrentUser(this.userData)))
+      .catch(() => {});
+  }
+
+  private registerUser(): void {
+    this.getFormUserData();
+    getCustomerModel()
+      .registrationNewCustomer(this.userData)
+      .then((newUserData) => {
+        if (newUserData) {
+          this.successfulUserRegistration(newUserData);
+          serverMessageModel.showServerMessage(SERVER_MESSAGE.SUCCESSFUL_REGISTRATION, MESSAGE_STATUS.SUCCESS);
+        }
+      })
+      .catch(() => {
+        serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_REGISTRATION, MESSAGE_STATUS.ERROR);
+      });
+  }
+
+  private resetInputFieldsValidation(): void {
+    Object.entries(this.isValidInputFields).forEach(([key]) => {
+      this.isValidInputFields[key] = false;
+    });
   }
 
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
@@ -138,27 +203,7 @@ class RegisterFormModel {
 
   private setSubmitFormHandler(): boolean {
     const submitButton = this.view.getSubmitFormButton().getHTML();
-    submitButton.addEventListener(EVENT_NAME.CLICK, () => {
-      const formData = this.getFormData();
-      const customerModel = getCustomerModel();
-      customerModel
-        .registrationNewCustomer(formData)
-        .then((data) => {
-          const userInfo = {
-            email: formData.email,
-            password: formData.password,
-          };
-          customerModel
-            .authCustomer(userInfo)
-            .then(() => getStore().dispatch(setCurrentUser(data)))
-            .catch(() => {});
-          serverMessageModel.showServerMessage(SERVER_MESSAGE.SUCCESSFUL_REGISTRATION, MESSAGE_STATUS.SUCCESS);
-          Object.entries(this.isValidInputFields).forEach(([key]) => {
-            this.isValidInputFields[key] = false;
-          });
-        })
-        .catch(() => serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_REGISTRATION, MESSAGE_STATUS.ERROR));
-    });
+    submitButton.addEventListener(EVENT_NAME.CLICK, () => this.registerUser());
     return true;
   }
 
@@ -192,6 +237,13 @@ class RegisterFormModel {
     return true;
   }
 
+  private successfulUserRegistration(newUserData: User): void {
+    // TBD: move login user to login form
+    this.loginUser();
+    this.updateUserData(newUserData).catch(() => {});
+    this.resetInputFieldsValidation();
+  }
+
   private switchSubmitFormButtonAccess(): boolean {
     if (Object.values(this.isValidInputFields).every((value) => value)) {
       this.view.getSubmitFormButton().setEnabled();
@@ -201,6 +253,82 @@ class RegisterFormModel {
     }
 
     return true;
+  }
+
+  // eslint-disable-next-line max-lines-per-function
+  private async updateUserData(newUserData: User): Promise<User> {
+    this.userData.id = newUserData.id;
+    this.userData.locale = newUserData.locale;
+
+    const shippingAddress = this.getAddressDataFromShippingForm();
+    const billingAddress = this.getAddressDataFromBillingForm();
+
+    const checkboxSingleAddress = this.view.getSingleAddressCheckBox().getHTML();
+    const checkboxDefaultShippingAddress = this.view.getCheckboxDefaultShippingAddress().getHTML();
+    const checkboxDefaultBillingAddress = this.view.getCheckboxDefaultBillingAddress().getHTML();
+
+    await getCustomerModel().editCustomer(
+      [CustomerModel.actionEditDateOfBirth(this.userData.birthDate)],
+      this.userData,
+    );
+
+    await getCustomerModel().editCustomer([CustomerModel.actionEditFirstName(this.userData.firstName)], this.userData);
+
+    await getCustomerModel().editCustomer([CustomerModel.actionEditLastName(this.userData.lastName)], this.userData);
+
+    const userDataAfterAddShippingAddress = await getCustomerModel().editCustomer(
+      [CustomerModel.actionAddAddress(shippingAddress)],
+      this.userData,
+    );
+
+    if (checkboxDefaultShippingAddress.checked && userDataAfterAddShippingAddress) {
+      await getCustomerModel().editCustomer(
+        [
+          CustomerModel.actionEditDefaultShippingAddress(
+            userDataAfterAddShippingAddress.addresses[userDataAfterAddShippingAddress.addresses.length - 1].id,
+          ),
+        ],
+        this.userData,
+      );
+    }
+
+    if (checkboxSingleAddress.checked && checkboxDefaultShippingAddress.checked) {
+      const userDataAfterAddShippingAddress = await getCustomerModel().editCustomer(
+        [CustomerModel.actionAddAddress(shippingAddress)],
+        this.userData,
+      ); // TBD: add type billing or shipping
+
+      if (userDataAfterAddShippingAddress) {
+        await getCustomerModel().editCustomer(
+          [
+            CustomerModel.actionEditDefaultBillingAddress(
+              userDataAfterAddShippingAddress.addresses[userDataAfterAddShippingAddress.addresses.length - 1].id,
+            ),
+          ],
+          this.userData,
+        );
+      }
+      return this.userData;
+    }
+
+    if (checkboxDefaultBillingAddress.checked) {
+      const userDataAfterAddBillingAddress = await getCustomerModel().editCustomer(
+        [CustomerModel.actionAddAddress(billingAddress)],
+        this.userData,
+      ); // TBD: add type billing or shipping
+
+      if (userDataAfterAddBillingAddress) {
+        await getCustomerModel().editCustomer(
+          [
+            CustomerModel.actionEditDefaultBillingAddress(
+              userDataAfterAddBillingAddress.addresses[userDataAfterAddBillingAddress.addresses.length - 1].id,
+            ),
+          ],
+          this.userData,
+        );
+      }
+    }
+    return this.userData;
   }
 
   public getFirstInputField(): InputFieldModel {
