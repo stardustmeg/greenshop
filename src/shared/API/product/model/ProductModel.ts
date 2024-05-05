@@ -1,11 +1,13 @@
 import type { Category, Product, Size, localization } from '@/shared/types/product.ts';
 import type {
+  Attribute as AttributeResponse,
   CategoryPagedQueryResponse,
   CategoryReference,
   ClientResponse,
   LocalizedString,
   ProductPagedQueryResponse,
   Product as ProductResponse,
+  ProductVariant,
 } from '@commercetools/platform-sdk';
 
 import getStore from '@/shared/Store/Store.ts';
@@ -13,6 +15,7 @@ import { setCategories, setProducts } from '@/shared/Store/actions.ts';
 import getSize from '@/shared/utils/size.ts';
 
 import getRoot, { type RootApi } from '../../sdk/root.ts';
+import Attribute from '../../types/type.ts';
 import {
   isAttributePlainEnumValue,
   isCategoryPagedQueryResponse,
@@ -61,6 +64,25 @@ export class ProductModel {
     return response;
   }
 
+  private adaptDiscount(variant: ProductVariant): number {
+    let minPrice = 0;
+
+    if (variant.prices && variant.prices.length && variant.prices[0].discounted) {
+      const priceRow = variant.prices[0];
+      if (priceRow.discounted) {
+        minPrice = priceRow.discounted.value.centAmount / 10 ** priceRow.discounted.value.fractionDigits;
+      }
+    }
+    return minPrice;
+  }
+
+  private adaptFullDescription(attribute: AttributeResponse): localization[] {
+    if (isLocalizationObj(attribute.value)) {
+      return this.adaptLocalizationValue(attribute.value);
+    }
+    return [];
+  }
+
   private adaptLocalizationValue(data: LocalizedString | undefined): localization[] {
     const result: localization[] = [];
     Object.entries(data || {}).forEach(([language, value]) => {
@@ -70,6 +92,16 @@ export class ProductModel {
       });
     });
     return result;
+  }
+
+  private adaptPrice(variant: ProductVariant): number {
+    let price = 0;
+
+    if (variant.prices && variant.prices.length) {
+      const priceRow = variant.prices[0];
+      price = priceRow.value.centAmount / 10 ** priceRow.value.fractionDigits;
+    }
+    return price;
   }
 
   private adaptProductPagedQueryToClient(data: ProductPagedQueryResponse): Product[] {
@@ -101,34 +133,33 @@ export class ProductModel {
     return result;
   }
 
+  private adaptSize(attribute: AttributeResponse): Size | null {
+    if (Array.isArray(attribute.value) && attribute.value.length && isAttributePlainEnumValue(attribute.value[0])) {
+      return getSize(attribute.value[0].key);
+    }
+    return null;
+  }
+
   private adaptVariants(product: Product, response: ProductResponse): Product {
     response.masterData.staged.variants.forEach((variant) => {
-      let price = 0;
       let size: Size | null = null;
-
-      if (variant.prices && variant.prices.length) {
-        price = variant.prices[0].value.centAmount;
-      }
 
       if (variant.attributes && variant.attributes.length) {
         variant.attributes.forEach((attribute) => {
-          if (attribute.name === 'full_description' && isLocalizationObj(attribute.value)) {
-            product.fullDescription.push(...this.adaptLocalizationValue(attribute.value));
+          if (attribute.name === Attribute.FULL_DESCRIPTION && !product.fullDescription.length) {
+            product.fullDescription.push(...this.adaptFullDescription(attribute));
           }
-          if (
-            attribute.name === 'size' &&
-            Array.isArray(attribute.value) &&
-            attribute.value.length &&
-            isAttributePlainEnumValue(attribute.value[0])
-          ) {
-            size = getSize(attribute.value[0].key);
+          if (attribute.name === Attribute.SIZE) {
+            size = this.adaptSize(attribute);
           }
         });
       }
 
-      if (price && size) {
-        product.variant.push({ price, size });
-      }
+      product.variant.push({
+        discount: this.adaptDiscount(variant) || 0,
+        price: this.adaptPrice(variant) || 0,
+        size,
+      });
 
       if (variant.images && variant.images.length) {
         variant.images.forEach((image) => {

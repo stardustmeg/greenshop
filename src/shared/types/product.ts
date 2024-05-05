@@ -17,6 +17,7 @@ export enum Size {
 }
 
 export interface Variant {
+  discount: number;
   price: number;
   size: Size | null;
 }
