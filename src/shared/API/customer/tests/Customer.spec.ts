@@ -50,13 +50,13 @@ describe('Checking Customer Model', () => {
   });
 
   it('should return true for valid email', async () => {
-    const result = await customerModel.isValidEmail('getting-started@example.com');
-    expect(result).toBe(true);
+    const result = await customerModel.hasEmail('getting-started@example.com');
+    expect(result?.email).toBe('getting-started@example.com');
   });
 
   it('should return false for invalid email', async () => {
-    const result = await customerModel.isValidEmail('gettingstarted@example.com');
-    expect(result).toBe(false);
+    const result = await customerModel.hasEmail('gettingstarted@example.com');
+    expect(result).toBe(null);
   });
 
   it('should register a new customer', async () => {
