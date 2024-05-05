@@ -7,6 +7,7 @@ import SVG_DETAILS from '@/shared/constants/svg.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './headerView.module.scss';
 
@@ -60,10 +61,13 @@ class HeaderView {
   }
 
   private createLogoutButton(): ButtonModel {
+    const { currentLanguage } = getStore().getState();
     this.logoutButton = new ButtonModel({
       classes: [styles.logoutButton],
-      text: BUTTON_TEXT.LOG_OUT,
+      text: BUTTON_TEXT[currentLanguage].LOG_OUT,
     });
+
+    observeCurrentLanguage(this.logoutButton.getHTML(), BUTTON_TEXT, 'LOG_OUT');
 
     return this.logoutButton;
   }

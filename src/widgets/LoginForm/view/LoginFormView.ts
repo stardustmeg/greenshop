@@ -1,10 +1,12 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
 import * as FORM_INPUTS from '@/shared/constants/forms/login/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/login/validationParams.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './loginForm.module.scss';
 
@@ -59,13 +61,16 @@ class LoginFormView {
   }
 
   private createSubmitFormButton(): ButtonModel {
+    const { currentLanguage } = getStore().getState();
     this.submitFormButton = new ButtonModel({
       attrs: {
         type: BUTTON_TYPE.SUBMIT,
       },
       classes: [styles.submitFormButton],
-      text: BUTTON_TEXT.LOGIN,
+      text: BUTTON_TEXT[currentLanguage].LOGIN,
     });
+
+    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, 'LOGIN');
 
     this.submitFormButton.setDisabled();
 

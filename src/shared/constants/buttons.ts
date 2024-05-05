@@ -5,9 +5,16 @@ export const BUTTON_TYPE = {
 } as const;
 
 export const BUTTON_TEXT = {
-  LOG_OUT: 'Log out',
-  LOGIN: 'Login',
-  REGISTRATION: 'Register',
+  en: {
+    LOG_OUT: 'Log out',
+    LOGIN: 'Login',
+    REGISTRATION: 'Register',
+  },
+  ru: {
+    LOG_OUT: 'Выйти',
+    LOGIN: 'Войти',
+    REGISTRATION: 'Зарегистрироваться',
+  },
 } as const;
 
 export const IS_DISABLED = {

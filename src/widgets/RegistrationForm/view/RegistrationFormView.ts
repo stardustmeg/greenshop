@@ -3,6 +3,7 @@ import type { InputParams } from '@/shared/types/form';
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
+import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
 import { FORM_TEXT, INPUT_TYPE } from '@/shared/constants/forms.ts';
 import * as FORM_CONSTANT from '@/shared/constants/forms/register/constant.ts';
@@ -10,6 +11,7 @@ import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/register/validationParams.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './registrationForm.module.scss';
 
@@ -231,12 +233,15 @@ class RegistrationFormView {
   }
 
   private createSubmitFormButton(): ButtonModel {
+    const { currentLanguage } = getStore().getState();
     this.submitFormButton = new ButtonModel({
       attrs: {
         type: BUTTON_TYPE.SUBMIT,
       },
-      text: BUTTON_TEXT.REGISTRATION,
+      text: BUTTON_TEXT[currentLanguage].REGISTRATION,
     });
+
+    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, 'REGISTRATION');
 
     this.submitFormButton.setDisabled();
 
