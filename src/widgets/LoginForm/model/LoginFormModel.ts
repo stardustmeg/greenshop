@@ -2,17 +2,21 @@ import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts
 import type { User, UserLoginData } from '@/shared/types/user.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
-import { EVENT_NAME } from '@/shared/constants/events.ts';
+import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
 import { LOGIN_FORM_KEY } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
+import { isUserLoginData } from '@/shared/types/validation/user.ts';
 import isKeyOfUserData from '@/shared/utils/isKeyOfUserData.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
 
 class LoginFormModel {
+  private eventMediator = EventMediatorModel.getInstance();
+
   private inputFields: InputFieldModel[] = [];
 
   private isValidInputFields: Record<string, boolean> = {};
@@ -28,8 +32,8 @@ class LoginFormModel {
     this.init();
   }
 
-  private async checkHasEmailHandler(): Promise<User | null> {
-    const response = await getCustomerModel().hasEmail(this.userData.email);
+  private async checkHasEmailHandler(email: string): Promise<User | null> {
+    const response = await getCustomerModel().hasEmail(email);
     return response;
   }
 
@@ -63,12 +67,13 @@ class LoginFormModel {
     this.inputFields.forEach((inputField) => this.setInputFieldHandlers(inputField));
     this.setPreventDefaultToForm();
     this.setSubmitFormHandler();
+    this.subscribeToEventMediator();
 
     return true;
   }
 
   private loginUser(userLoginData: UserLoginData): void {
-    this.checkHasEmailHandler()
+    this.checkHasEmailHandler(userLoginData.email)
       .then((response) => {
         if (response) {
           this.loginUserHandler(userLoginData);
@@ -113,6 +118,15 @@ class LoginFormModel {
     submitButton.addEventListener(EVENT_NAME.CLICK, () => {
       const formData = this.getFormData();
       this.loginUser(formData);
+    });
+    return true;
+  }
+
+  private subscribeToEventMediator(): boolean {
+    this.eventMediator.subscribe(MEDIATOR_EVENT.USER_LOGIN, (userLoginData) => {
+      if (isUserLoginData(userLoginData)) {
+        this.loginUser(userLoginData);
+      }
     });
     return true;
   }

@@ -30,4 +30,5 @@ export const EVENT_NAME = {
 
 export const MEDIATOR_EVENT = {
   CHANGE_PAGE: 'changePage',
+  USER_LOGIN: 'userLogin',
 } as const;

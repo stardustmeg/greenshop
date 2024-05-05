@@ -20,6 +20,11 @@ export const USER_COUNTRY_ADDRESS = {
   SHIPPING: 'shippingCountry',
 } as const;
 
+export const USER_ADDRESS_TYPE = {
+  BILLING: 'billingAddress',
+  SHIPPING: 'shippingAddress',
+} as const;
+
 export const USER_POSTAL_CODE = {
   BILLING_POSTAL_CODE: 'billing_PostalCode',
   POSTAL_CODE: 'postalCode',
