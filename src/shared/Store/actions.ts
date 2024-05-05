@@ -1,7 +1,6 @@
 import type { Category, Product } from '../types/product';
 import type { User } from '../types/user';
 
-/* eslint-disable import/prefer-default-export */
 const ACTION = {
   SET_BILLING_COUNTRY: 'setBillingCountry',
   SET_CATEGORIES: 'setCategories',
@@ -10,7 +9,7 @@ const ACTION = {
   SET_SHIPPING_COUNTRY: 'setShippingCountry',
 } as const;
 
-type ActionType = (typeof ACTION)[keyof typeof ACTION];
+export type ActionType = (typeof ACTION)[keyof typeof ACTION];
 
 interface ActionWithPayload<T, U extends ActionType> {
   payload: T;
