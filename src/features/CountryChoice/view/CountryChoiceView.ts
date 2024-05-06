@@ -39,9 +39,9 @@ class CountryChoiceView {
       tag: TAG_NAME.DIV,
     });
 
-    const currentLang = getStore().getState().currentLanguage;
+    const { currentLanguage } = getStore().getState();
 
-    Object.entries(COUNTRIES_LIST[currentLang]).forEach(([countryName, countryCode]) =>
+    Object.entries(COUNTRIES_LIST[currentLanguage]).forEach(([countryName, countryCode]) =>
       this.countryDropList.append(this.createCountryItem(countryName, countryCode)),
     );
 
