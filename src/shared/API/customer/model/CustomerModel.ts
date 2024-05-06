@@ -1,4 +1,4 @@
-import type { Address, User, UserLoginData, UserRegisterData } from '@/shared/types/user.ts';
+import type { Address, User, UserLoginData } from '@/shared/types/user.ts';
 import type {
   Address as AddressResponse,
   BaseAddress,
@@ -196,13 +196,13 @@ export class CustomerModel {
     return this.getCustomerFromData(data);
   }
 
-  public async isValidEmail(email: string): Promise<boolean> {
+  public async hasEmail(email: string): Promise<User | null> {
     const data = await this.root.getCustomerByEmail(email);
-    return this.getCustomerFromData(data) !== null;
+    return this.getCustomerFromData(data);
   }
 
-  public async registrationNewCustomer(userRegisterData: UserRegisterData): Promise<User | null> {
-    const data = await this.root.registrationUser(userRegisterData);
+  public async registrationNewCustomer(userData: User): Promise<User | null> {
+    const data = await this.root.registrationUser(userData);
     return this.getCustomerFromData(data);
   }
 }

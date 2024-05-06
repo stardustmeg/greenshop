@@ -1,0 +1,38 @@
+.loader {
+  margin: 0 calc(var(--extra-small-offset) / 4);
+  border: 2px solid var(--noble-gray-200);
+  border-top: 2px solid var(--steam-green-800);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.small {
+  border: 2px solid var(--noble-gray-200);
+  border-top: 2px solid var(--steam-green-800);
+  width: 10px;
+  height: 10px;
+}
+
+.medium {
+  border: 4px solid var(--noble-gray-200);
+  border-top: 4px solid var(--steam-green-800);
+  width: 20px;
+  height: 20px;
+}
+
+.large {
+  border: 8px solid var(--noble-gray-200);
+  border-top: 8px solid var(--steam-green-800);
+  width: 30px;
+  height: 30px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

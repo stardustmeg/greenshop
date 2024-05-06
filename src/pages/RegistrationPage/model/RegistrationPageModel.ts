@@ -3,7 +3,8 @@ import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { PAGE_ID, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/pages.ts';
+import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import RegisterFormModel from '@/widgets/RegistrationForm/model/RegistrationFormModel.ts';
 
 import RegistrationPageView from '../view/RegistrationPageView.ts';
@@ -38,6 +39,8 @@ class RegistrationPageModel implements Page {
     const toLoginPageWrapper = this.view.getToLoginPageWrapper();
     const loginLink = this.view.getLoginLink().getHTML();
     const loginLinkCopy = loginLink.cloneNode(true);
+
+    observeCurrentLanguage(loginLinkCopy, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.LOGIN);
 
     loginLink.addEventListener(EVENT_NAME.CLICK, (event) => this.loginLinkHandler(event));
     loginLinkCopy.addEventListener(EVENT_NAME.CLICK, (event) => this.loginLinkHandler(event));

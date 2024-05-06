@@ -1,9 +1,13 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import getStore from '@/shared/Store/Store.ts';
 import { PAGE_TIMEOUT_DURATION } from '@/shared/constants/animations.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
+import { PAGE_DESCRIPTION_KEYS } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './notFoundPageView.module.scss';
 
@@ -22,12 +26,10 @@ class NotFoundPageView {
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
-
     this.logo = this.createPageLogo();
     this.title = this.createPageTitle();
     this.description = this.createPageDescription();
     this.toMainButton = this.createToMainButton();
-
     this.page = this.createHTML();
   }
 
@@ -55,23 +57,26 @@ class NotFoundPageView {
     this.logo = createBaseElement({ cssClasses: [styles.pageLogo], tag: TAG_NAME.DIV });
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, TAG_NAME.SVG);
     svg.append(createSVGUse(SVG_DETAILS.LOGO));
-
     this.logo.append(svg);
-
     return this.logo;
   }
 
   private createPageTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: [styles.pageTitle],
-      innerContent: '404',
+      innerContent: PAGE_DESCRIPTION_KEYS[404],
       tag: TAG_NAME.H1,
     });
     return this.title;
   }
 
   private createToMainButton(): ButtonModel {
-    this.toMainButton = new ButtonModel({ classes: [styles.toMainButton], text: 'Go Back' });
+    const { currentLanguage } = getStore().getState();
+    this.toMainButton = new ButtonModel({
+      classes: [styles.toMainButton],
+      text: BUTTON_TEXT[currentLanguage].BACK_TO_MAIN,
+    });
+    observeCurrentLanguage(this.toMainButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.BACK_TO_MAIN);
     return this.toMainButton;
   }
 
@@ -100,4 +105,5 @@ class NotFoundPageView {
     return true;
   }
 }
+
 export default NotFoundPageView;

@@ -7,6 +7,7 @@ import type { Reducer } from './types.ts';
 export interface State {
   billingCountry: string;
   categories: Category[];
+  currentLanguage: 'en' | 'ru';
   currentUser: User | null;
   products: Product[];
   shippingCountry: string;
@@ -41,6 +42,11 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         products: action.payload,
+      };
+    case 'setCurrentLanguage':
+      return {
+        ...state,
+        currentLanguage: action.payload,
       };
     default:
       return state;

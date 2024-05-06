@@ -1,8 +1,18 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
+import getStore from '@/shared/Store/Store.ts';
 import { PAGE_TIMEOUT_DURATION } from '@/shared/constants/animations.ts';
-import { PAGE_ANSWER, PAGE_DESCRIPTION, PAGE_ID, PAGE_LINK_TEXT } from '@/shared/constants/pages.ts';
+import {
+  PAGE_ANSWER,
+  PAGE_ANSWER_KEYS,
+  PAGE_DESCRIPTION,
+  PAGE_DESCRIPTION_KEYS,
+  PAGE_ID,
+  PAGE_LINK_TEXT,
+  PAGE_LINK_TEXT_KEYS,
+} from '@/shared/constants/pages.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './registrationPageView.module.scss';
 
@@ -35,11 +45,14 @@ class RegistrationPageView {
   }
 
   private createAuthDescription(): HTMLHeadingElement {
+    const { currentLanguage } = getStore().getState();
     this.authDescription = createBaseElement({
       cssClasses: [styles.authDescription],
-      innerContent: PAGE_DESCRIPTION.REGISTRATION,
+      innerContent: PAGE_DESCRIPTION[currentLanguage].REGISTRATION,
       tag: TAG_NAME.H3,
     });
+
+    observeCurrentLanguage(this.authDescription, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEYS.REGISTRATION);
 
     return this.authDescription;
   }
@@ -77,33 +90,42 @@ class RegistrationPageView {
   }
 
   private createLoginLink(): LinkModel {
+    const { currentLanguage } = getStore().getState();
     this.loginLink = new LinkModel({
       attrs: {
         href: PAGE_ID.LOGIN_PAGE,
       },
       classes: [styles.loginLink],
-      text: PAGE_LINK_TEXT.LOGIN,
+      text: PAGE_LINK_TEXT[currentLanguage].LOGIN,
     });
+
+    observeCurrentLanguage(this.loginLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.LOGIN);
 
     return this.loginLink;
   }
 
   private createRegisterSpan(): HTMLSpanElement {
+    const { currentLanguage } = getStore().getState();
     this.registerSpan = createBaseElement({
       cssClasses: [styles.registerSpan],
-      innerContent: PAGE_LINK_TEXT.REGISTRATION,
+      innerContent: PAGE_LINK_TEXT[currentLanguage].REGISTRATION,
       tag: TAG_NAME.SPAN,
     });
+
+    observeCurrentLanguage(this.registerSpan, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.REGISTRATION);
 
     return this.registerSpan;
   }
 
   private createToLoginPageWrapper(): HTMLSpanElement {
+    const { currentLanguage } = getStore().getState();
     this.toLoginPageWrapper = createBaseElement({
       cssClasses: [styles.toLoginPageWrapper],
-      innerContent: PAGE_ANSWER.REGISTRATION,
+      innerContent: PAGE_ANSWER[currentLanguage].REGISTRATION,
       tag: TAG_NAME.SPAN,
     });
+
+    observeCurrentLanguage(this.toLoginPageWrapper, PAGE_ANSWER, PAGE_ANSWER_KEYS.REGISTRATION);
 
     return this.toLoginPageWrapper;
   }

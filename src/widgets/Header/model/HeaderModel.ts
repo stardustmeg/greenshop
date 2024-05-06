@@ -2,8 +2,9 @@ import type RouterModel from '@/app/Router/model/RouterModel.ts';
 
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentUser } from '@/shared/Store/actions.ts';
+import { setCurrentLanguage, setCurrentUser } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
 import { EVENT_NAME } from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
@@ -39,6 +40,7 @@ class HeaderModel {
     this.setLogoHandler();
     this.observeCurrentUser();
     this.setLogoutButtonHandler();
+    this.setChangeLanguageButtonHandler();
     return true;
   }
 
@@ -52,6 +54,17 @@ class HeaderModel {
   private observeCurrentUser(): boolean {
     observeStore(selectCurrentUser, () => {
       this.checkCurrentUser();
+    });
+    return true;
+  }
+
+  private setChangeLanguageButtonHandler(): boolean {
+    const changeLanguageButton = this.view.getChangeLanguageButton();
+    changeLanguageButton.getHTML().addEventListener(EVENT_NAME.CLICK, () => {
+      const { currentLanguage } = getStore().getState();
+      const newLanguage = currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
+      changeLanguageButton.getHTML().innerText = newLanguage;
+      getStore().dispatch(setCurrentLanguage(newLanguage));
     });
     return true;
   }

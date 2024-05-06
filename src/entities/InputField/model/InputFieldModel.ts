@@ -1,6 +1,7 @@
 import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types/form.ts';
 
 import InputFieldValidatorModel from '@/features/InputFieldValidator/model/InputFieldValidatorModel.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { EVENT_NAME } from '@/shared/constants/events.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 
@@ -20,6 +21,8 @@ class InputFieldModel {
       this.validator = new InputFieldValidatorModel(validParams, this.isValid);
       this.setInputHandler();
     }
+
+    observeStore(selectCurrentLanguage, () => this.inputHandler());
 
     this.setSwitchPasswordVisibilityHandler();
   }

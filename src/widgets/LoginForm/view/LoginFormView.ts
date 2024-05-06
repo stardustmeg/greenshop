@@ -1,9 +1,12 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import { BUTTON_TYPE, FORM_SUBMIT_BUTTON_TEXT } from '@/shared/constants/buttons.ts';
-import { LOGIN_FORM_INPUT_FIELD_PARAMS, LOGIN_FORM_INPUT_FIELD_VALIDATION_PARAMS } from '@/shared/constants/forms.ts';
+import getStore from '@/shared/Store/Store.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEYS, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
+import * as FORM_INPUTS from '@/shared/constants/forms/login/fieldParams.ts';
+import * as FORM_VALIDATION from '@/shared/constants/forms/login/validationParams.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './loginForm.module.scss';
 
@@ -41,8 +44,8 @@ class LoginFormView {
   }
 
   private createInputFields(): InputFieldModel[] {
-    LOGIN_FORM_INPUT_FIELD_PARAMS.forEach((inputFieldParams) => {
-      const currentValidateParams = LOGIN_FORM_INPUT_FIELD_VALIDATION_PARAMS.find(
+    FORM_INPUTS.INPUT_FIELD.forEach((inputFieldParams) => {
+      const currentValidateParams = FORM_VALIDATION.default.find(
         (validParams) => validParams.key === inputFieldParams.inputParams.id,
       );
 
@@ -58,13 +61,16 @@ class LoginFormView {
   }
 
   private createSubmitFormButton(): ButtonModel {
+    const { currentLanguage } = getStore().getState();
     this.submitFormButton = new ButtonModel({
       attrs: {
         type: BUTTON_TYPE.SUBMIT,
       },
       classes: [styles.submitFormButton],
-      text: FORM_SUBMIT_BUTTON_TEXT.LOGIN,
+      text: BUTTON_TEXT[currentLanguage].LOGIN,
     });
+
+    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.LOGIN);
 
     this.submitFormButton.setDisabled();
 

@@ -1,5 +1,7 @@
+import getStore from '@/shared/Store/Store.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { EVENT_NAME } from '@/shared/constants/events.ts';
+import { KEYBOARD_KEYS } from '@/shared/constants/keyboard.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
@@ -16,9 +18,16 @@ class CountryChoiceView {
     this.countryDropList = this.createCountryDropList();
     this.countryChoice = this.createHTML();
 
-    // TBD replace node document with some element because listener works two times (twice)
     document.addEventListener(EVENT_NAME.CLICK, (event) => {
       if (!this.countryDropList.classList.contains(styles.hidden) && event.target !== input) {
+        this.hideCountryChoice();
+      } else {
+        this.showCountryChoice();
+      }
+    });
+
+    document.addEventListener(EVENT_NAME.KEYDOWN, (event) => {
+      if (event.key === KEYBOARD_KEYS.TAB && !this.getHTML().classList.contains(styles.hidden)) {
         this.hideCountryChoice();
       }
     });
@@ -30,17 +39,20 @@ class CountryChoiceView {
       tag: TAG_NAME.DIV,
     });
 
-    Object.entries(COUNTRIES_LIST).forEach(([countryCode]) =>
-      this.countryDropList.append(this.createCountryItem(countryCode)),
+    const { currentLanguage } = getStore().getState();
+
+    Object.entries(COUNTRIES_LIST[currentLanguage]).forEach(([countryName, countryCode]) =>
+      this.countryDropList.append(this.createCountryItem(countryName, countryCode)),
     );
 
     return this.countryDropList;
   }
 
-  private createCountryItem(countryCode: string): HTMLDivElement {
+  private createCountryItem(countryName: string, countryCode: string): HTMLDivElement {
     const countryItem = createBaseElement({
+      attributes: { id: countryCode },
       cssClasses: [styles.countryItem],
-      innerContent: countryCode,
+      innerContent: countryName,
       tag: TAG_NAME.DIV,
     });
 

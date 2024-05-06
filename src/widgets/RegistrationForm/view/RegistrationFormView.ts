@@ -3,30 +3,15 @@ import type { InputParams } from '@/shared/types/form';
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import { BUTTON_TYPE, FORM_SUBMIT_BUTTON_TEXT } from '@/shared/constants/buttons.ts';
-import {
-  CHECKBOX_PARAMS,
-  FORM_TEXT,
-  INPUT_TYPE,
-  REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS,
-  REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS,
-  REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
-  REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS,
-  REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS,
-  REGISTRATION_FORM_EMAIL_FIELD_PARAMS,
-  REGISTRATION_FORM_FIRST_NAME_FIELD_PARAMS,
-  REGISTRATION_FORM_INPUT_FIELD_PARAMS,
-  REGISTRATION_FORM_INPUT_FIELD_VALIDATION_PARAMS,
-  REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS,
-  REGISTRATION_FORM_PASSWORD_FIELD_PARAMS,
-  REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_PARAMS,
-  REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS,
-  REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS,
-  REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS,
-  REGISTRATION_FORM_TITLE_TEXT,
-} from '@/shared/constants/forms.ts';
+import getStore from '@/shared/Store/Store.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEYS, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
+import { FORM_TEXT, INPUT_TYPE } from '@/shared/constants/forms.ts';
+import * as FORM_CONSTANT from '@/shared/constants/forms/register/constant.ts';
+import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
+import * as FORM_VALIDATION from '@/shared/constants/forms/register/validationParams.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './registrationForm.module.scss';
 
@@ -68,18 +53,14 @@ class RegistrationFormView {
     const copyInputFields = this.inputFields;
     const filteredInputFields = copyInputFields.filter(
       (inputField) =>
-        inputField.getView().getInput().getHTML().id ===
-          REGISTRATION_FORM_BILLING_ADDRESS_STREET_FIELD_PARAMS.inputParams.id ||
-        inputField.getView().getInput().getHTML().id ===
-          REGISTRATION_FORM_BILLING_ADDRESS_CITY_FIELD_PARAMS.inputParams.id ||
-        inputField.getView().getInput().getHTML().id ===
-          REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id ||
-        inputField.getView().getInput().getHTML().id ===
-          REGISTRATION_FORM_BILLING_ADDRESS_POSTAL_CODE_FIELD_PARAMS.inputParams.id,
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.BILLING_ADDRESS_STREET.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.BILLING_ADDRESS_CITY.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.BILLING_ADDRESS_COUNTRY.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.BILLING_ADDRESS_POSTAL_CODE.inputParams.id,
     );
 
     this.billingAddressWrapper = this.createWrapperElement(
-      REGISTRATION_FORM_TITLE_TEXT.BILLING_ADDRESS,
+      FORM_CONSTANT.TITLE_TEXT_KEYS.BILLING_ADDRESS,
       [styles.billingAddressWrapper],
       filteredInputFields,
     );
@@ -120,8 +101,8 @@ class RegistrationFormView {
 
   private createCheckboxDefaultBillingAddress(): InputModel {
     const checkboxParams: InputParams = {
-      autocomplete: CHECKBOX_PARAMS.AUTOCOMPLETE,
-      id: CHECKBOX_PARAMS.BILLING_ID,
+      autocomplete: FORM_FIELDS.CHECKBOX.AUTOCOMPLETE,
+      id: FORM_FIELDS.CHECKBOX.BILLING_ID,
       placeholder: '',
       type: INPUT_TYPE.CHECK_BOX,
     };
@@ -131,8 +112,8 @@ class RegistrationFormView {
 
   private createCheckboxDefaultShippingAddress(): InputModel {
     const checkboxParams: InputParams = {
-      autocomplete: CHECKBOX_PARAMS.AUTOCOMPLETE,
-      id: CHECKBOX_PARAMS.SHIPPING_ID,
+      autocomplete: FORM_FIELDS.CHECKBOX.AUTOCOMPLETE,
+      id: FORM_FIELDS.CHECKBOX.SHIPPING_ID,
       placeholder: '',
       type: INPUT_TYPE.CHECK_BOX,
     };
@@ -142,8 +123,8 @@ class RegistrationFormView {
 
   private createCheckboxSingleAddress(): InputModel {
     const checkboxParams: InputParams = {
-      autocomplete: CHECKBOX_PARAMS.AUTOCOMPLETE,
-      id: CHECKBOX_PARAMS.SINGLE_ID,
+      autocomplete: FORM_FIELDS.CHECKBOX.AUTOCOMPLETE,
+      id: FORM_FIELDS.CHECKBOX.SINGLE_ID,
       placeholder: '',
       type: INPUT_TYPE.CHECK_BOX,
     };
@@ -156,12 +137,12 @@ class RegistrationFormView {
     const copyInputFields = this.inputFields;
     const filteredInputFields = copyInputFields.filter(
       (inputField) =>
-        inputField.getView().getInput().getHTML().id === REGISTRATION_FORM_PASSWORD_FIELD_PARAMS.inputParams.id ||
-        inputField.getView().getInput().getHTML().id === REGISTRATION_FORM_EMAIL_FIELD_PARAMS.inputParams.id,
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.PASSWORD.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.EMAIL.inputParams.id,
     );
 
     this.credentialsWrapper = this.createWrapperElement(
-      REGISTRATION_FORM_TITLE_TEXT.CREDENTIALS,
+      FORM_CONSTANT.TITLE_TEXT_KEYS.CREDENTIALS,
       [styles.credentialsWrapper],
       filteredInputFields,
     );
@@ -186,8 +167,8 @@ class RegistrationFormView {
   }
 
   private createInputFields(): InputFieldModel[] {
-    REGISTRATION_FORM_INPUT_FIELD_PARAMS.forEach((inputFieldParams) => {
-      const currentValidateParams = REGISTRATION_FORM_INPUT_FIELD_VALIDATION_PARAMS.find(
+    FORM_FIELDS.INPUT.forEach((inputFieldParams) => {
+      const currentValidateParams = FORM_VALIDATION.INPUT_VALIDATION.find(
         (validParams) => validParams.key === inputFieldParams.inputParams.id,
       );
 
@@ -206,13 +187,13 @@ class RegistrationFormView {
     const copyInputFields = this.inputFields;
     const filteredInputFields = copyInputFields.filter(
       (inputField) =>
-        inputField.getView().getInput().getHTML().id === REGISTRATION_FORM_FIRST_NAME_FIELD_PARAMS.inputParams.id ||
-        inputField.getView().getInput().getHTML().id === REGISTRATION_FORM_LAST_NAME_FIELD_PARAMS.inputParams.id ||
-        inputField.getView().getInput().getHTML().id === REGISTRATION_FORM_BIRTHDAY_FIELD_PARAMS.inputParams.id,
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.FIRST_NAME.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.LAST_NAME.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.BIRTHDAY.inputParams.id,
     );
 
     this.personalDataWrapper = this.createWrapperElement(
-      REGISTRATION_FORM_TITLE_TEXT.PERSONAL,
+      FORM_CONSTANT.TITLE_TEXT_KEYS.PERSONAL,
       [styles.personalDataWrapper],
       filteredInputFields,
     );
@@ -224,18 +205,14 @@ class RegistrationFormView {
     const copyInputFields = this.inputFields;
     const filteredInputFields = copyInputFields.filter(
       (inputField) =>
-        inputField.getView().getInput().getHTML().id ===
-          REGISTRATION_FORM_SHIPPING_ADDRESS_STREET_FIELD_PARAMS.inputParams.id ||
-        inputField.getView().getInput().getHTML().id ===
-          REGISTRATION_FORM_SHIPPING_ADDRESS_CITY_FIELD_PARAMS.inputParams.id ||
-        inputField.getView().getInput().getHTML().id ===
-          REGISTRATION_FORM_SHIPPING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id ||
-        inputField.getView().getInput().getHTML().id ===
-          REGISTRATION_FORM_SHIPPING_ADDRESS_POSTAL_CODE_FIELD_PARAMS.inputParams.id,
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.SHIPPING_ADDRESS_STREET.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.SHIPPING_ADDRESS_CITY.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.SHIPPING_ADDRESS_COUNTRY.inputParams.id ||
+        inputField.getView().getInput().getHTML().id === FORM_FIELDS.SHIPPING_ADDRESS_POSTAL_CODE.inputParams.id,
     );
 
     this.shippingAddressWrapper = this.createWrapperElement(
-      REGISTRATION_FORM_TITLE_TEXT.SHIPPING_ADDRESS,
+      FORM_CONSTANT.TITLE_TEXT_KEYS.SHIPPING_ADDRESS,
       [styles.shippingAddressWrapper],
       filteredInputFields,
     );
@@ -256,29 +233,38 @@ class RegistrationFormView {
   }
 
   private createSubmitFormButton(): ButtonModel {
+    const { currentLanguage } = getStore().getState();
     this.submitFormButton = new ButtonModel({
       attrs: {
         type: BUTTON_TYPE.SUBMIT,
       },
-      text: FORM_SUBMIT_BUTTON_TEXT.REGISTRATION,
+      text: BUTTON_TEXT[currentLanguage].REGISTRATION,
     });
+
+    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.REGISTRATION);
 
     this.submitFormButton.setDisabled();
 
     return this.submitFormButton;
   }
 
-  private createWrapperElement(title: string, cssClasses: string[], inputFields: InputFieldModel[]): HTMLDivElement {
+  private createWrapperElement(
+    title: FORM_CONSTANT.TitleTextKeysType,
+    cssClasses: string[],
+    inputFields: InputFieldModel[],
+  ): HTMLDivElement {
+    const { currentLanguage } = getStore().getState();
     const wrapperElement = createBaseElement({
       cssClasses,
       tag: TAG_NAME.DIV,
     });
     const titleElement = createBaseElement({
       cssClasses: [styles.title],
-      innerContent: title,
+      innerContent: FORM_CONSTANT.TITLE_TEXT[currentLanguage][title],
       tag: TAG_NAME.H3,
     });
     wrapperElement.append(titleElement);
+    observeCurrentLanguage(titleElement, FORM_CONSTANT.TITLE_TEXT, title);
 
     inputFields.forEach((inputField) => {
       const inputFieldElement = inputField.getView().getHTML();
@@ -293,6 +279,14 @@ class RegistrationFormView {
 
   public getBillingAddressWrapper(): HTMLDivElement {
     return this.billingAddressWrapper;
+  }
+
+  public getCheckboxDefaultBillingAddress(): InputModel {
+    return this.checkboxDefaultBillingAddress;
+  }
+
+  public getCheckboxDefaultShippingAddress(): InputModel {
+    return this.checkboxDefaultShippingAddress;
   }
 
   public getHTML(): HTMLFormElement {

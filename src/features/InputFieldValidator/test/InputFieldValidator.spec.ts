@@ -7,11 +7,17 @@ const validatorParams: InputFieldValidatorParams = {
   maxLength: 10,
   minLength: 2,
   notSpecialSymbols: {
-    message: 'Not special symbols',
+    messages: {
+      en: 'Not special symbols',
+      ru: 'Не специальные символы',
+    },
     pattern: /[a-zA-Z0-9]/,
   },
   notWhitespace: {
-    message: 'Not whitespace',
+    messages: {
+      en: 'Not white spaces',
+      ru: 'Не пробелы',
+    },
     pattern: /\S/,
   },
 };

@@ -1,8 +1,13 @@
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, setShippingCountry } from '@/shared/Store/actions.ts';
-import observeStore, { selectBillingCountry, selectShippingCountry } from '@/shared/Store/observer.ts';
+import observeStore, {
+  selectBillingCountry,
+  selectCurrentLanguage,
+  selectShippingCountry,
+} from '@/shared/Store/observer.ts';
+import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { EVENT_NAME } from '@/shared/constants/events.ts';
-import { REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS } from '@/shared/constants/forms.ts';
+import { BILLING_ADDRESS_COUNTRY } from '@/shared/constants/forms/register/fieldParams.ts';
 import getCountryIndex from '@/shared/utils/getCountryIndex.ts';
 
 import CountryChoiceView from '../view/CountryChoiceView.ts';
@@ -15,10 +20,7 @@ class CountryChoiceModel {
     this.setCountryItemsHandlers(input);
     this.setInputHandler(input);
 
-    const action =
-      input.id === REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id
-        ? selectBillingCountry
-        : selectShippingCountry;
+    const action = input.id === BILLING_ADDRESS_COUNTRY.inputParams.id ? selectBillingCountry : selectShippingCountry;
 
     observeStore(action, () => {
       const event = new Event(EVENT_NAME.INPUT);
@@ -26,10 +28,24 @@ class CountryChoiceModel {
     });
   }
 
+  private observeCurrentLanguage(item: HTMLDivElement): boolean {
+    observeStore(selectCurrentLanguage, () => {
+      const currentItem = item;
+      const currentCountriesList = COUNTRIES_LIST[getStore().getState().currentLanguage];
+      Object.entries(currentCountriesList).forEach(([countryName, countryCode]) => {
+        if (countryCode === currentItem.id) {
+          currentItem.textContent = countryName;
+        }
+      });
+    });
+    return true;
+  }
+
   private setCountryItemsHandlers(input: HTMLInputElement): boolean {
     const inputHTML = input;
     this.view.getCountryItems().forEach((countryItem) => {
       const currentItem = countryItem;
+      this.observeCurrentLanguage(currentItem);
       currentItem.addEventListener(EVENT_NAME.CLICK, () => {
         if (currentItem.textContent) {
           inputHTML.value = currentItem.textContent;
@@ -48,10 +64,7 @@ class CountryChoiceModel {
       element instanceof HTMLDivElement ? element.textContent || '' : element.value,
     );
 
-    const action =
-      key === REGISTRATION_FORM_BILLING_ADDRESS_COUNTRY_FIELD_PARAMS.inputParams.id
-        ? setBillingCountry
-        : setShippingCountry;
+    const action = key === BILLING_ADDRESS_COUNTRY.inputParams.id ? setBillingCountry : setShippingCountry;
     getStore().dispatch(action(currentCountryIndex));
     return true;
   }
