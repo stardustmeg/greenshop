@@ -82,6 +82,9 @@
 }
 
 .submitFormButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
   font: var(--bold-font);
