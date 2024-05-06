@@ -3,10 +3,10 @@
 📍 conforms with the following format:
 
 - [ ] prefix (following the [convention](https://www.conventionalcommits.org/en/v1.0.0-beta.2/): `feat`, `fix`, `hotfix`, `chore`, `refactor`, `revert`, `docs`, `style`, `test`)
-- [ ] sprint and issue number (e.g. `RSS-ECOMM-1_01`, where `1` - is the sprint number and `01` - is the issue number)
+- [ ] sprint and issue number (e.g. `RSS-ECOMM-2_01`, where `2` - is the sprint number and `01` - is the issue number)
 - [ ] short description
 
-👀 Example: `feat(RSS-ECOMM-1_01): description`
+👀 Example: `feat(RSS-ECOMM-2_01): description`
 
 ## PR Description 🧙‍♂️
 
@@ -30,13 +30,20 @@ Specify if any documentation updates are required and provide details on what ne
 
 #### Provide any other relevant information 🦉
 
+## Auto-Review 🤖
+
+- [x] The reviewers have been requested 📝
+      [![Request Review on PR Open](https://github.com/stardustmeg/greenshop/actions/workflows/request_review.yml/badge.svg)](https://github.com/stardustmeg/greenshop/actions/workflows/request_review.yml)
+- [x] The labels have been added 🎨
+      [![Pull Request Labeler](https://github.com/stardustmeg/greenshop/actions/workflows/labeler.yml/badge.svg)](https://github.com/stardustmeg/greenshop/actions/workflows/labeler.yml)
+- [x] My code doesn't generate any errors or warnings ⛓️
+      [![Continuous Integration](https://github.com/stardustmeg/greenshop/actions/workflows/ci.yml/badge.svg)](https://github.com/stardustmeg/greenshop/actions/workflows/ci.yml)
+
 ## Self-Check 🌟
 
 - [ ] I wrote the correct title for the PR 🗝️
-- [ ] I wrote the correct description for the PR 📜
+- [ ] I wrote a comprehensive description for the PR 📜
 - [ ] I have performed a self-review of my own code ✅
 - [ ] I have commented my code where needed 📝
-- [ ] My code is formatted correctly and passes the check 🎨
-- [ ] My code passes the tests check ⛓️
 - [ ] My code successfully builds ⚙️
 - [ ] I am happy with my PR and ready to merge ❤️‍🔥

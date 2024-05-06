@@ -1,9 +1,16 @@
 /* eslint-disable max-lines-per-function */
+import type { Category, Product } from '../types/product.ts';
+import type { User } from '../types/user.ts';
 import type * as actions from './actions.ts';
 import type { Reducer } from './types.ts';
 
 export interface State {
-  currentUser: null | string;
+  billingCountry: string;
+  categories: Category[];
+  currentLanguage: 'en' | 'ru';
+  currentUser: User | null;
+  products: Product[];
+  shippingCountry: string;
 }
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
@@ -15,6 +22,31 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         currentUser: action.payload,
+      };
+    case 'setShippingCountry':
+      return {
+        ...state,
+        shippingCountry: action.payload,
+      };
+    case 'setBillingCountry':
+      return {
+        ...state,
+        billingCountry: action.payload,
+      };
+    case 'setCategories':
+      return {
+        ...state,
+        categories: action.payload,
+      };
+    case 'setProducts':
+      return {
+        ...state,
+        products: action.payload,
+      };
+    case 'setCurrentLanguage':
+      return {
+        ...state,
+        currentLanguage: action.payload,
       };
     default:
       return state;

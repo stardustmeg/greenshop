@@ -1,23 +1,29 @@
-import type { Action, State } from './reducer.ts';
-import type { ReduxStore } from './types';
+import type { User } from '../types/user.ts';
+import type { State } from './reducer.ts';
 
-function observeStore<T>(
-  store: ReduxStore<State, Action>,
-  select: (state: State) => T,
-  onChange: (selectedState: T) => void,
-): VoidFunction {
-  let currentState = select(store.getState());
+import getStore from './Store.ts';
+
+function observeStore<T>(select: (state: State) => T, onChange: (selectedState: T) => void): VoidFunction {
+  let currentState = select(getStore().getState());
 
   function handleChange(): void {
-    const nextState = select(store.getState());
-    if (nextState !== currentState) {
+    const nextState = select(getStore().getState());
+    if (JSON.stringify(nextState) !== JSON.stringify(currentState)) {
       currentState = nextState;
       onChange(currentState);
     }
   }
 
-  const unsubscribe = store.subscribe(handleChange);
+  const unsubscribe = getStore().subscribe(handleChange);
   return unsubscribe;
 }
+
+export const selectCurrentUser = (state: State): User | null => state.currentUser;
+
+export const selectBillingCountry = (state: State): string => state.billingCountry;
+
+export const selectShippingCountry = (state: State): string => state.shippingCountry;
+
+export const selectCurrentLanguage = (state: State): string => state.currentLanguage;
 
 export default observeStore;
