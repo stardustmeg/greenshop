@@ -16,7 +16,13 @@ import { setCategories, setProducts } from '@/shared/Store/actions.ts';
 import getSize from '@/shared/utils/size.ts';
 
 import getRoot, { type RootApi } from '../../sdk/root.ts';
-import { Attribute, type CategoriesProductCount, type OptionsRequest, type PriceRange } from '../../types/type.ts';
+import {
+  Attribute,
+  type CategoriesProductCount,
+  type OptionsRequest,
+  type PriceRange,
+  type SizeProductCount,
+} from '../../types/type.ts';
 import {
   isAttributePlainEnumValue,
   isCategoryPagedQueryResponse,
@@ -259,6 +265,32 @@ export class ProductModel {
     return productList;
   }
 
+  private getSizeProductCountFromData(data: ClientResponse<ProductProjectionPagedSearchResponse>): SizeProductCount[] {
+    const category: SizeProductCount[] = [];
+    if (
+      isClientResponse(data) &&
+      isProductProjectionPagedSearchResponse(data.body) &&
+      'variants.attributes.size.key' in data.body.facets
+    ) {
+      const categoriesFacet = data.body.facets['variants.attributes.size.key'];
+      if (isTermFacetResult(categoriesFacet)) {
+        // const categoryList = getStore().getState().categories;
+        categoriesFacet.terms.forEach((term) => {
+          if (isFacetTerm(term) && typeof term.term === 'string') {
+            const currentSize = getSize(term.term);
+            if (currentSize) {
+              category.push({
+                count: term.count || 0,
+                size: currentSize,
+              });
+            }
+          }
+        });
+      }
+    }
+    return category;
+  }
+
   public async getCategories(): Promise<Category[] | null> {
     const data = await this.root.getCategories();
     return this.getCategoriesFromData(data);
@@ -286,6 +318,11 @@ export class ProductModel {
       getStore().dispatch(setProducts(products));
     }
     return products;
+  }
+
+  public async getSizeProductCount(): Promise<SizeProductCount[]> {
+    const data = await this.root.getSizeProductCount();
+    return this.getSizeProductCountFromData(data);
   }
 }
 

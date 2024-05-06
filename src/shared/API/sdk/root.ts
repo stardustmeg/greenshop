@@ -174,6 +174,20 @@ export class RootApi {
     return data;
   }
 
+  public async getSizeProductCount(): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
+    const data = await this.connection
+      .productProjections()
+      .search()
+      .get({
+        queryArgs: {
+          facet: [`variants.attributes.size.key`],
+          limit: 0,
+        },
+      })
+      .execute();
+    return data;
+  }
+
   public async registrationUser(userData: User): Promise<ClientResponse<CustomerSignInResult>> {
     const userCredentials = {
       email: userData.email,

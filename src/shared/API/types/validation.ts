@@ -161,9 +161,6 @@ export function isFacetTerm(data: unknown): data is FacetTerm {
       data &&
       'term' in data &&
       typeof data.term === 'string' &&
-      'count' in data &&
-      typeof data.count === 'number' &&
-      'productCount' in data &&
-      typeof data.productCount === 'number',
+      ('count' in data || 'productCount' in data),
   );
 }
