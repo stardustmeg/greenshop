@@ -29,7 +29,6 @@ class InputFieldValidatorModel {
           : `Вам должно быть не более ${this.validParams.validBirthday.maxAge} лет`;
       return errorMessage;
     }
-
     return true;
   }
 
@@ -42,7 +41,6 @@ class InputFieldValidatorModel {
           : `Максимальная длина не должна превышать ${this.validParams.maxLength} символов`;
       return errorMessage;
     }
-
     return true;
   }
 
@@ -58,7 +56,6 @@ class InputFieldValidatorModel {
           : `Вам должно быть не менее ${this.validParams.validBirthday.minAge} лет`;
       return errorMessage;
     }
-
     return true;
   }
 
@@ -71,7 +68,6 @@ class InputFieldValidatorModel {
           : `Минимальная длина должна быть не менее ${this.validParams.minLength} символов`;
       return errorMessage;
     }
-
     return true;
   }
 
@@ -81,7 +77,6 @@ class InputFieldValidatorModel {
       const errorMessage = this.validParams.notSpecialSymbols.messages[currentLanguage];
       return errorMessage;
     }
-
     return true;
   }
 
@@ -99,7 +94,6 @@ class InputFieldValidatorModel {
       const errorMessage = this.validParams.requiredSymbols.messages[currentLanguage];
       return errorMessage;
     }
-
     return true;
   }
 
@@ -109,18 +103,20 @@ class InputFieldValidatorModel {
       const errorMessage = this.validParams.validBirthday.messages[currentLanguage];
       return errorMessage;
     }
-
     return true;
   }
 
   private checkValidCountry(value: string): boolean | string {
     if (this.validParams.validCountry) {
       const { currentLanguage } = getStore().getState();
-      if (!Object.keys(COUNTRIES_LIST).find((countryCode) => countryCode === value)) {
+      if (
+        !Object.keys(COUNTRIES_LIST[currentLanguage]).find(
+          (countryName) => countryName.toLowerCase() === value.toLowerCase(),
+        )
+      ) {
         return ERROR_MESSAGE[currentLanguage].INVALID_COUNTRY;
       }
     }
-
     return true;
   }
 
@@ -130,7 +126,6 @@ class InputFieldValidatorModel {
       const errorMessage = this.validParams.validMail.messages[currentLanguage];
       return errorMessage;
     }
-
     return true;
   }
 
@@ -139,7 +134,6 @@ class InputFieldValidatorModel {
     if (this.validParams.validPostalCode) {
       const { billingCountry, shippingCountry } = getStore().getState();
       const currentCountry = this.validParams.key === USER_POSTAL_CODE.POSTAL_CODE ? shippingCountry : billingCountry;
-
       try {
         const result = postcodeValidator(value, currentCountry);
         if (!result) {
@@ -149,7 +143,6 @@ class InputFieldValidatorModel {
         return ERROR_MESSAGE[currentLanguage].WRONG_REGION;
       }
     }
-
     return true;
   }
 
@@ -165,6 +158,7 @@ class InputFieldValidatorModel {
 
   public validate(value: string): boolean | string[] {
     const errors = [
+      this.checkRequired(value),
       this.checkRequired(value),
       this.checkWhitespace(value),
       this.checkNotSpecialSymbols(value),

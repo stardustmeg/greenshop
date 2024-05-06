@@ -197,7 +197,7 @@ class RegisterFormModel {
     this.view.getSubmitFormButton().getHTML().append(loader);
     this.getFormUserData();
     getCustomerModel()
-      .registrationNewCustomer(this.userData)
+      .registerNewCustomer(this.userData)
       .then((newUserData) => {
         if (newUserData) {
           this.successfulUserRegistration(newUserData);

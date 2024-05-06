@@ -61,7 +61,7 @@ describe('Checking Customer Model', () => {
   });
 
   it('should register a new customer', async () => {
-    customer = await customerModel.registrationNewCustomer(user);
+    customer = await customerModel.registerNewCustomer(user);
     expect(typeof customer).toBe('object');
     expect(customer).toHaveProperty('addresses');
     expect(customer).toHaveProperty('defaultBillingAddressId');
