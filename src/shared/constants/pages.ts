@@ -1,7 +1,20 @@
 export const PAGE_LINK_TEXT = {
-  LOGIN: 'Login',
-  MAIN: 'Main',
-  REGISTRATION: 'Register',
+  en: {
+    LOGIN: 'Login',
+    MAIN: 'Main',
+    REGISTRATION: 'Register',
+  },
+  ru: {
+    LOGIN: 'Вход',
+    MAIN: 'Главная',
+    REGISTRATION: 'Регистрация',
+  },
+} as const;
+
+export const PAGE_LINK_TEXT_KEYS = {
+  LOGIN: 'LOGIN',
+  MAIN: 'MAIN',
+  REGISTRATION: 'REGISTRATION',
 } as const;
 
 export const PAGE_DESCRIPTION = {
@@ -29,8 +42,19 @@ export const PAGE_DESCRIPTION_KEYS = {
 export type PageDescriptionKeysType = (typeof PAGE_DESCRIPTION_KEYS)[keyof typeof PAGE_DESCRIPTION_KEYS];
 
 export const PAGE_ANSWER = {
-  LOGIN: `Don't have an account yet?`,
-  REGISTRATION: `Already have an account?`,
+  en: {
+    LOGIN: `Don't have an account yet?`,
+    REGISTRATION: `Already have an account?`,
+  },
+  ru: {
+    LOGIN: `Ещё нет аккаунта?`,
+    REGISTRATION: `Уже есть аккаунт?`,
+  },
+} as const;
+
+export const PAGE_ANSWER_KEYS = {
+  LOGIN: 'LOGIN',
+  REGISTRATION: 'REGISTRATION',
 } as const;
 
 export const PAGE_ID = {
