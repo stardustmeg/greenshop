@@ -197,7 +197,7 @@ export class CustomerModel {
     return this.getCustomerFromData(data);
   }
 
-  public async registrationNewCustomer(userData: User): Promise<User | null> {
+  public async registerNewCustomer(userData: User): Promise<User | null> {
     const data = await this.root.registrationUser(userData);
     return this.getCustomerFromData(data);
   }
