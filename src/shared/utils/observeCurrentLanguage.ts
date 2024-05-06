@@ -3,8 +3,9 @@ import observeStore, { selectCurrentLanguage } from '../Store/observer.ts';
 
 function observeCurrentLanguage(el: HTMLElement, map: Record<string, Record<string, string>>, text: string): boolean {
   const element = el;
+
   observeStore(selectCurrentLanguage, () => {
-    element.innerText = map[getStore().getState().currentLanguage][text];
+    element.textContent = map[getStore().getState().currentLanguage][text];
   });
   return true;
 }

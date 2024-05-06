@@ -17,6 +17,14 @@ export const BUTTON_TEXT = {
   },
 } as const;
 
+export const BUTTON_TEXT_KEYS = {
+  LOG_OUT: 'LOG_OUT',
+  LOGIN: 'LOGIN',
+  REGISTRATION: 'REGISTRATION',
+} as const;
+
+export type ButtonTextKeysType = (typeof BUTTON_TEXT_KEYS)[keyof typeof BUTTON_TEXT_KEYS];
+
 export const IS_DISABLED = {
   DISABLED: true,
   ENABLED: false,

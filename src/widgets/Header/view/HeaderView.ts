@@ -1,7 +1,7 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
@@ -67,7 +67,7 @@ class HeaderView {
       text: BUTTON_TEXT[currentLanguage].LOG_OUT,
     });
 
-    observeCurrentLanguage(this.logoutButton.getHTML(), BUTTON_TEXT, 'LOG_OUT');
+    observeCurrentLanguage(this.logoutButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.LOG_OUT);
 
     return this.logoutButton;
   }

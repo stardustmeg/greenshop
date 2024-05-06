@@ -1,7 +1,7 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { BUTTON_TEXT, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEYS, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
 import * as FORM_INPUTS from '@/shared/constants/forms/login/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/login/validationParams.ts';
 import TAG_NAME from '@/shared/constants/tags.ts';
@@ -70,7 +70,7 @@ class LoginFormView {
       text: BUTTON_TEXT[currentLanguage].LOGIN,
     });
 
-    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, 'LOGIN');
+    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.LOGIN);
 
     this.submitFormButton.setDisabled();
 

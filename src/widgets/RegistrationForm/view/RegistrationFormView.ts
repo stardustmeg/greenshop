@@ -4,7 +4,7 @@ import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { BUTTON_TEXT, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEYS, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
 import { FORM_TEXT, INPUT_TYPE } from '@/shared/constants/forms.ts';
 import * as FORM_CONSTANT from '@/shared/constants/forms/register/constant.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
@@ -60,7 +60,7 @@ class RegistrationFormView {
     );
 
     this.billingAddressWrapper = this.createWrapperElement(
-      FORM_CONSTANT.TITLE_TEXT.BILLING_ADDRESS,
+      FORM_CONSTANT.TITLE_TEXT_KEYS.BILLING_ADDRESS,
       [styles.billingAddressWrapper],
       filteredInputFields,
     );
@@ -142,7 +142,7 @@ class RegistrationFormView {
     );
 
     this.credentialsWrapper = this.createWrapperElement(
-      FORM_CONSTANT.TITLE_TEXT.CREDENTIALS,
+      FORM_CONSTANT.TITLE_TEXT_KEYS.CREDENTIALS,
       [styles.credentialsWrapper],
       filteredInputFields,
     );
@@ -193,7 +193,7 @@ class RegistrationFormView {
     );
 
     this.personalDataWrapper = this.createWrapperElement(
-      FORM_CONSTANT.TITLE_TEXT.PERSONAL,
+      FORM_CONSTANT.TITLE_TEXT_KEYS.PERSONAL,
       [styles.personalDataWrapper],
       filteredInputFields,
     );
@@ -212,7 +212,7 @@ class RegistrationFormView {
     );
 
     this.shippingAddressWrapper = this.createWrapperElement(
-      FORM_CONSTANT.TITLE_TEXT.SHIPPING_ADDRESS,
+      FORM_CONSTANT.TITLE_TEXT_KEYS.SHIPPING_ADDRESS,
       [styles.shippingAddressWrapper],
       filteredInputFields,
     );
@@ -241,24 +241,30 @@ class RegistrationFormView {
       text: BUTTON_TEXT[currentLanguage].REGISTRATION,
     });
 
-    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, 'REGISTRATION');
+    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.REGISTRATION);
 
     this.submitFormButton.setDisabled();
 
     return this.submitFormButton;
   }
 
-  private createWrapperElement(title: string, cssClasses: string[], inputFields: InputFieldModel[]): HTMLDivElement {
+  private createWrapperElement(
+    title: FORM_CONSTANT.TitleTextKeysType,
+    cssClasses: string[],
+    inputFields: InputFieldModel[],
+  ): HTMLDivElement {
+    const { currentLanguage } = getStore().getState();
     const wrapperElement = createBaseElement({
       cssClasses,
       tag: TAG_NAME.DIV,
     });
     const titleElement = createBaseElement({
       cssClasses: [styles.title],
-      innerContent: title,
+      innerContent: FORM_CONSTANT.TITLE_TEXT[currentLanguage][title],
       tag: TAG_NAME.H3,
     });
     wrapperElement.append(titleElement);
+    observeCurrentLanguage(titleElement, FORM_CONSTANT.TITLE_TEXT, title);
 
     inputFields.forEach((inputField) => {
       const inputFieldElement = inputField.getView().getHTML();
