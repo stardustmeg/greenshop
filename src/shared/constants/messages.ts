@@ -9,7 +9,7 @@ export const SERVER_MESSAGE = {
   BAD_REQUEST: 'Sorry, something went wrong. Try again later.',
   INCORRECT_PASSWORD: 'Please, enter a correct password',
   INVALID_EMAIL: "User with this email doesn't exist. Please, register first",
-  SUCCESSFUL_LOGIN: 'Welcome! Enjoy shopping!',
+  SUCCESSFUL_LOGIN: 'Enjoy shopping!',
   SUCCESSFUL_REGISTRATION: 'Your registration was successful',
   USER_EXISTS: 'User with this email already exists, please check your email',
 } as const;

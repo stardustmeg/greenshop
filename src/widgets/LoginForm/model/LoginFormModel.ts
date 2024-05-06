@@ -3,12 +3,14 @@ import type { User, UserLoginData } from '@/shared/types/user.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
+import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
 import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
 import KEY from '@/shared/constants/forms/login/constants.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
+import { SIZES } from '@/shared/constants/sizes.ts';
 import { isUserLoginData } from '@/shared/types/validation/user.ts';
 import isKeyOfUserData from '@/shared/utils/isKeyOfUserData.ts';
 
@@ -38,7 +40,7 @@ class LoginFormModel {
   }
 
   private createGreetingMessage(name: string): string {
-    const greeting = `Hello, ${name}! ${SERVER_MESSAGE.SUCCESSFUL_LOGIN}`;
+    const greeting = `Welcome, ${name}! ${SERVER_MESSAGE.SUCCESSFUL_LOGIN}`;
     return greeting;
   }
 
@@ -68,11 +70,12 @@ class LoginFormModel {
     this.setPreventDefaultToForm();
     this.setSubmitFormHandler();
     this.subscribeToEventMediator();
-
     return true;
   }
 
   private loginUser(userLoginData: UserLoginData): void {
+    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    this.view.getSubmitFormButton().getHTML().append(loader);
     this.checkHasEmailHandler(userLoginData.email)
       .then((response) => {
         if (response) {
@@ -83,10 +86,13 @@ class LoginFormModel {
       })
       .catch(() => {
         serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
-      });
+      })
+      .finally(() => loader.remove());
   }
 
   private loginUserHandler(userLoginData: UserLoginData): void {
+    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .authCustomer(userLoginData)
       .then((data) => {
@@ -97,7 +103,8 @@ class LoginFormModel {
       })
       .catch(() => {
         serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_PASSWORD, MESSAGE_STATUS.ERROR);
-      });
+      })
+      .finally(() => loader.remove());
   }
 
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
