@@ -11,8 +11,9 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: end;
     cursor: pointer;
+    user-select: none;
     gap: calc(var(--extra-small-offset) / 4);
 
     input {
@@ -261,4 +262,10 @@
   100% {
     transform: scale(1);
   }
+}
+
+.settingsAddressWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
 }
