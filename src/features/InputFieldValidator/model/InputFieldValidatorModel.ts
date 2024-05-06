@@ -116,7 +116,11 @@ class InputFieldValidatorModel {
   private checkValidCountry(value: string): boolean | string {
     if (this.validParams.validCountry) {
       const { currentLanguage } = getStore().getState();
-      if (!Object.keys(COUNTRIES_LIST).find((countryCode) => countryCode === value)) {
+      if (
+        !Object.keys(COUNTRIES_LIST[currentLanguage]).find(
+          (countryName) => countryName.toLowerCase() === value.toLowerCase(),
+        )
+      ) {
         return ERROR_MESSAGE[currentLanguage].INVALID_COUNTRY;
       }
     }
