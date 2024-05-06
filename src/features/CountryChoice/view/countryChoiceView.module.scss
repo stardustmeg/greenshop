@@ -3,6 +3,9 @@
   z-index: 5;
   grid-column: 1;
   grid-row: 4;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
 
   @media (max-width: 768px) {
     grid-column: 1;

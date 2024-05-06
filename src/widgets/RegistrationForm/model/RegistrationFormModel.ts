@@ -4,6 +4,7 @@ import type { Address, User } from '@/shared/types/user.ts';
 import CountryChoiceModel from '@/features/CountryChoice/model/CountryChoiceModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
+import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
@@ -12,6 +13,7 @@ import * as CONSTANT_FORMS from '@/shared/constants/forms.ts';
 import * as FORM_CONSTANT from '@/shared/constants/forms/register/constant.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
+import { SIZES } from '@/shared/constants/sizes.ts';
 import isKeyOfUserData from '@/shared/utils/isKeyOfUserData.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
@@ -191,6 +193,8 @@ class RegisterFormModel {
   }
 
   private registerUser(): void {
+    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    this.view.getSubmitFormButton().getHTML().append(loader);
     this.getFormUserData();
     getCustomerModel()
       .registrationNewCustomer(this.userData)
@@ -201,8 +205,9 @@ class RegisterFormModel {
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_REGISTRATION, MESSAGE_STATUS.ERROR);
-      });
+        serverMessageModel.showServerMessage(SERVER_MESSAGE.USER_EXISTS, MESSAGE_STATUS.ERROR);
+      })
+      .finally(() => loader.remove());
   }
 
   private resetInputFieldsValidation(): void {
@@ -271,7 +276,9 @@ class RegisterFormModel {
       password: this.userData.password,
     };
     this.eventMediator.notify(MEDIATOR_EVENT.USER_LOGIN, userDataWithLogin);
-    this.updateUserData(newUserData).catch(() => {});
+    this.updateUserData(newUserData).catch(() => {
+      serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+    });
     this.resetInputFieldsValidation();
   }
 
