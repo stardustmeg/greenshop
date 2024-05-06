@@ -90,6 +90,7 @@ vi.mock('./Store.ts', async (importOriginal) => {
     getState: (): State => ({
       billingCountry: '',
       categories: [],
+      currentLanguage: 'en',
       currentUser: null,
       products: [],
       shippingCountry: '',
@@ -133,6 +134,7 @@ it('observeStore should call select and onChange when state changes', () => {
   const mockState: State = {
     billingCountry: '',
     categories: [],
+    currentLanguage: 'en',
     currentUser: mockUser,
     products: [],
     shippingCountry: '',
@@ -158,6 +160,7 @@ describe('rootReducer', () => {
     initialState = {
       billingCountry: '',
       categories: [],
+      currentLanguage: 'en',
       currentUser: null,
       products: [],
       shippingCountry: '',
@@ -209,6 +212,13 @@ describe('rootReducer', () => {
     const action = actions.setProducts(products);
     const newState = rootReducer(initialState, action);
     expect(newState.products).toEqual(products);
+  });
+
+  it('should handle setCurrentLanguage action', () => {
+    const language = 'ru';
+    const action = actions.setCurrentLanguage(language);
+    const newState = rootReducer(initialState, action);
+    expect(newState.currentLanguage).toEqual(language);
   });
 
   it('should return the same state for unknown action types', () => {

@@ -4,6 +4,7 @@ import type { User } from '../types/user';
 const ACTION = {
   SET_BILLING_COUNTRY: 'setBillingCountry',
   SET_CATEGORIES: 'setCategories',
+  SET_CURRENT_LANGUAGE: 'setCurrentLanguage',
   SET_CURRENT_USER: 'setCurrentUser',
   SET_PRODUCTS: 'setProducts',
   SET_SHIPPING_COUNTRY: 'setShippingCountry',
@@ -39,4 +40,11 @@ export const setBillingCountry = (value: string): ActionWithPayload<string, type
 export const setShippingCountry = (value: string): ActionWithPayload<string, typeof ACTION.SET_SHIPPING_COUNTRY> => ({
   payload: value,
   type: ACTION.SET_SHIPPING_COUNTRY,
+});
+
+export const setCurrentLanguage = (
+  value: 'en' | 'ru',
+): ActionWithPayload<'en' | 'ru', typeof ACTION.SET_CURRENT_LANGUAGE> => ({
+  payload: value,
+  type: ACTION.SET_CURRENT_LANGUAGE,
 });

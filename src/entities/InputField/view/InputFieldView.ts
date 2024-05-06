@@ -29,7 +29,6 @@ class InputFieldView {
     this.errorField = createBaseElement({
       tag: TAG_NAME.SPAN,
     });
-
     return this.errorField;
   }
 

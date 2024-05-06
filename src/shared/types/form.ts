@@ -21,27 +21,27 @@ export interface InputFieldValidatorParams {
   maxLength?: null | number;
   minLength?: null | number;
   notSpecialSymbols?: {
-    message: string;
+    messages: Record<string, string>;
     pattern: RegExp;
   } | null;
   notWhitespace?: {
-    message: string;
+    messages: Record<string, string>;
     pattern: RegExp;
   } | null;
   required?: boolean | null;
   requiredSymbols?: {
-    message: string;
+    messages: Record<string, string>;
     pattern: RegExp;
   } | null;
   validBirthday?: {
     maxAge: number;
-    message: string;
+    messages: Record<string, string>;
     minAge: number;
     pattern: RegExp;
   } | null;
   validCountry?: boolean;
   validMail?: {
-    message: string;
+    messages: Record<string, string>;
     pattern: RegExp;
   } | null;
   validPostalCode?: boolean;

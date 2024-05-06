@@ -3,6 +3,7 @@ import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
 import { PAGE_DESCRIPTION, PAGE_ID } from '@/shared/constants/pages.ts';
 
@@ -22,17 +23,25 @@ class NotFoundPageModel implements Page {
   }
 
   private createPageDescription(): string {
-    const { currentUser } = getStore().getState();
-
+    const { currentLanguage, currentUser } = getStore().getState();
+    const { GREETING } = PAGE_DESCRIPTION[currentLanguage];
     const textDescription = currentUser
-      ? `Hi, ${currentUser.firstName}. ${PAGE_DESCRIPTION[404]}`
-      : PAGE_DESCRIPTION[404];
+      ? `${GREETING}${currentUser.firstName}. ${PAGE_DESCRIPTION[currentLanguage][404]}`
+      : PAGE_DESCRIPTION[currentLanguage][404];
     return textDescription;
   }
 
   private init(): boolean {
     this.subscribeToEventMediator();
     this.toMainButtonHandler();
+    this.observeStoreLanguage();
+    return true;
+  }
+
+  private observeStoreLanguage(): boolean {
+    observeStore(selectCurrentLanguage, () => {
+      this.view.setPageDescription(this.createPageDescription());
+    });
     return true;
   }
 

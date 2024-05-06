@@ -1,6 +1,11 @@
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, setShippingCountry } from '@/shared/Store/actions.ts';
-import observeStore, { selectBillingCountry, selectShippingCountry } from '@/shared/Store/observer.ts';
+import observeStore, {
+  selectBillingCountry,
+  selectCurrentLanguage,
+  selectShippingCountry,
+} from '@/shared/Store/observer.ts';
+import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { EVENT_NAME } from '@/shared/constants/events.ts';
 import { BILLING_ADDRESS_COUNTRY } from '@/shared/constants/forms/register/fieldParams.ts';
 import getCountryIndex from '@/shared/utils/getCountryIndex.ts';
@@ -23,10 +28,24 @@ class CountryChoiceModel {
     });
   }
 
+  private observeCurrentLanguage(item: HTMLDivElement): boolean {
+    observeStore(selectCurrentLanguage, () => {
+      const currentItem = item;
+      const currentCountriesList = COUNTRIES_LIST[getStore().getState().currentLanguage];
+      Object.entries(currentCountriesList).forEach(([countryName, countryCode]) => {
+        if (countryCode === currentItem.id) {
+          currentItem.textContent = countryName;
+        }
+      });
+    });
+    return true;
+  }
+
   private setCountryItemsHandlers(input: HTMLInputElement): boolean {
     const inputHTML = input;
     this.view.getCountryItems().forEach((countryItem) => {
       const currentItem = countryItem;
+      this.observeCurrentLanguage(currentItem);
       currentItem.addEventListener(EVENT_NAME.CLICK, () => {
         if (currentItem.textContent) {
           inputHTML.value = currentItem.textContent;
