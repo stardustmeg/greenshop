@@ -31,7 +31,7 @@ describe('Checking Product Model', () => {
   });
 
   it('should get the products list', async () => {
-    const productsArr = await productModel.getAllProducts();
+    const productsArr = await productModel.getProducts();
     if (productsArr) {
       expect(productsArr).toBeDefined();
       productsArr.forEach((product) => {

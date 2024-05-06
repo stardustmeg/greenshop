@@ -6,6 +6,7 @@ import type {
   ClientResponse,
   LocalizedString,
   ProductPagedQueryResponse,
+  ProductProjectionPagedSearchResponse,
   Product as ProductResponse,
   ProductVariant,
 } from '@commercetools/platform-sdk';
@@ -15,15 +16,22 @@ import { setCategories, setProducts } from '@/shared/Store/actions.ts';
 import getSize from '@/shared/utils/size.ts';
 
 import getRoot, { type RootApi } from '../../sdk/root.ts';
-import Attribute from '../../types/type.ts';
+import { Attribute, type CategoriesProductCount, type OptionsRequest, type PriceRange } from '../../types/type.ts';
 import {
   isAttributePlainEnumValue,
   isCategoryPagedQueryResponse,
   isClientResponse,
+  isFacetRange,
+  isFacetTerm,
   isLocalizationObj,
   isProductPagedQueryResponse,
+  isProductProjectionPagedSearchResponse,
   isProductResponse,
+  isRangeFacetResult,
+  isTermFacetResult,
 } from '../../types/validation.ts';
+
+const PRICE_FRACTIONS = 100;
 
 export class ProductModel {
   private root: RootApi;
@@ -70,7 +78,7 @@ export class ProductModel {
     if (variant.prices && variant.prices.length && variant.prices[0].discounted) {
       const priceRow = variant.prices[0];
       if (priceRow.discounted) {
-        minPrice = priceRow.discounted.value.centAmount / 10 ** priceRow.discounted.value.fractionDigits;
+        minPrice = priceRow.discounted.value.centAmount / PRICE_FRACTIONS;
       }
     }
     return minPrice;
@@ -99,7 +107,7 @@ export class ProductModel {
 
     if (variant.prices && variant.prices.length) {
       const priceRow = variant.prices[0];
-      price = priceRow.value.centAmount / 10 ** priceRow.value.fractionDigits;
+      price = priceRow.value.centAmount / PRICE_FRACTIONS;
     }
     return price;
   }
@@ -141,7 +149,10 @@ export class ProductModel {
   }
 
   private adaptVariants(product: Product, response: ProductResponse): Product {
-    response.masterData.staged.variants.forEach((variant) => {
+    const variants = response.masterData.staged.variants.length
+      ? response.masterData.staged.variants
+      : [response.masterData.staged.masterVariant];
+    variants.forEach((variant) => {
       let size: Size | null = null;
 
       if (variant.attributes && variant.attributes.length) {
@@ -181,6 +192,57 @@ export class ProductModel {
     return category;
   }
 
+  private getCategoriesProductCountFromData(
+    data: ClientResponse<ProductProjectionPagedSearchResponse>,
+  ): CategoriesProductCount[] {
+    const category: CategoriesProductCount[] = [];
+    if (
+      isClientResponse(data) &&
+      isProductProjectionPagedSearchResponse(data.body) &&
+      'categories.id' in data.body.facets
+    ) {
+      const categoriesFacet = data.body.facets['categories.id'];
+      if (isTermFacetResult(categoriesFacet)) {
+        const categoryList = getStore().getState().categories;
+        categoriesFacet.terms.forEach((term) => {
+          if (isFacetTerm(term)) {
+            const currentCategory = categoryList.find((el) => el.id === term.term);
+            if (currentCategory) {
+              category.push({
+                category: currentCategory,
+                count: term.productCount || 0,
+              });
+            }
+          }
+        });
+      }
+    }
+    return category;
+  }
+
+  private getPriceRangeFromData(date: ClientResponse<ProductProjectionPagedSearchResponse>): PriceRange {
+    const priceRange: PriceRange = {
+      max: 0,
+      min: 0,
+    };
+    if (
+      isClientResponse(date) &&
+      isProductProjectionPagedSearchResponse(date.body) &&
+      'variants.price.centAmount' in date.body.facets
+    ) {
+      const variantsPrice = date.body.facets['variants.price.centAmount'];
+      if (isRangeFacetResult(variantsPrice)) {
+        variantsPrice.ranges.forEach((range) => {
+          if (isFacetRange(range)) {
+            priceRange.min = range.min / PRICE_FRACTIONS;
+            priceRange.max = range.max / PRICE_FRACTIONS;
+          }
+        });
+      }
+    }
+    return priceRange;
+  }
+
   private getProductFromData(data: ClientResponse<ProductResponse>): Product | null {
     let product: Product | null = null;
     if (isClientResponse(data) && isProductResponse(data.body)) {
@@ -197,23 +259,33 @@ export class ProductModel {
     return productList;
   }
 
-  public async getAllProducts(): Promise<Product[] | null> {
-    const data = await this.root.getAllProducts();
-    const products = this.getProductsFromData(data);
-    if (products) {
-      getStore().dispatch(setProducts(products));
-    }
-    return products;
-  }
-
   public async getCategories(): Promise<Category[] | null> {
     const data = await this.root.getCategories();
     return this.getCategoriesFromData(data);
   }
 
+  public async getCategoriesProductCount(): Promise<CategoriesProductCount[]> {
+    const data = await this.root.getCategoriesProductCount();
+    return this.getCategoriesProductCountFromData(data);
+  }
+
+  public async getPriceRange(): Promise<PriceRange> {
+    const data = await this.root.getPriceRange();
+    return this.getPriceRangeFromData(data);
+  }
+
   public async getProductById(id: string): Promise<Product | null> {
     const data = await this.root.getProductByID(id);
     return this.getProductFromData(data);
+  }
+
+  public async getProducts(options?: OptionsRequest): Promise<Product[] | null> {
+    const data = await this.root.getProducts(options);
+    const products = this.getProductsFromData(data);
+    if (products) {
+      getStore().dispatch(setProducts(products));
+    }
+    return products;
   }
 }
 
