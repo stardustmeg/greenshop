@@ -5,9 +5,13 @@ import type {
   Customer,
   CustomerPagedQueryResponse,
   CustomerSignInResult,
+  FacetRange,
+  FacetTerm,
   LocalizedString,
   Product,
   ProductPagedQueryResponse,
+  RangeFacetResult,
+  TermFacetResult,
 } from '@commercetools/platform-sdk';
 
 export function isClientResponse(data: unknown): data is ClientResponse {
@@ -114,5 +118,52 @@ export function isProductResponse(data: unknown): data is Product {
       'description' in data.masterData.staged &&
       'name' in data.masterData.staged &&
       'variants' in data.masterData.staged,
+  );
+}
+
+export function isProductProjectionPagedSearchResponse(data: unknown): data is ProductPagedQueryResponse {
+  return Boolean(typeof data === 'object' && data && 'facets' in data && typeof data.facets === 'object');
+}
+
+export function isRangeFacetResult(data: unknown): data is RangeFacetResult {
+  return Boolean(
+    typeof data === 'object' && data && 'ranges' in data && Array.isArray(data.ranges) && data.ranges.length,
+  );
+}
+
+export function isFacetRange(data: unknown): data is FacetRange {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'min' in data &&
+      typeof data.min === 'number' &&
+      'max' in data &&
+      typeof data.max === 'number',
+  );
+}
+
+export function isTermFacetResult(data: unknown): data is TermFacetResult {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'type' in data &&
+      typeof data.type === 'string' &&
+      data.type === 'terms' &&
+      'terms' in data &&
+      Array.isArray(data.terms) &&
+      data.terms.length,
+  );
+}
+
+export function isFacetTerm(data: unknown): data is FacetTerm {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'term' in data &&
+      typeof data.term === 'string' &&
+      'count' in data &&
+      typeof data.count === 'number' &&
+      'productCount' in data &&
+      typeof data.productCount === 'number',
   );
 }

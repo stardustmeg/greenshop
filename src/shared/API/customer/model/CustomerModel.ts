@@ -68,6 +68,10 @@ export class CustomerModel {
     return { action: 'removeShippingAddressId', addressId: address.id };
   }
 
+  public static actionSetLocale(locale: string): CustomerUpdateAction {
+    return { action: 'setLocale', locale };
+  }
+
   private adaptAddress(address: AddressResponse[]): Address[] {
     return address.map((addressItem) => ({
       city: addressItem?.city || '',
