@@ -1,0 +1,39 @@
+name: Set PR Title
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  set_pull_request_title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Branch Name
+        id: extract_branch_name
+        run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+
+      - name: Format PR Title
+        id: format_pr_title
+        run: |
+          BRANCH_NAME="${{ steps.extract_branch_name.outputs.branch }}"
+          if [[ $BRANCH_NAME =~ (feat|fix|hotfix|chore|refactor|revert|docs|style|test)\(RSS-ECOMM-(\d{1})_(\d{2})\)\/([a-z]+[a-zA-Z0-9]*) ]]; then
+            SPRINT_NUMBER=${BASH_REMATCH[2]}
+            ISSUE_NUMBER=${BASH_REMATCH[3]}
+            DESCRIPTION=${BASH_REMATCH[4]}
+            PR_TITLE="$(tr '[:upper:]' '[:lower:]' <<< ${BASH_REMATCH[1]:0:1})${BASH_REMATCH[1]:1}(${BASH_REMATCH[2]}-${BASH_REMATCH[3]}): $(tr '[:upper:]' '[:lower:]' <<< ${DESCRIPTION:0:1})${DESCRIPTION:1}"
+            echo "::set-output name=title::$PR_TITLE"
+          else
+            echo "Invalid branch name format"
+            exit 1
+          fi
+
+      - name: Set Pull Request Title
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = '${{ steps.format_pr_title.outputs.title }}';
+            github.issues.update({
+              issue_number: context.issue.number,
+              title: title
+            });
