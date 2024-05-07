@@ -5,7 +5,6 @@ import getStore from '@/shared/Store/Store.ts';
 import { setCurrentLanguage, setCurrentUser } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
-import { EVENT_NAME } from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 import HeaderView from '../view/HeaderView.ts';
@@ -60,7 +59,7 @@ class HeaderModel {
 
   private setChangeLanguageButtonHandler(): boolean {
     const changeLanguageButton = this.view.getChangeLanguageButton();
-    changeLanguageButton.getHTML().addEventListener(EVENT_NAME.CLICK, () => {
+    changeLanguageButton.getHTML().addEventListener('click', () => {
       const { currentLanguage } = getStore().getState();
       const newLanguage = currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
       changeLanguageButton.getHTML().innerText = newLanguage;
@@ -71,7 +70,7 @@ class HeaderModel {
 
   private setLogoHandler(): boolean {
     const logo = this.view.getLinkLogo().getHTML();
-    logo.addEventListener(EVENT_NAME.CLICK, (event) => {
+    logo.addEventListener('click', (event) => {
       event.preventDefault();
       this.router.navigateTo(PAGE_ID.DEFAULT_PAGE);
     });
@@ -80,7 +79,7 @@ class HeaderModel {
 
   private setLogoutButtonHandler(): boolean {
     const logoutButton = this.view.getLogoutButton();
-    logoutButton.getHTML().addEventListener(EVENT_NAME.CLICK, () => {
+    logoutButton.getHTML().addEventListener('click', () => {
       this.logoutHandler();
       logoutButton.setDisabled();
     });

@@ -3,7 +3,7 @@ import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/pages.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import LoginFormModel from '@/widgets/LoginForm/model/LoginFormModel.ts';
@@ -54,8 +54,8 @@ class LoginPageModel implements Page {
 
     observeCurrentLanguage(registerLinkCopy, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.REGISTRATION);
 
-    registerLink.addEventListener(EVENT_NAME.CLICK, (event) => this.registerLinkHandler(event));
-    registerLinkCopy.addEventListener(EVENT_NAME.CLICK, (event) => this.registerLinkHandler(event));
+    registerLink.addEventListener('click', (event) => this.registerLinkHandler(event));
+    registerLinkCopy.addEventListener('click', (event) => this.registerLinkHandler(event));
     toRegisterPageWrapper.append(registerLinkCopy);
   }
 

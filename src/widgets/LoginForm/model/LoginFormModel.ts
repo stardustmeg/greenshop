@@ -7,7 +7,7 @@ import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
-import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import KEY from '@/shared/constants/forms/login/constants.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { SIZES } from '@/shared/constants/sizes.ts';
@@ -110,7 +110,7 @@ class LoginFormModel {
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
     const inputHTML = inputField.getView().getInput().getHTML();
     this.isValidInputFields[inputHTML.id] = false;
-    inputHTML.addEventListener(EVENT_NAME.INPUT, () => {
+    inputHTML.addEventListener('input', () => {
       this.isValidInputFields[inputHTML.id] = inputField.getIsValid();
       this.switchSubmitFormButtonAccess();
     });
@@ -118,13 +118,13 @@ class LoginFormModel {
   }
 
   private setPreventDefaultToForm(): boolean {
-    this.getHTML().addEventListener(EVENT_NAME.SUBMIT, (event) => event.preventDefault());
+    this.getHTML().addEventListener('submit', (event) => event.preventDefault());
     return true;
   }
 
   private setSubmitFormHandler(): boolean {
     const submitButton = this.view.getSubmitFormButton().getHTML();
-    submitButton.addEventListener(EVENT_NAME.CLICK, () => {
+    submitButton.addEventListener('click', () => {
       const formData = this.getFormData();
       this.loginUser(formData);
     });

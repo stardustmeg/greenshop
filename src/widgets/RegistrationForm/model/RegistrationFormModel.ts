@@ -8,7 +8,7 @@ import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
-import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import * as CONSTANT_FORMS from '@/shared/constants/forms.ts';
 import * as FORM_CONSTANT from '@/shared/constants/forms/register/constant.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
@@ -186,7 +186,7 @@ class RegisterFormModel {
     this.createBillingCountryChoice();
     this.createShippingCountryChoice();
     const checkboxSingleAddress = this.view.getSingleAddressCheckBox().getHTML();
-    checkboxSingleAddress.addEventListener(EVENT_NAME.CHANGE, () =>
+    checkboxSingleAddress.addEventListener('change', () =>
       this.singleAddressCheckBoxHandler(checkboxSingleAddress.checked),
     );
     return true;
@@ -219,7 +219,7 @@ class RegisterFormModel {
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
     const inputHTML = inputField.getView().getInput().getHTML();
     this.isValidInputFields[inputHTML.id] = false;
-    inputHTML.addEventListener(EVENT_NAME.INPUT, () => {
+    inputHTML.addEventListener('input', () => {
       this.isValidInputFields[inputHTML.id] = inputField.getIsValid();
       this.switchSubmitFormButtonAccess();
     });
@@ -227,7 +227,7 @@ class RegisterFormModel {
   }
 
   private setPreventDefaultToForm(): boolean {
-    this.getHTML().addEventListener(EVENT_NAME.SUBMIT, (event) => {
+    this.getHTML().addEventListener('submit', (event) => {
       event.preventDefault();
     });
 
@@ -236,7 +236,7 @@ class RegisterFormModel {
 
   private setSubmitFormHandler(): boolean {
     const submitButton = this.view.getSubmitFormButton().getHTML();
-    submitButton.addEventListener(EVENT_NAME.CLICK, () => this.registerUser());
+    submitButton.addEventListener('click', () => this.registerUser());
     return true;
   }
 
