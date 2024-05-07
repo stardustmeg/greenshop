@@ -29,10 +29,16 @@ export type SortOptions = {
   locale?: string;
 };
 
+export type SearchOptions = {
+  locale: string;
+  value: string;
+};
+
 export type OptionsRequest = {
   filter?: string[];
   limit?: number;
   page?: number;
+  search?: SearchOptions;
   sort?: SortOptions;
 };
 

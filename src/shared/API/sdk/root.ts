@@ -149,7 +149,7 @@ export class RootApi {
   }
 
   public async getProducts(options?: OptionsRequest): Promise<ClientResponse<ProductProjectionPagedQueryResponse>> {
-    const { filter, limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, sort } = options || {};
+    const { filter, limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, search, sort } = options || {};
 
     const data = await this.connection
       .productProjections()
@@ -159,6 +159,8 @@ export class RootApi {
           limit,
           markMatchingVariants: true,
           offset: (page - 1) * PRODUCT_LIMIT,
+          ...(search && { [`text.${search.locale}`]: search.value }),
+          ...(search && { fuzzy: true }),
           ...(sort && { sort: makeSortRequest(sort) }),
           ...(filter && { filter }),
           withTotal: true,
