@@ -6,7 +6,6 @@ import observeStore, {
   selectShippingCountry,
 } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { EVENT_NAME } from '@/shared/constants/events.ts';
 import { BILLING_ADDRESS_COUNTRY } from '@/shared/constants/forms/register/fieldParams.ts';
 import getCountryIndex from '@/shared/utils/getCountryIndex.ts';
 
@@ -23,7 +22,7 @@ class CountryChoiceModel {
     const action = input.id === BILLING_ADDRESS_COUNTRY.inputParams.id ? selectBillingCountry : selectShippingCountry;
 
     observeStore(action, () => {
-      const event = new Event(EVENT_NAME.INPUT);
+      const event = new Event('input');
       input.dispatchEvent(event);
     });
   }
@@ -46,11 +45,11 @@ class CountryChoiceModel {
     this.view.getCountryItems().forEach((countryItem) => {
       const currentItem = countryItem;
       this.observeCurrentLanguage(currentItem);
-      currentItem.addEventListener(EVENT_NAME.CLICK, () => {
+      currentItem.addEventListener('click', () => {
         if (currentItem.textContent) {
           inputHTML.value = currentItem.textContent;
           this.setCountryToStore(currentItem, inputHTML.id);
-          const event = new Event(EVENT_NAME.INPUT);
+          const event = new Event('input');
           inputHTML.dispatchEvent(event);
           this.view.hideCountryChoice();
         }
@@ -70,8 +69,8 @@ class CountryChoiceModel {
   }
 
   private setInputHandler(input: HTMLInputElement): boolean {
-    input.addEventListener(EVENT_NAME.FOCUS, () => this.view.showCountryChoice());
-    input.addEventListener(EVENT_NAME.INPUT, () => {
+    input.addEventListener('focus', () => this.view.showCountryChoice());
+    input.addEventListener('input', () => {
       this.view.switchVisibilityCountryItems(input);
       this.setCountryToStore(input, input.id);
     });

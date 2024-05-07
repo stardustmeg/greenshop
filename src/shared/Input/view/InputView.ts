@@ -1,6 +1,5 @@
 import type { InputParams } from '@/shared/types/form';
 
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 class InputView {
@@ -19,7 +18,7 @@ class InputView {
         placeholder: attrs.placeholder || '',
         type: attrs.type,
       },
-      tag: TAG_NAME.INPUT,
+      tag: 'input',
     });
 
     return this.input;

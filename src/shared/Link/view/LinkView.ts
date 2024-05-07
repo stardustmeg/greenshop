@@ -1,6 +1,5 @@
 import type { LinkAttributes } from '@/shared/types/link.ts';
 
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './linkView.module.scss';
@@ -17,7 +16,7 @@ class LinkView {
       attributes: params.attrs,
       cssClasses: params.classes,
       innerContent: params.text,
-      tag: TAG_NAME.A,
+      tag: 'a',
     });
 
     return this.link;

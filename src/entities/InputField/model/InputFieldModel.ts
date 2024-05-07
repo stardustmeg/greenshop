@@ -2,7 +2,6 @@ import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types
 
 import InputFieldValidatorModel from '@/features/InputFieldValidator/model/InputFieldValidatorModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { EVENT_NAME } from '@/shared/constants/events.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 
 import InputFieldView from '../view/InputFieldView.ts';
@@ -48,14 +47,14 @@ class InputFieldModel {
 
   private setInputHandler(): boolean {
     const input = this.view.getInput().getHTML();
-    input.addEventListener(EVENT_NAME.INPUT, () => this.inputHandler());
+    input.addEventListener('input', () => this.inputHandler());
 
     return true;
   }
 
   private setSwitchPasswordVisibilityHandler(): boolean {
     const button = this.view.getShowPasswordButton().getHTML();
-    button.addEventListener(EVENT_NAME.CLICK, () => this.switchPasswordVisibilityHandler());
+    button.addEventListener('click', () => this.switchPasswordVisibilityHandler());
     return true;
   }
 

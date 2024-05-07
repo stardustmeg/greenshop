@@ -4,7 +4,7 @@ import type { Page } from '@/shared/types/common.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_DESCRIPTION, PAGE_ID } from '@/shared/constants/pages.ts';
 
 import NotFoundPageView from '../view/NotFoundPageView.ts';
@@ -62,7 +62,7 @@ class NotFoundPageModel implements Page {
 
   private toMainButtonHandler(): boolean {
     const toMainButton = this.view.getToMainButton().getHTML();
-    toMainButton.addEventListener(EVENT_NAME.CLICK, this.router.navigateTo.bind(this.router, PAGE_ID.MAIN_PAGE));
+    toMainButton.addEventListener('click', this.router.navigateTo.bind(this.router, PAGE_ID.MAIN_PAGE));
     return true;
   }
 

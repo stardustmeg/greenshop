@@ -3,7 +3,7 @@ import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
-import { MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 import MainPageView from '../view/MainPageView.ts';

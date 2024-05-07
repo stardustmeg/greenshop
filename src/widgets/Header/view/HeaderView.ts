@@ -4,7 +4,6 @@ import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
@@ -39,7 +38,7 @@ class HeaderView {
   private createHTML(): HTMLElement {
     this.header = createBaseElement({
       cssClasses: [styles.header],
-      tag: TAG_NAME.HEADER,
+      tag: 'header',
     });
 
     this.header.append(this.linkLogo.getHTML(), this.changeLanguageButton.getHTML(), this.logoutButton.getHTML());
@@ -54,7 +53,7 @@ class HeaderView {
       classes: [styles.logo],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, TAG_NAME.SVG);
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.LOGO));
     this.linkLogo.getHTML().append(svg);
     return this.linkLogo;

@@ -9,7 +9,6 @@ import { FORM_TEXT, INPUT_TYPE } from '@/shared/constants/forms.ts';
 import * as FORM_CONSTANT from '@/shared/constants/forms/register/constant.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/register/validationParams.ts';
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
@@ -67,13 +66,13 @@ class RegistrationFormView {
 
     const checkBoxLabel = createBaseElement({
       cssClasses: [styles.checkboxLabel],
-      tag: TAG_NAME.LABEL,
+      tag: 'label',
     });
 
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
       innerContent: FORM_TEXT.DEFAULT_ADDRESS,
-      tag: TAG_NAME.SPAN,
+      tag: 'span',
     });
 
     checkBoxLabel.append(checkBoxText, this.checkboxDefaultBillingAddress.getHTML());
@@ -86,13 +85,13 @@ class RegistrationFormView {
   private createCheckBoxLabel(innerContent: string, checkBoxElement: HTMLInputElement): HTMLLabelElement {
     const checkboxLabel = createBaseElement({
       cssClasses: [styles.checkboxLabel],
-      tag: TAG_NAME.LABEL,
+      tag: 'label',
     });
 
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
       innerContent,
-      tag: TAG_NAME.SPAN,
+      tag: 'span',
     });
 
     checkboxLabel.append(checkBoxText, checkBoxElement);
@@ -153,7 +152,7 @@ class RegistrationFormView {
   private createHTML(): HTMLFormElement {
     this.form = createBaseElement({
       cssClasses: [styles.registrationForm],
-      tag: TAG_NAME.FORM,
+      tag: 'form',
     });
 
     this.form.append(
@@ -219,7 +218,7 @@ class RegistrationFormView {
 
     const settingsAddressWrapper = createBaseElement({
       cssClasses: [styles.settingsAddressWrapper],
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
 
     settingsAddressWrapper.append(
@@ -256,12 +255,12 @@ class RegistrationFormView {
     const { currentLanguage } = getStore().getState();
     const wrapperElement = createBaseElement({
       cssClasses,
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
     const titleElement = createBaseElement({
       cssClasses: [styles.title],
       innerContent: FORM_CONSTANT.TITLE_TEXT[currentLanguage][title],
-      tag: TAG_NAME.H3,
+      tag: 'h3',
     });
     wrapperElement.append(titleElement);
     observeCurrentLanguage(titleElement, FORM_CONSTANT.TITLE_TEXT, title);

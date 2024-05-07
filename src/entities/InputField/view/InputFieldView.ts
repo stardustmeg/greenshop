@@ -4,7 +4,6 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
@@ -27,7 +26,7 @@ class InputFieldView {
 
   private createErrorField(): HTMLSpanElement {
     this.errorField = createBaseElement({
-      tag: TAG_NAME.SPAN,
+      tag: 'span',
     });
     return this.errorField;
   }
@@ -62,7 +61,7 @@ class InputFieldView {
         for: htmlFor,
       },
       innerContent: text || '',
-      tag: TAG_NAME.LABEL,
+      tag: 'label',
     });
 
     return this.label;
@@ -98,7 +97,7 @@ class InputFieldView {
   }
 
   public switchPasswordButtonSVG(type: string): SVGSVGElement {
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, TAG_NAME.SVG);
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     this.showPasswordButton.getHTML().innerHTML = '';
     svg.append(createSVGUse(type === INPUT_TYPE.PASSWORD ? SVG_DETAILS.CLOSE_EYE : SVG_DETAILS.OPEN_EYE));
     this.showPasswordButton.getHTML().append(svg);

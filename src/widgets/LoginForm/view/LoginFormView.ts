@@ -4,7 +4,6 @@ import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
 import * as FORM_INPUTS from '@/shared/constants/forms/login/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/login/validationParams.ts';
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
@@ -26,7 +25,7 @@ class LoginFormView {
   private createHTML(): HTMLFormElement {
     this.form = createBaseElement({
       cssClasses: [styles.loginForm],
-      tag: TAG_NAME.FORM,
+      tag: 'form',
     });
 
     this.inputFields.forEach((inputField) => {
