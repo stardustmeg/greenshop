@@ -2,7 +2,6 @@ import getStore from '@/shared/Store/Store.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { EVENT_NAME } from '@/shared/constants/events.ts';
 import { KEYBOARD_KEYS } from '@/shared/constants/keyboard.ts';
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './countryChoiceView.module.scss';
@@ -36,7 +35,7 @@ class CountryChoiceView {
   private createCountryDropList(): HTMLDivElement {
     this.countryDropList = createBaseElement({
       cssClasses: [styles.countryDropList],
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
 
     const { currentLanguage } = getStore().getState();
@@ -53,7 +52,7 @@ class CountryChoiceView {
       attributes: { id: countryCode },
       cssClasses: [styles.countryItem],
       innerContent: countryName,
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
 
     this.countryItems.push(countryItem);
@@ -64,7 +63,7 @@ class CountryChoiceView {
   private createHTML(): HTMLDivElement {
     this.countryChoice = createBaseElement({
       cssClasses: [styles.countryChoice, styles.hidden],
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
 
     this.countryChoice.append(this.countryDropList);

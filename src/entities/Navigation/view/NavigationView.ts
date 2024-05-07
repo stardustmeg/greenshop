@@ -1,7 +1,6 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { PAGE_ID, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/pages.ts';
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
@@ -28,7 +27,7 @@ class NavigationView {
   private createHTML(): HTMLElement {
     this.navigation = createBaseElement({
       cssClasses: [styles.navigation],
-      tag: TAG_NAME.NAV,
+      tag: 'nav',
     });
     this.navigation.append(this.toMainLink.getHTML(), this.toLoginLink.getHTML(), this.toRegisterLink.getHTML());
     return this.navigation;
