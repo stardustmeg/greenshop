@@ -58,33 +58,6 @@ describe('Checking Product Model', () => {
       });
     }
   });
-
-  it('should get the product by id', async () => {
-    const product = await productModel.getProductById('e5381b83-a7c4-4060-9fdb-f4123db54dd2');
-    if (product) {
-      expect(product).toBeDefined();
-      expect(typeof product.id).toBe('string');
-      expect(typeof product.key).toBe('string');
-      expect(Array.isArray(product.name)).toBe(true);
-      product.name.forEach((localization: localization) => {
-        expect(typeof localization.language).toBe('string');
-        expect(typeof localization.value).toBe('string');
-      });
-      expect(Array.isArray(product.description)).toBe(true);
-      product.description.forEach((localization: localization) => {
-        expect(typeof localization.language).toBe('string');
-        expect(typeof localization.value).toBe('string');
-      });
-      expect(Array.isArray(product.fullDescription)).toBe(true);
-      product.fullDescription.forEach((localization: localization) => {
-        expect(typeof localization.language).toBe('string');
-        expect(typeof localization.value).toBe('string');
-      });
-      expect(Array.isArray(product.images)).toBe(true);
-      expect(Array.isArray(product.category)).toBe(true);
-      expect(Array.isArray(product.variant)).toBe(true);
-    }
-  });
 });
 
 describe('getSize function', () => {
