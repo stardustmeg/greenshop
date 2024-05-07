@@ -24,20 +24,7 @@
     /* Path aliases */
     "baseUrl": "",
     "paths": {
-      "@/*": ["src/*"],
-      "@app/*": ["src/app/*"],
-      "@entities/*": ["src/entities/*"],
-      "@features/*": ["src/features/*"],
-      "@pages/*": ["src/pages/*"],
-      "@widgets/*": ["src/widgets/*"],
-      "@shared/*": ["src/shared/*"],
-      "@utils/*": ["src/shared/utils/*"],
-      "@constants/*": ["src/shared/constants/*"],
-      "@API/*": ["src/shared/api/*"],
-      "@EventMediator/*": ["src/shared/EventMediator/*"],
-      "@img/*": ["src/shared/img/*"],
-      "@Store/*": ["src/shared/Store/*"],
-      "@types/*": ["src/shared/types/*"]
+      "@/*": ["src/*"]
     },
 
     /* Testing */
