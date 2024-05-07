@@ -1,5 +1,6 @@
 import type { User, UserLoginData } from '@/shared/types/user.ts';
 
+import { DEFAULT_PAGE, MAX_PRICE, MIN_PRICE, PRODUCT_LIMIT } from '@/shared/constants/product.ts';
 import {
   type ByProjectKeyRequestBuilder,
   type CategoryPagedQueryResponse,
@@ -9,21 +10,18 @@ import {
   type CustomerSignInResult,
   type CustomerUpdateAction,
   type Product,
-  type ProductPagedQueryResponse,
+  type ProductProjectionPagedQueryResponse,
   type ProductProjectionPagedSearchResponse,
   createApiBuilderFromCtpClient,
 } from '@commercetools/platform-sdk';
 import { type Client } from '@commercetools/sdk-client-v2';
 
-import type { OptionsRequest, SortOptions } from '../types/type.ts';
+import type { OptionsRequest } from '../types/type.ts';
 
+import makeSortRequest from '../product/utils/sort.ts';
 import client from './client.ts';
 
 type Nullable<T> = T | null;
-const PRODUCT_LIMIT = 9;
-const DEFAULT_PAGE = 1;
-const MIN_PRICE = 0;
-const MAX_PRICE = 1000000;
 
 export type Credentials = {
   clientID: Nullable<string>;
@@ -60,10 +58,6 @@ export class RootApi {
     );
 
     this.connection = this.root(this.client, projectKey);
-  }
-
-  private makeSortRequest(sortOptions: SortOptions): string {
-    return `${sortOptions.field}${sortOptions.locale ? `.${sortOptions.locale}` : ''} ${sortOptions.direction}`;
   }
 
   private root(client: Client, projectKey: string): ByProjectKeyRequestBuilder {
@@ -154,19 +148,19 @@ export class RootApi {
     return data;
   }
 
-  public async getProducts(options?: OptionsRequest): Promise<ClientResponse<ProductPagedQueryResponse>> {
-    const { limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, sort } = options || {};
+  public async getProducts(options?: OptionsRequest): Promise<ClientResponse<ProductProjectionPagedQueryResponse>> {
+    const { filter, limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, sort } = options || {};
 
     const data = await this.connection
-      .products()
+      .productProjections()
+      .search()
       .get({
         queryArgs: {
           limit,
+          markMatchingVariants: true,
           offset: (page - 1) * PRODUCT_LIMIT,
-          ...(sort && { sort: this.makeSortRequest(sort) }),
-          // where: `masterData(staged(variants(prices(value(centAmount >= 5000))) or
-          // masterVariant(prices(value(centAmount >= 5000)))))`,
-          // where: `key = 10594917538474`,
+          ...(sort && { sort: makeSortRequest(sort) }),
+          ...(filter && { filter }),
           withTotal: true,
         },
       })

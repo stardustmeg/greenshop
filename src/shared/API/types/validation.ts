@@ -10,6 +10,7 @@ import type {
   LocalizedString,
   Product,
   ProductPagedQueryResponse,
+  ProductProjectionPagedQueryResponse,
   RangeFacetResult,
   TermFacetResult,
 } from '@commercetools/platform-sdk';
@@ -123,6 +124,21 @@ export function isProductResponse(data: unknown): data is Product {
 
 export function isProductProjectionPagedSearchResponse(data: unknown): data is ProductPagedQueryResponse {
   return Boolean(typeof data === 'object' && data && 'facets' in data && typeof data.facets === 'object');
+}
+
+export function isProductProjectionPagedQueryResponse(data: unknown): data is ProductProjectionPagedQueryResponse {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'count' in data &&
+      typeof data.count === 'number' &&
+      'limit' in data &&
+      typeof data.limit === 'number' &&
+      'total' in data &&
+      typeof data.total === 'number' &&
+      'results' in data &&
+      Array.isArray(data.results),
+  );
 }
 
 export function isRangeFacetResult(data: unknown): data is RangeFacetResult {

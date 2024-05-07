@@ -5,9 +5,17 @@ export const Attribute = {
   SIZE: 'size',
 };
 
+export enum FilterFields {
+  CATEGORY = 'categories.id',
+  NEW_ARRIVAL = 'variants.attributes.new_arrival:true',
+  PRICE = 'variants.price.centAmount',
+  SALE = 'variants.prices.discounted:exists',
+  SIZE = 'variants.attributes.size.key',
+}
+
 export enum SortFields {
-  NAME = 'masterData.staged.name',
-  PRICE = 'masterData.staged.variants.price.value',
+  NAME = 'name',
+  PRICE = 'price',
 }
 
 export enum SortDirection {
@@ -22,6 +30,7 @@ export type SortOptions = {
 };
 
 export type OptionsRequest = {
+  filter?: string[];
   limit?: number;
   page?: number;
   sort?: SortOptions;

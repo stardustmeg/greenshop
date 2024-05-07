@@ -5,14 +5,15 @@ import type {
   CategoryReference,
   ClientResponse,
   LocalizedString,
-  ProductPagedQueryResponse,
+  ProductProjection,
+  ProductProjectionPagedQueryResponse,
   ProductProjectionPagedSearchResponse,
-  Product as ProductResponse,
   ProductVariant,
 } from '@commercetools/platform-sdk';
 
 import getStore from '@/shared/Store/Store.ts';
 import { setCategories, setProducts } from '@/shared/Store/actions.ts';
+import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 import getSize from '@/shared/utils/size.ts';
 
 import getRoot, { type RootApi } from '../../sdk/root.ts';
@@ -30,14 +31,11 @@ import {
   isFacetRange,
   isFacetTerm,
   isLocalizationObj,
-  isProductPagedQueryResponse,
+  isProductProjectionPagedQueryResponse,
   isProductProjectionPagedSearchResponse,
-  isProductResponse,
   isRangeFacetResult,
   isTermFacetResult,
 } from '../../types/validation.ts';
-
-const PRICE_FRACTIONS = 100;
 
 export class ProductModel {
   private root: RootApi;
@@ -118,12 +116,12 @@ export class ProductModel {
     return price;
   }
 
-  private adaptProductPagedQueryToClient(data: ProductPagedQueryResponse): Product[] {
-    const response = data.results.map((product) => this.adaptProductToClient(product));
+  private adaptProductProjectionPagedQueryToClient(data: ProductProjectionPagedQueryResponse): Product[] {
+    const response = data.results.map((product) => this.adaptProductProjectionToClient(product));
     return response;
   }
 
-  private adaptProductToClient(product: ProductResponse): Product {
+  private adaptProductProjectionToClient(product: ProductProjection): Product {
     const result: Product = {
       category: [],
       description: [],
@@ -134,9 +132,9 @@ export class ProductModel {
       name: [],
       variant: [],
     };
-    result.category.push(...this.adaptCategoryReference(product.masterData.staged.categories));
-    result.description.push(...this.adaptLocalizationValue(product.masterData.staged.description));
-    result.name.push(...this.adaptLocalizationValue(product.masterData.staged.name));
+    result.category.push(...this.adaptCategoryReference(product.categories));
+    result.description.push(...this.adaptLocalizationValue(product.description));
+    result.name.push(...this.adaptLocalizationValue(product.name));
 
     Object.assign(result, this.adaptVariants(result, product));
 
@@ -154,10 +152,8 @@ export class ProductModel {
     return null;
   }
 
-  private adaptVariants(product: Product, response: ProductResponse): Product {
-    const variants = response.masterData.staged.variants.length
-      ? response.masterData.staged.variants
-      : [response.masterData.staged.masterVariant];
+  private adaptVariants(product: Product, response: ProductProjection): Product {
+    const variants = [...response.variants, response.masterVariant];
     variants.forEach((variant) => {
       let size: Size | null = null;
 
@@ -249,18 +245,10 @@ export class ProductModel {
     return priceRange;
   }
 
-  private getProductFromData(data: ClientResponse<ProductResponse>): Product | null {
-    let product: Product | null = null;
-    if (isClientResponse(data) && isProductResponse(data.body)) {
-      product = this.adaptProductToClient(data.body);
-    }
-    return product;
-  }
-
-  private getProductsFromData(data: ClientResponse<ProductPagedQueryResponse>): Product[] | null {
+  private getProductsFromData(data: ClientResponse<ProductProjectionPagedQueryResponse>): Product[] | null {
     let productList: Product[] | null = null;
-    if (isClientResponse(data) && isProductPagedQueryResponse(data.body)) {
-      productList = this.adaptProductPagedQueryToClient(data.body);
+    if (isClientResponse(data) && isProductProjectionPagedQueryResponse(data.body)) {
+      productList = this.adaptProductProjectionPagedQueryToClient(data.body);
     }
     return productList;
   }
@@ -274,7 +262,6 @@ export class ProductModel {
     ) {
       const categoriesFacet = data.body.facets['variants.attributes.size.key'];
       if (isTermFacetResult(categoriesFacet)) {
-        // const categoryList = getStore().getState().categories;
         categoriesFacet.terms.forEach((term) => {
           if (isFacetTerm(term) && typeof term.term === 'string') {
             const currentSize = getSize(term.term);
@@ -304,11 +291,6 @@ export class ProductModel {
   public async getPriceRange(): Promise<PriceRange> {
     const data = await this.root.getPriceRange();
     return this.getPriceRangeFromData(data);
-  }
-
-  public async getProductById(id: string): Promise<Product | null> {
-    const data = await this.root.getProductByID(id);
-    return this.getProductFromData(data);
   }
 
   public async getProducts(options?: OptionsRequest): Promise<Product[] | null> {
