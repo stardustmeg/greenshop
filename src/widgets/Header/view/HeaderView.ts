@@ -12,7 +12,7 @@ import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import styles from './headerView.module.scss';
 
 class HeaderView {
-  private changeLanguageButton: ButtonModel;
+  // private changeLanguageButton: ButtonModel;
 
   private header: HTMLElement;
 
@@ -23,18 +23,18 @@ class HeaderView {
   constructor() {
     this.logoutButton = this.createLogoutButton();
     this.linkLogo = this.createLinkLogo();
-    this.changeLanguageButton = this.createChangeLanguageButton();
+    // this.changeLanguageButton = this.createChangeLanguageButton();
     this.header = this.createHTML();
   }
 
-  private createChangeLanguageButton(): ButtonModel {
-    const { currentLanguage } = getStore().getState();
-    this.changeLanguageButton = new ButtonModel({
-      classes: [styles.changeLanguageButton],
-      text: currentLanguage,
-    });
-    return this.changeLanguageButton;
-  }
+  // private createChangeLanguageButton(): ButtonModel {
+  //   const { currentLanguage } = getStore().getState();
+  //   this.changeLanguageButton = new ButtonModel({
+  //     classes: [styles.changeLanguageButton],
+  //     text: currentLanguage,
+  //   });
+  //   return this.changeLanguageButton;
+  // }
 
   private createHTML(): HTMLElement {
     this.header = createBaseElement({
@@ -42,7 +42,7 @@ class HeaderView {
       tag: TAG_NAME.HEADER,
     });
 
-    this.header.append(this.linkLogo.getHTML(), this.changeLanguageButton.getHTML(), this.logoutButton.getHTML());
+    this.header.append(this.linkLogo.getHTML(), this.logoutButton.getHTML());
     return this.header;
   }
 
@@ -72,9 +72,9 @@ class HeaderView {
     return this.logoutButton;
   }
 
-  public getChangeLanguageButton(): ButtonModel {
-    return this.changeLanguageButton;
-  }
+  // public getChangeLanguageButton(): ButtonModel {
+  //   return this.changeLanguageButton;
+  // }
 
   public getHTML(): HTMLElement {
     return this.header;
