@@ -21,6 +21,8 @@ class LoginPageView {
 
   private authWrapper: HTMLDivElement;
 
+  private designElement: HTMLDivElement;
+
   private linksWrapper: HTMLDivElement;
 
   private loginSpan: HTMLSpanElement;
@@ -37,6 +39,7 @@ class LoginPageView {
     this.parent = parent;
     this.toRegisterPageWrapper = this.createToRegisterPageWrapper();
     this.loginSpan = this.createLoginSpan();
+    this.designElement = this.createDesignElement();
     this.registerLink = this.createRegisterLink();
     this.authDescription = this.createAuthDescription();
     this.linksWrapper = this.createLinksWrapper();
@@ -67,6 +70,14 @@ class LoginPageView {
     return this.authWrapper;
   }
 
+  private createDesignElement(): HTMLDivElement {
+    this.designElement = createBaseElement({
+      cssClasses: [styles.designElement],
+      tag: TAG_NAME.DIV,
+    });
+    return this.designElement;
+  }
+
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
       cssClasses: [styles.loginPage],
@@ -85,7 +96,7 @@ class LoginPageView {
       tag: TAG_NAME.DIV,
     });
 
-    this.linksWrapper.append(this.loginSpan, this.registerLink.getHTML());
+    this.linksWrapper.append(this.loginSpan, this.designElement, this.registerLink.getHTML());
     return this.linksWrapper;
   }
 

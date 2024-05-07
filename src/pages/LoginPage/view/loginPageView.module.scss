@@ -44,27 +44,22 @@
 }
 
 .linksWrapper {
-  position: relative;
   display: flex;
+  align-items: center;
   align-self: center;
-  justify-content: space-between;
+  justify-content: center;
   grid-column: 2 span;
   grid-row: 1;
   margin: 0 auto;
   margin-bottom: calc(var(--extra-large-offset) / 2);
-  width: 100%;
-  max-width: 160px;
+  max-width: fit-content;
+}
 
-  &::after {
-    content: '';
-    position: absolute;
-    right: calc(50% - 3px);
-    top: 50%;
-    width: 3px;
-    height: 16px;
-    background-color: var(--noble-gray-800);
-    transform: translate(calc(-50% - 14px), -50%);
-  }
+.designElement {
+  margin: 0 var(--extra-small-offset);
+  width: 3px;
+  height: 16px;
+  background-color: var(--noble-gray-800);
 }
 
 .loginSpan,
