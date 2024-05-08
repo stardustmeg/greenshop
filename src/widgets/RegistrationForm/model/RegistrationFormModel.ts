@@ -1,43 +1,36 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
-import type { Address, User } from '@/shared/types/user.ts';
+import type { AddressType } from '@/shared/types/address.ts';
+import type { Address, PersonalData, User, UserCredentials } from '@/shared/types/user.ts';
 
-import CountryChoiceModel from '@/features/CountryChoice/model/CountryChoiceModel.ts';
+import AddressModel from '@/entities/Address/model/AddressModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentUser } from '@/shared/Store/actions.ts';
+import { setBillingCountry, setCurrentUser } from '@/shared/Store/actions.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import * as CONSTANT_FORMS from '@/shared/constants/forms.ts';
-import * as FORM_CONSTANT from '@/shared/constants/forms/register/constant.ts';
-import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
+import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { SIZES } from '@/shared/constants/sizes.ts';
-import isKeyOfUserData from '@/shared/utils/isKeyOfUserData.ts';
+import { ADDRESS_TYPE } from '@/shared/types/address.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
 class RegisterFormModel {
+  private addressWrappers: Record<AddressType, AddressModel> = {
+    [ADDRESS_TYPE.BILLING]: new AddressModel(ADDRESS_TYPE.BILLING, {
+      setDefault: true,
+    }),
+    [ADDRESS_TYPE.SHIPPING]: new AddressModel(ADDRESS_TYPE.SHIPPING, {
+      setAsBilling: true,
+      setDefault: true,
+    }),
+  };
+
   private eventMediator = EventMediatorModel.getInstance();
 
   private inputFields: InputFieldModel[] = [];
-
-  private isValidInputFields: Record<string, boolean> = {};
-
-  private userData: User = {
-    addresses: [],
-    birthDate: '',
-    defaultBillingAddressId: null,
-    defaultShippingAddressId: null,
-    email: '',
-    firstName: '',
-    id: '',
-    lastName: '',
-    locale: '',
-    password: '',
-    version: 0,
-  };
 
   private view: RegistrationFormView = new RegistrationFormView();
 
@@ -54,35 +47,6 @@ class RegisterFormModel {
       );
     }
     return currentUserData;
-  }
-
-  private createBillingCountryChoice(): boolean {
-    return this.createCountryChoice(
-      FORM_FIELDS.BILLING_ADDRESS_COUNTRY.inputParams.id,
-      this.view.getBillingAddressWrapper(),
-    );
-  }
-
-  private createCountryChoice(inputFieldId: string, wrapper: HTMLElement): boolean {
-    const addressInput = this.view
-      .getInputFields()
-      .find((inputField) => inputField.getView().getInput().getHTML().id === inputFieldId)
-      ?.getView()
-      .getInput()
-      .getHTML();
-
-    if (addressInput) {
-      const countryChoiceModel = new CountryChoiceModel(addressInput);
-      wrapper.append(countryChoiceModel.getHTML());
-    }
-    return true;
-  }
-
-  private createShippingCountryChoice(): boolean {
-    return this.createCountryChoice(
-      FORM_FIELDS.SHIPPING_ADDRESS_COUNTRY.inputParams.id,
-      this.view.getShippingAddressWrapper(),
-    );
   }
 
   private async editDefaultBillingAddress(addressId: string, userData: User | null): Promise<User | null> {
@@ -107,97 +71,67 @@ class RegisterFormModel {
     return currentUserData;
   }
 
-  private getAddressData(key: string): Address {
-    const addressData =
-      key === CONSTANT_FORMS.USER_ADDRESS_TYPE.BILLING
-        ? this.getAddressDataHandler(
-            [
-              FORM_FIELDS.BILLING_ADDRESS_CITY,
-              FORM_FIELDS.BILLING_ADDRESS_POSTAL_CODE,
-              FORM_FIELDS.BILLING_ADDRESS_STREET,
-            ],
-            CONSTANT_FORMS.USER_COUNTRY_ADDRESS.BILLING,
-          )
-        : this.getAddressDataHandler(
-            [
-              FORM_FIELDS.SHIPPING_ADDRESS_CITY,
-              FORM_FIELDS.SHIPPING_ADDRESS_POSTAL_CODE,
-              FORM_FIELDS.SHIPPING_ADDRESS_STREET,
-            ],
-            CONSTANT_FORMS.USER_COUNTRY_ADDRESS.SHIPPING,
-          );
-
-    return addressData;
-  }
-
-  private getAddressDataHandler(
-    [city, postalCode, street]: { inputParams: { id: string } }[],
-    country: string,
-  ): Address {
-    const store = getStore().getState();
-    const addressData: Address = {
-      city: this.getAddressValue(city),
-      country: country === CONSTANT_FORMS.USER_COUNTRY_ADDRESS.BILLING ? store.billingCountry : store.shippingCountry,
-      email: this.userData.email,
-      firstName: this.userData.firstName,
-      id: '',
-      lastName: this.userData.lastName,
-      postalCode: this.getAddressValue(postalCode),
-      state: '',
-      streetName: this.getAddressValue(street),
-      streetNumber: '',
+  private getCredentialsData(): UserCredentials {
+    return {
+      email: this.view.getEmailField().getView().getValue(),
+      password: this.view.getPasswordField().getView().getValue(),
     };
-    return addressData;
-  }
-
-  private getAddressValue(field: { inputParams: { id: string } }): string {
-    return (
-      this.inputFields
-        .find((inputField) => inputField.getView().getInput().getHTML().id === field.inputParams.id)
-        ?.getView()
-        .getValue() || ''
-    );
   }
 
   private getFormUserData(): User {
-    this.inputFields.forEach((inputField) => {
-      const input = inputField.getView().getInput();
-      const inputHTML = input.getHTML();
-      const inputValue = input.getValue();
-
-      const key = inputHTML.id.replace(FORM_CONSTANT.KEY, '');
-
-      if (isKeyOfUserData(this.userData, key)) {
-        this.userData[key] = inputValue;
-        this.isValidInputFields[inputHTML.id] = false;
-        input.clear();
-      }
-    });
+    const userData: User = {
+      addresses: [],
+      birthDate: this.view.getDateOfBirthField().getView().getValue(),
+      defaultBillingAddressId: null,
+      defaultShippingAddressId: null,
+      email: this.view.getEmailField().getView().getValue(),
+      firstName: this.view.getFirstNameField().getView().getValue(),
+      id: '',
+      lastName: this.view.getLastNameField().getView().getValue(),
+      locale: '',
+      password: this.view.getPasswordField().getView().getValue(),
+      version: 0,
+    };
 
     this.view.getSubmitFormButton().setDisabled();
-    return this.userData;
+    return userData;
+  }
+
+  private getPersonalData(): PersonalData {
+    return {
+      email: this.view.getEmailField().getView().getValue(),
+      firstName: this.view.getFirstNameField().getView().getValue(),
+      lastName: this.view.getLastNameField().getView().getValue(),
+    };
   }
 
   private init(): boolean {
     this.inputFields = this.view.getInputFields();
+    Object.values(this.addressWrappers)
+      .reverse()
+      .forEach((addressWrapper) => {
+        this.inputFields.push(...addressWrapper.getView().getInputFields());
+        this.getHTML().append(addressWrapper.getHTML());
+      });
     this.inputFields.forEach((inputField) => this.setInputFieldHandlers(inputField));
     this.setPreventDefaultToForm();
     this.setSubmitFormHandler();
-    this.createBillingCountryChoice();
-    this.createShippingCountryChoice();
-    const checkboxSingleAddress = this.view.getSingleAddressCheckBox().getHTML();
-    checkboxSingleAddress.addEventListener('change', () =>
+    const checkboxSingleAddress = this.addressWrappers[ADDRESS_TYPE.SHIPPING]
+      .getView()
+      .getAddressAsBillingCheckBox()
+      ?.getHTML();
+    checkboxSingleAddress?.addEventListener('change', () =>
       this.singleAddressCheckBoxHandler(checkboxSingleAddress.checked),
     );
+    this.setSwitchPasswordVisibilityHandler();
     return true;
   }
 
   private registerUser(): void {
     const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
-    this.getFormUserData();
     getCustomerModel()
-      .registerNewCustomer(this.userData)
+      .registerNewCustomer(this.getFormUserData())
       .then((newUserData) => {
         if (newUserData) {
           this.successfulUserRegistration(newUserData);
@@ -211,16 +145,33 @@ class RegisterFormModel {
   }
 
   private resetInputFieldsValidation(): void {
-    Object.entries(this.isValidInputFields).forEach(([key]) => {
-      this.isValidInputFields[key] = false;
-    });
+    const checkboxSingleAddress = this.addressWrappers[ADDRESS_TYPE.SHIPPING]
+      .getView()
+      .getAddressAsBillingCheckBox()
+      ?.getHTML();
+    const checkboxDefaultShippingAddress = this.addressWrappers[ADDRESS_TYPE.SHIPPING]
+      .getView()
+      .getAddressByDefaultCheckBox()
+      ?.getHTML();
+    const checkboxDefaultBillingAddress = this.addressWrappers[ADDRESS_TYPE.BILLING]
+      .getView()
+      .getAddressByDefaultCheckBox()
+      ?.getHTML();
+    if (checkboxSingleAddress) {
+      checkboxSingleAddress.checked = false;
+    }
+    if (checkboxDefaultShippingAddress) {
+      checkboxDefaultShippingAddress.checked = false;
+    }
+    if (checkboxDefaultBillingAddress) {
+      checkboxDefaultBillingAddress.checked = false;
+    }
+    this.addressWrappers[ADDRESS_TYPE.BILLING].getView().switchVisibilityAddressWrapper(false);
   }
 
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
     const inputHTML = inputField.getView().getInput().getHTML();
-    this.isValidInputFields[inputHTML.id] = false;
     inputHTML.addEventListener('input', () => {
-      this.isValidInputFields[inputHTML.id] = inputField.getIsValid();
       this.switchSubmitFormButtonAccess();
     });
     return true;
@@ -240,50 +191,57 @@ class RegisterFormModel {
     return true;
   }
 
+  private setSwitchPasswordVisibilityHandler(): boolean {
+    this.view.getShowPasswordElement().addEventListener('click', () => {
+      const input = this.view.getPasswordField().getView().getInput().getHTML();
+      input.type = input.type === INPUT_TYPE.PASSWORD ? INPUT_TYPE.TEXT : INPUT_TYPE.PASSWORD;
+      input.placeholder = input.type === INPUT_TYPE.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
+      this.view.switchPasswordElementSVG(input.type);
+    });
+    return true;
+  }
+
   private singleAddressCheckBoxHandler(isChecked: boolean): boolean {
-    const billingAddressFieldID = [
-      FORM_FIELDS.BILLING_ADDRESS_COUNTRY.inputParams.id,
-      FORM_FIELDS.BILLING_ADDRESS_STREET.inputParams.id,
-      FORM_FIELDS.BILLING_ADDRESS_CITY.inputParams.id,
-      FORM_FIELDS.BILLING_ADDRESS_POSTAL_CODE.inputParams.id,
-    ];
-
-    this.view.switchVisibilityBillingAddressWrapper(isChecked);
-
     if (!isChecked) {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
       });
     }
 
-    billingAddressFieldID.forEach((id) => {
-      this.inputFields
-        .find((inputField) => inputField.getView().getInput().getHTML().id === id)
-        ?.getView()
-        .getInput()
-        .clear();
-      this.isValidInputFields[id] = isChecked;
-    });
+    const billingAddressView = this.addressWrappers[ADDRESS_TYPE.BILLING].getView();
+    const shippingAddress = this.addressWrappers[ADDRESS_TYPE.SHIPPING];
+    shippingAddress
+      .getView()
+      .getInputFields()
+      .forEach((inputFields) => {
+        const inputElement = inputFields.getView();
+        const billingInput = billingAddressView
+          .getInputFields()
+          .find(
+            (inputField) =>
+              inputField.getView().getInput().getHTML().placeholder === inputElement.getInput().getHTML().placeholder,
+          );
+        if (billingInput) {
+          billingInput.getView().getInput().getHTML().value = inputElement.getInput().getHTML().value;
+        }
 
+        getStore().dispatch(setBillingCountry(getStore().getState().shippingCountry));
+      });
+    billingAddressView.switchVisibilityAddressWrapper(isChecked);
     this.switchSubmitFormButtonAccess();
 
     return true;
   }
 
   private successfulUserRegistration(newUserData: User): void {
-    const userDataWithLogin = {
-      email: this.userData.email,
-      password: this.userData.password,
-    };
-    this.eventMediator.notify(MEDIATOR_EVENT.USER_LOGIN, userDataWithLogin);
+    this.eventMediator.notify(MEDIATOR_EVENT.USER_LOGIN, this.getCredentialsData());
     this.updateUserData(newUserData).catch(() => {
       serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
     });
-    this.resetInputFieldsValidation();
   }
 
   private switchSubmitFormButtonAccess(): boolean {
-    if (Object.values(this.isValidInputFields).every((value) => value)) {
+    if (this.inputFields.every((inputField) => inputField.getIsValid())) {
       this.view.getSubmitFormButton().setEnabled();
       this.view.getSubmitFormButton().getHTML().focus();
     } else {
@@ -298,9 +256,9 @@ class RegisterFormModel {
     if (currentUserData) {
       currentUserData = await getCustomerModel().editCustomer(
         [
-          CustomerModel.actionEditFirstName(this.userData.firstName),
-          CustomerModel.actionEditLastName(this.userData.lastName),
-          CustomerModel.actionEditDateOfBirth(this.userData.birthDate),
+          CustomerModel.actionEditFirstName(this.view.getFirstNameField().getView().getValue()),
+          CustomerModel.actionEditLastName(this.view.getLastNameField().getView().getValue()),
+          CustomerModel.actionEditDateOfBirth(this.view.getDateOfBirthField().getView().getValue()),
         ],
         currentUserData,
       );
@@ -310,59 +268,53 @@ class RegisterFormModel {
   }
 
   private async updateUserAddresses(userData: User | null): Promise<User | null> {
-    const shippingAddress = this.getAddressData(CONSTANT_FORMS.USER_ADDRESS_TYPE.SHIPPING);
-    const billingAddress = this.getAddressData(CONSTANT_FORMS.USER_ADDRESS_TYPE.BILLING);
-    const checkboxSingleAddress = this.view.getSingleAddressCheckBox().getHTML();
-    const checkboxDefaultShippingAddress = this.view.getCheckboxDefaultShippingAddress().getHTML();
-    const checkboxDefaultBillingAddress = this.view.getCheckboxDefaultBillingAddress().getHTML();
+    const { billing, shipping } = this.addressWrappers;
+    const personalData = this.getPersonalData();
+    const checkboxSingleAddress = shipping.getView().getAddressAsBillingCheckBox()?.getHTML();
+    const checkboxDefaultShippingAddress = shipping.getView().getAddressByDefaultCheckBox()?.getHTML();
+    const checkboxDefaultBillingAddress = billing.getView().getAddressByDefaultCheckBox()?.getHTML();
+
     let currentUserData = userData;
 
-    currentUserData = await this.addAddress(shippingAddress, currentUserData);
+    currentUserData = await this.addAddress(shipping.getAddressData(personalData), currentUserData);
+    if (!currentUserData) {
+      return null;
+    }
+    const shippingAddressID = currentUserData.addresses[currentUserData.addresses.length - 1].id;
 
-    if (checkboxDefaultShippingAddress.checked && currentUserData) {
-      currentUserData = await this.editDefaultShippingAddress(
-        currentUserData.addresses[currentUserData.addresses.length - 1].id,
-        currentUserData,
-      );
+    if (checkboxDefaultShippingAddress?.checked) {
+      currentUserData = await this.editDefaultShippingAddress(shippingAddressID, currentUserData);
     }
 
-    if (checkboxSingleAddress.checked && checkboxDefaultShippingAddress.checked) {
-      currentUserData = await this.addAddress(shippingAddress, currentUserData);
-      if (currentUserData) {
-        currentUserData = await this.editDefaultBillingAddress(
-          currentUserData.addresses[currentUserData.addresses.length - 1].id,
-          currentUserData,
-        );
-      }
+    if (checkboxSingleAddress?.checked && checkboxDefaultShippingAddress?.checked) {
+      currentUserData = await this.editDefaultBillingAddress(shippingAddressID, currentUserData);
       return currentUserData;
     }
 
-    if (checkboxDefaultBillingAddress.checked) {
-      currentUserData = await this.addAddress(billingAddress, currentUserData);
-      if (currentUserData) {
-        currentUserData = await this.editDefaultBillingAddress(
-          currentUserData.addresses[currentUserData.addresses.length - 1].id,
-          currentUserData,
-        );
-      }
+    currentUserData = await this.addAddress(billing.getAddressData(personalData), currentUserData);
+    if (!currentUserData) {
+      return null;
+    }
+    const billingAddressID = currentUserData.addresses[currentUserData.addresses.length - 1].id;
+
+    if (checkboxDefaultBillingAddress?.checked) {
+      currentUserData = await this.editDefaultBillingAddress(billingAddressID, currentUserData);
     }
 
     return currentUserData;
   }
 
-  private async updateUserData(newUserData: User): Promise<User> {
+  private async updateUserData(newUserData: User): Promise<User | null> {
     let currentUserData: User | null = newUserData;
 
     currentUserData = await this.updatePersonalData(currentUserData);
 
-    if (currentUserData) {
-      this.userData = currentUserData;
-    }
-
     currentUserData = await this.updateUserAddresses(currentUserData);
 
-    getStore().dispatch(setCurrentUser(this.userData));
-    return this.userData;
+    getStore().dispatch(setCurrentUser(currentUserData));
+    this.inputFields.forEach((inputField) => inputField.getView().getInput().clear());
+    this.resetInputFieldsValidation();
+    return currentUserData;
   }
 
   public getFirstInputField(): InputFieldModel {
