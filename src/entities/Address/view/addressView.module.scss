@@ -1,0 +1,126 @@
+.address {
+  display: grid;
+  grid-column: 2 span;
+  grid-template-columns: repeat(2, 1fr);
+  padding: var(--extra-small-offset);
+  gap: calc(var(--extra-small-offset) * 1.5) var(--extra-small-offset);
+
+  .title {
+    position: relative;
+    justify-self: center;
+    grid-column: 2 span;
+    width: max-content;
+    font: var(--medium-font);
+    letter-spacing: 1px;
+    text-align: center;
+    color: var(--noble-gray-500);
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -10px;
+      border-radius: var(--medium-br);
+      width: 100%;
+      height: 2px;
+      background-color: var(--steam-green-800);
+      transform: translateX(-50%);
+    }
+
+    @media (max-width: 768px) {
+      grid-column: 1 span;
+    }
+  }
+
+  @media (max-width: 768px) {
+    grid-column: 1 span;
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.shippingAddressWrapper {
+  grid-row: 3;
+}
+
+.billingAddressWrapper {
+  grid-row: 4;
+  transition: transform 0.2s;
+  animation: show 0.5s ease-in forwards;
+}
+
+.hidden {
+  animation: hide 0.5s ease-in forwards;
+}
+
+@keyframes hide {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    display: none;
+    transform: scale(0);
+  }
+}
+
+@keyframes show {
+  0% {
+    display: grid;
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.checkboxLabel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: end;
+  grid-column: 2;
+  cursor: pointer;
+  gap: calc(var(--extra-small-offset) / 4);
+
+  input {
+    cursor: pointer;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      .checkboxText {
+        color: var(--steam-green-800);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    grid-column: 1 span;
+  }
+
+  &:nth-child(1) {
+    grid-row: 3;
+  }
+
+  &:nth-child(2) {
+    grid-row: 4;
+  }
+}
+
+.checkboxText {
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--noble-gray-800);
+  transition: color 0.2s;
+}
+
+.label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--noble-gray-800);
+  gap: calc(var(--extra-small-offset) / 2);
+}

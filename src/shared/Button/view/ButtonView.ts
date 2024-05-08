@@ -1,6 +1,6 @@
 import type { ButtonAttributes } from '@/shared/types/button.ts';
 
-import TAG_NAME from '@/shared/constants/tags.ts';
+import { IS_DISABLED } from '@/shared/constants/buttons.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 class ButtonView {
@@ -15,7 +15,7 @@ class ButtonView {
       attributes: params.attrs,
       cssClasses: params.classes,
       innerContent: params.text,
-      tag: TAG_NAME.BUTTON,
+      tag: 'button',
     });
 
     if (params.action) {
@@ -27,6 +27,16 @@ class ButtonView {
 
   public getHTML(): HTMLButtonElement {
     return this.button;
+  }
+
+  public setDisabled(): boolean {
+    this.button.disabled = IS_DISABLED.DISABLED;
+    return this.button.disabled;
+  }
+
+  public setEnabled(): boolean {
+    this.button.disabled = IS_DISABLED.ENABLED;
+    return this.button.disabled;
   }
 }
 

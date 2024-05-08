@@ -2,7 +2,7 @@ import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
-import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/pages.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import RegisterFormModel from '@/widgets/RegistrationForm/model/RegistrationFormModel.ts';
@@ -42,8 +42,8 @@ class RegistrationPageModel implements Page {
 
     observeCurrentLanguage(loginLinkCopy, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.LOGIN);
 
-    loginLink.addEventListener(EVENT_NAME.CLICK, (event) => this.loginLinkHandler(event));
-    loginLinkCopy.addEventListener(EVENT_NAME.CLICK, (event) => this.loginLinkHandler(event));
+    loginLink.addEventListener('click', (event) => this.loginLinkHandler(event));
+    loginLinkCopy.addEventListener('click', (event) => this.loginLinkHandler(event));
     toLoginPageWrapper.append(loginLinkCopy);
   }
 

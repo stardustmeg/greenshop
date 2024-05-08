@@ -1,7 +1,7 @@
 import type { Page } from '@/shared/types/common.ts';
 
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
-import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
@@ -15,7 +15,7 @@ class RouterModel {
   private pages: Map<string, Page> = new Map();
 
   constructor() {
-    document.addEventListener(EVENT_NAME.DOM_CONTENT_LOADED, () => {
+    document.addEventListener('DOMContentLoaded', () => {
       const currentPath = window.location.pathname
         .split(DEFAULT_SEGMENT)
         .slice(PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)

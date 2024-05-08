@@ -10,7 +10,6 @@ import {
   PAGE_LINK_TEXT,
   PAGE_LINK_TEXT_KEYS,
 } from '@/shared/constants/pages.ts';
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
@@ -52,7 +51,7 @@ class RegistrationPageView {
     this.authDescription = createBaseElement({
       cssClasses: [styles.authDescription],
       innerContent: PAGE_DESCRIPTION[currentLanguage].REGISTRATION,
-      tag: TAG_NAME.H3,
+      tag: 'h3',
     });
 
     observeCurrentLanguage(this.authDescription, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEYS.REGISTRATION);
@@ -63,7 +62,7 @@ class RegistrationPageView {
   private createAuthWrapper(): HTMLDivElement {
     this.authWrapper = createBaseElement({
       cssClasses: [styles.authWrapper],
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
 
     this.authWrapper.append(this.linksWrapper, this.authDescription, this.toLoginPageWrapper);
@@ -73,7 +72,7 @@ class RegistrationPageView {
   private createDesignElement(): HTMLDivElement {
     this.designElement = createBaseElement({
       cssClasses: [styles.designElement],
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
     return this.designElement;
   }
@@ -81,7 +80,7 @@ class RegistrationPageView {
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
       cssClasses: [styles.registrationPage],
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
 
     this.page.append(this.authWrapper);
@@ -93,7 +92,7 @@ class RegistrationPageView {
   private createLinksWrapper(): HTMLDivElement {
     this.linksWrapper = createBaseElement({
       cssClasses: [styles.linksWrapper],
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
 
     this.linksWrapper.append(this.loginLink.getHTML(), this.designElement, this.registerSpan);
@@ -120,7 +119,7 @@ class RegistrationPageView {
     this.registerSpan = createBaseElement({
       cssClasses: [styles.registerSpan],
       innerContent: PAGE_LINK_TEXT[currentLanguage].REGISTRATION,
-      tag: TAG_NAME.SPAN,
+      tag: 'span',
     });
 
     observeCurrentLanguage(this.registerSpan, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.REGISTRATION);
@@ -133,7 +132,7 @@ class RegistrationPageView {
     this.toLoginPageWrapper = createBaseElement({
       cssClasses: [styles.toLoginPageWrapper],
       innerContent: PAGE_ANSWER[currentLanguage].REGISTRATION,
-      tag: TAG_NAME.SPAN,
+      tag: 'span',
     });
 
     observeCurrentLanguage(this.toLoginPageWrapper, PAGE_ANSWER, PAGE_ANSWER_KEYS.REGISTRATION);

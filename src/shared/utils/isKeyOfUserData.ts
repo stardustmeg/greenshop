@@ -1,6 +1,6 @@
-import type { UserLoginData } from '../types/user';
+import type { UserCredentials } from '../types/user';
 
-const isKeyOfUserData = (context: UserLoginData, key: string): key is keyof UserLoginData =>
+const isKeyOfUserData = (context: UserCredentials, key: string): key is keyof UserCredentials =>
   Object.hasOwnProperty.call(context, key);
 
 export default isKeyOfUserData;

@@ -4,7 +4,6 @@ import { PAGE_TIMEOUT_DURATION } from '@/shared/constants/animations.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { PAGE_DESCRIPTION_KEYS } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
@@ -36,7 +35,7 @@ class NotFoundPageView {
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
       cssClasses: [styles.notFoundPage],
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
 
     this.page.append(this.logo, this.title, this.description, this.toMainButton.getHTML());
@@ -48,14 +47,14 @@ class NotFoundPageView {
   private createPageDescription(): HTMLParagraphElement {
     this.description = createBaseElement({
       cssClasses: [styles.pageDescription],
-      tag: TAG_NAME.P,
+      tag: 'p',
     });
     return this.description;
   }
 
   private createPageLogo(): HTMLDivElement {
-    this.logo = createBaseElement({ cssClasses: [styles.pageLogo], tag: TAG_NAME.DIV });
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, TAG_NAME.SVG);
+    this.logo = createBaseElement({ cssClasses: [styles.pageLogo], tag: 'div' });
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.LOGO));
     this.logo.append(svg);
     return this.logo;
@@ -65,7 +64,7 @@ class NotFoundPageView {
     this.title = createBaseElement({
       cssClasses: [styles.pageTitle],
       innerContent: PAGE_DESCRIPTION_KEYS[404],
-      tag: TAG_NAME.H1,
+      tag: 'h1',
     });
     return this.title;
   }

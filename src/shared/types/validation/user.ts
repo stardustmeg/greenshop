@@ -1,6 +1,6 @@
-import type { Address, FormAddress, User, UserLoginData } from '../user';
+import type { Address, FormAddress, User, UserCredentials } from '../user';
 
-export const isUserLoginData = (data: unknown): data is UserLoginData =>
+export const isUserCredentialsData = (data: unknown): data is UserCredentials =>
   typeof data === 'object' &&
   data !== null &&
   'email' in data &&

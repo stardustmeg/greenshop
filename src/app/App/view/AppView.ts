@@ -1,4 +1,3 @@
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './appView.module.scss';
@@ -13,7 +12,7 @@ class AppView {
   private createHTML(): HTMLDivElement {
     this.pagesContainer = createBaseElement({
       cssClasses: [styles.siteWrapper],
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
 
     return this.pagesContainer;

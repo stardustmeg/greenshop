@@ -1,4 +1,4 @@
-import type { Address, User, UserLoginData } from '@/shared/types/user.ts';
+import type { Address, User, UserCredentials } from '@/shared/types/user.ts';
 import type {
   Address as AddressResponse,
   BaseAddress,
@@ -171,7 +171,7 @@ export class CustomerModel {
     return customer;
   }
 
-  public async authCustomer(userLoginData: UserLoginData): Promise<User | null> {
+  public async authCustomer(userLoginData: UserCredentials): Promise<User | null> {
     const data = await this.root.authenticateUser(userLoginData);
     return this.getCustomerFromData(data);
   }

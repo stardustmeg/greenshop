@@ -1,7 +1,6 @@
 import type { SizesType } from '@/shared/constants/sizes.ts';
 
 import { SIZES } from '@/shared/constants/sizes.ts';
-import TAG_NAME from '@/shared/constants/tags.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './loaderView.module.scss';
@@ -16,7 +15,7 @@ class LoaderView {
   private createHTML(size: SizesType): HTMLDivElement {
     this.loader = createBaseElement({
       cssClasses: [styles.loader],
-      tag: TAG_NAME.DIV,
+      tag: 'div',
     });
 
     this.selectSize(size);

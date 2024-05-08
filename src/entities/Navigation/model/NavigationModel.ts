@@ -3,7 +3,7 @@ import type RouterModel from '@/app/Router/model/RouterModel';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
-import { EVENT_NAME, MEDIATOR_EVENT } from '@/shared/constants/events.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 import NavigationView from '../view/NavigationView.ts';
@@ -46,7 +46,7 @@ class NavigationModel {
   private setNavigationLinksHandlers(): boolean {
     const navigationLinks = this.view.getNavigationLinks();
     navigationLinks.forEach((link, route) => {
-      link.getHTML().addEventListener(EVENT_NAME.CLICK, (event) => {
+      link.getHTML().addEventListener('click', (event) => {
         event.preventDefault();
         this.router.navigateTo(route);
       });
