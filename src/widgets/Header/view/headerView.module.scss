@@ -7,7 +7,7 @@
   display: grid;
   align-items: center;
   justify-content: space-between;
-  grid-template-columns: repeat(4, max-content);
+  grid-template-columns: repeat(3, max-content);
   margin-bottom: var(--medium-offset);
   border-bottom: 10px solid var(--steam-green-800);
   border-radius: var(--medium-br);
@@ -37,7 +37,7 @@
 
 .logoutButton,
 .changeLanguageButton {
-  grid-column: 4;
+  grid-column: 3;
   border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
   font: var(--regular-font);
