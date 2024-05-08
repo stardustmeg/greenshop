@@ -1,19 +1,21 @@
-export interface UserLoginData {
+export interface UserCredentials {
   email: string;
   password: string;
 }
 
-export interface User {
+export interface PersonalData {
+  email: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface User extends PersonalData, UserCredentials {
   addresses: Address[];
   birthDate: string;
   defaultBillingAddressId: Address | null;
   defaultShippingAddressId: Address | null;
-  email: string;
-  firstName: string;
   id: string;
-  lastName: string;
   locale: string;
-  password: string;
   version: number;
 }
 
@@ -24,11 +26,8 @@ export interface FormAddress {
   streetName: string;
 }
 
-export interface Address extends FormAddress {
-  email: string;
-  firstName: string;
+export interface Address extends FormAddress, PersonalData {
   id: string;
-  lastName: string;
   state: string;
   streetNumber: string;
 }

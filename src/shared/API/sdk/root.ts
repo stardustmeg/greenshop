@@ -1,4 +1,4 @@
-import type { User, UserLoginData } from '@/shared/types/user.ts';
+import type { User, UserCredentials } from '@/shared/types/user.ts';
 
 import { DEFAULT_PAGE, MAX_PRICE, MIN_PRICE, PRODUCT_LIMIT } from '@/shared/constants/product.ts';
 import {
@@ -64,7 +64,7 @@ export class RootApi {
     return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
   }
 
-  public async authenticateUser(userLoginData: UserLoginData): Promise<ClientResponse<CustomerSignInResult>> {
+  public async authenticateUser(userLoginData: UserCredentials): Promise<ClientResponse<CustomerSignInResult>> {
     const data = await this.connection.login().post({ body: userLoginData }).execute();
     return data;
   }
