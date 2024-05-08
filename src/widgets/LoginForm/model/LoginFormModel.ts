@@ -1,5 +1,5 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
-import type { User, UserLoginData } from '@/shared/types/user.ts';
+import type { UserCredentials } from '@/shared/types/user.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
@@ -8,25 +8,16 @@ import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import KEY from '@/shared/constants/forms/login/constants.ts';
+import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { SIZES } from '@/shared/constants/sizes.ts';
-import { isUserLoginData } from '@/shared/types/validation/user.ts';
-import isKeyOfUserData from '@/shared/utils/isKeyOfUserData.ts';
+import { isUserCredentialsData } from '@/shared/types/validation/user.ts';
+import { greeting } from '@/shared/utils/messageTemplate.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
 
 class LoginFormModel {
   private eventMediator = EventMediatorModel.getInstance();
-
-  private inputFields: InputFieldModel[] = [];
-
-  private isValidInputFields: Record<string, boolean> = {};
-
-  private userData: UserLoginData = {
-    email: '',
-    password: '',
-  };
 
   private view: LoginFormView = new LoginFormView();
 
@@ -34,49 +25,36 @@ class LoginFormModel {
     this.init();
   }
 
-  private async checkHasEmailHandler(email: string): Promise<User | null> {
-    const response = await getCustomerModel().hasEmail(email);
-    return response;
-  }
-
   private createGreetingMessage(name: string): string {
-    const greeting = `Welcome, ${name}! ${SERVER_MESSAGE.SUCCESSFUL_LOGIN}`;
-    return greeting;
+    const greetingMessage = `${greeting(name)} ${SERVER_MESSAGE.SUCCESSFUL_LOGIN}`;
+    return greetingMessage;
   }
 
-  private getFormData(): UserLoginData {
-    this.inputFields.forEach((inputField) => {
-      const input = inputField.getView().getInput();
-      const inputHTML = input.getHTML();
-      const inputValue = input.getValue();
+  private getFormData(): UserCredentials {
+    const userData: UserCredentials = {
+      email: this.view.getEmailField().getView().getValue(),
+      password: this.view.getPasswordField().getView().getValue(),
+    };
 
-      const key = inputHTML.id.replace(KEY, '');
-
-      if (isKeyOfUserData(this.userData, key)) {
-        this.userData[key] = inputValue;
-        this.isValidInputFields[inputHTML.id] = false;
-      }
-
-      input.clear();
-    });
-
+    this.view.getInputFields().forEach((inputField) => inputField.getView().getInput().clear());
     this.view.getSubmitFormButton().setDisabled();
-    return this.userData;
+    return userData;
   }
 
   private init(): boolean {
-    this.inputFields = this.view.getInputFields();
-    this.inputFields.forEach((inputField) => this.setInputFieldHandlers(inputField));
+    this.view.getInputFields().forEach((inputField) => this.setInputFieldHandlers(inputField));
     this.setPreventDefaultToForm();
     this.setSubmitFormHandler();
     this.subscribeToEventMediator();
+    this.setSwitchPasswordVisibilityHandler();
     return true;
   }
 
-  private loginUser(userLoginData: UserLoginData): void {
+  private loginUser(userLoginData: UserCredentials): void {
     const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
-    this.checkHasEmailHandler(userLoginData.email)
+    getCustomerModel()
+      .hasEmail(userLoginData.email)
       .then((response) => {
         if (response) {
           this.loginUserHandler(userLoginData);
@@ -90,7 +68,7 @@ class LoginFormModel {
       .finally(() => loader.remove());
   }
 
-  private loginUserHandler(userLoginData: UserLoginData): void {
+  private loginUserHandler(userLoginData: UserCredentials): void {
     const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
@@ -109,11 +87,8 @@ class LoginFormModel {
 
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
     const inputHTML = inputField.getView().getInput().getHTML();
-    this.isValidInputFields[inputHTML.id] = false;
-    inputHTML.addEventListener('input', () => {
-      this.isValidInputFields[inputHTML.id] = inputField.getIsValid();
-      this.switchSubmitFormButtonAccess();
-    });
+
+    inputHTML.addEventListener('input', () => this.switchSubmitFormButtonAccess());
     return true;
   }
 
@@ -124,16 +99,23 @@ class LoginFormModel {
 
   private setSubmitFormHandler(): boolean {
     const submitButton = this.view.getSubmitFormButton().getHTML();
-    submitButton.addEventListener('click', () => {
-      const formData = this.getFormData();
-      this.loginUser(formData);
+    submitButton.addEventListener('click', () => this.loginUser(this.getFormData()));
+    return true;
+  }
+
+  private setSwitchPasswordVisibilityHandler(): boolean {
+    this.view.getShowPasswordElement().addEventListener('click', () => {
+      const input = this.view.getPasswordField().getView().getInput().getHTML();
+      input.type = input.type === INPUT_TYPE.PASSWORD ? INPUT_TYPE.TEXT : INPUT_TYPE.PASSWORD;
+      input.placeholder = input.type === INPUT_TYPE.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
+      this.view.switchPasswordElementSVG(input.type);
     });
     return true;
   }
 
   private subscribeToEventMediator(): boolean {
     this.eventMediator.subscribe(MEDIATOR_EVENT.USER_LOGIN, (userLoginData) => {
-      if (isUserLoginData(userLoginData)) {
+      if (isUserCredentialsData(userLoginData)) {
         this.loginUser(userLoginData);
       }
     });
@@ -141,9 +123,8 @@ class LoginFormModel {
   }
 
   private switchSubmitFormButtonAccess(): boolean {
-    if (Object.values(this.isValidInputFields).every((value) => value)) {
+    if (this.view.getInputFields().every((inputField) => inputField.getIsValid())) {
       this.view.getSubmitFormButton().setEnabled();
-      this.view.getSubmitFormButton().getHTML().focus();
     } else {
       this.view.getSubmitFormButton().setDisabled();
     }
@@ -152,7 +133,7 @@ class LoginFormModel {
   }
 
   public getFirstInputField(): InputFieldModel {
-    return this.inputFields[0];
+    return this.view.getInputFields()[0];
   }
 
   public getHTML(): HTMLFormElement {
