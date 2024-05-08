@@ -1,7 +1,5 @@
 import type { ButtonAttributes } from '@/shared/types/button.ts';
 
-import { IS_DISABLED } from '@/shared/constants/buttons.ts';
-
 import ButtonView from '../view/ButtonView.ts';
 
 class ButtonModel {
@@ -16,12 +14,12 @@ class ButtonModel {
   }
 
   public setDisabled(): boolean {
-    this.view.getHTML().disabled = IS_DISABLED.DISABLED;
+    this.view.setDisabled();
     return this.view.getHTML().disabled;
   }
 
   public setEnabled(): boolean {
-    this.view.getHTML().disabled = IS_DISABLED.ENABLED;
+    this.view.setEnabled();
     return this.view.getHTML().disabled;
   }
 }
