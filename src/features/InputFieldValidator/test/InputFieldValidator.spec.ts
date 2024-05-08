@@ -22,7 +22,7 @@ const validatorParams: InputFieldValidatorParams = {
   },
 };
 
-const validator = new InputFieldValidatorModel(validatorParams, true);
+const validator = new InputFieldValidatorModel(validatorParams);
 
 describe('Checking InputFieldValidatorModel', () => {
   it('InputFieldValidatorModel instance should be defined', () => {
