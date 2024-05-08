@@ -2,13 +2,10 @@ import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types
 
 import InputFieldValidatorModel from '@/features/InputFieldValidator/model/InputFieldValidatorModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 
 import InputFieldView from '../view/InputFieldView.ts';
 
 class InputFieldModel {
-  private isValid = false;
-
   private validator: InputFieldValidatorModel | null = null;
 
   private view: InputFieldView;
@@ -17,29 +14,27 @@ class InputFieldModel {
     this.view = new InputFieldView(inputFieldParams);
 
     if (validParams) {
-      this.validator = new InputFieldValidatorModel(validParams, this.isValid);
+      this.validator = new InputFieldValidatorModel(validParams);
       this.setInputHandler();
     }
 
     observeStore(selectCurrentLanguage, () => this.inputHandler());
-
-    this.setSwitchPasswordVisibilityHandler();
   }
 
   private inputHandler(): boolean {
     const errorField = this.view.getErrorField();
-    const errors = this.validator?.validate(this.view.getValue());
-    if (errors === true) {
-      if (errorField) {
-        errorField.textContent = '';
-      }
-      this.isValid = true;
-    } else {
-      if (errorField && errors) {
-        const [firstError] = errors;
-        errorField.textContent = firstError;
-      }
-      this.isValid = false;
+
+    if (!this.validator || !errorField) {
+      return true;
+    }
+
+    const errors = this.validator.validate(this.view.getValue());
+    errorField.textContent = '';
+
+    if (errors instanceof Array) {
+      const [firstError] = errors;
+      errorField.textContent = firstError;
+      return false;
     }
 
     return true;
@@ -52,22 +47,8 @@ class InputFieldModel {
     return true;
   }
 
-  private setSwitchPasswordVisibilityHandler(): boolean {
-    const button = this.view.getShowPasswordButton().getHTML();
-    button.addEventListener('click', () => this.switchPasswordVisibilityHandler());
-    return true;
-  }
-
-  private switchPasswordVisibilityHandler(): boolean {
-    const input = this.view.getInput().getHTML();
-    input.type = input.type === INPUT_TYPE.PASSWORD ? INPUT_TYPE.TEXT : INPUT_TYPE.PASSWORD;
-    input.placeholder = input.type === INPUT_TYPE.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
-    this.view.switchPasswordButtonSVG(input.type);
-    return true;
-  }
-
   public getIsValid(): boolean {
-    return this.isValid;
+    return this.inputHandler();
   }
 
   public getView(): InputFieldView {
