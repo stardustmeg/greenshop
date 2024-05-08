@@ -1,4 +1,4 @@
-const EMAIL_VALIDATE = {
+export const EMAIL_VALIDATE = {
   key: 'registration_email',
   notWhitespace: {
     messages: { en: 'Email must not contain white spaces', ru: 'Почтовый адрес не может содержать пробелы' },
@@ -14,7 +14,7 @@ const EMAIL_VALIDATE = {
   },
 } as const;
 
-const PASSWORD_VALIDATE = {
+export const PASSWORD_VALIDATE = {
   key: 'registration_password',
   minLength: 8,
   notWhitespace: {
@@ -31,7 +31,7 @@ const PASSWORD_VALIDATE = {
   },
 } as const;
 
-const FIRST_NAME_VALIDATE = {
+export const FIRST_NAME_VALIDATE = {
   key: 'firstName',
   minLength: 1,
   notSpecialSymbols: {
@@ -51,7 +51,7 @@ const FIRST_NAME_VALIDATE = {
   required: true,
 } as const;
 
-const LAST_NAME_VALIDATE = {
+export const LAST_NAME_VALIDATE = {
   key: 'lastName',
   minLength: 1,
   notSpecialSymbols: {
@@ -71,7 +71,7 @@ const LAST_NAME_VALIDATE = {
   required: true,
 } as const;
 
-const BIRTHDAY_VALIDATE = {
+export const BIRTHDAY_VALIDATE = {
   key: 'birthDate',
   required: true,
   validBirthday: {

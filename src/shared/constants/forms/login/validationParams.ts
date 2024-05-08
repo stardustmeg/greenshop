@@ -1,6 +1,6 @@
 import KEY from './constants.ts';
 
-const EMAIL_FIELD_VALIDATE = {
+export const EMAIL_FIELD_VALIDATE = {
   key: `${KEY}email`,
   notWhitespace: {
     messages: { en: 'Email must not contain white spaces', ru: 'Почтовый адрес не может содержать пробелы' },
@@ -16,7 +16,7 @@ const EMAIL_FIELD_VALIDATE = {
   },
 } as const;
 
-const PASSWORD_FIELD_VALIDATE = {
+export const PASSWORD_FIELD_VALIDATE = {
   key: `${KEY}password`,
   minLength: 8,
   notWhitespace: {
@@ -33,6 +33,6 @@ const PASSWORD_FIELD_VALIDATE = {
   },
 } as const;
 
-const INPUT_FIELD_VALIDATION = [EMAIL_FIELD_VALIDATE, PASSWORD_FIELD_VALIDATE];
+const INPUT_VALIDATION = [EMAIL_FIELD_VALIDATE, PASSWORD_FIELD_VALIDATE];
 
-export default INPUT_FIELD_VALIDATION;
+export default INPUT_VALIDATION;
