@@ -1,12 +1,12 @@
 import * as User from './user.ts';
 
 describe('test', () => {
-  it('isUserLoginData', () => {
-    expect(User.isUserLoginData({ email: 'a', password: 'b' })).toBe(true);
-    expect(User.isUserLoginData({ email: 1, password: 'b' })).toBe(false);
-    expect(User.isUserLoginData({ email: 'a', password: 2 })).toBe(false);
-    expect(User.isUserLoginData({ email: true, password: null })).toBe(false);
-    expect(User.isUserLoginData({ email: {}, password: [] })).toBe(false);
+  it('isUserCredentialsData', () => {
+    expect(User.isUserCredentialsData({ email: 'a', password: 'b' })).toBe(true);
+    expect(User.isUserCredentialsData({ email: 1, password: 'b' })).toBe(false);
+    expect(User.isUserCredentialsData({ email: 'a', password: 2 })).toBe(false);
+    expect(User.isUserCredentialsData({ email: true, password: null })).toBe(false);
+    expect(User.isUserCredentialsData({ email: {}, password: [] })).toBe(false);
   });
 
   it('isFormAddress', () => {
