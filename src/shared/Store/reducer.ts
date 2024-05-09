@@ -8,7 +8,9 @@ export interface State {
   billingCountry: string;
   categories: Category[];
   currentLanguage: 'en' | 'ru';
+  currentPage: string; // TBD Specify type
   currentUser: User | null;
+  isUserLoggedIn: boolean;
   products: Product[];
   shippingCountry: string;
 }
@@ -47,6 +49,17 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         currentLanguage: action.payload,
+      };
+
+    case 'switchIsUserLoggedIn':
+      return {
+        ...state,
+        isUserLoggedIn: action.payload,
+      };
+    case 'setCurrentPage':
+      return {
+        ...state,
+        currentPage: action.payload,
       };
     default:
       return state;

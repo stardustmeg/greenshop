@@ -1,8 +1,13 @@
-import getStore from '../Store/Store.ts';
+import type { LanguageChoiceType } from '../constants/buttons.ts';
+
+import { LANGUAGE_CHOICE } from '../constants/buttons.ts';
 import COUNTRIES_LIST from '../constants/countriesList.ts';
 
+export const checkInputLanguage = (text: string): LanguageChoiceType =>
+  /[a-zA-Z]/.test(text) ? LANGUAGE_CHOICE.EN : LANGUAGE_CHOICE.RU;
+
 export default function getCountryIndex(country: string): string {
-  const { currentLanguage } = getStore().getState();
+  const currentLanguage = checkInputLanguage(country);
   const countryIndex: string = COUNTRIES_LIST[currentLanguage][country];
   return countryIndex;
 }

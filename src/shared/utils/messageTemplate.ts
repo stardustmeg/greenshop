@@ -1,5 +1,6 @@
 import getStore from '../Store/Store.ts';
 import { LANGUAGE_CHOICE } from '../constants/buttons.ts';
+import { SERVER_MESSAGE } from '../constants/messages.ts';
 
 const messageTemplate = (beginning: string, variable: number | string, end: string): string => {
   const start = beginning ? `${beginning} ` : '';
@@ -8,6 +9,9 @@ const messageTemplate = (beginning: string, variable: number | string, end: stri
 };
 
 export const greeting = (name: string): string => messageTemplate('Hi, ', name, '!');
+
+export const createGreetingMessage = (): string =>
+  `${greeting(getStore().getState().currentUser?.firstName || '')} ${SERVER_MESSAGE.SUCCESSFUL_LOGIN}`;
 
 const maxLengthMessageRu = (maxLength: number): string =>
   messageTemplate('Максимальная длина не должна превышать', maxLength, ' символов');

@@ -26,4 +26,8 @@ export const selectShippingCountry = (state: State): string => state.shippingCou
 
 export const selectCurrentLanguage = (state: State): string => state.currentLanguage;
 
+export const selectIsUserLoggedIn = (state: State): boolean => state.isUserLoggedIn;
+
+export const selectCurrentPage = (state: State): string => state.currentPage;
+
 export default observeStore;
