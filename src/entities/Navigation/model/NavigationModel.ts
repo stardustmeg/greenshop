@@ -1,7 +1,9 @@
 import type RouterModel from '@/app/Router/model/RouterModel';
 
+import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 import NavigationView from '../view/NavigationView.ts';
@@ -43,9 +45,13 @@ class NavigationModel {
   private setNavigationLinksHandlers(): boolean {
     const navigationLinks = this.view.getNavigationLinks();
     navigationLinks.forEach((link, route) => {
-      link.getHTML().addEventListener('click', (event) => {
+      link.getHTML().addEventListener('click', async (event) => {
         event.preventDefault();
-        this.router.navigateTo(route);
+        try {
+          await this.router.navigateTo(route);
+        } catch {
+          serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+        }
       });
     });
 

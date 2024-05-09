@@ -2,9 +2,11 @@ import type RouterModel from '@/app/Router/model/RouterModel.ts';
 
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
+import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 // import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
@@ -44,11 +46,15 @@ class HeaderModel {
     return true;
   }
 
-  private logoutHandler(): boolean {
+  private async logoutHandler(): Promise<boolean> {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
-    getCustomerModel().logout();
-    this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
+    try {
+      getCustomerModel().logout();
+      await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
+    } catch {
+      serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+    }
     return true;
   }
 
@@ -72,17 +78,25 @@ class HeaderModel {
 
   private setLogoHandler(): boolean {
     const logo = this.view.getLinkLogo().getHTML();
-    logo.addEventListener('click', (event) => {
+    logo.addEventListener('click', async (event) => {
       event.preventDefault();
-      this.router.navigateTo(PAGE_ID.DEFAULT_PAGE);
+      try {
+        await this.router.navigateTo(PAGE_ID.DEFAULT_PAGE);
+      } catch {
+        serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+      }
     });
     return true;
   }
 
   private setLogoutButtonHandler(): boolean {
     const logoutButton = this.view.getLogoutButton();
-    logoutButton.getHTML().addEventListener('click', () => {
-      this.logoutHandler();
+    logoutButton.getHTML().addEventListener('click', async () => {
+      try {
+        await this.logoutHandler();
+      } catch {
+        serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+      }
       logoutButton.setDisabled();
     });
     return true;
