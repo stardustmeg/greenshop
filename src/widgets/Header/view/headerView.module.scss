@@ -8,11 +8,11 @@
   align-items: center;
   justify-content: space-between;
   grid-template-columns: repeat(3, max-content);
-  margin-bottom: var(--medium-offset);
   border-bottom: 10px solid var(--steam-green-800);
   border-radius: var(--medium-br);
   padding: calc(var(--small-offset) / 4) var(--small-offset);
   width: 100%;
+  max-width: 1440px;
   background-color: var(--white);
 }
 
