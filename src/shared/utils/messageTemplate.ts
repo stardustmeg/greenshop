@@ -11,7 +11,7 @@ const messageTemplate = (beginning: string, variable: number | string, end: stri
 export const greeting = (name: string): string => messageTemplate('Hi, ', name, '!');
 
 export const createGreetingMessage = (): string =>
-  `${greeting(getStore().getState().currentUser?.firstName || '')} ${SERVER_MESSAGE.SUCCESSFUL_LOGIN}`;
+  `${greeting(getStore().getState().currentUser?.firstName || '')} ${SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_LOGIN}`;
 
 const maxLengthMessageRu = (maxLength: number): string =>
   messageTemplate('Максимальная длина не должна превышать', maxLength, ' символов');

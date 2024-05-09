@@ -65,10 +65,9 @@ class AddressView {
       tag: 'label',
     });
 
-    const { currentLanguage } = getStore().getState();
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
-      innerContent: FORM_TEXT[currentLanguage].SINGLE_ADDRESS,
+      innerContent: FORM_TEXT[getStore().getState().currentLanguage].SINGLE_ADDRESS,
       tag: 'span',
     });
     observeCurrentLanguage(checkBoxText, FORM_TEXT, FORM_TEXT_KEYS.SINGLE_ADDRESS);
@@ -94,11 +93,10 @@ class AddressView {
       tag: 'label',
     });
 
-    const { currentLanguage } = getStore().getState();
     const textContent =
       this.addressType === ADDRESS_TYPE.SHIPPING
-        ? FORM_TEXT[currentLanguage].DEFAULT_SHIPPING_ADDRESS
-        : FORM_TEXT[currentLanguage].DEFAULT_BILLING_ADDRESS;
+        ? FORM_TEXT[getStore().getState().currentLanguage].DEFAULT_SHIPPING_ADDRESS
+        : FORM_TEXT[getStore().getState().currentLanguage].DEFAULT_BILLING_ADDRESS;
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
       innerContent: textContent,
@@ -220,13 +218,12 @@ class AddressView {
   }
 
   private createTitle(): HTMLHeadingElement {
-    const { currentLanguage } = getStore().getState();
     const title = createBaseElement({
       cssClasses: [styles.title],
       innerContent:
         this.addressType === ADDRESS_TYPE.SHIPPING
-          ? TITLE_TEXT[currentLanguage].SHIPPING_ADDRESS
-          : TITLE_TEXT[currentLanguage].BILLING_ADDRESS,
+          ? TITLE_TEXT[getStore().getState().currentLanguage].SHIPPING_ADDRESS
+          : TITLE_TEXT[getStore().getState().currentLanguage].BILLING_ADDRESS,
       tag: 'h3',
     });
     observeCurrentLanguage(

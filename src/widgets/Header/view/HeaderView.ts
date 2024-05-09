@@ -27,10 +27,9 @@ class HeaderView {
   }
 
   private createChangeLanguageButton(): ButtonModel {
-    const { currentLanguage } = getStore().getState();
     this.changeLanguageButton = new ButtonModel({
       classes: [styles.changeLanguageButton],
-      text: currentLanguage,
+      text: getStore().getState().currentLanguage,
     });
     return this.changeLanguageButton;
   }
@@ -60,10 +59,9 @@ class HeaderView {
   }
 
   private createLogoutButton(): ButtonModel {
-    const { currentLanguage } = getStore().getState();
     this.logoutButton = new ButtonModel({
       classes: [styles.logoutButton],
-      text: BUTTON_TEXT[currentLanguage].LOG_OUT,
+      text: BUTTON_TEXT[getStore().getState().currentLanguage].LOG_OUT,
     });
 
     observeCurrentLanguage(this.logoutButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.LOG_OUT);

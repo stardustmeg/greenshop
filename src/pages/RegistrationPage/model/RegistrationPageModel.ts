@@ -38,7 +38,10 @@ class RegistrationPageModel implements Page {
     try {
       await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
     } catch {
-      serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+      serverMessageModel.showServerMessage(
+        SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+        MESSAGE_STATUS.ERROR,
+      );
     }
   }
 

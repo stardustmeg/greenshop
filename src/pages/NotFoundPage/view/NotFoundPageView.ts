@@ -69,10 +69,9 @@ class NotFoundPageView {
   }
 
   private createToMainButton(): ButtonModel {
-    const { currentLanguage } = getStore().getState();
     this.toMainButton = new ButtonModel({
       classes: [styles.toMainButton],
-      text: BUTTON_TEXT[currentLanguage].BACK_TO_MAIN,
+      text: BUTTON_TEXT[getStore().getState().currentLanguage].BACK_TO_MAIN,
     });
     observeCurrentLanguage(this.toMainButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.BACK_TO_MAIN);
     return this.toMainButton;

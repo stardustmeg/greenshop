@@ -6,12 +6,22 @@ export const MESSAGE_STATUS = {
 export type MessageStatusType = (typeof MESSAGE_STATUS)[keyof typeof MESSAGE_STATUS];
 
 export const SERVER_MESSAGE = {
-  BAD_REQUEST: 'Sorry, something went wrong. Try again later.',
-  INCORRECT_PASSWORD: 'Please, enter a correct password',
-  INVALID_EMAIL: "User with this email doesn't exist. Please, register first",
-  SUCCESSFUL_LOGIN: 'Enjoy shopping!',
-  SUCCESSFUL_REGISTRATION: 'Your registration was successful',
-  USER_EXISTS: 'User with this email already exists, please check your email',
+  en: {
+    BAD_REQUEST: 'Sorry, something went wrong. Try again later.',
+    INCORRECT_PASSWORD: 'Please, enter a correct password',
+    INVALID_EMAIL: "User with this email doesn't exist. Please, register first",
+    SUCCESSFUL_LOGIN: 'Enjoy shopping!',
+    SUCCESSFUL_REGISTRATION: 'Your registration was successful',
+    USER_EXISTS: 'User with this email already exists, please check your email',
+  },
+  ru: {
+    BAD_REQUEST: 'Извините, что-то пошло не так. Попробуйте еще раз позже.',
+    INCORRECT_PASSWORD: 'Пожалуйста, введите правильный пароль',
+    INVALID_EMAIL: 'Пользователь с таким email не существует. Пожалуйста, зарегистрируйтесь',
+    SUCCESSFUL_LOGIN: 'Добро пожалуйста',
+    SUCCESSFUL_REGISTRATION: 'Ваша регистрация прошла успешно',
+    USER_EXISTS: 'Пользователь с таким email уже существует, пожалуйста, проверьте свой email',
+  },
 } as const;
 
 export const ERROR_MESSAGE = {
