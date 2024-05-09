@@ -9,7 +9,10 @@ export const EMAIL_FIELD = {
   },
   labelParams: {
     for: `${KEY}email`,
-    text: '',
+    text: {
+      en: '',
+      ru: '',
+    },
   },
 } as const;
 
@@ -22,7 +25,10 @@ export const PASSWORD_FIELD = {
   },
   labelParams: {
     for: `${KEY}password`,
-    text: '',
+    text: {
+      en: '',
+      ru: '',
+    },
   },
 } as const;
 

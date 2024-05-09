@@ -1,6 +1,8 @@
 import type { InputFieldParams, InputParams, LabelParams } from '@/shared/types/form';
 
 import InputModel from '@/shared/Input/model/InputModel.ts';
+import getStore from '@/shared/Store/Store.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './inputFieldView.module.scss';
@@ -13,6 +15,8 @@ class InputFieldView {
   private inputField: HTMLLabelElement | InputModel;
 
   private label: HTMLLabelElement | null = null;
+
+  private labelText: HTMLSpanElement | null = null;
 
   constructor(params: InputFieldParams) {
     this.input = this.createInput(params.inputParams);
@@ -32,7 +36,8 @@ class InputFieldView {
     if (labelParams) {
       this.inputField = this.createLabel(labelParams);
       this.errorField = this.createErrorField();
-      this.label?.append(this.input.getHTML(), this.errorField);
+      this.labelText = this.createLabelText(labelParams);
+      this.label?.append(this.labelText, this.input.getHTML(), this.errorField);
     } else {
       this.inputField = this.input;
     }
@@ -46,16 +51,32 @@ class InputFieldView {
   }
 
   private createLabel(labelParams: LabelParams): HTMLLabelElement {
-    const { for: htmlFor, text } = labelParams;
+    const { for: htmlFor } = labelParams;
+
     this.label = createBaseElement({
       attributes: {
         for: htmlFor,
       },
-      innerContent: text || '',
       tag: 'label',
     });
 
     return this.label;
+  }
+
+  private createLabelText(labelParams: LabelParams): HTMLSpanElement {
+    const labelText = createBaseElement({
+      cssClasses: [styles.labelText],
+      tag: 'span',
+    });
+
+    const updateLabelText = (): void => {
+      labelText.textContent = labelParams.text[getStore().getState().currentLanguage];
+    };
+
+    updateLabelText();
+
+    observeStore(selectCurrentLanguage, updateLabelText);
+    return labelText;
   }
 
   public getErrorField(): HTMLSpanElement | null {

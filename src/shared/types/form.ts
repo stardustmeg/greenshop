@@ -8,7 +8,10 @@ export interface InputParams {
 
 export interface LabelParams {
   for: string;
-  text: null | string;
+  text: {
+    en: string;
+    ru: string;
+  };
 }
 
 export interface InputFieldParams {
