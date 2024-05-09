@@ -7,7 +7,7 @@ export const EMAIL = {
   },
   labelParams: {
     for: 'registration_email',
-    text: 'Email *',
+    text: 'Email',
   },
 } as const;
 
@@ -20,7 +20,7 @@ export const PASSWORD = {
   },
   labelParams: {
     for: 'registration_password',
-    text: 'Password *',
+    text: 'Password',
   },
 } as const;
 
@@ -33,7 +33,7 @@ export const FIRST_NAME = {
   },
   labelParams: {
     for: 'firstName',
-    text: 'First name *',
+    text: 'First name',
   },
 } as const;
 
@@ -46,7 +46,7 @@ export const LAST_NAME = {
   },
   labelParams: {
     for: 'lastName',
-    text: 'Last name *',
+    text: 'Last name',
   },
 } as const;
 
@@ -60,7 +60,7 @@ export const BIRTHDAY = {
   },
   labelParams: {
     for: 'birthDate',
-    text: 'Date of Birth *',
+    text: 'Date of Birth',
   },
 } as const;
 
@@ -73,7 +73,7 @@ export const SHIPPING_ADDRESS_STREET = {
   },
   labelParams: {
     for: 'address',
-    text: 'Address *',
+    text: 'Address',
   },
 } as const;
 
@@ -86,7 +86,7 @@ export const SHIPPING_ADDRESS_CITY = {
   },
   labelParams: {
     for: 'city',
-    text: 'City *',
+    text: 'City',
   },
 } as const;
 
@@ -99,7 +99,7 @@ export const SHIPPING_ADDRESS_COUNTRY = {
   },
   labelParams: {
     for: 'shippingCountry',
-    text: 'Country *',
+    text: 'Country',
   },
 } as const;
 
@@ -112,7 +112,7 @@ export const SHIPPING_ADDRESS_POSTAL_CODE = {
   },
   labelParams: {
     for: 'postalCode',
-    text: 'Postal code *',
+    text: 'Postal code',
   },
 } as const;
 
@@ -125,7 +125,7 @@ export const BILLING_ADDRESS_STREET = {
   },
   labelParams: {
     for: 'billing_address',
-    text: 'Address *',
+    text: 'Address',
   },
 } as const;
 
@@ -138,7 +138,7 @@ export const BILLING_ADDRESS_CITY = {
   },
   labelParams: {
     for: 'billing_city',
-    text: 'City *',
+    text: 'City',
   },
 } as const;
 
@@ -151,7 +151,7 @@ export const BILLING_ADDRESS_COUNTRY = {
   },
   labelParams: {
     for: 'billing_country',
-    text: 'Country *',
+    text: 'Country',
   },
 } as const;
 
@@ -164,7 +164,7 @@ export const BILLING_ADDRESS_POSTAL_CODE = {
   },
   labelParams: {
     for: 'billing_postalCode',
-    text: 'Postal code *',
+    text: 'Postal code',
   },
 } as const;
 

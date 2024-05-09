@@ -39,7 +39,7 @@ export const FIRST_NAME_VALIDATE = {
       en: 'First name must contain only letters',
       ru: 'Имя должно содержать только буквы',
     },
-    pattern: /^[a-zA-Z]*$/,
+    pattern: /^[a-zA-Zа-яА-я\s]*$/,
   },
   notWhitespace: {
     messages: {
@@ -59,7 +59,7 @@ export const LAST_NAME_VALIDATE = {
       en: 'Last name must contain only letters',
       ru: 'Фамилия должна содержать только буквы',
     },
-    pattern: /^[a-zA-Z]*$/,
+    pattern: /^[a-zA-Zа-яА-я\s]*$/,
   },
   notWhitespace: {
     messages: {
@@ -99,7 +99,7 @@ export const SHIPPING_ADDRESS_CITY_VALIDATE = {
       en: 'City must contain only letters',
       ru: 'Город должен содержать только буквы',
     },
-    pattern: /^[a-zA-Z]*$/,
+    pattern: /^[a-zA-Zа-яА-я\s]*$/,
   },
 
   required: true,
@@ -131,7 +131,7 @@ export const BILLING_ADDRESS_CITY_VALIDATE = {
       en: 'City must contain only letters',
       ru: 'Город должен содержать только буквы',
     },
-    pattern: /^[a-zA-Z]*$/,
+    pattern: /^[a-zA-Zа-яА-я\s]*$/,
   },
   required: true,
 };

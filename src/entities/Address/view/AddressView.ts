@@ -43,8 +43,10 @@ class AddressView {
   private appendInputFields(): void {
     this.inputFields.forEach((inputField) => {
       const inputFieldElement = inputField.getView().getHTML();
+      const inputHTML = inputField.getView().getInput().getHTML();
       if (inputFieldElement instanceof HTMLLabelElement) {
         inputFieldElement.classList.add(styles.label);
+        inputHTML.classList.add(styles.input);
         this.address.append(inputFieldElement);
       } else if (inputFieldElement instanceof InputModel) {
         this.address.append(inputFieldElement.getHTML());
@@ -156,7 +158,13 @@ class AddressView {
     this.appendInputFields();
 
     if (this.options.setDefault) {
-      this.address.append(this.createAddressByDefaultCheckbox(FORM_TEXT.DEFAULT_ADDRESS));
+      this.address.append(
+        this.createAddressByDefaultCheckbox(
+          this.addressType === ADDRESS_TYPE.SHIPPING
+            ? FORM_TEXT.DEFAULT_SHIPPING_ADDRESS
+            : FORM_TEXT.DEFAULT_BILLING_ADDRESS,
+        ),
+      );
     }
     if (this.options.setAsBilling) {
       this.address.append(this.createAddressAsBillingCheckbox(FORM_TEXT.SINGLE_ADDRESS));
