@@ -1,6 +1,5 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { PAGE_TIMEOUT_DURATION } from '@/shared/constants/animations.ts';
 import {
   PAGE_ANSWER,
   PAGE_ANSWER_KEYS,
@@ -36,6 +35,7 @@ class RegistrationPageView {
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
+    this.parent.innerHTML = '';
     this.toLoginPageWrapper = this.createToLoginPageWrapper();
     this.registerSpan = this.createRegisterSpan();
     this.designElement = this.createDesignElement();
@@ -154,18 +154,6 @@ class RegistrationPageView {
 
   public getToLoginPageWrapper(): HTMLSpanElement {
     return this.toLoginPageWrapper;
-  }
-
-  public hide(): boolean {
-    this.page.classList.add(styles.registrationPage_hidden);
-    return true;
-  }
-
-  public show(): boolean {
-    setTimeout(() => {
-      this.page.classList.remove(styles.registrationPage_hidden);
-    }, PAGE_TIMEOUT_DURATION);
-    return true;
   }
 }
 export default RegistrationPageView;

@@ -1,8 +1,9 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/common.ts';
 
-import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
-import MEDIATOR_EVENT from '@/shared/constants/events.ts';
+import getStore from '@/shared/Store/Store.ts';
+import { setCurrentPage } from '@/shared/Store/actions.ts';
+import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { PAGE_ID, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/pages.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import RegisterFormModel from '@/widgets/RegistrationForm/model/RegistrationFormModel.ts';
@@ -10,8 +11,6 @@ import RegisterFormModel from '@/widgets/RegistrationForm/model/RegistrationForm
 import RegistrationPageView from '../view/RegistrationPageView.ts';
 
 class RegistrationPageModel implements Page {
-  private eventMediator = EventMediatorModel.getInstance();
-
   private registerForm = new RegisterFormModel();
 
   private router: RouterModel;
@@ -25,8 +24,10 @@ class RegistrationPageModel implements Page {
   }
 
   private init(): void {
+    getStore().dispatch(setCurrentPage(PAGE_ID.REGISTRATION_PAGE));
     this.view.getAuthWrapper().append(this.registerForm.getHTML());
-    this.subscribeToEventMediator();
+    this.registerForm.getFirstInputField().getView().getInput().getHTML().focus();
+    observeStore(selectIsUserLoggedIn, () => this.router.navigateTo(PAGE_ID.MAIN_PAGE));
     this.setLoginLinkHandler();
   }
 
@@ -45,21 +46,6 @@ class RegistrationPageModel implements Page {
     loginLink.addEventListener('click', (event) => this.loginLinkHandler(event));
     loginLinkCopy.addEventListener('click', (event) => this.loginLinkHandler(event));
     toLoginPageWrapper.append(loginLinkCopy);
-  }
-
-  private subscribeToEventMediator(): void {
-    this.eventMediator.subscribe(MEDIATOR_EVENT.CHANGE_PAGE, (route) => this.switchPageVisibility(route));
-  }
-
-  private switchPageVisibility(route: unknown): boolean {
-    if (route === PAGE_ID.REGISTRATION_PAGE) {
-      this.view.show();
-      this.registerForm.getFirstInputField().getView().getInput().getHTML().focus();
-    } else {
-      this.view.hide();
-      return false;
-    }
-    return true;
   }
 
   public getHTML(): HTMLDivElement {
