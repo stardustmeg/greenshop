@@ -8,15 +8,15 @@ const PATH_SEGMENTS_TO_KEEP = import.meta.env.VITE_APP_PATH_SEGMENTS_TO_KEEP;
 const PROJECT_TITLE = import.meta.env.VITE_APP_PROJECT_TITLE;
 
 class RouterModel {
-  private routes: Map<string, () => Page> = new Map();
+  private routes: Map<string, () => Promise<Page>> = new Map();
 
   constructor() {
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const currentPath = window.location.pathname
         .split(DEFAULT_SEGMENT)
         .slice(PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
         .join(DEFAULT_SEGMENT);
-      this.navigateTo(currentPath);
+      await this.navigateTo(currentPath);
     });
   }
 
@@ -25,7 +25,7 @@ class RouterModel {
     document.title = title;
   }
 
-  public navigateTo(path: string): void {
+  public async navigateTo(path: string): Promise<void> {
     const pathnameApp = window.location.pathname
       .split(DEFAULT_SEGMENT)
       .slice(NEXT_SEGMENT, PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
@@ -38,14 +38,14 @@ class RouterModel {
     this.changeAppTitle(pathParts[1], hasRoute);
 
     if (!hasRoute) {
-      this.routes.get(PAGE_ID.NOT_FOUND_PAGE)?.();
+      await this.routes.get(PAGE_ID.NOT_FOUND_PAGE)?.();
       return;
     }
 
-    this.routes.get(pathParts[1])?.();
+    await this.routes.get(pathParts[1])?.();
   }
 
-  public setRoutes(routes: Map<string, () => Page>): Map<string, () => Page> {
+  public setRoutes(routes: Map<string, () => Promise<Page>>): Map<string, () => Promise<Page>> {
     this.routes = routes;
     return this.routes;
   }
