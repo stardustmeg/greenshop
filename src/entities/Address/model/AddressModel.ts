@@ -3,6 +3,7 @@ import type { Address, PersonalData } from '@/shared/types/user.ts';
 import CountryChoiceModel from '@/features/CountryChoice/model/CountryChoiceModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { ADDRESS_TYPE, type AddressOptions, type AddressType } from '@/shared/types/address.ts';
+import formattedText from '@/shared/utils/formattedText.ts';
 
 import AddressView from '../view/AddressView.ts';
 
@@ -25,7 +26,7 @@ class AddressModel {
   public getAddressData(personalData: PersonalData): Address {
     const store = getStore().getState();
     const addressData: Address = {
-      city: this.view.getCityField().getView().getValue(),
+      city: formattedText(this.view.getCityField().getView().getValue()),
       country: this.addressType === ADDRESS_TYPE.BILLING ? store.billingCountry : store.shippingCountry,
       email: personalData.email,
       firstName: personalData.firstName,
@@ -33,7 +34,7 @@ class AddressModel {
       lastName: personalData.lastName,
       postalCode: this.view.getPostalCodeField().getView().getValue(),
       state: '',
-      streetName: this.view.getStreetField().getView().getValue(),
+      streetName: formattedText(this.view.getStreetField().getView().getValue()),
       streetNumber: '',
     };
     return addressData;
