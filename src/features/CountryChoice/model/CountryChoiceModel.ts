@@ -61,7 +61,7 @@ class CountryChoiceModel {
 
   private setCountryToStore(element: HTMLDivElement | HTMLInputElement, key: string): boolean {
     const currentCountryIndex = getCountryIndex(
-      element instanceof HTMLDivElement ? formattedText(element.textContent ?? '') || '' : formattedText(element.value),
+      element instanceof HTMLDivElement ? formattedText(element.textContent ?? '') : formattedText(element.value),
     );
 
     const action = key === BILLING_ADDRESS_COUNTRY.inputParams.id ? setBillingCountry : setShippingCountry;
