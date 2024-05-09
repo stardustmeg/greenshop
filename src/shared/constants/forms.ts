@@ -29,7 +29,7 @@ export const FORM_TEXT_KEYS = {
   SINGLE_ADDRESS: 'SINGLE_ADDRESS',
 } as const;
 
-export type FormTextKeys = (typeof FORM_TEXT_KEYS)[keyof typeof FORM_TEXT_KEYS];
+export type FormTextKeysType = (typeof FORM_TEXT_KEYS)[keyof typeof FORM_TEXT_KEYS];
 
 export const USER_COUNTRY_ADDRESS = {
   BILLING: 'billingCountry',

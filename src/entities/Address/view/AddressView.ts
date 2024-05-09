@@ -2,7 +2,7 @@ import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { FORM_TEXT, FORM_TEXT_KEYS, INPUT_TYPE } from '@/shared/constants/forms.ts';
-import { TITLE_TEXT } from '@/shared/constants/forms/register/constant.ts';
+import { TITLE_TEXT, TITLE_TEXT_KEYS } from '@/shared/constants/forms/register/constant.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/register/validationParams.ts';
 import { ADDRESS_TYPE, type AddressOptions, type AddressType, SINGLE_ADDRESS } from '@/shared/types/address.ts';
@@ -220,12 +220,21 @@ class AddressView {
   }
 
   private createTitle(): HTMLHeadingElement {
-    return createBaseElement({
+    const { currentLanguage } = getStore().getState();
+    const title = createBaseElement({
       cssClasses: [styles.title],
       innerContent:
-        this.addressType === ADDRESS_TYPE.SHIPPING ? TITLE_TEXT.en.SHIPPING_ADDRESS : TITLE_TEXT.en.BILLING_ADDRESS,
+        this.addressType === ADDRESS_TYPE.SHIPPING
+          ? TITLE_TEXT[currentLanguage].SHIPPING_ADDRESS
+          : TITLE_TEXT[currentLanguage].BILLING_ADDRESS,
       tag: 'h3',
     });
+    observeCurrentLanguage(
+      title,
+      TITLE_TEXT,
+      this.addressType === ADDRESS_TYPE.SHIPPING ? TITLE_TEXT_KEYS.SHIPPING_ADDRESS : TITLE_TEXT_KEYS.BILLING_ADDRESS,
+    );
+    return title;
   }
 
   public getAddressAsBillingCheckBox(): InputModel | null {
