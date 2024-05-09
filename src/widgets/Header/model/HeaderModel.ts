@@ -1,6 +1,7 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
 
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
+import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
@@ -49,6 +50,7 @@ class HeaderModel {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
     try {
+      getCustomerModel().logout();
       await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
     } catch {
       serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
