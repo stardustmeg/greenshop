@@ -81,7 +81,7 @@
 .showPasswordElement {
   position: absolute;
   right: 0;
-  top: 10px;
+  top: 17px;
   border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 8);
   width: 24px;
@@ -115,6 +115,6 @@
   }
 
   @media (max-width: 768px) {
-    top: 2px;
+    top: 7px;
   }
 }
