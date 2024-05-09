@@ -137,7 +137,10 @@ class RegisterFormModel {
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_PASSWORD, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].INCORRECT_PASSWORD,
+          MESSAGE_STATUS.ERROR,
+        );
       })
       .finally(() => loader.remove());
   }
@@ -150,11 +153,17 @@ class RegisterFormModel {
       .then((newUserData) => {
         if (newUserData) {
           this.successfulUserRegistration(newUserData);
-          serverMessageModel.showServerMessage(SERVER_MESSAGE.SUCCESSFUL_REGISTRATION, MESSAGE_STATUS.SUCCESS);
+          serverMessageModel.showServerMessage(
+            SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_REGISTRATION,
+            MESSAGE_STATUS.SUCCESS,
+          );
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.USER_EXISTS, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].USER_EXISTS,
+          MESSAGE_STATUS.ERROR,
+        );
       })
       .finally(() => loader.remove());
   }
@@ -228,7 +237,10 @@ class RegisterFormModel {
     this.updateUserData(newUserData)
       .then(() => this.loginUser(this.getCredentialsData()))
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+          MESSAGE_STATUS.ERROR,
+        );
       });
   }
 

@@ -34,7 +34,10 @@ class LoginPageModel implements Page {
         await this.router.navigateTo(PAGE_ID.MAIN_PAGE);
         return currentUser;
       } catch (error) {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+          MESSAGE_STATUS.ERROR,
+        );
         return null;
       }
     }
@@ -45,7 +48,10 @@ class LoginPageModel implements Page {
   private init(): boolean {
     getStore().dispatch(setCurrentPage(PAGE_ID.LOGIN_PAGE));
     this.checkAuthUser().catch(() => {
-      serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+      serverMessageModel.showServerMessage(
+        SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+        MESSAGE_STATUS.ERROR,
+      );
     });
     this.view.getAuthWrapper().append(this.loginForm.getHTML());
     this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
@@ -59,7 +65,10 @@ class LoginPageModel implements Page {
     try {
       await this.router.navigateTo(PAGE_ID.REGISTRATION_PAGE);
     } catch (error) {
-      serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+      serverMessageModel.showServerMessage(
+        SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+        MESSAGE_STATUS.ERROR,
+      );
     }
   }
 

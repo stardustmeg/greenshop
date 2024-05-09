@@ -47,15 +47,12 @@ class LoginPageView {
   }
 
   private createAuthDescription(): HTMLHeadingElement {
-    const { currentLanguage } = getStore().getState();
     this.authDescription = createBaseElement({
       cssClasses: [styles.authDescription],
-      innerContent: PAGE_DESCRIPTION[currentLanguage].LOGIN,
+      innerContent: PAGE_DESCRIPTION[getStore().getState().currentLanguage].LOGIN,
       tag: 'h3',
     });
-
     observeCurrentLanguage(this.authDescription, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEYS.LOGIN);
-
     return this.authDescription;
   }
 
@@ -100,10 +97,9 @@ class LoginPageView {
   }
 
   private createLoginSpan(): HTMLSpanElement {
-    const { currentLanguage } = getStore().getState();
     this.loginSpan = createBaseElement({
       cssClasses: [styles.loginSpan],
-      innerContent: PAGE_LINK_TEXT[currentLanguage].LOGIN,
+      innerContent: PAGE_LINK_TEXT[getStore().getState().currentLanguage].LOGIN,
       tag: 'span',
     });
 
@@ -113,13 +109,12 @@ class LoginPageView {
   }
 
   private createRegisterLink(): LinkModel {
-    const { currentLanguage } = getStore().getState();
     this.registerLink = new LinkModel({
       attrs: {
         href: PAGE_ID.REGISTRATION_PAGE,
       },
       classes: [styles.registerLink],
-      text: PAGE_LINK_TEXT[currentLanguage].REGISTRATION,
+      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].REGISTRATION,
     });
 
     observeCurrentLanguage(this.registerLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.REGISTRATION);
@@ -128,10 +123,9 @@ class LoginPageView {
   }
 
   private createToRegisterPageWrapper(): HTMLSpanElement {
-    const { currentLanguage } = getStore().getState();
     this.toRegisterPageWrapper = createBaseElement({
       cssClasses: [styles.toRegisterPageWrapper],
-      innerContent: PAGE_ANSWER[currentLanguage].LOGIN,
+      innerContent: PAGE_ANSWER[getStore().getState().currentLanguage].LOGIN,
       tag: 'span',
     });
 

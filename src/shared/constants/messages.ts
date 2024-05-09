@@ -6,12 +6,22 @@ export const MESSAGE_STATUS = {
 export type MessageStatusType = (typeof MESSAGE_STATUS)[keyof typeof MESSAGE_STATUS];
 
 export const SERVER_MESSAGE = {
-  BAD_REQUEST: 'Sorry, something went wrong. Try again later.',
-  INCORRECT_PASSWORD: 'Please, enter a correct password',
-  INVALID_EMAIL: "User with this email doesn't exist. Please, register first",
-  SUCCESSFUL_LOGIN: 'Enjoy shopping!',
-  SUCCESSFUL_REGISTRATION: 'Your registration was successful',
-  USER_EXISTS: 'User with this email already exists, please check your email',
+  en: {
+    BAD_REQUEST: 'Sorry, something went wrong. Try again later.',
+    INCORRECT_PASSWORD: 'Please, enter a correct password',
+    INVALID_EMAIL: "User with this email doesn't exist. Please, register first",
+    SUCCESSFUL_LOGIN: 'Enjoy shopping!',
+    SUCCESSFUL_REGISTRATION: 'Your registration was successful',
+    USER_EXISTS: 'User with this email already exists, please check your email',
+  },
+  ru: {
+    BAD_REQUEST: 'Извините, что-то пошло не так. Попробуйте позже.',
+    INCORRECT_PASSWORD: 'Пожалуйста, введите правильный пароль',
+    INVALID_EMAIL: 'Пользователь с таким адресом не существует. Пожалуйста, сначала зарегистрируйтесь',
+    SUCCESSFUL_LOGIN: 'Приятных покупок!',
+    SUCCESSFUL_REGISTRATION: 'Регистрация прошла успешно',
+    USER_EXISTS: 'Пользователь с таким адресом уже существует, пожалуйста, проверьте свою почту',
+  },
 } as const;
 
 export const ERROR_MESSAGE = {
@@ -22,10 +32,10 @@ export const ERROR_MESSAGE = {
     WRONG_REGION: "Sorry, we don't deliver to your region yet",
   },
   ru: {
-    INVALID_COUNTRY: 'Неверный код страны',
+    INVALID_COUNTRY: 'Неверная страна',
     INVALID_POSTAL_CODE: 'Неверный почтовый индекс',
     REQUIRED_FIELD: 'Поле обязательно для заполнения',
-    WRONG_REGION: 'Извините, мы не доставляем в вашу область',
+    WRONG_REGION: 'Извините, но мы еще не доставляем в ваш регион',
   },
 } as const;
 

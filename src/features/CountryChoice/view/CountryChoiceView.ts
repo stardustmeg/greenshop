@@ -37,9 +37,7 @@ class CountryChoiceView {
       tag: 'div',
     });
 
-    const { currentLanguage } = getStore().getState();
-
-    Object.entries(COUNTRIES_LIST[currentLanguage]).forEach(([countryName, countryCode]) =>
+    Object.entries(COUNTRIES_LIST[getStore().getState().currentLanguage]).forEach(([countryName, countryCode]) =>
       this.countryDropList.append(this.createCountryItem(countryName, countryCode)),
     );
 

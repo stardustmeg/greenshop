@@ -13,9 +13,9 @@ export const BUTTON_TEXT = {
   },
   ru: {
     BACK_TO_MAIN: 'Вернуться на главную',
-    LOG_OUT: 'Выйти',
-    LOGIN: 'Войти',
-    REGISTRATION: 'Зарегистрироваться',
+    LOG_OUT: 'Выйти',
+    LOGIN: 'Войти',
+    REGISTRATION: 'Регистрация',
   },
 } as const;
 

@@ -46,11 +46,17 @@ class LoginFormModel {
         if (response) {
           this.loginUserHandler(userLoginData);
         } else {
-          serverMessageModel.showServerMessage(SERVER_MESSAGE.INVALID_EMAIL, MESSAGE_STATUS.ERROR);
+          serverMessageModel.showServerMessage(
+            SERVER_MESSAGE[getStore().getState().currentLanguage].INVALID_EMAIL,
+            MESSAGE_STATUS.ERROR,
+          );
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+          MESSAGE_STATUS.ERROR,
+        );
       })
       .finally(() => loader.remove());
   }
@@ -67,7 +73,10 @@ class LoginFormModel {
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_PASSWORD, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].INCORRECT_PASSWORD,
+          MESSAGE_STATUS.ERROR,
+        );
       })
       .finally(() => loader.remove());
   }

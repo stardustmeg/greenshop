@@ -1,6 +1,7 @@
 import type { InputFieldValidatorParams } from '@/shared/types/form.ts';
 
 import getStore from '@/shared/Store/Store.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { USER_POSTAL_CODE } from '@/shared/constants/forms.ts';
 import { ERROR_MESSAGE } from '@/shared/constants/messages.ts';
@@ -77,9 +78,10 @@ export const checkValidCountry = (value: string, validParams: InputFieldValidato
         (countryName) => countryName.toLowerCase() === value.toLowerCase(),
       )
     ) {
-      return ERROR_MESSAGE[checkInputLanguage(value)].INVALID_COUNTRY;
+      return ERROR_MESSAGE[getStore().getState().currentLanguage].INVALID_COUNTRY;
     }
   }
+  observeStore(selectCurrentLanguage, () => checkValidCountry(value, validParams));
   return true;
 };
 
@@ -110,6 +112,5 @@ export const checkWhitespace = (value: string, validParams: InputFieldValidatorP
   if (validParams.notWhitespace && !validParams.notWhitespace.pattern.test(value)) {
     return validParams.notWhitespace.messages[getStore().getState().currentLanguage];
   }
-
   return true;
 };

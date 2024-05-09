@@ -50,7 +50,10 @@ class NavigationModel {
         try {
           await this.router.navigateTo(route);
         } catch {
-          serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+          serverMessageModel.showServerMessage(
+            SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+            MESSAGE_STATUS.ERROR,
+          );
         }
       });
     });

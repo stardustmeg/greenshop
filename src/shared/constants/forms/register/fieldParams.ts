@@ -7,7 +7,10 @@ export const EMAIL = {
   },
   labelParams: {
     for: 'registration_email',
-    text: 'Email',
+    text: {
+      en: 'Email',
+      ru: 'Электронная почта',
+    },
   },
 } as const;
 
@@ -20,7 +23,10 @@ export const PASSWORD = {
   },
   labelParams: {
     for: 'registration_password',
-    text: 'Password',
+    text: {
+      en: 'Password',
+      ru: 'Пароль',
+    },
   },
 } as const;
 
@@ -33,7 +39,10 @@ export const FIRST_NAME = {
   },
   labelParams: {
     for: 'firstName',
-    text: 'First name',
+    text: {
+      en: 'First name',
+      ru: 'Имя',
+    },
   },
 } as const;
 
@@ -46,7 +55,10 @@ export const LAST_NAME = {
   },
   labelParams: {
     for: 'lastName',
-    text: 'Last name',
+    text: {
+      en: 'Last name',
+      ru: 'Фамилия',
+    },
   },
 } as const;
 
@@ -60,7 +72,10 @@ export const BIRTHDAY = {
   },
   labelParams: {
     for: 'birthDate',
-    text: 'Date of Birth',
+    text: {
+      en: 'Date of birth',
+      ru: 'Дата рождения',
+    },
   },
 } as const;
 
@@ -73,7 +88,10 @@ export const SHIPPING_ADDRESS_STREET = {
   },
   labelParams: {
     for: 'address',
-    text: 'Address',
+    text: {
+      en: 'Address',
+      ru: 'Адрес',
+    },
   },
 } as const;
 
@@ -86,7 +104,10 @@ export const SHIPPING_ADDRESS_CITY = {
   },
   labelParams: {
     for: 'city',
-    text: 'City',
+    text: {
+      en: 'City',
+      ru: 'Город',
+    },
   },
 } as const;
 
@@ -99,7 +120,10 @@ export const SHIPPING_ADDRESS_COUNTRY = {
   },
   labelParams: {
     for: 'shippingCountry',
-    text: 'Country',
+    text: {
+      en: 'Country',
+      ru: 'Страна',
+    },
   },
 } as const;
 
@@ -112,7 +136,10 @@ export const SHIPPING_ADDRESS_POSTAL_CODE = {
   },
   labelParams: {
     for: 'postalCode',
-    text: 'Postal code',
+    text: {
+      en: 'Postal code',
+      ru: 'Почтовый индекс',
+    },
   },
 } as const;
 
@@ -125,7 +152,10 @@ export const BILLING_ADDRESS_STREET = {
   },
   labelParams: {
     for: 'billing_address',
-    text: 'Address',
+    text: {
+      en: 'Address',
+      ru: 'Адрес',
+    },
   },
 } as const;
 
@@ -138,7 +168,10 @@ export const BILLING_ADDRESS_CITY = {
   },
   labelParams: {
     for: 'billing_city',
-    text: 'City',
+    text: {
+      en: 'City',
+      ru: 'Город',
+    },
   },
 } as const;
 
@@ -151,7 +184,10 @@ export const BILLING_ADDRESS_COUNTRY = {
   },
   labelParams: {
     for: 'billing_country',
-    text: 'Country',
+    text: {
+      en: 'Country',
+      ru: 'Страна',
+    },
   },
 } as const;
 
@@ -164,7 +200,10 @@ export const BILLING_ADDRESS_POSTAL_CODE = {
   },
   labelParams: {
     for: 'billing_postalCode',
-    text: 'Postal code',
+    text: {
+      en: 'Postal code',
+      ru: 'Почтовый индекс',
+    },
   },
 } as const;
 

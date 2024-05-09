@@ -4,10 +4,10 @@ import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentUser } from '@/shared/Store/actions.ts';
+import { setCurrentLanguage, setCurrentUser } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
-// import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 import HeaderView from '../view/HeaderView.ts';
@@ -42,7 +42,7 @@ class HeaderModel {
     this.setLogoHandler();
     this.observeCurrentUser();
     this.setLogoutButtonHandler();
-    // this.setChangeLanguageButtonHandler();
+    this.setChangeLanguageButtonHandler();
     return true;
   }
 
@@ -53,7 +53,10 @@ class HeaderModel {
       getCustomerModel().logout();
       await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
     } catch {
-      serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+      serverMessageModel.showServerMessage(
+        SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+        MESSAGE_STATUS.ERROR,
+      );
     }
     return true;
   }
@@ -65,16 +68,15 @@ class HeaderModel {
     return true;
   }
 
-  // private setChangeLanguageButtonHandler(): boolean {
-  //   const changeLanguageButton = this.view.getChangeLanguageButton();
-  //   changeLanguageButton.getHTML().addEventListener(EVENT_NAME.CLICK, () => {
-  //     const { currentLanguage } = getStore().getState();
-  //     const newLanguage = currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
-  //     changeLanguageButton.getHTML().innerText = newLanguage;
-  //     getStore().dispatch(setCurrentLanguage(newLanguage));
-  //   });
-  //   return true;
-  // }
+  private setChangeLanguageButtonHandler(): boolean {
+    const switchLanguageLogo = this.view.getswitchLanguageLogo();
+    switchLanguageLogo.addEventListener('click', () => {
+      const newLanguage =
+        getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
+      getStore().dispatch(setCurrentLanguage(newLanguage));
+    });
+    return true;
+  }
 
   private setLogoHandler(): boolean {
     const logo = this.view.getLinkLogo().getHTML();
@@ -83,7 +85,10 @@ class HeaderModel {
       try {
         await this.router.navigateTo(PAGE_ID.DEFAULT_PAGE);
       } catch {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+          MESSAGE_STATUS.ERROR,
+        );
       }
     });
     return true;
@@ -95,7 +100,10 @@ class HeaderModel {
       try {
         await this.logoutHandler();
       } catch {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+          MESSAGE_STATUS.ERROR,
+        );
       }
       logoutButton.setDisabled();
     });

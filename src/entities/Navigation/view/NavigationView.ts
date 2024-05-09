@@ -34,13 +34,12 @@ class NavigationView {
   }
 
   private createToLoginLink(): LinkModel {
-    const { currentLanguage } = getStore().getState();
     this.toLoginLink = new LinkModel({
       attrs: {
         href: PAGE_ID.LOGIN_PAGE,
       },
       classes: [styles.link],
-      text: PAGE_LINK_TEXT[currentLanguage].LOGIN,
+      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].LOGIN,
     });
 
     observeCurrentLanguage(this.toLoginLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.LOGIN);
@@ -50,13 +49,12 @@ class NavigationView {
   }
 
   private createToMainLink(): LinkModel {
-    const { currentLanguage } = getStore().getState();
     this.toMainLink = new LinkModel({
       attrs: {
         href: PAGE_ID.MAIN_PAGE,
       },
       classes: [styles.link],
-      text: PAGE_LINK_TEXT[currentLanguage].MAIN,
+      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].MAIN,
     });
 
     observeCurrentLanguage(this.toMainLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.MAIN);
@@ -66,13 +64,12 @@ class NavigationView {
   }
 
   private createToRegisterLink(): LinkModel {
-    const { currentLanguage } = getStore().getState();
     this.toRegisterLink = new LinkModel({
       attrs: {
         href: PAGE_ID.REGISTRATION_PAGE,
       },
       classes: [styles.link],
-      text: PAGE_LINK_TEXT[currentLanguage].REGISTRATION,
+      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].REGISTRATION,
     });
 
     observeCurrentLanguage(this.toRegisterLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.REGISTRATION);
