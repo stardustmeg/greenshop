@@ -161,8 +161,10 @@ class RegistrationFormView {
 
     inputFields.forEach((inputField) => {
       const inputFieldElement = inputField.getView().getHTML();
+      const inputHTML = inputField.getView().getInput().getHTML();
       if (inputFieldElement instanceof HTMLLabelElement) {
         inputFieldElement.classList.add(styles.label);
+        inputHTML.classList.add(styles.input);
         wrapperElement.append(inputFieldElement);
       } else if (inputFieldElement instanceof InputModel) {
         wrapperElement.append(inputFieldElement.getHTML());

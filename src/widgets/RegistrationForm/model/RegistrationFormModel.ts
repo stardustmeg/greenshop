@@ -14,6 +14,7 @@ import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { SIZES } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
+import formattedText from '@/shared/utils/formattedText.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
@@ -73,23 +74,23 @@ class RegisterFormModel {
 
   private getCredentialsData(): UserCredentials {
     return {
-      email: this.view.getEmailField().getView().getValue(),
-      password: this.view.getPasswordField().getView().getValue(),
+      email: formattedText(this.view.getEmailField().getView().getValue()),
+      password: formattedText(this.view.getPasswordField().getView().getValue()),
     };
   }
 
   private getFormUserData(): User {
     const userData: User = {
       addresses: [],
-      birthDate: this.view.getDateOfBirthField().getView().getValue(),
+      birthDate: formattedText(this.view.getDateOfBirthField().getView().getValue()),
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
-      email: this.view.getEmailField().getView().getValue(),
-      firstName: this.view.getFirstNameField().getView().getValue(),
+      email: formattedText(this.view.getEmailField().getView().getValue()),
+      firstName: formattedText(this.view.getFirstNameField().getView().getValue()),
       id: '',
-      lastName: this.view.getLastNameField().getView().getValue(),
+      lastName: formattedText(this.view.getLastNameField().getView().getValue()),
       locale: '',
-      password: this.view.getPasswordField().getView().getValue(),
+      password: formattedText(this.view.getPasswordField().getView().getValue()),
       version: 0,
     };
 
@@ -99,9 +100,9 @@ class RegisterFormModel {
 
   private getPersonalData(): PersonalData {
     return {
-      email: this.view.getEmailField().getView().getValue(),
-      firstName: this.view.getFirstNameField().getView().getValue(),
-      lastName: this.view.getLastNameField().getView().getValue(),
+      email: formattedText(this.view.getEmailField().getView().getValue()),
+      firstName: formattedText(this.view.getFirstNameField().getView().getValue()),
+      lastName: formattedText(this.view.getLastNameField().getView().getValue()),
     };
   }
 
@@ -243,7 +244,6 @@ class RegisterFormModel {
   private switchSubmitFormButtonAccess(): boolean {
     if (this.inputFields.every((inputField) => inputField.getIsValid())) {
       this.view.getSubmitFormButton().setEnabled();
-      this.view.getSubmitFormButton().getHTML().focus();
     } else {
       this.view.getSubmitFormButton().setDisabled();
     }
@@ -256,9 +256,9 @@ class RegisterFormModel {
     if (currentUserData) {
       currentUserData = await getCustomerModel().editCustomer(
         [
-          CustomerModel.actionEditFirstName(this.view.getFirstNameField().getView().getValue()),
-          CustomerModel.actionEditLastName(this.view.getLastNameField().getView().getValue()),
-          CustomerModel.actionEditDateOfBirth(this.view.getDateOfBirthField().getView().getValue()),
+          CustomerModel.actionEditFirstName(formattedText(this.view.getFirstNameField().getView().getValue())),
+          CustomerModel.actionEditLastName(formattedText(this.view.getLastNameField().getView().getValue())),
+          CustomerModel.actionEditDateOfBirth(formattedText(this.view.getDateOfBirthField().getView().getValue())),
         ],
         currentUserData,
       );
