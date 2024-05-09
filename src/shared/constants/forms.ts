@@ -12,13 +12,13 @@ export const INPUT_TYPE = {
 
 export const FORM_TEXT = {
   en: {
-    DEFAULT_BILLING_ADDRESS: 'Use as Default for Billing',
-    DEFAULT_SHIPPING_ADDRESS: 'Use as Default for Shipping',
-    SINGLE_ADDRESS: 'Use Shipping Address for Billing',
+    DEFAULT_BILLING_ADDRESS: 'Use as default for billing',
+    DEFAULT_SHIPPING_ADDRESS: 'Use as default for shipping',
+    SINGLE_ADDRESS: 'Use shipping address as billing',
   },
   ru: {
-    DEFAULT_BILLING_ADDRESS: 'Использовать как адрес по умолчанию для выставления счетов',
-    DEFAULT_SHIPPING_ADDRESS: 'Использовать как адрес по умолчанию для доставки',
+    DEFAULT_BILLING_ADDRESS: 'Использовать по умолчанию для выставления счетов',
+    DEFAULT_SHIPPING_ADDRESS: 'Использовать по умолчанию для доставки',
     SINGLE_ADDRESS: 'Использовать адрес доставки для выставления счетов',
   },
 } as const;

@@ -70,7 +70,9 @@ class InputFieldView {
     });
 
     const updateLabelText = (): void => {
-      labelText.textContent = labelParams.text[getStore().getState().currentLanguage];
+      if (labelParams?.text) {
+        labelText.textContent = labelParams.text[getStore().getState().currentLanguage];
+      }
     };
 
     updateLabelText();

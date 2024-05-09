@@ -107,7 +107,7 @@ class AddressView {
       FORM_TEXT,
       this.addressType === ADDRESS_TYPE.SHIPPING
         ? FORM_TEXT_KEYS.DEFAULT_SHIPPING_ADDRESS
-        : FORM_TEXT_KEYS.DEFAULT_SHIPPING_ADDRESS,
+        : FORM_TEXT_KEYS.DEFAULT_BILLING_ADDRESS,
     );
 
     this.addressByDefaultCheckBox = new InputModel({

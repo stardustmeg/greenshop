@@ -1,14 +1,14 @@
 export const EMAIL_VALIDATE = {
   key: 'registration_email',
   notWhitespace: {
-    messages: { en: 'Email must not contain white spaces', ru: 'Почтовый адрес не может содержать пробелы' },
+    messages: { en: 'Email must not contain white spaces', ru: 'Адрес электронной почты не должен содержать пробелы' },
     pattern: /^\S+$/,
   },
   required: true,
   validMail: {
     messages: {
       en: 'Enter correct email (user@example.com)',
-      ru: 'Введите корректный почтовый адрес (user@example.com)',
+      ru: 'Введите правильный адрес электронной почты (user@example.com)',
     },
     pattern: /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/,
   },
@@ -18,14 +18,14 @@ export const PASSWORD_VALIDATE = {
   key: 'registration_password',
   minLength: 8,
   notWhitespace: {
-    messages: { en: 'Password must not contain white spaces', ru: 'Пароль не может содержать пробелы' },
+    messages: { en: 'Password must not contain white spaces', ru: 'Пароль не должен содержать пробелы' },
     pattern: /^\S+$/,
   },
   required: true,
   requiredSymbols: {
     messages: {
       en: 'Password must contain English letters, at least one letter in upper and lower case and at least one number',
-      ru: 'Пароль должен содержать английские буквы, хотя бы одну букву в верхнем регистре и в нижнем регистре и хотя бы одну цифру',
+      ru: 'Пароль должен содержать английские буквы, как минимум одну букву в верхнем и нижнем регистре, а также хотя бы одну цифру',
     },
     pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+/,
   },
@@ -44,7 +44,7 @@ export const FIRST_NAME_VALIDATE = {
   notWhitespace: {
     messages: {
       en: 'First name must not contain white spaces',
-      ru: 'Имя не может содержать пробелы',
+      ru: 'Имя не должно содержать пробелы',
     },
     pattern: /^\S+$/,
   },
@@ -64,7 +64,7 @@ export const LAST_NAME_VALIDATE = {
   notWhitespace: {
     messages: {
       en: 'Last name must not contain white spaces',
-      ru: 'Фамилия не может содержать пробелы',
+      ru: 'Фамилия не должна содержать пробелы',
     },
     pattern: /^\S+$/,
   },
@@ -78,7 +78,7 @@ export const BIRTHDAY_VALIDATE = {
     maxAge: 120,
     messages: {
       en: 'Enter correct birthday (01.01.2000)',
-      ru: 'Введите корректный день рождения (01.01.2000)',
+      ru: 'Введите правильную дату рождения (01.01.2000)',
     },
     minAge: 18,
     pattern: /^\d{4}-\d{2}-\d{2}$/,
