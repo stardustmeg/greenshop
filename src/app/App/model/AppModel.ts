@@ -35,7 +35,7 @@ class AppModel {
     );
   }
 
-  public isWorking(): boolean {
+  public start(): boolean {
     if (!this.appView.getHTML()) {
       return false;
     }

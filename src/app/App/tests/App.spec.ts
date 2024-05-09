@@ -4,6 +4,6 @@ const app = new AppModel();
 
 describe('Checking AppModel class', () => {
   it('application successfully created', () => {
-    expect(app.isWorking()).toBe(true);
+    expect(app.start()).toBe(true);
   });
 });
