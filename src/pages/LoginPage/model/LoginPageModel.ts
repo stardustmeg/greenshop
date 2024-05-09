@@ -44,9 +44,9 @@ class LoginPageModel implements Page {
 
   private init(): boolean {
     getStore().dispatch(setCurrentPage(PAGE_ID.LOGIN_PAGE));
-    this.checkAuthUser()
-      .then(() => {})
-      .catch(() => {});
+    this.checkAuthUser().catch(() => {
+      serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+    });
     this.view.getAuthWrapper().append(this.loginForm.getHTML());
     this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
     this.setRegisterLinkHandler();
