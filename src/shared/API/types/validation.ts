@@ -5,6 +5,7 @@ import type {
   Customer,
   CustomerPagedQueryResponse,
   CustomerSignInResult,
+  ErrorResponse,
   FacetRange,
   FacetTerm,
   LocalizedString,
@@ -178,5 +179,17 @@ export function isFacetTerm(data: unknown): data is FacetTerm {
       'term' in data &&
       typeof data.term === 'string' &&
       ('count' in data || 'productCount' in data),
+  );
+}
+
+export function isErrorResponse(data: unknown): data is ErrorResponse {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'statusCode' in data &&
+      typeof data.statusCode === 'number' &&
+      data.statusCode >= 400 &&
+      'message' in data &&
+      typeof data.message === 'string',
   );
 }

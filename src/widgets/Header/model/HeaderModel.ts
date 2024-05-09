@@ -1,6 +1,7 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
 
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
+import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
@@ -46,6 +47,7 @@ class HeaderModel {
   private logoutHandler(): boolean {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
+    getCustomerModel().logout();
     this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
     return true;
   }
