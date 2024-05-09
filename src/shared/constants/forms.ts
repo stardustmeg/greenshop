@@ -11,8 +11,9 @@ export const INPUT_TYPE = {
 } as const;
 
 export const FORM_TEXT = {
-  DEFAULT_ADDRESS: 'Use as default address',
-  SINGLE_ADDRESS: 'Use as billing address',
+  DEFAULT_BILLING_ADDRESS: 'Use as Default for Billing',
+  DEFAULT_SHIPPING_ADDRESS: 'Use as Default for Shipping',
+  SINGLE_ADDRESS: 'Use Shipping Address for Billing',
 };
 
 export const USER_COUNTRY_ADDRESS = {
