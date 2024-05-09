@@ -12,7 +12,6 @@ import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { SIZES } from '@/shared/constants/sizes.ts';
 import { isUserCredentialsData } from '@/shared/types/validation/user.ts';
-import formattedText from '@/shared/utils/formattedText.ts';
 import { greeting } from '@/shared/utils/messageTemplate.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
@@ -33,8 +32,8 @@ class LoginFormModel {
 
   private getFormData(): UserCredentials {
     const userData: UserCredentials = {
-      email: formattedText(this.view.getEmailField().getView().getValue()),
-      password: formattedText(this.view.getPasswordField().getView().getValue()),
+      email: this.view.getEmailField().getView().getValue(),
+      password: this.view.getPasswordField().getView().getValue(),
     };
 
     this.view.getInputFields().forEach((inputField) => inputField.getView().getInput().clear());

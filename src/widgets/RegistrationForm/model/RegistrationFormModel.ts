@@ -74,23 +74,23 @@ class RegisterFormModel {
 
   private getCredentialsData(): UserCredentials {
     return {
-      email: formattedText(this.view.getEmailField().getView().getValue()),
-      password: formattedText(this.view.getPasswordField().getView().getValue()),
+      email: this.view.getEmailField().getView().getValue(),
+      password: this.view.getPasswordField().getView().getValue(),
     };
   }
 
   private getFormUserData(): User {
     const userData: User = {
       addresses: [],
-      birthDate: formattedText(this.view.getDateOfBirthField().getView().getValue()),
+      birthDate: this.view.getDateOfBirthField().getView().getValue(),
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
-      email: formattedText(this.view.getEmailField().getView().getValue()),
+      email: this.view.getEmailField().getView().getValue(),
       firstName: formattedText(this.view.getFirstNameField().getView().getValue()),
       id: '',
       lastName: formattedText(this.view.getLastNameField().getView().getValue()),
       locale: '',
-      password: formattedText(this.view.getPasswordField().getView().getValue()),
+      password: this.view.getPasswordField().getView().getValue(),
       version: 0,
     };
 
@@ -100,7 +100,7 @@ class RegisterFormModel {
 
   private getPersonalData(): PersonalData {
     return {
-      email: formattedText(this.view.getEmailField().getView().getValue()),
+      email: this.view.getEmailField().getView().getValue(),
       firstName: formattedText(this.view.getFirstNameField().getView().getValue()),
       lastName: formattedText(this.view.getLastNameField().getView().getValue()),
     };
@@ -258,7 +258,7 @@ class RegisterFormModel {
         [
           CustomerModel.actionEditFirstName(formattedText(this.view.getFirstNameField().getView().getValue())),
           CustomerModel.actionEditLastName(formattedText(this.view.getLastNameField().getView().getValue())),
-          CustomerModel.actionEditDateOfBirth(formattedText(this.view.getDateOfBirthField().getView().getValue())),
+          CustomerModel.actionEditDateOfBirth(this.view.getDateOfBirthField().getView().getValue()),
         ],
         currentUserData,
       );
