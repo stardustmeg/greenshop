@@ -91,7 +91,9 @@ vi.mock('./Store.ts', async (importOriginal) => {
       billingCountry: '',
       categories: [],
       currentLanguage: 'en',
+      currentPage: '',
       currentUser: null,
+      isUserLoggedIn: false,
       products: [],
       shippingCountry: '',
     }),
@@ -135,20 +137,22 @@ it('observeStore should call select and onChange when state changes', () => {
     billingCountry: '',
     categories: [],
     currentLanguage: 'en',
+    currentPage: 'main',
     currentUser: mockUser,
+    isUserLoggedIn: false,
     products: [],
     shippingCountry: '',
   };
 
   const mockOnChange = vitest.fn();
-  const selelectCurrentUserSpy = vitest.spyOn(actions, 'setCurrentUser');
+  const selectCurrentUserSpy = vitest.spyOn(actions, 'setCurrentUser');
   const mockSelect = vitest.fn(() => selectCurrentUser(mockState));
   const unsubscribe = observeStore(mockSelect, mockOnChange);
 
   expect(selectCurrentUser(mockState)).toBe(mockUser);
   actions.setCurrentUser(mockUser);
 
-  expect(selelectCurrentUserSpy).toHaveBeenCalledWith(mockUser);
+  expect(selectCurrentUserSpy).toHaveBeenCalledWith(mockUser);
 
   unsubscribe();
 });
@@ -161,7 +165,9 @@ describe('rootReducer', () => {
       billingCountry: '',
       categories: [],
       currentLanguage: 'en',
+      currentPage: '',
       currentUser: null,
+      isUserLoggedIn: false,
       products: [],
       shippingCountry: '',
     };

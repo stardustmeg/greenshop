@@ -1,17 +1,14 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/common.ts';
 
-import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
+import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_DESCRIPTION, PAGE_ID } from '@/shared/constants/pages.ts';
 
 import NotFoundPageView from '../view/NotFoundPageView.ts';
 
 class NotFoundPageModel implements Page {
-  private eventMediator = EventMediatorModel.getInstance();
-
   private router: RouterModel;
 
   private view: NotFoundPageView;
@@ -32,9 +29,10 @@ class NotFoundPageModel implements Page {
   }
 
   private init(): boolean {
-    this.subscribeToEventMediator();
+    getStore().dispatch(setCurrentPage(PAGE_ID.NOT_FOUND_PAGE));
     this.toMainButtonHandler();
     this.observeStoreLanguage();
+    this.view.setPageDescription(this.createPageDescription());
     return true;
   }
 
@@ -42,21 +40,6 @@ class NotFoundPageModel implements Page {
     observeStore(selectCurrentLanguage, () => {
       this.view.setPageDescription(this.createPageDescription());
     });
-    return true;
-  }
-
-  private subscribeToEventMediator(): void {
-    this.eventMediator.subscribe(MEDIATOR_EVENT.CHANGE_PAGE, (route) => this.switchPageVisibility(route));
-  }
-
-  private switchPageVisibility(route: unknown): boolean {
-    if (route === PAGE_ID.NOT_FOUND_PAGE) {
-      this.view.show();
-      this.view.setPageDescription(this.createPageDescription());
-    } else {
-      this.view.hide();
-      return false;
-    }
     return true;
   }
 

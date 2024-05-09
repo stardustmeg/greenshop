@@ -4,17 +4,16 @@ import type { Address, PersonalData, User, UserCredentials } from '@/shared/type
 
 import AddressModel from '@/entities/Address/model/AddressModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
-import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setBillingCountry, setCurrentUser } from '@/shared/Store/actions.ts';
-import MEDIATOR_EVENT from '@/shared/constants/events.ts';
+import { setBillingCountry, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { SIZES } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
+import { createGreetingMessage } from '@/shared/utils/messageTemplate.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
@@ -28,8 +27,6 @@ class RegisterFormModel {
       setDefault: true,
     }),
   };
-
-  private eventMediator = EventMediatorModel.getInstance();
 
   private inputFields: InputFieldModel[] = [];
 
@@ -128,6 +125,23 @@ class RegisterFormModel {
     return true;
   }
 
+  private loginUser(userLoginData: UserCredentials): void {
+    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    this.view.getSubmitFormButton().getHTML().append(loader);
+    getCustomerModel()
+      .authCustomer(userLoginData)
+      .then((data) => {
+        if (data) {
+          getStore().dispatch(switchIsUserLoggedIn(true));
+          serverMessageModel.showServerMessage(createGreetingMessage(), MESSAGE_STATUS.SUCCESS);
+        }
+      })
+      .catch(() => {
+        serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_PASSWORD, MESSAGE_STATUS.ERROR);
+      })
+      .finally(() => loader.remove());
+  }
+
   private registerUser(): void {
     const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
@@ -143,31 +157,6 @@ class RegisterFormModel {
         serverMessageModel.showServerMessage(SERVER_MESSAGE.USER_EXISTS, MESSAGE_STATUS.ERROR);
       })
       .finally(() => loader.remove());
-  }
-
-  private resetInputFieldsValidation(): void {
-    const checkboxSingleAddress = this.addressWrappers[ADDRESS_TYPE.SHIPPING]
-      .getView()
-      .getAddressAsBillingCheckBox()
-      ?.getHTML();
-    const checkboxDefaultShippingAddress = this.addressWrappers[ADDRESS_TYPE.SHIPPING]
-      .getView()
-      .getAddressByDefaultCheckBox()
-      ?.getHTML();
-    const checkboxDefaultBillingAddress = this.addressWrappers[ADDRESS_TYPE.BILLING]
-      .getView()
-      .getAddressByDefaultCheckBox()
-      ?.getHTML();
-    if (checkboxSingleAddress) {
-      checkboxSingleAddress.checked = false;
-    }
-    if (checkboxDefaultShippingAddress) {
-      checkboxDefaultShippingAddress.checked = false;
-    }
-    if (checkboxDefaultBillingAddress) {
-      checkboxDefaultBillingAddress.checked = false;
-    }
-    this.addressWrappers[ADDRESS_TYPE.BILLING].getView().switchVisibilityAddressWrapper(false);
   }
 
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
@@ -222,6 +211,7 @@ class RegisterFormModel {
             (inputField) =>
               inputField.getView().getInput().getHTML().placeholder === inputElement.getInput().getHTML().placeholder,
           );
+
         if (billingInput) {
           billingInput.getView().getInput().getHTML().value = inputElement.getInput().getHTML().value;
         }
@@ -235,10 +225,11 @@ class RegisterFormModel {
   }
 
   private successfulUserRegistration(newUserData: User): void {
-    this.eventMediator.notify(MEDIATOR_EVENT.USER_LOGIN, this.getCredentialsData());
-    this.updateUserData(newUserData).catch(() => {
-      serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
-    });
+    this.updateUserData(newUserData)
+      .then(() => this.loginUser(this.getCredentialsData()))
+      .catch(() => {
+        serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+      });
   }
 
   private switchSubmitFormButtonAccess(): boolean {
@@ -280,7 +271,7 @@ class RegisterFormModel {
     if (!currentUserData) {
       return null;
     }
-    const shippingAddressID = currentUserData.addresses[currentUserData.addresses.length - 1].id;
+    const shippingAddressID = currentUserData.addresses.at(-1)?.id ?? '';
 
     if (checkboxDefaultShippingAddress?.checked) {
       currentUserData = await this.editDefaultShippingAddress(shippingAddressID, currentUserData);
@@ -295,7 +286,7 @@ class RegisterFormModel {
     if (!currentUserData) {
       return null;
     }
-    const billingAddressID = currentUserData.addresses[currentUserData.addresses.length - 1].id;
+    const billingAddressID = currentUserData.addresses.at(-1)?.id ?? '';
 
     if (checkboxDefaultBillingAddress?.checked) {
       currentUserData = await this.editDefaultBillingAddress(billingAddressID, currentUserData);
@@ -312,8 +303,6 @@ class RegisterFormModel {
     currentUserData = await this.updateUserAddresses(currentUserData);
 
     getStore().dispatch(setCurrentUser(currentUserData));
-    this.inputFields.forEach((inputField) => inputField.getView().getInput().clear());
-    this.resetInputFieldsValidation();
     return currentUserData;
   }
 

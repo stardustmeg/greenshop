@@ -1,16 +1,12 @@
 import type RouterModel from '@/app/Router/model/RouterModel';
 
-import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
-import MEDIATOR_EVENT from '@/shared/constants/events.ts';
+import observeStore, { selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 import NavigationView from '../view/NavigationView.ts';
 
 class NavigationModel {
-  private eventMediator = EventMediatorModel.getInstance();
-
   private router: RouterModel;
 
   private view = new NavigationView();
@@ -33,13 +29,14 @@ class NavigationModel {
 
   private init(): boolean {
     this.setNavigationLinksHandlers();
-    this.observeCurrentUser();
-    this.subscribeToEventMediator();
+    this.switchLinksState();
+    this.observeState();
     return true;
   }
 
-  private observeCurrentUser(): boolean {
-    observeStore(selectCurrentUser, () => this.checkCurrentUser.bind(this));
+  private observeState(): boolean {
+    observeStore(selectCurrentUser, () => this.checkCurrentUser());
+    observeStore(selectCurrentPage, () => this.switchLinksState());
     return true;
   }
 
@@ -55,16 +52,16 @@ class NavigationModel {
     return true;
   }
 
-  private subscribeToEventMediator(): boolean {
-    this.eventMediator.subscribe(MEDIATOR_EVENT.CHANGE_PAGE, (route) => {
-      const currentRoute = route === '' ? PAGE_ID.MAIN_PAGE : route;
-      const navigationLinks = this.view.getNavigationLinks();
-      const currentLink = navigationLinks.get(String(currentRoute));
-      navigationLinks.forEach((link) => link.setEnabled());
-      this.checkCurrentUser();
-      currentLink?.setDisabled();
-      this.view.switchActiveLink(String(currentRoute));
-    });
+  private switchLinksState(): boolean {
+    const { currentPage } = getStore().getState();
+    const currentPath = currentPage === '' ? PAGE_ID.MAIN_PAGE : currentPage;
+    const navigationLinks = this.view.getNavigationLinks();
+    const currentLink = navigationLinks.get(String(currentPath));
+    navigationLinks.forEach((link) => link.setEnabled());
+    this.checkCurrentUser();
+    currentLink?.setDisabled();
+    this.view.switchActiveLink(String(currentPath));
+
     return true;
   }
 
