@@ -1,11 +1,13 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import { FORM_TEXT, INPUT_TYPE } from '@/shared/constants/forms.ts';
+import getStore from '@/shared/Store/Store.ts';
+import { FORM_TEXT, FORM_TEXT_KEYS, INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { TITLE_TEXT } from '@/shared/constants/forms/register/constant.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/register/validationParams.ts';
 import { ADDRESS_TYPE, type AddressOptions, type AddressType, SINGLE_ADDRESS } from '@/shared/types/address.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './addressView.module.scss';
 
@@ -54,7 +56,7 @@ class AddressView {
     });
   }
 
-  private createAddressAsBillingCheckbox(innerContent: string): HTMLLabelElement {
+  private createAddressAsBillingCheckbox(): HTMLLabelElement {
     const checkboxLabel = createBaseElement({
       attributes: {
         for: SINGLE_ADDRESS,
@@ -63,11 +65,13 @@ class AddressView {
       tag: 'label',
     });
 
+    const { currentLanguage } = getStore().getState();
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
-      innerContent,
+      innerContent: FORM_TEXT[currentLanguage].SINGLE_ADDRESS,
       tag: 'span',
     });
+    observeCurrentLanguage(checkBoxText, FORM_TEXT, FORM_TEXT_KEYS.SINGLE_ADDRESS);
 
     this.addressAsBillingCheckBox = new InputModel({
       autocomplete: FORM_FIELDS.CHECKBOX.AUTOCOMPLETE,
@@ -81,7 +85,7 @@ class AddressView {
     return checkboxLabel;
   }
 
-  private createAddressByDefaultCheckbox(innerContent: string): HTMLLabelElement {
+  private createAddressByDefaultCheckbox(): HTMLLabelElement {
     const checkboxLabel = createBaseElement({
       attributes: {
         for: this.addressType === ADDRESS_TYPE.SHIPPING ? ADDRESS_TYPE.SHIPPING : ADDRESS_TYPE.BILLING,
@@ -90,11 +94,23 @@ class AddressView {
       tag: 'label',
     });
 
+    const { currentLanguage } = getStore().getState();
+    const textContent =
+      this.addressType === ADDRESS_TYPE.SHIPPING
+        ? FORM_TEXT[currentLanguage].DEFAULT_SHIPPING_ADDRESS
+        : FORM_TEXT[currentLanguage].DEFAULT_BILLING_ADDRESS;
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
-      innerContent,
+      innerContent: textContent,
       tag: 'span',
     });
+    observeCurrentLanguage(
+      checkBoxText,
+      FORM_TEXT,
+      this.addressType === ADDRESS_TYPE.SHIPPING
+        ? FORM_TEXT_KEYS.DEFAULT_SHIPPING_ADDRESS
+        : FORM_TEXT_KEYS.DEFAULT_SHIPPING_ADDRESS,
+    );
 
     this.addressByDefaultCheckBox = new InputModel({
       autocomplete: FORM_FIELDS.CHECKBOX.AUTOCOMPLETE,
@@ -158,16 +174,10 @@ class AddressView {
     this.appendInputFields();
 
     if (this.options.setDefault) {
-      this.address.append(
-        this.createAddressByDefaultCheckbox(
-          this.addressType === ADDRESS_TYPE.SHIPPING
-            ? FORM_TEXT.DEFAULT_SHIPPING_ADDRESS
-            : FORM_TEXT.DEFAULT_BILLING_ADDRESS,
-        ),
-      );
+      this.address.append(this.createAddressByDefaultCheckbox());
     }
     if (this.options.setAsBilling) {
-      this.address.append(this.createAddressAsBillingCheckbox(FORM_TEXT.SINGLE_ADDRESS));
+      this.address.append(this.createAddressAsBillingCheckbox());
     }
 
     return this.address;

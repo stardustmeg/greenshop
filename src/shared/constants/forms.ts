@@ -11,10 +11,25 @@ export const INPUT_TYPE = {
 } as const;
 
 export const FORM_TEXT = {
-  DEFAULT_BILLING_ADDRESS: 'Use as Default for Billing',
-  DEFAULT_SHIPPING_ADDRESS: 'Use as Default for Shipping',
-  SINGLE_ADDRESS: 'Use Shipping Address for Billing',
-};
+  en: {
+    DEFAULT_BILLING_ADDRESS: 'Use as Default for Billing',
+    DEFAULT_SHIPPING_ADDRESS: 'Use as Default for Shipping',
+    SINGLE_ADDRESS: 'Use Shipping Address for Billing',
+  },
+  ru: {
+    DEFAULT_BILLING_ADDRESS: 'Использовать как адрес по умолчанию для выставления счетов',
+    DEFAULT_SHIPPING_ADDRESS: 'Использовать как адрес по умолчанию для доставки',
+    SINGLE_ADDRESS: 'Использовать адрес доставки для выставления счетов',
+  },
+} as const;
+
+export const FORM_TEXT_KEYS = {
+  DEFAULT_BILLING_ADDRESS: 'DEFAULT_BILLING_ADDRESS',
+  DEFAULT_SHIPPING_ADDRESS: 'DEFAULT_SHIPPING_ADDRESS',
+  SINGLE_ADDRESS: 'SINGLE_ADDRESS',
+} as const;
+
+export type FormTextKeys = (typeof FORM_TEXT_KEYS)[keyof typeof FORM_TEXT_KEYS];
 
 export const USER_COUNTRY_ADDRESS = {
   BILLING: 'billingCountry',
