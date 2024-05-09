@@ -17,31 +17,29 @@ class AppModel {
   private router = new RouterModel();
 
   constructor() {
-    this.router.setPages(this.initPages());
+    document.body.append(this.appView.getHTML());
+    this.appView.getHTML().insertAdjacentElement('beforebegin', new HeaderModel(this.router).getHTML());
+    this.appView.getHTML().insertAdjacentElement('afterend', new FooterModel(this.router).getHTML());
+    this.router.setRoutes(this.createRoutes());
   }
 
-  private initPages(): Map<string, Page> {
-    const root = this.getHTML();
-    root.append(new HeaderModel(this.router).getHTML());
-    const loginPage = new LoginPageModel(root, this.router);
-    const mainPage = new MainPageModel(root, this.router);
-    const registrationPage = new RegistrationPageModel(root, this.router);
-    const notFoundPage = new NotFoundPageModel(root, this.router);
-    const pages: Map<string, Page> = new Map(
+  private createRoutes(): Map<string, () => Page> {
+    return new Map(
       Object.entries({
-        [PAGE_ID.DEFAULT_PAGE]: mainPage,
-        [PAGE_ID.LOGIN_PAGE]: loginPage,
-        [PAGE_ID.MAIN_PAGE]: mainPage,
-        [PAGE_ID.NOT_FOUND_PAGE]: notFoundPage,
-        [PAGE_ID.REGISTRATION_PAGE]: registrationPage,
+        [PAGE_ID.DEFAULT_PAGE]: () => new MainPageModel(this.appView.getHTML()),
+        [PAGE_ID.LOGIN_PAGE]: () => new LoginPageModel(this.appView.getHTML(), this.router),
+        [PAGE_ID.MAIN_PAGE]: () => new MainPageModel(this.appView.getHTML()),
+        [PAGE_ID.NOT_FOUND_PAGE]: () => new NotFoundPageModel(this.appView.getHTML(), this.router),
+        [PAGE_ID.REGISTRATION_PAGE]: () => new RegistrationPageModel(this.appView.getHTML(), this.router),
       }),
     );
-    root.append(new FooterModel(this.router).getHTML());
-    return pages;
   }
 
-  public getHTML(): HTMLDivElement {
-    return this.appView.getHTML();
+  public isWorking(): boolean {
+    if (!this.appView.getHTML()) {
+      return false;
+    }
+    return true;
   }
 }
 
