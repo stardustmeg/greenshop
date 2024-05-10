@@ -41,9 +41,7 @@ class HeaderView {
   private createLinkLogo(): LinkModel {
     this.linkLogo = new LinkModel({
       attrs: {
-        height: '30px',
         href: PAGE_ID.DEFAULT_PAGE,
-        width: '30px',
       },
       classes: [styles.logo],
     });
