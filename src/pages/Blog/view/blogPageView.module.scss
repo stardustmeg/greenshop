@@ -1,0 +1,20 @@
+.blog {
+  padding: 0 var(--small-offset);
+  flex-grow: 1;
+}
+
+.pageTitle {
+  font: var(--bold-font);
+  margin: 0 auto;
+  margin-bottom: var(--extra-small-offset);
+  text-align: center;
+}
+
+.postList {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--extra-small-offset);
+  margin: 0 auto;
+}

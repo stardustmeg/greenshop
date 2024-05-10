@@ -13,6 +13,8 @@ class NavigationView {
 
   private toAboutLink: LinkModel;
 
+  private toBlogLink: LinkModel;
+
   private toCatalogLink: LinkModel;
 
   private toLoginLink: LinkModel;
@@ -27,6 +29,7 @@ class NavigationView {
     this.toRegisterLink = this.createToRegisterLink();
     this.toCatalogLink = this.createToCatalogLink();
     this.toAboutLink = this.createToAboutLink();
+    this.toBlogLink = this.createToBlogLink();
     this.navigation = this.createHTML();
   }
 
@@ -40,6 +43,7 @@ class NavigationView {
       this.toLoginLink.getHTML(),
       this.toRegisterLink.getHTML(),
       this.toCatalogLink.getHTML(),
+      this.toBlogLink.getHTML(),
       this.toAboutLink.getHTML(),
     );
     return this.navigation;
@@ -58,6 +62,21 @@ class NavigationView {
 
     this.navigationLinks.set(PAGE_ID.ABOUT_US_PAGE, this.toAboutLink);
     return this.toAboutLink;
+  }
+
+  private createToBlogLink(): LinkModel {
+    this.toBlogLink = new LinkModel({
+      attrs: {
+        href: PAGE_ID.BLOG,
+      },
+      classes: [styles.link],
+      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].BLOG,
+    });
+
+    observeCurrentLanguage(this.toBlogLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.BLOG);
+
+    this.navigationLinks.set(PAGE_ID.BLOG, this.toBlogLink);
+    return this.toBlogLink;
   }
 
   private createToCatalogLink(): LinkModel {
