@@ -37,11 +37,13 @@ class HeaderModel {
   }
 
   private init(): boolean {
-    this.getHTML().append(this.navigation.getHTML());
+    this.view.getWrapper().append(this.navigation.getHTML());
     this.checkCurrentUser();
     this.setLogoHandler();
     this.observeCurrentUser();
     this.setLogoutButtonHandler();
+    this.setCartLinkHandler();
+    this.setProfileLinkHandler();
     this.setChangeLanguageButtonHandler();
     return true;
   }
@@ -64,6 +66,22 @@ class HeaderModel {
   private observeCurrentUser(): boolean {
     observeStore(selectCurrentUser, () => {
       this.checkCurrentUser();
+    });
+    return true;
+  }
+
+  private setCartLinkHandler(): boolean {
+    const logo = this.view.getToCartLink().getHTML();
+    logo.addEventListener('click', async (event) => {
+      event.preventDefault();
+      try {
+        await this.router.navigateTo(PAGE_ID.CART_PAGE);
+      } catch {
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+          MESSAGE_STATUS.ERROR,
+        );
+      }
     });
     return true;
   }
@@ -106,6 +124,22 @@ class HeaderModel {
         );
       }
       logoutButton.setDisabled();
+    });
+    return true;
+  }
+
+  private setProfileLinkHandler(): boolean {
+    const logo = this.view.getToProfileLink().getHTML();
+    logo.addEventListener('click', async (event) => {
+      event.preventDefault();
+      try {
+        await this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE);
+      } catch {
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+          MESSAGE_STATUS.ERROR,
+        );
+      }
     });
     return true;
   }
