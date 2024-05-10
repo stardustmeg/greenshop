@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import type { Page } from '@/shared/types/common.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
@@ -22,9 +23,25 @@ class AppModel {
 
   private createRoutes(): Promise<Map<string, () => Promise<Page>>> {
     const routesMap = {
+      [PAGE_ID.ABOUT_US_PAGE]: async (): Promise<Page> => {
+        const { default: AbooutUsPageModel } = await import('@/pages/AboutUsPage/model/AboutUsPageModel.ts');
+        return new AbooutUsPageModel(this.appView.getHTML());
+      },
+      [PAGE_ID.CART_PAGE]: async (): Promise<Page> => {
+        const { default: CartPageModel } = await import('@/pages/CartPage/model/CartPageModel.ts');
+        return new CartPageModel(this.appView.getHTML());
+      },
+      [PAGE_ID.CATALOG_PAGE]: async (): Promise<Page> => {
+        const { default: CatalogPageModel } = await import('@/pages/CatalogPage/model/CatalogPageModel.ts');
+        return new CatalogPageModel(this.appView.getHTML());
+      },
       [PAGE_ID.DEFAULT_PAGE]: async (): Promise<Page> => {
         const { default: MainPageModel } = await import('@/pages/MainPage/model/MainPageModel.ts');
         return new MainPageModel(this.appView.getHTML());
+      },
+      [PAGE_ID.ITEM_PAGE]: async (): Promise<Page> => {
+        const { default: ItemPageModel } = await import('@/pages/ItemPage/model/ItemPageModel.ts');
+        return new ItemPageModel(this.appView.getHTML());
       },
       [PAGE_ID.LOGIN_PAGE]: async (): Promise<Page> => {
         const { default: LoginPageModel } = await import('@/pages/LoginPage/model/LoginPageModel.ts');
@@ -43,6 +60,10 @@ class AppModel {
           '@/pages/RegistrationPage/model/RegistrationPageModel.ts'
         );
         return new RegistrationPageModel(this.appView.getHTML(), this.router);
+      },
+      [PAGE_ID.USER_PROFILE_PAGE]: async (): Promise<Page> => {
+        const { default: UserProfilePageModel } = await import('@/pages/UserProfilePage/model/UserProfilePageModel.ts');
+        return new UserProfilePageModel(this.appView.getHTML());
       },
     };
 
