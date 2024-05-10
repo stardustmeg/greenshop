@@ -15,7 +15,7 @@ class FooterModel {
   }
 
   private init(): boolean {
-    this.getHTML().append(this.navigation.getHTML());
+    this.view.getWrapper().append(this.navigation.getHTML());
     return true;
   }
 

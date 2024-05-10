@@ -1,10 +1,14 @@
 export const PAGE_LINK_TEXT = {
   en: {
+    ABOUT: 'About us',
+    CATALOG: 'Catalog',
     LOGIN: 'Login',
     MAIN: 'Main',
     REGISTRATION: 'Register',
   },
   ru: {
+    ABOUT: 'О нас',
+    CATALOG: 'Каталог',
     LOGIN: 'Вход',
     MAIN: 'Главная',
     REGISTRATION: 'Регистрация',
@@ -12,6 +16,8 @@ export const PAGE_LINK_TEXT = {
 } as const;
 
 export const PAGE_LINK_TEXT_KEYS = {
+  ABOUT: 'ABOUT',
+  CATALOG: 'CATALOG',
   LOGIN: 'LOGIN',
   MAIN: 'MAIN',
   REGISTRATION: 'REGISTRATION',

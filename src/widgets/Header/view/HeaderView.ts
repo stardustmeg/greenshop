@@ -1,7 +1,7 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import observeStore, { selectCurrentLanguage, selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
@@ -19,12 +19,24 @@ class HeaderView {
 
   private logoutButton: ButtonModel;
 
+  private navigationWrapper: HTMLDivElement;
+
   private switchLanguageButton: ButtonModel;
+
+  private toCartLink: LinkModel;
+
+  private toProfileLink: LinkModel;
+
+  private wrapper: HTMLDivElement;
 
   constructor() {
     this.logoutButton = this.createLogoutButton();
     this.linkLogo = this.createLinkLogo();
+    this.toCartLink = this.createToCartLink();
+    this.toProfileLink = this.createToProfileLink();
     this.switchLanguageButton = this.createSwitchLanguageButton();
+    this.navigationWrapper = this.createNavigationWrapper();
+    this.wrapper = this.createWrapper();
     this.header = this.createHTML();
   }
 
@@ -34,8 +46,14 @@ class HeaderView {
       tag: 'header',
     });
 
-    this.header.append(this.linkLogo.getHTML(), this.switchLanguageButton.getHTML(), this.logoutButton.getHTML());
+    this.header.append(this.wrapper);
     return this.header;
+  }
+
+  private createLanguageButtonSVG(): SVGSVGElement {
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.SWITCH_LANGUAGE[getStore().getState().currentLanguage]));
+    return svg;
   }
 
   private createLinkLogo(): LinkModel {
@@ -63,20 +81,101 @@ class HeaderView {
     return this.logoutButton;
   }
 
+  private createNavigationWrapper(): HTMLDivElement {
+    this.navigationWrapper = createBaseElement({
+      cssClasses: [styles.navigationWrapper],
+      tag: 'div',
+    });
+    this.navigationWrapper.append(
+      this.switchLanguageButton.getHTML(),
+      this.logoutButton.getHTML(),
+      this.toCartLink.getHTML(),
+      this.toProfileLink.getHTML(),
+    );
+    return this.navigationWrapper;
+  }
+
   private createSwitchLanguageButton(): ButtonModel {
     this.switchLanguageButton = new ButtonModel({
       classes: [styles.switchLanguageButton],
     });
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.SWITCH_LANGUAGE[getStore().getState().currentLanguage]));
-    this.switchLanguageButton.getHTML().append(svg);
+
+    this.switchLanguageButton.getHTML().append(this.createLanguageButtonSVG());
 
     observeStore(selectCurrentLanguage, () => {
       clearOutElement(this.switchLanguageButton.getHTML());
-      this.switchLanguageButton.getHTML().append(this.createSwitchLanguageButton().getHTML());
+      this.switchLanguageButton.getHTML().append(this.createLanguageButtonSVG());
     });
 
     return this.switchLanguageButton;
+  }
+
+  private createToCartLink(): LinkModel {
+    this.toCartLink = new LinkModel({
+      attrs: {
+        href: PAGE_ID.CART_PAGE,
+      },
+      classes: [styles.cartLink],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.CART));
+    this.toCartLink.getHTML().append(svg);
+
+    this.toCartLink
+      .getHTML()
+      .classList.toggle(styles.cartLinkActive, getStore().getState().currentPage === PAGE_ID.CART_PAGE);
+
+    observeStore(selectCurrentPage, () =>
+      this.toCartLink
+        .getHTML()
+        .classList.toggle(styles.cartLinkActive, getStore().getState().currentPage === PAGE_ID.CART_PAGE),
+    );
+
+    return this.toCartLink;
+  }
+
+  private createToProfileLink(): LinkModel {
+    this.toProfileLink = new LinkModel({
+      attrs: {
+        href: PAGE_ID.USER_PROFILE_PAGE,
+      },
+      classes: [styles.profileLink],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.PROFILE));
+    this.toProfileLink.getHTML().append(svg);
+
+    if (!getStore().getState().currentUser) {
+      this.toProfileLink.getHTML().classList.add(styles.hidden);
+    }
+
+    observeStore(selectCurrentUser, () =>
+      this.toProfileLink.getHTML().classList.toggle(styles.hidden, getStore().getState().currentUser === null),
+    );
+
+    this.toProfileLink
+      .getHTML()
+      .classList.toggle(styles.profileLinkActive, getStore().getState().currentPage === PAGE_ID.USER_PROFILE_PAGE);
+
+    observeStore(selectCurrentPage, () =>
+      this.toProfileLink
+        .getHTML()
+        .classList.toggle(styles.profileLinkActive, getStore().getState().currentPage === PAGE_ID.USER_PROFILE_PAGE),
+    );
+
+    return this.toProfileLink;
+  }
+
+  private createWrapper(): HTMLDivElement {
+    this.wrapper = createBaseElement({
+      cssClasses: [styles.wrapper],
+      tag: 'div',
+    });
+
+    this.wrapper.append(this.linkLogo.getHTML(), this.navigationWrapper);
+    return this.wrapper;
   }
 
   public getHTML(): HTMLElement {
@@ -93,6 +192,18 @@ class HeaderView {
 
   public getSwitchLanguageButton(): ButtonModel {
     return this.switchLanguageButton;
+  }
+
+  public getToCartLink(): LinkModel {
+    return this.toCartLink;
+  }
+
+  public getToProfileLink(): LinkModel {
+    return this.toProfileLink;
+  }
+
+  public getWrapper(): HTMLDivElement {
+    return this.wrapper;
   }
 }
 

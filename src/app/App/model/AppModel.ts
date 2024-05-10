@@ -24,8 +24,8 @@ class AppModel {
   private createRoutes(): Promise<Map<string, () => Promise<Page>>> {
     const routesMap = {
       [PAGE_ID.ABOUT_US_PAGE]: async (): Promise<Page> => {
-        const { default: AbooutUsPageModel } = await import('@/pages/AboutUsPage/model/AboutUsPageModel.ts');
-        return new AbooutUsPageModel(this.appView.getHTML());
+        const { default: AboutUsPageModel } = await import('@/pages/AboutUsPage/model/AboutUsPageModel.ts');
+        return new AboutUsPageModel(this.appView.getHTML());
       },
       [PAGE_ID.CART_PAGE]: async (): Promise<Page> => {
         const { default: CartPageModel } = await import('@/pages/CartPage/model/CartPageModel.ts');
@@ -37,7 +37,7 @@ class AppModel {
       },
       [PAGE_ID.DEFAULT_PAGE]: async (): Promise<Page> => {
         const { default: MainPageModel } = await import('@/pages/MainPage/model/MainPageModel.ts');
-        return new MainPageModel(this.appView.getHTML());
+        return new MainPageModel(this.appView.getHTML(), this.router);
       },
       [PAGE_ID.ITEM_PAGE]: async (): Promise<Page> => {
         const { default: ItemPageModel } = await import('@/pages/ItemPage/model/ItemPageModel.ts');
@@ -49,7 +49,7 @@ class AppModel {
       },
       [PAGE_ID.MAIN_PAGE]: async (): Promise<Page> => {
         const { default: MainPageModel } = await import('@/pages/MainPage/model/MainPageModel.ts');
-        return new MainPageModel(this.appView.getHTML());
+        return new MainPageModel(this.appView.getHTML(), this.router);
       },
       [PAGE_ID.NOT_FOUND_PAGE]: async (): Promise<Page> => {
         const { default: NotFoundPageModel } = await import('@/pages/NotFoundPage/model/NotFoundPageModel.ts');

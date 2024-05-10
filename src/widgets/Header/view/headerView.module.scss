@@ -4,27 +4,37 @@
   right: 0;
   top: 0;
   z-index: 1;
-  display: grid;
-  align-items: center;
-  justify-content: space-between;
-  grid-template-columns: repeat(4, max-content);
-  border-bottom: 10px solid var(--steam-green-800);
-  border-radius: var(--medium-br);
-  padding: calc(var(--small-offset) / 4) var(--small-offset);
+  border-bottom: 1px solid var(--steam-green-300);
   width: 100%;
-  max-width: 1440px;
   background-color: var(--white);
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0 var(--small-offset);
+  max-width: 1440px;
+}
+
+.navigationWrapper {
+  display: flex;
+  align-items: center;
+  order: 3;
+  margin-left: auto;
+  gap: var(--extra-small-offset);
 }
 
 .switchLanguageButton {
   display: flex;
-  justify-self: end;
-  grid-column: 3;
+  align-items: center;
+  order: 3;
   overflow: hidden;
-  margin-left: auto;
+  border: 2px solid var(--noble-gray-300);
   border-radius: 50%;
   width: 30px;
   height: 30px;
+  transition: border-color 0.2s;
 
   svg {
     width: 30px;
@@ -33,13 +43,14 @@
 
   @media (hover: hover) {
     &:hover {
-      cursor: pointer;
+      border-color: var(--steam-green-800);
     }
   }
 }
 
 .logo {
-  grid-column: 1;
+  order: 1;
+  margin-right: auto;
   width: 40px;
   height: 40px;
 
@@ -60,7 +71,7 @@
 }
 
 .logoutButton {
-  grid-column: 4;
+  order: 4;
   border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
   font: var(--regular-font);
@@ -85,4 +96,67 @@
     background-color: var(--noble-gray-300);
     pointer-events: none;
   }
+}
+
+.cartLink,
+.profileLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--noble-gray-800);
+    transition: fill 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        fill: var(--steam-green-800);
+      }
+    }
+  }
+}
+
+.cartLink {
+  order: 1;
+}
+
+.cartLinkActive {
+  pointer-events: none;
+
+  svg {
+    fill: var(--steam-green-800);
+  }
+}
+
+.profileLink {
+  order: 2;
+
+  svg {
+    stroke: var(--noble-gray-800);
+    transition: stroke 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        stroke: var(--steam-green-800);
+      }
+    }
+  }
+}
+
+.profileLinkActive {
+  pointer-events: none;
+
+  svg {
+    stroke: var(--steam-green-800);
+  }
+}
+
+.hidden {
+  display: none;
 }
