@@ -1,7 +1,7 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import observeStore, { selectCurrentLanguage, selectCurrentPage } from '@/shared/Store/observer.ts';
+import observeStore, { selectCurrentLanguage, selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
@@ -122,6 +122,10 @@ class HeaderView {
     svg.append(createSVGUse(SVG_DETAILS.CART));
     this.toCartLink.getHTML().append(svg);
 
+    this.toCartLink
+      .getHTML()
+      .classList.toggle(styles.cartLinkActive, getStore().getState().currentPage === PAGE_ID.CART_PAGE);
+
     observeStore(selectCurrentPage, () =>
       this.toCartLink
         .getHTML()
@@ -142,6 +146,18 @@ class HeaderView {
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.PROFILE));
     this.toProfileLink.getHTML().append(svg);
+
+    if (!getStore().getState().currentUser) {
+      this.toProfileLink.getHTML().classList.add(styles.hidden);
+    }
+
+    observeStore(selectCurrentUser, () =>
+      this.toProfileLink.getHTML().classList.toggle(styles.hidden, getStore().getState().currentUser === null),
+    );
+
+    this.toProfileLink
+      .getHTML()
+      .classList.toggle(styles.profileLinkActive, getStore().getState().currentPage === PAGE_ID.USER_PROFILE_PAGE);
 
     observeStore(selectCurrentPage, () =>
       this.toProfileLink

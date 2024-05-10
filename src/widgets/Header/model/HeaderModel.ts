@@ -27,24 +27,18 @@ class HeaderModel {
 
   private checkAuthUser(): boolean {
     const { currentUser } = getStore().getState();
-    if (currentUser) {
-      this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE).catch(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
+    if (!currentUser) {
+      this.router
+        .navigateTo(PAGE_ID.LOGIN_PAGE)
+        .catch(() =>
+          serverMessageModel.showServerMessage(
+            SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+            MESSAGE_STATUS.ERROR,
+          ),
         );
-      });
-      return true;
+      return false;
     }
-    this.router
-      .navigateTo(PAGE_ID.LOGIN_PAGE)
-      .catch(() =>
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        ),
-      );
-    return false;
+    return true;
   }
 
   private checkCurrentUser(): boolean {
@@ -157,7 +151,14 @@ class HeaderModel {
     const logo = this.view.getToProfileLink().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
-      this.checkAuthUser();
+      if (this.checkAuthUser()) {
+        this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE).catch(() => {
+          serverMessageModel.showServerMessage(
+            SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+            MESSAGE_STATUS.ERROR,
+          );
+        });
+      }
     });
     return true;
   }
