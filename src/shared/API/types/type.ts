@@ -3,34 +3,42 @@ import { type Category, type Size } from '@/shared/types/product.ts';
 export const Attribute = {
   FULL_DESCRIPTION: 'full_description',
   SIZE: 'size',
-};
+} as const;
 
-export enum TokenType {
-  ANONYM = 'anonym',
-  AUTH = 'auth',
-}
+export const TokenType = {
+  ANONYM: 'anonym',
+  AUTH: 'auth',
+} as const;
 
-export enum FilterFields {
-  CATEGORY = 'categories.id',
-  NEW_ARRIVAL = 'variants.attributes.new_arrival:true',
-  PRICE = 'variants.price.centAmount',
-  SALE = 'variants.prices.discounted:exists',
-  SIZE = 'variants.attributes.size.key',
-}
+export type TokenTypeType = (typeof TokenType)[keyof typeof TokenType];
 
-export enum SortFields {
-  NAME = 'name',
-  PRICE = 'price',
-}
+export const FilterFields = {
+  CATEGORY: 'categories.id',
+  NEW_ARRIVAL: 'variants.attributes.new_arrival:true',
+  PRICE: 'variants.price.centAmount',
+  SALE: 'variants.prices.discounted:exists',
+  SIZE: 'variants.attributes.size.key',
+} as const;
 
-export enum SortDirection {
-  ASC = 'asc',
-  DESC = 'desc',
-}
+export type FilterFieldsType = (typeof FilterFields)[keyof typeof FilterFields];
+
+const SortFields = {
+  NAME: 'name',
+  PRICE: 'price',
+} as const;
+
+type SortFieldsType = (typeof SortFields)[keyof typeof SortFields];
+
+export const SortDirection = {
+  ASC: 'asc',
+  DESC: 'desc',
+} as const;
+
+type SortDirectionType = (typeof SortDirection)[keyof typeof SortDirection];
 
 export type SortOptions = {
-  direction: SortDirection;
-  field: SortFields;
+  direction: SortDirectionType;
+  field: SortFieldsType;
   locale?: string;
 };
 

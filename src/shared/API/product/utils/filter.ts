@@ -1,8 +1,10 @@
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 
-import { FilterFields, type PriceRange } from '../../types/type.ts';
+import type { FilterFieldsType, PriceRange } from '../../types/type.ts';
 
-export default function addFilter(field: FilterFields, value?: PriceRange | string): string {
+import { FilterFields } from '../../types/type.ts';
+
+export default function addFilter(field: FilterFieldsType, value?: PriceRange | string): string {
   let result = '';
   switch (field) {
     case FilterFields.CATEGORY:
