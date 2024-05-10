@@ -1,6 +1,6 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import type { AddressType } from '@/shared/types/address.ts';
-import type { Address, PersonalData, User, UserCredentials } from '@/shared/types/user.ts';
+import type { Address, PersonalData, User } from '@/shared/types/user.ts';
 
 import AddressModel from '@/entities/Address/model/AddressModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
@@ -13,7 +13,6 @@ import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { SIZES } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
-import { createGreetingMessage } from '@/shared/utils/messageTemplate.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
@@ -69,13 +68,6 @@ class RegisterFormModel {
     return currentUserData;
   }
 
-  private getCredentialsData(): UserCredentials {
-    return {
-      email: this.view.getEmailField().getView().getValue(),
-      password: this.view.getPasswordField().getView().getValue(),
-    };
-  }
-
   private getFormUserData(): User {
     const userData: User = {
       addresses: [],
@@ -125,28 +117,8 @@ class RegisterFormModel {
     return true;
   }
 
-  private loginUser(userLoginData: UserCredentials): void {
-    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
-    this.view.getSubmitFormButton().getHTML().append(loader);
-    getCustomerModel()
-      .authCustomer(userLoginData)
-      .then((data) => {
-        if (data) {
-          getStore().dispatch(switchIsUserLoggedIn(true));
-          serverMessageModel.showServerMessage(createGreetingMessage(), MESSAGE_STATUS.SUCCESS);
-        }
-      })
-      .catch(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].INCORRECT_PASSWORD,
-          MESSAGE_STATUS.ERROR,
-        );
-      })
-      .finally(() => loader.remove());
-  }
-
   private registerUser(): void {
-    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    const loader = new LoaderModel(SIZES.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .registerNewCustomer(this.getFormUserData())
@@ -234,14 +206,17 @@ class RegisterFormModel {
   }
 
   private successfulUserRegistration(newUserData: User): void {
+    const loader = new LoaderModel(SIZES.SMALL).getHTML();
+    this.view.getSubmitFormButton().getHTML().append(loader);
     this.updateUserData(newUserData)
-      .then(() => this.loginUser(this.getCredentialsData()))
+      .then(() => getStore().dispatch(switchIsUserLoggedIn(true)))
       .catch(() => {
         serverMessageModel.showServerMessage(
           SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
           MESSAGE_STATUS.ERROR,
         );
-      });
+      })
+      .finally(() => loader.remove());
   }
 
   private switchSubmitFormButtonAccess(): boolean {

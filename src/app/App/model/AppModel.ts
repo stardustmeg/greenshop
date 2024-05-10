@@ -47,9 +47,7 @@ class AppModel {
     };
 
     const routes = new Map<string, () => Promise<Page>>();
-    Object.entries(routesMap).forEach(([key, value]) => {
-      routes.set(key, value);
-    });
+    Object.entries(routesMap).forEach(([key, value]) => routes.set(key, value));
 
     return Promise.resolve(routes);
   }

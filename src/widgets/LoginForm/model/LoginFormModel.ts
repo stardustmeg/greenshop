@@ -38,7 +38,7 @@ class LoginFormModel {
 
   private loginUser(userLoginData: UserCredentials): void {
     this.view.getSubmitFormButton().setDisabled();
-    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    const loader = new LoaderModel(SIZES.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .hasEmail(userLoginData.email)
@@ -62,7 +62,7 @@ class LoginFormModel {
   }
 
   private loginUserHandler(userLoginData: UserCredentials): void {
-    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    const loader = new LoaderModel(SIZES.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .authCustomer(userLoginData)
