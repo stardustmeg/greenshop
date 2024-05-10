@@ -31,7 +31,6 @@ class RouterModel {
       .slice(NEXT_SEGMENT, PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
       .join(DEFAULT_SEGMENT);
     const url = `${pathnameApp}/${path}`;
-    history.pushState(path, '', url);
 
     const pathParts = url.split(DEFAULT_SEGMENT);
     const hasRoute = this.routes.has(pathParts[1]);
@@ -43,6 +42,7 @@ class RouterModel {
     }
 
     await this.routes.get(pathParts[1])?.();
+    history.pushState(path, '', url);
   }
 
   public setRoutes(routes: Map<string, () => Promise<Page>>): Map<string, () => Promise<Page>> {

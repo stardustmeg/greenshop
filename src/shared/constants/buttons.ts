@@ -39,3 +39,15 @@ export const LANGUAGE_CHOICE = {
 } as const;
 
 export type LanguageChoiceType = (typeof LANGUAGE_CHOICE)[keyof typeof LANGUAGE_CHOICE];
+
+export const MORE_TEXT = {
+  en: { HIDE: 'Hide', MORE: 'More' },
+  ru: { HIDE: 'Скрыть', MORE: 'Подробнее' },
+};
+
+export const MORE_TEXT_KEYS = {
+  HIDE: 'HIDE',
+  MORE: 'MORE',
+};
+
+export type MoreTextKeysType = (typeof MORE_TEXT_KEYS)[keyof typeof MORE_TEXT_KEYS];

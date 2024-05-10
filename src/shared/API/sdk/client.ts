@@ -14,6 +14,8 @@ import {
   createAuthForPasswordFlow,
 } from '@commercetools/sdk-client-v2';
 
+import type { TokenTypeType } from '../types/type.ts';
+
 import { TokenType } from '../types/type.ts';
 import getTokenCache from './token-cache/token-cache.ts';
 
@@ -91,7 +93,7 @@ export default class ApiClient {
     return createAuthForPasswordFlow(authOptions);
   }
 
-  private getClient(middleware: Middleware, token: TokenType): Client {
+  private getClient(middleware: Middleware, token: TokenTypeType): Client {
     const defaultOptions = this.getDefaultOptions(token);
     const opt: RefreshAuthMiddlewareOptions = {
       ...defaultOptions,
@@ -109,7 +111,7 @@ export default class ApiClient {
     return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey: this.projectKey });
   }
 
-  private getDefaultOptions(tokenType: TokenType): AuthMiddlewareOptions {
+  private getDefaultOptions(tokenType: TokenTypeType): AuthMiddlewareOptions {
     return {
       credentials: {
         clientId: this.clientID,

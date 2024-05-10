@@ -2,6 +2,8 @@ import type { TokenCache, TokenStore } from '@commercetools/sdk-client-v2';
 
 import Cookies from 'js-cookie';
 
+import type { TokenTypeType } from '../../types/type.ts';
+
 import { TokenType } from '../../types/type.ts';
 
 export class MyTokenCache implements TokenCache {
@@ -61,6 +63,6 @@ const createTokenCache = (name: string): MyTokenCache => new MyTokenCache(name);
 const anonymTokenCache = createTokenCache(TokenType.ANONYM);
 const authTokenCache = createTokenCache(TokenType.AUTH);
 
-export default function getTokenCache(tokenType?: TokenType): MyTokenCache {
+export default function getTokenCache(tokenType?: TokenTypeType): MyTokenCache {
   return tokenType === TokenType.AUTH || authTokenCache.isExist() ? authTokenCache : anonymTokenCache;
 }

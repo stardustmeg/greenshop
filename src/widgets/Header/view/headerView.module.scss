@@ -190,7 +190,8 @@
 }
 
 .burgerButton {
-  position: relative;
+  position: absolute;
+  right: 15px;
   z-index: 10;
   order: 4;
   width: 25px;
