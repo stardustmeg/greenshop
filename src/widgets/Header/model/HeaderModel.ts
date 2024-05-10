@@ -69,8 +69,8 @@ class HeaderModel {
   }
 
   private setChangeLanguageButtonHandler(): boolean {
-    const switchLanguageLogo = this.view.getswitchLanguageLogo();
-    switchLanguageLogo.addEventListener('click', () => {
+    const switchLanguageButton = this.view.getSwitchLanguageButton().getHTML();
+    switchLanguageButton.addEventListener('click', () => {
       const newLanguage =
         getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
       getStore().dispatch(setCurrentLanguage(newLanguage));

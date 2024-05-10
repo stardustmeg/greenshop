@@ -1,0 +1,17 @@
+.userProfilePage {
+  position: relative;
+  display: block;
+  padding: 0 var(--small-offset);
+  animation: show 0.2s ease-out forwards;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}

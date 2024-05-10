@@ -19,12 +19,12 @@ class HeaderView {
 
   private logoutButton: ButtonModel;
 
-  private switchLanguageLogo: HTMLDivElement;
+  private switchLanguageButton: ButtonModel;
 
   constructor() {
     this.logoutButton = this.createLogoutButton();
     this.linkLogo = this.createLinkLogo();
-    this.switchLanguageLogo = this.createSwitchLanguageLogo();
+    this.switchLanguageButton = this.createSwitchLanguageButton();
     this.header = this.createHTML();
   }
 
@@ -34,16 +34,14 @@ class HeaderView {
       tag: 'header',
     });
 
-    this.header.append(this.linkLogo.getHTML(), this.switchLanguageLogo, this.logoutButton.getHTML());
+    this.header.append(this.linkLogo.getHTML(), this.switchLanguageButton.getHTML(), this.logoutButton.getHTML());
     return this.header;
   }
 
   private createLinkLogo(): LinkModel {
     this.linkLogo = new LinkModel({
       attrs: {
-        height: '30px',
         href: PAGE_ID.DEFAULT_PAGE,
-        width: '30px',
       },
       classes: [styles.logo],
     });
@@ -65,21 +63,20 @@ class HeaderView {
     return this.logoutButton;
   }
 
-  private createSwitchLanguageLogo(): HTMLDivElement {
-    const switchLanguageLogo = createBaseElement({
-      cssClasses: [styles.switchLanguageLogo],
-      tag: 'div',
+  private createSwitchLanguageButton(): ButtonModel {
+    this.switchLanguageButton = new ButtonModel({
+      classes: [styles.switchLanguageButton],
     });
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.SWITCH_LANGUAGE[getStore().getState().currentLanguage]));
-    switchLanguageLogo.append(svg);
+    this.switchLanguageButton.getHTML().append(svg);
 
     observeStore(selectCurrentLanguage, () => {
-      clearOutElement(switchLanguageLogo);
-      switchLanguageLogo.append(this.createSwitchLanguageLogo());
+      clearOutElement(this.switchLanguageButton.getHTML());
+      this.switchLanguageButton.getHTML().append(this.createSwitchLanguageButton().getHTML());
     });
 
-    return switchLanguageLogo;
+    return this.switchLanguageButton;
   }
 
   public getHTML(): HTMLElement {
@@ -94,8 +91,8 @@ class HeaderView {
     return this.logoutButton;
   }
 
-  public getswitchLanguageLogo(): HTMLDivElement {
-    return this.switchLanguageLogo;
+  public getSwitchLanguageButton(): ButtonModel {
+    return this.switchLanguageButton;
   }
 }
 
