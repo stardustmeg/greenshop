@@ -1,6 +1,5 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { PAGE_TIMEOUT_DURATION } from '@/shared/constants/animations.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { PAGE_DESCRIPTION_KEYS } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
@@ -70,10 +69,9 @@ class NotFoundPageView {
   }
 
   private createToMainButton(): ButtonModel {
-    const { currentLanguage } = getStore().getState();
     this.toMainButton = new ButtonModel({
       classes: [styles.toMainButton],
-      text: BUTTON_TEXT[currentLanguage].BACK_TO_MAIN,
+      text: BUTTON_TEXT[getStore().getState().currentLanguage].BACK_TO_MAIN,
     });
     observeCurrentLanguage(this.toMainButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.BACK_TO_MAIN);
     return this.toMainButton;
@@ -87,21 +85,9 @@ class NotFoundPageView {
     return this.toMainButton;
   }
 
-  public hide(): boolean {
-    this.page.classList.add(styles.notFoundPage_hidden);
-    return true;
-  }
-
   public setPageDescription(text: string): HTMLParagraphElement {
     this.description.innerText = text;
     return this.description;
-  }
-
-  public show(): boolean {
-    setTimeout(() => {
-      this.page.classList.remove(styles.notFoundPage_hidden);
-    }, PAGE_TIMEOUT_DURATION);
-    return true;
   }
 }
 

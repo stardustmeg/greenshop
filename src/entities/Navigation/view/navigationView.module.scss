@@ -1,14 +1,19 @@
 .navigation {
   display: flex;
+  align-items: center;
   align-self: center;
   justify-content: center;
-  grid-column: 2;
-  grid-row: 1;
-  gap: var(--extra-small-offset);
+  order: 2;
+  margin: 0 auto;
+  height: 70px;
 }
 
 .link {
   position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 calc(var(--extra-small-offset) / 2);
+  height: 100%;
   font: var(--regular-font);
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -19,7 +24,7 @@
     content: '';
     position: absolute;
     left: 0;
-    bottom: -4px;
+    bottom: -1px;
     width: 100%;
     height: 2px;
     background-color: currentcolor;

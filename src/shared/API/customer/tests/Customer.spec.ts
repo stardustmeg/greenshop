@@ -74,8 +74,22 @@ describe('Checking Customer Model', () => {
     expect(customer).toHaveProperty('version');
   });
 
+  it('should authenticate the customer', async () => {
+    auth = await customerModel.authCustomer(user);
+    expect(typeof auth).toBe('object');
+    expect(auth).toHaveProperty('addresses');
+    expect(auth).toHaveProperty('defaultBillingAddressId');
+    expect(auth).toHaveProperty('defaultShippingAddressId');
+    expect(auth).toHaveProperty('email');
+    expect(auth).toHaveProperty('firstName');
+    expect(auth).toHaveProperty('id');
+    expect(auth).toHaveProperty('lastName');
+    expect(auth).toHaveProperty('password');
+    expect(auth).toHaveProperty('version');
+  });
+
   it('should edit the customer', async () => {
-    if (customer) {
+    if (auth) {
       editCustomer = await customerModel.editCustomer(
         [
           CustomerModel.actionEditFirstName('John'),
@@ -84,7 +98,7 @@ describe('Checking Customer Model', () => {
           CustomerModel.actionAddAddress(address),
           CustomerModel.actionEditDateOfBirth('1990-01-01'),
         ],
-        customer,
+        auth,
       );
       expect(typeof editCustomer).toBe('object');
       expect(editCustomer).toHaveProperty('addresses');
@@ -128,39 +142,9 @@ describe('Checking Customer Model', () => {
     }
   });
 
-  it('should found the customer by id', async () => {
-    if (customer) {
-      const getCustomer = await customerModel.getCustomerByID(customer.id);
-      expect(typeof getCustomer).toBe('object');
-      expect(getCustomer).toHaveProperty('addresses');
-      expect(getCustomer).toHaveProperty('defaultBillingAddressId');
-      expect(getCustomer).toHaveProperty('defaultShippingAddressId');
-      expect(getCustomer).toHaveProperty('email');
-      expect(getCustomer).toHaveProperty('firstName');
-      expect(getCustomer).toHaveProperty('id');
-      expect(getCustomer).toHaveProperty('lastName');
-      expect(getCustomer).toHaveProperty('password');
-      expect(getCustomer).toHaveProperty('version');
-    }
-  });
-
-  it('should authenticate the customer', async () => {
-    auth = await customerModel.authCustomer({ email: 'test-test-test@example.com', password: 'Qqq11' });
-    expect(typeof auth).toBe('object');
-    expect(auth).toHaveProperty('addresses');
-    expect(auth).toHaveProperty('defaultBillingAddressId');
-    expect(auth).toHaveProperty('defaultShippingAddressId');
-    expect(auth).toHaveProperty('email');
-    expect(auth).toHaveProperty('firstName');
-    expect(auth).toHaveProperty('id');
-    expect(auth).toHaveProperty('lastName');
-    expect(auth).toHaveProperty('password');
-    expect(auth).toHaveProperty('version');
-  });
-
   it('should edit the customer password', async () => {
-    if (auth) {
-      editPassword = await customerModel.editPassword(auth, 'Qqq11', 'Qqq11');
+    if (editAddress) {
+      editPassword = await customerModel.editPassword(editAddress, 'Qqq11', 'Qqq11');
       expect(typeof editPassword).toBe('object');
       expect(editPassword).toHaveProperty('addresses');
       expect(editPassword).toHaveProperty('defaultBillingAddressId');

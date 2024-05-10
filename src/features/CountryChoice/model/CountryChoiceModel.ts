@@ -7,6 +7,7 @@ import observeStore, {
 } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { BILLING_ADDRESS_COUNTRY } from '@/shared/constants/forms/register/fieldParams.ts';
+import formattedText from '@/shared/utils/formattedText.ts';
 import getCountryIndex from '@/shared/utils/getCountryIndex.ts';
 
 import CountryChoiceView from '../view/CountryChoiceView.ts';
@@ -60,7 +61,7 @@ class CountryChoiceModel {
 
   private setCountryToStore(element: HTMLDivElement | HTMLInputElement, key: string): boolean {
     const currentCountryIndex = getCountryIndex(
-      element instanceof HTMLDivElement ? element.textContent || '' : element.value,
+      element instanceof HTMLDivElement ? formattedText(element.textContent ?? '') : formattedText(element.value),
     );
 
     const action = key === BILLING_ADDRESS_COUNTRY.inputParams.id ? setBillingCountry : setShippingCountry;

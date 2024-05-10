@@ -5,6 +5,7 @@ import createSVGUse from './createSVGUse.ts';
 import getCountryIndex from './getCountryIndex.ts';
 import isKeyOfUserData from './isKeyOfUserData.ts';
 import { isNotNullable, isNullable } from './isNullable.ts';
+import observeCurrentLanguage from './observeCurrentLanguage.ts';
 import { a, div, h2, h3, iconFromCode, img, input, label, main, span } from './tags.ts';
 
 const baseElement = new BaseElement(
@@ -249,5 +250,11 @@ const userData = {
 describe('Checking isKeyOfUserData function', () => {
   it('Email should return true', () => {
     expect(isKeyOfUserData(userData, 'email')).toBe(true);
+  });
+});
+
+describe('Checking observeCurrentLanguage function', () => {
+  it('should return true', () => {
+    expect(observeCurrentLanguage(document.body, {}, 'test')).toBe(true);
   });
 });

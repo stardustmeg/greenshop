@@ -2,9 +2,10 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   margin: 0 auto;
+  padding: 60px 0;
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh - 141px);
   max-width: 1440px;
 }

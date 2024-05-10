@@ -2,24 +2,22 @@ import type { User, UserCredentials } from '@/shared/types/user.ts';
 
 import { DEFAULT_PAGE, MAX_PRICE, MIN_PRICE, PRODUCT_LIMIT } from '@/shared/constants/product.ts';
 import {
-  type ByProjectKeyRequestBuilder,
   type CategoryPagedQueryResponse,
   type ClientResponse,
   type Customer,
   type CustomerPagedQueryResponse,
   type CustomerSignInResult,
-  type CustomerUpdateAction,
+  type MyCustomerUpdateAction,
   type Product,
   type ProductProjectionPagedQueryResponse,
   type ProductProjectionPagedSearchResponse,
-  createApiBuilderFromCtpClient,
 } from '@commercetools/platform-sdk';
-import { type Client } from '@commercetools/sdk-client-v2';
-
-import type { OptionsRequest } from '../types/type.ts';
 
 import makeSortRequest from '../product/utils/sort.ts';
-import client from './client.ts';
+import { type OptionsRequest, TokenType } from '../types/type.ts';
+import { isErrorResponse } from '../types/validation.ts';
+import ApiClient from './client.ts';
+import getTokenCache from './token-cache/token-cache.ts';
 
 type Nullable<T> = T | null;
 
@@ -36,9 +34,7 @@ const clientID = import.meta.env.VITE_APP_CTP_CLIENT_ID;
 const clientSecret = import.meta.env.VITE_APP_CTP_CLIENT_SECRET;
 
 export class RootApi {
-  private client: Client;
-
-  private connection: ByProjectKeyRequestBuilder;
+  private client: ApiClient;
 
   private credentials: Credentials;
 
@@ -50,60 +46,56 @@ export class RootApi {
       scopes,
     };
 
-    this.client = client(
+    this.client = new ApiClient(
       this.credentials.projectKey || '',
       this.credentials.clientID || '',
       this.credentials.clientSecret || '',
       this.credentials.scopes || '',
     );
-
-    this.connection = this.root(this.client, projectKey);
-  }
-
-  private root(client: Client, projectKey: string): ByProjectKeyRequestBuilder {
-    return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
   }
 
   public async authenticateUser(userLoginData: UserCredentials): Promise<ClientResponse<CustomerSignInResult>> {
-    const data = await this.connection.login().post({ body: userLoginData }).execute();
+    this.client.createAuthConnection(userLoginData);
+    const data = await this.client.apiRoot().me().login().post({ body: userLoginData }).execute();
+    if (!isErrorResponse(data)) {
+      this.client.approveAuth();
+    }
     return data;
   }
 
   public async deleteCustomer(ID: string, version: number): Promise<ClientResponse<Customer>> {
-    const data = await this.connection.customers().withId({ ID }).delete({ queryArgs: { version } }).execute();
+    const data = await this.client.adminRoot().customers().withId({ ID }).delete({ queryArgs: { version } }).execute();
+    this.logoutUser();
     return data;
   }
 
-  public async editCustomer(
-    actions: CustomerUpdateAction[],
-    version: number,
-    ID: string,
-  ): Promise<ClientResponse<Customer>> {
-    const data = await this.connection.customers().withId({ ID }).post({ body: { actions, version } }).execute();
+  public async editCustomer(actions: MyCustomerUpdateAction[], version: number): Promise<ClientResponse<Customer>> {
+    const data = await this.client.apiRoot().me().post({ body: { actions, version } }).execute();
     return data;
   }
 
   public async editPassword(
-    id: string,
     version: number,
     currentPassword: string,
     newPassword: string,
   ): Promise<ClientResponse<Customer>> {
-    const data = await this.connection
-      .customers()
+    const data = await this.client
+      .apiRoot()
+      .me()
       .password()
-      .post({ body: { currentPassword, id, newPassword, version } })
+      .post({ body: { currentPassword, newPassword, version } })
       .execute();
     return data;
   }
 
   public async getCategories(): Promise<ClientResponse<CategoryPagedQueryResponse>> {
-    const data = await this.connection.categories().get().execute();
+    const data = await this.client.apiRoot().categories().get().execute();
     return data;
   }
 
   public async getCategoriesProductCount(): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
-    const data = await this.connection
+    const data = await this.client
+      .apiRoot()
       .productProjections()
       .search()
       .get({
@@ -117,20 +109,17 @@ export class RootApi {
   }
 
   public async getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
-    const data = await this.connection
+    const data = await this.client
+      .apiRoot()
       .customers()
       .get({ queryArgs: { where: `email="${email}"` } })
       .execute();
     return data;
   }
 
-  public async getCustomerByID(ID: string): Promise<ClientResponse<Customer>> {
-    const data = await this.connection.customers().withId({ ID }).get().execute();
-    return data;
-  }
-
   public async getPriceRange(): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
-    const data = await this.connection
+    const data = await this.client
+      .apiRoot()
       .productProjections()
       .search()
       .get({
@@ -144,14 +133,15 @@ export class RootApi {
   }
 
   public async getProductByID(ID: string): Promise<ClientResponse<Product>> {
-    const data = await this.connection.products().withId({ ID }).get().execute();
+    const data = await this.client.apiRoot().products().withId({ ID }).get().execute();
     return data;
   }
 
   public async getProducts(options?: OptionsRequest): Promise<ClientResponse<ProductProjectionPagedQueryResponse>> {
     const { filter, limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, search, sort } = options || {};
 
-    const data = await this.connection
+    const data = await this.client
+      .apiRoot()
       .productProjections()
       .search()
       .get({
@@ -171,7 +161,8 @@ export class RootApi {
   }
 
   public async getSizeProductCount(): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
-    const data = await this.connection
+    const data = await this.client
+      .apiRoot()
       .productProjections()
       .search()
       .get({
@@ -184,12 +175,22 @@ export class RootApi {
     return data;
   }
 
+  public logoutUser(): boolean {
+    getTokenCache(TokenType.AUTH).clear();
+    return this.client.deleteAuthConnection();
+  }
+
   public async registrationUser(userData: User): Promise<ClientResponse<CustomerSignInResult>> {
     const userCredentials = {
       email: userData.email,
       password: userData.password,
     };
-    const data = await this.connection.customers().post({ body: userCredentials }).execute();
+
+    const data = await this.client.apiRoot().me().signup().post({ body: userCredentials }).execute();
+    if (!isErrorResponse(data)) {
+      this.client.createAuthConnection(userData);
+      this.client.approveAuth();
+    }
     return data;
   }
 }

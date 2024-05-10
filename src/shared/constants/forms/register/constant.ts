@@ -2,10 +2,10 @@ export const KEY = 'registration_';
 
 export const TITLE_TEXT = {
   en: {
-    BILLING_ADDRESS: 'Billing address',
+    BILLING_ADDRESS: 'Billing Address',
     CREDENTIALS: 'Credentials',
     PERSONAL: 'Personal',
-    SHIPPING_ADDRESS: 'Shipping address',
+    SHIPPING_ADDRESS: 'Shipping Address',
   },
   ru: {
     BILLING_ADDRESS: 'Адрес выставления счетов',

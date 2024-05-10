@@ -2,32 +2,22 @@ import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts
 import type { UserCredentials } from '@/shared/types/user.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
-import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
-import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { SIZES } from '@/shared/constants/sizes.ts';
-import { isUserCredentialsData } from '@/shared/types/validation/user.ts';
-import { greeting } from '@/shared/utils/messageTemplate.ts';
+import { createGreetingMessage } from '@/shared/utils/messageTemplate.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
 
 class LoginFormModel {
-  private eventMediator = EventMediatorModel.getInstance();
-
   private view: LoginFormView = new LoginFormView();
 
   constructor() {
     this.init();
-  }
-
-  private createGreetingMessage(name: string): string {
-    const greetingMessage = `${greeting(name)} ${SERVER_MESSAGE.SUCCESSFUL_LOGIN}`;
-    return greetingMessage;
   }
 
   private getFormData(): UserCredentials {
@@ -35,9 +25,6 @@ class LoginFormModel {
       email: this.view.getEmailField().getView().getValue(),
       password: this.view.getPasswordField().getView().getValue(),
     };
-
-    this.view.getInputFields().forEach((inputField) => inputField.getView().getInput().clear());
-    this.view.getSubmitFormButton().setDisabled();
     return userData;
   }
 
@@ -45,13 +32,13 @@ class LoginFormModel {
     this.view.getInputFields().forEach((inputField) => this.setInputFieldHandlers(inputField));
     this.setPreventDefaultToForm();
     this.setSubmitFormHandler();
-    this.subscribeToEventMediator();
     this.setSwitchPasswordVisibilityHandler();
     return true;
   }
 
   private loginUser(userLoginData: UserCredentials): void {
-    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    this.view.getSubmitFormButton().setDisabled();
+    const loader = new LoaderModel(SIZES.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .hasEmail(userLoginData.email)
@@ -59,28 +46,37 @@ class LoginFormModel {
         if (response) {
           this.loginUserHandler(userLoginData);
         } else {
-          serverMessageModel.showServerMessage(SERVER_MESSAGE.INVALID_EMAIL, MESSAGE_STATUS.ERROR);
+          serverMessageModel.showServerMessage(
+            SERVER_MESSAGE[getStore().getState().currentLanguage].INVALID_EMAIL,
+            MESSAGE_STATUS.ERROR,
+          );
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.BAD_REQUEST, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+          MESSAGE_STATUS.ERROR,
+        );
       })
       .finally(() => loader.remove());
   }
 
   private loginUserHandler(userLoginData: UserCredentials): void {
-    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    const loader = new LoaderModel(SIZES.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .authCustomer(userLoginData)
       .then((data) => {
-        getStore().dispatch(setCurrentUser(data));
         if (data) {
-          serverMessageModel.showServerMessage(this.createGreetingMessage(data.firstName), MESSAGE_STATUS.SUCCESS);
+          getStore().dispatch(setCurrentUser(data));
+          serverMessageModel.showServerMessage(createGreetingMessage(), MESSAGE_STATUS.SUCCESS);
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE.INCORRECT_PASSWORD, MESSAGE_STATUS.ERROR);
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].INCORRECT_PASSWORD,
+          MESSAGE_STATUS.ERROR,
+        );
       })
       .finally(() => loader.remove());
   }
@@ -109,15 +105,6 @@ class LoginFormModel {
       input.type = input.type === INPUT_TYPE.PASSWORD ? INPUT_TYPE.TEXT : INPUT_TYPE.PASSWORD;
       input.placeholder = input.type === INPUT_TYPE.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
       this.view.switchPasswordElementSVG(input.type);
-    });
-    return true;
-  }
-
-  private subscribeToEventMediator(): boolean {
-    this.eventMediator.subscribe(MEDIATOR_EVENT.USER_LOGIN, (userLoginData) => {
-      if (isUserCredentialsData(userLoginData)) {
-        this.loginUser(userLoginData);
-      }
     });
     return true;
   }

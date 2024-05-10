@@ -3,10 +3,6 @@
   display: block;
   padding: 0 var(--small-offset);
   animation: show 0.2s ease-out forwards;
-
-  &_hidden {
-    animation: hide 0.2s ease-in forwards;
-  }
 }
 
 @keyframes show {
@@ -17,17 +13,6 @@
   100% {
     display: block;
     opacity: 1;
-  }
-}
-
-@keyframes hide {
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    display: none;
-    opacity: 0;
   }
 }
 
@@ -120,6 +105,7 @@
   grid-column: 2 span;
   grid-row: 4;
   font: var(--regular-font);
+  letter-spacing: 1px;
   text-align: center;
   color: var(--steam-green-800);
   gap: calc(var(--extra-small-offset) / 4);

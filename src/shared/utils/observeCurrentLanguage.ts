@@ -1,11 +1,11 @@
 import getStore from '../Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '../Store/observer.ts';
 
-function observeCurrentLanguage(
+const observeCurrentLanguage = (
   el: HTMLElement | Node,
   map: Record<string, Record<string, string>>,
   text: string,
-): boolean {
+): boolean => {
   const element = el;
   const textNode = [...element.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
 
@@ -15,6 +15,6 @@ function observeCurrentLanguage(
     });
   }
   return true;
-}
+};
 
 export default observeCurrentLanguage;

@@ -1,6 +1,5 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { PAGE_TIMEOUT_DURATION } from '@/shared/constants/animations.ts';
 import {
   PAGE_ANSWER,
   PAGE_ANSWER_KEYS,
@@ -36,6 +35,7 @@ class RegistrationPageView {
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
+    this.parent.innerHTML = '';
     this.toLoginPageWrapper = this.createToLoginPageWrapper();
     this.registerSpan = this.createRegisterSpan();
     this.designElement = this.createDesignElement();
@@ -47,10 +47,9 @@ class RegistrationPageView {
   }
 
   private createAuthDescription(): HTMLHeadingElement {
-    const { currentLanguage } = getStore().getState();
     this.authDescription = createBaseElement({
       cssClasses: [styles.authDescription],
-      innerContent: PAGE_DESCRIPTION[currentLanguage].REGISTRATION,
+      innerContent: PAGE_DESCRIPTION[getStore().getState().currentLanguage].REGISTRATION,
       tag: 'h3',
     });
 
@@ -100,13 +99,12 @@ class RegistrationPageView {
   }
 
   private createLoginLink(): LinkModel {
-    const { currentLanguage } = getStore().getState();
     this.loginLink = new LinkModel({
       attrs: {
         href: PAGE_ID.LOGIN_PAGE,
       },
       classes: [styles.loginLink],
-      text: PAGE_LINK_TEXT[currentLanguage].LOGIN,
+      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].LOGIN,
     });
 
     observeCurrentLanguage(this.loginLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.LOGIN);
@@ -115,10 +113,9 @@ class RegistrationPageView {
   }
 
   private createRegisterSpan(): HTMLSpanElement {
-    const { currentLanguage } = getStore().getState();
     this.registerSpan = createBaseElement({
       cssClasses: [styles.registerSpan],
-      innerContent: PAGE_LINK_TEXT[currentLanguage].REGISTRATION,
+      innerContent: PAGE_LINK_TEXT[getStore().getState().currentLanguage].REGISTRATION,
       tag: 'span',
     });
 
@@ -128,10 +125,9 @@ class RegistrationPageView {
   }
 
   private createToLoginPageWrapper(): HTMLSpanElement {
-    const { currentLanguage } = getStore().getState();
     this.toLoginPageWrapper = createBaseElement({
       cssClasses: [styles.toLoginPageWrapper],
-      innerContent: PAGE_ANSWER[currentLanguage].REGISTRATION,
+      innerContent: PAGE_ANSWER[getStore().getState().currentLanguage].REGISTRATION,
       tag: 'span',
     });
 
@@ -154,18 +150,6 @@ class RegistrationPageView {
 
   public getToLoginPageWrapper(): HTMLSpanElement {
     return this.toLoginPageWrapper;
-  }
-
-  public hide(): boolean {
-    this.page.classList.add(styles.registrationPage_hidden);
-    return true;
-  }
-
-  public show(): boolean {
-    setTimeout(() => {
-      this.page.classList.remove(styles.registrationPage_hidden);
-    }, PAGE_TIMEOUT_DURATION);
-    return true;
   }
 }
 export default RegistrationPageView;

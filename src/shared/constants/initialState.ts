@@ -4,7 +4,9 @@ const initialState: State = {
   billingCountry: '',
   categories: [],
   currentLanguage: 'en',
+  currentPage: '',
   currentUser: null,
+  isUserLoggedIn: false,
   products: [],
   shippingCountry: '',
 };

@@ -5,6 +5,11 @@ export const Attribute = {
   SIZE: 'size',
 };
 
+export enum TokenType {
+  ANONYM = 'anonym',
+  AUTH = 'auth',
+}
+
 export enum FilterFields {
   CATEGORY = 'categories.id',
   NEW_ARRIVAL = 'variants.attributes.new_arrival:true',

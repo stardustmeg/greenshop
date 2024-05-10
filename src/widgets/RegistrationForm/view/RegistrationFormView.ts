@@ -126,12 +126,11 @@ class RegistrationFormView {
   }
 
   private createSubmitFormButton(): ButtonModel {
-    const { currentLanguage } = getStore().getState();
     this.submitFormButton = new ButtonModel({
       attrs: {
         type: BUTTON_TYPE.SUBMIT,
       },
-      text: BUTTON_TEXT[currentLanguage].REGISTRATION,
+      text: BUTTON_TEXT[getStore().getState().currentLanguage].REGISTRATION,
     });
 
     observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.REGISTRATION);
@@ -146,14 +145,13 @@ class RegistrationFormView {
     cssClasses: string[],
     inputFields: InputFieldModel[],
   ): HTMLDivElement {
-    const { currentLanguage } = getStore().getState();
     const wrapperElement = createBaseElement({
       cssClasses,
       tag: 'div',
     });
     const titleElement = createBaseElement({
       cssClasses: [styles.title],
-      innerContent: FORM_CONSTANT.TITLE_TEXT[currentLanguage][title],
+      innerContent: FORM_CONSTANT.TITLE_TEXT[getStore().getState().currentLanguage][title],
       tag: 'h3',
     });
     wrapperElement.append(titleElement);
@@ -161,8 +159,10 @@ class RegistrationFormView {
 
     inputFields.forEach((inputField) => {
       const inputFieldElement = inputField.getView().getHTML();
+      const inputHTML = inputField.getView().getInput().getHTML();
       if (inputFieldElement instanceof HTMLLabelElement) {
         inputFieldElement.classList.add(styles.label);
+        inputHTML.classList.add(styles.input);
         wrapperElement.append(inputFieldElement);
       } else if (inputFieldElement instanceof InputModel) {
         wrapperElement.append(inputFieldElement.getHTML());

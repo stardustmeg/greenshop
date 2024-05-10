@@ -1,10 +1,14 @@
 export const PAGE_LINK_TEXT = {
   en: {
+    ABOUT: 'About us',
+    CATALOG: 'Catalog',
     LOGIN: 'Login',
     MAIN: 'Main',
     REGISTRATION: 'Register',
   },
   ru: {
+    ABOUT: 'О нас',
+    CATALOG: 'Каталог',
     LOGIN: 'Вход',
     MAIN: 'Главная',
     REGISTRATION: 'Регистрация',
@@ -12,6 +16,8 @@ export const PAGE_LINK_TEXT = {
 } as const;
 
 export const PAGE_LINK_TEXT_KEYS = {
+  ABOUT: 'ABOUT',
+  CATALOG: 'CATALOG',
   LOGIN: 'LOGIN',
   MAIN: 'MAIN',
   REGISTRATION: 'REGISTRATION',
@@ -25,10 +31,10 @@ export const PAGE_DESCRIPTION = {
     REGISTRATION: 'Enter your information to register.',
   },
   ru: {
-    404: 'Это не та страница, которую ты ищешь. Пожалуйста, вернись на главную страницу.',
+    404: 'Это не та страница, которую вы ищете. Пожалуйста, вернитесь на главную страницу.',
     GREETING: 'Привет, ',
-    LOGIN: 'Введите почту и пароль для входа.',
-    REGISTRATION: 'Введите информацию о себе для регистрации.',
+    LOGIN: 'Введите свой адрес электронной почты и пароль для входа.',
+    REGISTRATION: 'Введите свои данные для регистрации.',
   },
 } as const;
 
@@ -58,9 +64,14 @@ export const PAGE_ANSWER_KEYS = {
 } as const;
 
 export const PAGE_ID = {
+  ABOUT_US_PAGE: 'about',
+  CART_PAGE: 'cart',
+  CATALOG_PAGE: 'catalog',
   DEFAULT_PAGE: '',
+  ITEM_PAGE: 'item',
   LOGIN_PAGE: 'login',
   MAIN_PAGE: 'main',
   NOT_FOUND_PAGE: '404',
   REGISTRATION_PAGE: 'register',
+  USER_PROFILE_PAGE: 'profile',
 } as const;

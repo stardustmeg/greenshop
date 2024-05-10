@@ -6,7 +6,7 @@ import type {
   Customer,
   CustomerPagedQueryResponse,
   CustomerSignInResult,
-  CustomerUpdateAction,
+  MyCustomerUpdateAction,
 } from '@commercetools/platform-sdk';
 
 import getRoot, { type RootApi } from '../../sdk/root.ts';
@@ -24,51 +24,51 @@ export class CustomerModel {
     this.root = getRoot();
   }
 
-  public static actionAddAddress(address: Address): CustomerUpdateAction {
+  public static actionAddAddress(address: Address): MyCustomerUpdateAction {
     return { action: 'addAddress', address: CustomerModel.adaptAddressToServer(address) };
   }
 
-  public static actionEditAddress(address: Address): CustomerUpdateAction {
+  public static actionEditAddress(address: Address): MyCustomerUpdateAction {
     return { action: 'changeAddress', address: CustomerModel.adaptAddressToServer(address), addressId: address.id };
   }
 
-  public static actionEditDateOfBirth(dateOfBirth: string): CustomerUpdateAction {
+  public static actionEditDateOfBirth(dateOfBirth: string): MyCustomerUpdateAction {
     return { action: 'setDateOfBirth', dateOfBirth };
   }
 
-  public static actionEditDefaultBillingAddress(addressId: string): CustomerUpdateAction {
+  public static actionEditDefaultBillingAddress(addressId: string): MyCustomerUpdateAction {
     return { action: 'setDefaultBillingAddress', addressId };
   }
 
-  public static actionEditDefaultShippingAddress(addressId: string): CustomerUpdateAction {
+  public static actionEditDefaultShippingAddress(addressId: string): MyCustomerUpdateAction {
     return { action: 'setDefaultShippingAddress', addressId };
   }
 
-  public static actionEditEmail(email: string): CustomerUpdateAction {
+  public static actionEditEmail(email: string): MyCustomerUpdateAction {
     return { action: 'changeEmail', email };
   }
 
-  public static actionEditFirstName(firstName: string): CustomerUpdateAction {
+  public static actionEditFirstName(firstName: string): MyCustomerUpdateAction {
     return { action: 'setFirstName', firstName };
   }
 
-  public static actionEditLastName(lastName: string): CustomerUpdateAction {
+  public static actionEditLastName(lastName: string): MyCustomerUpdateAction {
     return { action: 'setLastName', lastName };
   }
 
-  public static actionRemoveAddress(address: Address): CustomerUpdateAction {
+  public static actionRemoveAddress(address: Address): MyCustomerUpdateAction {
     return { action: 'removeAddress', addressId: address.id };
   }
 
-  public static actionRemoveBillingAddress(address: Address): CustomerUpdateAction {
+  public static actionRemoveBillingAddress(address: Address): MyCustomerUpdateAction {
     return { action: 'removeBillingAddressId', addressId: address.id };
   }
 
-  public static actionRemoveShippingAddress(address: Address): CustomerUpdateAction {
+  public static actionRemoveShippingAddress(address: Address): MyCustomerUpdateAction {
     return { action: 'removeShippingAddressId', addressId: address.id };
   }
 
-  public static actionSetLocale(locale: string): CustomerUpdateAction {
+  public static actionSetLocale(locale: string): MyCustomerUpdateAction {
     return { action: 'setLocale', locale };
   }
 
@@ -181,24 +181,23 @@ export class CustomerModel {
     return this.getCustomerFromData(data) !== null;
   }
 
-  public async editCustomer(actions: CustomerUpdateAction[], customer: User): Promise<User | null> {
-    const data = await this.root.editCustomer(actions, customer.version, customer.id);
+  public async editCustomer(actions: MyCustomerUpdateAction[], customer: User): Promise<User | null> {
+    const data = await this.root.editCustomer(actions, customer.version);
     return this.getCustomerFromData(data);
   }
 
   public async editPassword(customer: User, currentPassword: string, newPassword: string): Promise<User | null> {
-    const data = await this.root.editPassword(customer.id, customer.version, currentPassword, newPassword);
-    return this.getCustomerFromData(data);
-  }
-
-  public async getCustomerByID(id: string): Promise<User | null> {
-    const data = await this.root.getCustomerByID(id);
+    const data = await this.root.editPassword(customer.version, currentPassword, newPassword);
     return this.getCustomerFromData(data);
   }
 
   public async hasEmail(email: string): Promise<User | null> {
     const data = await this.root.getCustomerByEmail(email);
     return this.getCustomerFromData(data);
+  }
+
+  public logout(): boolean {
+    return this.root.logoutUser();
   }
 
   public async registerNewCustomer(userData: User): Promise<User | null> {

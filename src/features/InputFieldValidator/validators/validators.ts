@@ -1,9 +1,11 @@
 import type { InputFieldValidatorParams } from '@/shared/types/form.ts';
 
 import getStore from '@/shared/Store/Store.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { USER_POSTAL_CODE } from '@/shared/constants/forms.ts';
 import { ERROR_MESSAGE } from '@/shared/constants/messages.ts';
+import { checkInputLanguage } from '@/shared/utils/getCountryIndex.ts';
 import { maxAgeMessage, maxLengthMessage, minAgeMessage, minLengthMessage } from '@/shared/utils/messageTemplate.ts';
 import { postcodeValidator } from 'postcode-validator';
 
@@ -72,13 +74,14 @@ export const checkValidAge = (value: string, validParams: InputFieldValidatorPar
 export const checkValidCountry = (value: string, validParams: InputFieldValidatorParams): boolean | string => {
   if (validParams.validCountry) {
     if (
-      !Object.keys(COUNTRIES_LIST[getStore().getState().currentLanguage]).find(
+      !Object.keys(COUNTRIES_LIST[checkInputLanguage(value)]).find(
         (countryName) => countryName.toLowerCase() === value.toLowerCase(),
       )
     ) {
       return ERROR_MESSAGE[getStore().getState().currentLanguage].INVALID_COUNTRY;
     }
   }
+  observeStore(selectCurrentLanguage, () => checkValidCountry(value, validParams));
   return true;
 };
 
@@ -109,6 +112,5 @@ export const checkWhitespace = (value: string, validParams: InputFieldValidatorP
   if (validParams.notWhitespace && !validParams.notWhitespace.pattern.test(value)) {
     return validParams.notWhitespace.messages[getStore().getState().currentLanguage];
   }
-
   return true;
 };

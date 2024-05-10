@@ -13,9 +13,9 @@ export const BUTTON_TEXT = {
   },
   ru: {
     BACK_TO_MAIN: 'Вернуться на главную',
-    LOG_OUT: 'Выйти',
-    LOGIN: 'Войти',
-    REGISTRATION: 'Зарегистрироваться',
+    LOG_OUT: 'Выйти',
+    LOGIN: 'Войти',
+    REGISTRATION: 'Регистрация',
   },
 } as const;
 
@@ -37,3 +37,5 @@ export const LANGUAGE_CHOICE = {
   EN: 'en',
   RU: 'ru',
 } as const;
+
+export type LanguageChoiceType = (typeof LANGUAGE_CHOICE)[keyof typeof LANGUAGE_CHOICE];
