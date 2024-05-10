@@ -119,6 +119,7 @@
   height: 24px;
   background-color: transparent;
   transform: translate(-12%, 0);
+  cursor: pointer;
 
   svg {
     width: 20px;
@@ -146,7 +147,7 @@
   }
 
   @media (max-width: 768px) {
-    top: 24px;
+    top: 18px;
   }
 }
 
