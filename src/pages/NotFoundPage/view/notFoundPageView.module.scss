@@ -2,9 +2,11 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  margin: 0 auto;
+  align-self: center;
+  margin: 0 var(--small-offset);
   border-bottom: calc(var(--extra-small-offset) / 2) solid var(--steam-green-800);
-  padding: calc(var(--extra-large-offset) / 2) var(--extra-large-offset);
+  border-radius: var(--medium-br);
+  padding: var(--small-offset);
   padding-bottom: calc(var(--extra-large-offset) / 2 + calc(var(--extra-small-offset) / 2));
   max-width: 500px;
   background-color: var(--white);
@@ -50,8 +52,10 @@
 }
 
 .toMainButton {
+  align-self: center;
   border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
+  width: max-content;
   font: var(--bold-font);
   letter-spacing: 1px;
   color: var(--white);

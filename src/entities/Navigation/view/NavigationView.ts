@@ -36,9 +36,9 @@ class NavigationView {
       tag: 'nav',
     });
     this.navigation.append(
-      this.toMainLink.getHTML(),
       this.toLoginLink.getHTML(),
       this.toRegisterLink.getHTML(),
+      this.toMainLink.getHTML(),
       this.toCatalogLink.getHTML(),
       this.toAboutLink.getHTML(),
     );

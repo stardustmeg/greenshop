@@ -13,6 +13,8 @@ import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import styles from './headerView.module.scss';
 
 class HeaderView {
+  private burgerButton: ButtonModel;
+
   private header: HTMLElement;
 
   private linkLogo: LinkModel;
@@ -36,8 +38,50 @@ class HeaderView {
     this.toProfileLink = this.createToProfileLink();
     this.switchLanguageButton = this.createSwitchLanguageButton();
     this.navigationWrapper = this.createNavigationWrapper();
+    this.burgerButton = this.createBurgerButton();
     this.wrapper = this.createWrapper();
     this.header = this.createHTML();
+
+    document.addEventListener('click', ({ target }) => {
+      if (
+        target !== this.navigationWrapper &&
+        this.burgerButton.getHTML().classList.contains(styles.open) &&
+        target !== this.burgerButton.getHTML()
+      ) {
+        this.burgerButton.getHTML().classList.toggle(styles.open);
+        this.navigationWrapper.classList.toggle(styles.open);
+        document.body.classList.toggle(styles.stopScroll);
+      }
+    });
+  }
+
+  private createBurgerButton(): ButtonModel {
+    this.burgerButton = new ButtonModel({
+      classes: [styles.burgerButton],
+    });
+
+    const burgerLine1 = createBaseElement({
+      cssClasses: [styles.burgerLine],
+      tag: 'span',
+    });
+    const burgerLine2 = createBaseElement({
+      cssClasses: [styles.burgerLine],
+      tag: 'span',
+    });
+    const burgerLine3 = createBaseElement({
+      cssClasses: [styles.burgerLine],
+      tag: 'span',
+    });
+
+    this.burgerButton.getHTML().addEventListener('click', () => {
+      this.burgerButton.getHTML().classList.toggle(styles.open);
+      this.navigationWrapper.classList.toggle(styles.open);
+      document.body.classList.toggle(styles.stopScroll);
+    });
+
+    this.burgerButton.getHTML().append(burgerLine1, burgerLine2, burgerLine3);
+
+    return this.burgerButton;
   }
 
   private createHTML(): HTMLElement {
@@ -92,6 +136,7 @@ class HeaderView {
       this.toCartLink.getHTML(),
       this.toProfileLink.getHTML(),
     );
+
     return this.navigationWrapper;
   }
 
@@ -174,8 +219,12 @@ class HeaderView {
       tag: 'div',
     });
 
-    this.wrapper.append(this.linkLogo.getHTML(), this.navigationWrapper);
+    this.wrapper.append(this.linkLogo.getHTML(), this.navigationWrapper, this.burgerButton.getHTML());
     return this.wrapper;
+  }
+
+  public getBurgerButton(): ButtonModel {
+    return this.burgerButton;
   }
 
   public getHTML(): HTMLElement {
@@ -204,6 +253,14 @@ class HeaderView {
 
   public getWrapper(): HTMLDivElement {
     return this.wrapper;
+  }
+
+  public hideNavigationWrapper(): void {
+    this.navigationWrapper.classList.add(styles.hidden);
+  }
+
+  public showNavigationWrapper(): void {
+    this.navigationWrapper.classList.remove(styles.hidden);
   }
 }
 

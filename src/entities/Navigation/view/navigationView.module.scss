@@ -4,14 +4,15 @@
   align-self: center;
   justify-content: center;
   order: 2;
+  margin: 0 auto;
   height: 70px;
-  gap: var(--extra-small-offset);
 }
 
 .link {
   position: relative;
   display: flex;
   align-items: center;
+  padding: 0 calc(var(--extra-small-offset) / 2);
   height: 100%;
   font: var(--regular-font);
   letter-spacing: 1px;

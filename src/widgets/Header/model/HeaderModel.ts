@@ -56,7 +56,6 @@ class HeaderModel {
 
   private init(): boolean {
     this.view.getWrapper().append(this.navigation.getHTML());
-    this.checkAuthUser();
     this.checkCurrentUser();
     this.setLogoHandler();
     this.observeCurrentUser();
