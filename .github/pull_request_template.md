@@ -6,7 +6,7 @@
 - [ ] sprint and issue number (e.g. `RSS-ECOMM-3_01`, where `3` - is the sprint number and `01` - is the issue number)
 - [ ] short description
 
-👀 Example: `feat(RSS-ECOMM-2_01): description`
+👀 Example: `feat(RSS-ECOMM-3_01): description`
 
 ## PR Description 🧙‍♂️
 
