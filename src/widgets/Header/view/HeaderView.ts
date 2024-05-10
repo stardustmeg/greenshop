@@ -21,9 +21,12 @@ class HeaderView {
 
   private switchLanguageButton: ButtonModel;
 
+  private toCartLink: LinkModel;
+
   constructor() {
     this.logoutButton = this.createLogoutButton();
     this.linkLogo = this.createLinkLogo();
+    this.toCartLink = this.createToCartLink();
     this.switchLanguageButton = this.createSwitchLanguageButton();
     this.header = this.createHTML();
   }
@@ -34,7 +37,12 @@ class HeaderView {
       tag: 'header',
     });
 
-    this.header.append(this.linkLogo.getHTML(), this.switchLanguageButton.getHTML(), this.logoutButton.getHTML());
+    this.header.append(
+      this.linkLogo.getHTML(),
+      this.switchLanguageButton.getHTML(),
+      this.logoutButton.getHTML(),
+      this.toCartLink.getHTML(),
+    );
     return this.header;
   }
 
@@ -77,6 +85,21 @@ class HeaderView {
     });
 
     return this.switchLanguageButton;
+  }
+
+  private createToCartLink(): LinkModel {
+    this.toCartLink = new LinkModel({
+      attrs: {
+        href: PAGE_ID.CART_PAGE,
+      },
+      classes: [styles.cartLink],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.CART));
+    this.toCartLink.getHTML().append(svg);
+
+    return this.toCartLink;
   }
 
   public getHTML(): HTMLElement {

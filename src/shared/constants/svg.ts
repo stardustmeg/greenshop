@@ -1,4 +1,5 @@
 const SVG_DETAILS = {
+  CART: 'cart',
   CLOSE_EYE: 'closeEye',
   LOGO: 'logo',
   OPEN_EYE: 'openEye',

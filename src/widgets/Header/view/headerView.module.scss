@@ -7,7 +7,7 @@
   display: grid;
   align-items: center;
   justify-content: space-between;
-  grid-template-columns: repeat(4, max-content);
+  grid-template-columns: repeat(5, max-content);
   border-bottom: 10px solid var(--steam-green-800);
   border-radius: var(--medium-br);
   padding: calc(var(--small-offset) / 4) var(--small-offset);
@@ -19,7 +19,7 @@
 .switchLanguageButton {
   display: flex;
   justify-self: end;
-  grid-column: 3;
+  grid-column: 4;
   overflow: hidden;
   margin-left: auto;
   border-radius: 50%;
@@ -60,7 +60,7 @@
 }
 
 .logoutButton {
-  grid-column: 4;
+  grid-column: 5;
   border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
   font: var(--regular-font);
@@ -84,5 +84,25 @@
   &:disabled {
     background-color: var(--noble-gray-300);
     pointer-events: none;
+  }
+}
+
+.cartLink {
+  grid-column: 3;
+  grid-row: 1;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--noble-gray-800);
+    transition: fill 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        fill: var(--steam-green-800);
+      }
+    }
   }
 }
