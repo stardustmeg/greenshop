@@ -3,13 +3,16 @@
   align-items: center;
   align-self: center;
   justify-content: center;
-  grid-column: 2;
-  grid-row: 1;
+  order: 2;
+  height: 70px;
   gap: var(--extra-small-offset);
 }
 
 .link {
   position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
   font: var(--regular-font);
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -20,7 +23,7 @@
     content: '';
     position: absolute;
     left: 0;
-    bottom: -4px;
+    bottom: -1px;
     width: 100%;
     height: 2px;
     background-color: currentcolor;

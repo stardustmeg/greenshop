@@ -11,6 +11,8 @@ class NavigationView {
 
   private navigationLinks: Map<string, LinkModel> = new Map();
 
+  private toAboutLink: LinkModel;
+
   private toCatalogLink: LinkModel;
 
   private toLoginLink: LinkModel;
@@ -24,6 +26,7 @@ class NavigationView {
     this.toLoginLink = this.createToLoginLink();
     this.toRegisterLink = this.createToRegisterLink();
     this.toCatalogLink = this.createToCatalogLink();
+    this.toAboutLink = this.createToAboutLink();
     this.navigation = this.createHTML();
   }
 
@@ -37,8 +40,24 @@ class NavigationView {
       this.toLoginLink.getHTML(),
       this.toRegisterLink.getHTML(),
       this.toCatalogLink.getHTML(),
+      this.toAboutLink.getHTML(),
     );
     return this.navigation;
+  }
+
+  private createToAboutLink(): LinkModel {
+    this.toAboutLink = new LinkModel({
+      attrs: {
+        href: PAGE_ID.ABOUT_US_PAGE,
+      },
+      classes: [styles.link],
+      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].ABOUT,
+    });
+
+    observeCurrentLanguage(this.toAboutLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.ABOUT);
+
+    this.navigationLinks.set(PAGE_ID.ABOUT_US_PAGE, this.toAboutLink);
+    return this.toAboutLink;
   }
 
   private createToCatalogLink(): LinkModel {
