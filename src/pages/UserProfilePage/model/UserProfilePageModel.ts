@@ -15,7 +15,7 @@ class UserProfilePageModel implements Page {
   }
 
   private init(): void {
-    getStore().dispatch(setCurrentPage(PAGE_ID.MAIN_PAGE));
+    getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
   }
 
   public getHTML(): HTMLDivElement {
