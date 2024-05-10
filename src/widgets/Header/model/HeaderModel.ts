@@ -25,13 +25,37 @@ class HeaderModel {
     this.init();
   }
 
+  private checkAuthUser(): boolean {
+    const { currentUser } = getStore().getState();
+    if (currentUser) {
+      this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE).catch(() => {
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+          MESSAGE_STATUS.ERROR,
+        );
+      });
+      return true;
+    }
+    this.router
+      .navigateTo(PAGE_ID.LOGIN_PAGE)
+      .catch(() =>
+        serverMessageModel.showServerMessage(
+          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
+          MESSAGE_STATUS.ERROR,
+        ),
+      );
+    return false;
+  }
+
   private checkCurrentUser(): boolean {
     const { currentUser } = getStore().getState();
     const logoutButton = this.view.getLogoutButton();
     if (currentUser) {
+      this.view.getToProfileLink().setEnabled();
       logoutButton.setEnabled();
     } else {
       logoutButton.setDisabled();
+      this.view.getToProfileLink().setDisabled();
     }
     return true;
   }
@@ -130,16 +154,9 @@ class HeaderModel {
 
   private setProfileLinkHandler(): boolean {
     const logo = this.view.getToProfileLink().getHTML();
-    logo.addEventListener('click', async (event) => {
+    logo.addEventListener('click', (event) => {
       event.preventDefault();
-      try {
-        await this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE);
-      } catch {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        );
-      }
+      this.checkAuthUser();
     });
     return true;
   }
