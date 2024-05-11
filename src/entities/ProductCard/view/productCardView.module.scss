@@ -3,9 +3,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-self: center;
   outline: 2px solid var(--noble-gray-300);
   border-radius: var(--medium-br);
   min-height: 350px;
+  max-width: 270px;
   transition:
     outline 0.2s,
     transform 0.2s;
@@ -58,7 +60,7 @@
   max-width: 90%;
   font: var(--regular-font);
   letter-spacing: 1px;
-  text-align: center;
+  text-align: left;
   text-overflow: ellipsis;
   color: var(--noble-gray-400);
   -webkit-box-orient: vertical;
@@ -79,7 +81,7 @@
   position: relative;
   z-index: 1;
   align-self: flex-end;
-  margin-top: calc(var(--extra-small-offset) * -1);
+  margin-top: calc(var(--extra-small-offset) * (-0.2));
   margin-right: 5px;
   font: var(--regular-font);
   letter-spacing: 1px;

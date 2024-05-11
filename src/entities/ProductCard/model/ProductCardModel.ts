@@ -6,7 +6,7 @@ import ProductCardView from '../view/ProductCardView.ts';
 class ProductCardModel {
   private view: ProductCardView;
 
-  constructor(params: ProductCardParams, size: SizeType) {
+  constructor(params: ProductCardParams, size: SizeType | null) {
     this.view = new ProductCardView(params, size);
   }
 
