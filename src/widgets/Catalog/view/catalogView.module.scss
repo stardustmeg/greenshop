@@ -1,11 +1,20 @@
-.itemsList {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+.catalog {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
   gap: var(--small-offset);
+}
 
-  @media (max-width: 1140px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.itemsList {
+  position: relative;
+  display: grid;
+  align-items: stretch;
+  justify-content: center;
+  order: 2;
+  grid-template-columns: repeat(3, 1fr);
+  width: 80%;
+  min-height: 500px;
+  gap: var(--small-offset);
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);

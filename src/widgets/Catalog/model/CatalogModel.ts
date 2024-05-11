@@ -1,49 +1,100 @@
+import type { Category, Product } from '@/shared/types/product.ts';
+
 import ProductCardModel from '@/entities/ProductCard/model/ProductCardModel.ts';
+import ProductFiltersModel from '@/features/ProductFilters/model/ProductFiltersModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import addFilter from '@/shared/API/product/utils/filter.ts';
 import { FilterFields, type OptionsRequest } from '@/shared/API/types/type.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
+import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
-import { SIZE } from '@/shared/types/product.ts';
+import { observeSetInStore, selectSelectedFilters } from '@/shared/Store/observer.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import showBadRequestMessage from '@/shared/utils/showBadRequestMessage.ts';
 
 import CatalogView from '../view/CatalogView.ts';
 
 class CatalogModel {
+  private productFilters: ProductFiltersModel | null = null;
+
   private view = new CatalogView();
 
   constructor() {
-    this.getProductItems();
+    this.init();
   }
 
-  private getProductItems(): void {
+  private async getProductItems(
+    options: OptionsRequest,
+  ): Promise<{ categories: Category[] | null; products: Product[] | null } | null> {
     const productList = this.view.getItemsList();
+    const loader = new LoaderModel(LOADER_SIZE.EXTRA_LARGE);
+    loader.setAbsolutePosition();
+    productList.append(loader.getHTML());
 
-    const options: OptionsRequest = {
-      filter: [addFilter(FilterFields.SIZE, 'S')],
-      limit: 5,
-      sort: {
-        direction: 'asc',
-        field: 'name',
-        locale: 'en',
-      },
-    };
+    try {
+      const categories = await getProductModel().getCategories();
+      try {
+        const products = await getProductModel().getProducts(options);
+        return { categories, products };
+      } catch {
+        showBadRequestMessage();
+      }
+    } catch {
+      showBadRequestMessage();
+    } finally {
+      loader.getHTML().remove();
+    }
 
-    getProductModel()
-      .getProducts(options)
+    return null;
+  }
+
+  private getSelectedFilters(): OptionsRequest {
+    const filter: OptionsRequest['filter'] = [];
+    getStore()
+      .getState()
+      .selectedFilters?.category.forEach((categoryID) => filter.push(addFilter(FilterFields.CATEGORY, categoryID)));
+    return { filter, limit: 100, sort: { direction: 'desc', field: 'name', locale: 'en' } };
+  }
+
+  private init(): void {
+    const productList = this.view.getItemsList();
+    this.getProductItems(this.getSelectedFilters())
       .then((data) => {
-        if (data) {
-          data.forEach((productData) => {
-            productList.append(new ProductCardModel(productData, SIZE.S).getHTML());
-          });
+        if (!data?.products?.length) {
+          productList.textContent = 'Ничего не найдено';
+        }
+        data?.products?.forEach((productData) => productList.append(new ProductCardModel(productData, null).getHTML()));
+        this.productFilters = new ProductFiltersModel({
+          categories: data?.categories ?? [],
+          products: data?.products ?? [],
+        });
+        this.getHTML().append(this.productFilters.getHTML());
+      })
+      .catch(() => {
+        showBadRequestMessage();
+      });
+
+    observeSetInStore(selectSelectedFilters, () => {
+      this.redrawProductList(this.getSelectedFilters());
+    });
+  }
+
+  private redrawProductList(options?: OptionsRequest): void {
+    const productList = this.view.getItemsList();
+    productList.innerHTML = '';
+    this.getProductItems(options ?? {})
+      .then((data) => {
+        if (data?.products?.length) {
+          data?.products?.forEach((productData) =>
+            productList.append(new ProductCardModel(productData, null).getHTML()),
+          );
+          this.productFilters?.updateParams({ categories: data?.categories ?? [], products: data?.products ?? [] });
+        } else {
+          productList.textContent = 'Ничего не найдено';
         }
       })
-      .catch(() =>
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        ),
-      );
+      .catch(() => {
+        showBadRequestMessage();
+      });
   }
 
   public getHTML(): HTMLDivElement {

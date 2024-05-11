@@ -8,7 +8,7 @@ import getStore from '@/shared/Store/Store.ts';
 import { setCurrentUser } from '@/shared/Store/actions.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
-import { SIZES } from '@/shared/constants/sizes.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { createGreetingMessage } from '@/shared/utils/messageTemplate.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
@@ -38,7 +38,7 @@ class LoginFormModel {
 
   private loginUser(userLoginData: UserCredentials): void {
     this.view.getSubmitFormButton().setDisabled();
-    const loader = new LoaderModel(SIZES.SMALL).getHTML();
+    const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .hasEmail(userLoginData.email)
@@ -62,7 +62,7 @@ class LoginFormModel {
   }
 
   private loginUserHandler(userLoginData: UserCredentials): void {
-    const loader = new LoaderModel(SIZES.SMALL).getHTML();
+    const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .authCustomer(userLoginData)
