@@ -75,3 +75,5 @@ export const PAGE_ID = {
   REGISTRATION_PAGE: 'register',
   USER_PROFILE_PAGE: 'profile',
 } as const;
+
+export type PageIdType = (typeof PAGE_ID)[keyof typeof PAGE_ID];

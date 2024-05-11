@@ -1,4 +1,4 @@
-export const SIZES = {
+export const LOADER_SIZE = {
   EXTRA_LARGE: 'xl',
   EXTRA_SMALL: 'xs',
   LARGE: 'l',
@@ -6,4 +6,4 @@ export const SIZES = {
   SMALL: 's',
 } as const;
 
-export type SizesType = (typeof SIZES)[keyof typeof SIZES];
+export type LoaderSizeType = (typeof LOADER_SIZE)[keyof typeof LOADER_SIZE];
