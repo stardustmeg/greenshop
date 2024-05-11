@@ -10,6 +10,7 @@ export interface State {
   currentLanguage: 'en' | 'ru';
   currentPage: string; // TBD Specify type
   currentUser: User | null;
+  isAppThemeLight: boolean;
   isUserLoggedIn: boolean;
   products: Product[];
   shippingCountry: string;
@@ -60,6 +61,12 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         currentPage: action.payload,
+      };
+
+    case 'switchAppTheme':
+      return {
+        ...state,
+        isAppThemeLight: !state.isAppThemeLight,
       };
     default:
       return state;

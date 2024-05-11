@@ -33,7 +33,7 @@
   padding: 70px var(--extra-small-offset) 0;
   width: 20%;
   height: 100%;
-  background-color: #8c998f2b;
+  background-color: var(--steam-green-gr-800);
   transform: none;
   transition: transform 0.3s;
   backdrop-filter: blur(2px);
@@ -51,13 +51,13 @@
   overflow: hidden;
   border: 2px solid var(--noble-gray-300);
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: var(--small-offset);
+  height: var(--small-offset);
   transition: border-color 0.2s;
 
   svg {
-    width: 30px;
-    height: 30px;
+    width: var(--small-offset);
+    height: var(--small-offset);
   }
 
   @media (hover: hover) {
@@ -100,8 +100,8 @@
 
 .logoutButton {
   order: 4;
-  border-radius: var(--small-br);
-  padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
+  border-radius: var(--medium-br);
+  padding: calc(var(--small-offset) / 3) var(--small-offset);
   font: var(--regular-font);
   letter-spacing: 1px;
   color: var(--white);
@@ -133,8 +133,8 @@
   justify-content: center;
 
   svg {
-    width: 24px;
-    height: 24px;
+    width: var(--small-offset);
+    height: var(--small-offset);
     fill: var(--noble-gray-800);
     transition: fill 0.2s;
   }
@@ -293,4 +293,86 @@
 
 .stopScroll {
   overflow: hidden;
+}
+
+.switchThemeLabel {
+  position: relative;
+  display: inline-block;
+  width: calc(var(--extra-large-offset) + var(--extra-small-offset));
+  height: calc(calc(var(--small-offset) / 1.5) + var(--extra-small-offset));
+  cursor: pointer;
+
+  @media (max-width: 768px) {
+    width: calc(var(--extra-large-offset) + var(--extra-small-offset));
+  }
+}
+
+.switchThemeCheckbox {
+  width: 0;
+  height: 0;
+  opacity: 1;
+
+  &:checked {
+    + .switchThemeLabelSpan {
+      background-color: #c4c4c4a8;
+    }
+
+    + .switchThemeLabelSpan::before {
+      background-color: #a7e599;
+      transform: translate(calc(var(--small-offset) + var(--small-offset) + 4px), -50%);
+    }
+
+    @media (max-width: 768px) {
+      + .switchThemeLabelSpan::before {
+        transform: translate(calc(var(--small-offset) + var(--small-offset) - 4px), -50%);
+      }
+    }
+  }
+}
+
+.switchThemeLabelSpan {
+  position: absolute;
+  border-radius: calc(var(--large-br) * 2);
+  background-color: #d8d8d85c;
+  transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
+  cursor: pointer;
+  pointer-events: none;
+  inset: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    bottom: 0;
+    z-index: 2;
+    border-radius: var(--large-br);
+    width: calc(var(--small-offset) / 1.5);
+    height: calc(var(--small-offset) / 1.5);
+    box-shadow: 0 1px 5px #353535;
+    background-color: #46a032;
+    transform: translateY(-50%);
+    transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
+  }
+}
+
+.darkSVG,
+.lightSVG {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: calc(var(--small-offset) / 1.5);
+  height: calc(var(--small-offset) / 1.5);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.darkSVG {
+  left: 5px;
+  fill: var(--noble-gray-800);
+}
+
+.lightSVG {
+  right: 5px;
+  fill: var(--white);
 }

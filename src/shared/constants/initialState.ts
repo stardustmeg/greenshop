@@ -6,6 +6,7 @@ const initialState: State = {
   currentLanguage: 'en',
   currentPage: '',
   currentUser: null,
+  isAppThemeLight: true,
   isUserLoggedIn: false,
   products: [],
   shippingCountry: '',
