@@ -2,11 +2,13 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
+import { switchAppTheme } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage, selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { EMAIL_FIELD } from '@/shared/constants/forms/login/fieldParams.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import APP_THEME from '@/shared/constants/styles.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -172,11 +174,18 @@ class HeaderView {
       type: INPUT_TYPE.CHECK_BOX,
     });
     this.switchThemeCheckbox.getHTML().classList.add(styles.switchThemeCheckbox);
-    document.body.classList.add('light');
+    document.body.classList.add(getStore().getState().appTheme);
+
+    this.switchThemeCheckbox.getHTML().checked = getStore().getState().appTheme === APP_THEME.LIGHT;
 
     this.switchThemeCheckbox.getHTML().addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      document.body.classList.toggle('light');
+      document.body.classList.toggle(APP_THEME.DARK);
+      document.body.classList.toggle(APP_THEME.LIGHT);
+      if (getStore().getState().appTheme === APP_THEME.LIGHT) {
+        getStore().dispatch(switchAppTheme(APP_THEME.DARK));
+      } else {
+        getStore().dispatch(switchAppTheme(APP_THEME.LIGHT));
+      }
     });
 
     return this.switchThemeCheckbox;

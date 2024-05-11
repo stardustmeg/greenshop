@@ -5,6 +5,7 @@ import type * as actions from './actions.ts';
 import type { Reducer } from './types.ts';
 
 export interface State {
+  appTheme: 'dark' | 'light';
   billingCountry: string;
   categories: Category[];
   currentLanguage: 'en' | 'ru';
@@ -60,6 +61,12 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         currentPage: action.payload,
+      };
+
+    case 'switchAppTheme':
+      return {
+        ...state,
+        appTheme: action.payload,
       };
     default:
       return state;

@@ -88,6 +88,7 @@ vi.mock('./Store.ts', async (importOriginal) => {
   return {
     ...actual,
     getState: (): State => ({
+      appTheme: 'light',
       billingCountry: '',
       categories: [],
       currentLanguage: 'en',
@@ -134,6 +135,7 @@ it('observeStore should call select and onChange when state changes', () => {
   };
 
   const mockState: State = {
+    appTheme: 'light',
     billingCountry: '',
     categories: [],
     currentLanguage: 'en',
@@ -162,6 +164,7 @@ describe('rootReducer', () => {
 
   beforeEach(() => {
     initialState = {
+      appTheme: 'light',
       billingCountry: '',
       categories: [],
       currentLanguage: 'en',

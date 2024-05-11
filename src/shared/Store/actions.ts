@@ -9,6 +9,7 @@ const ACTION = {
   SET_CURRENT_USER: 'setCurrentUser',
   SET_PRODUCTS: 'setProducts',
   SET_SHIPPING_COUNTRY: 'setShippingCountry',
+  SWITCH_APP_THEME: 'switchAppTheme',
   SWITCH_IS_USER_LOGGED_IN: 'switchIsUserLoggedIn',
 } as const;
 
@@ -61,4 +62,11 @@ export const switchIsUserLoggedIn = (
 export const setCurrentPage = (value: string): ActionWithPayload<string, typeof ACTION.SET_CURRENT_PAGE> => ({
   payload: value,
   type: ACTION.SET_CURRENT_PAGE,
+});
+
+export const switchAppTheme = (
+  value: 'dark' | 'light',
+): ActionWithPayload<'dark' | 'light', typeof ACTION.SWITCH_APP_THEME> => ({
+  payload: value,
+  type: ACTION.SWITCH_APP_THEME,
 });
