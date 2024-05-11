@@ -2,11 +2,10 @@ import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/common.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage, setCurrentUser } from '@/shared/Store/actions.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import UserProfilePageView from '../view/UserProfilePageView.ts';
 
@@ -33,10 +32,7 @@ class UserProfilePageModel implements Page {
       getCustomerModel().logout();
       await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
     } catch {
-      serverMessageModel.showServerMessage(
-        SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-        MESSAGE_STATUS.ERROR,
-      );
+      showErrorMessage();
     }
     return true;
   }
@@ -47,10 +43,7 @@ class UserProfilePageModel implements Page {
       try {
         await this.logoutHandler();
       } catch {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        );
+        showErrorMessage();
       }
     });
     return true;

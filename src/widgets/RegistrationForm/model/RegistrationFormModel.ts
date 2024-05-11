@@ -9,10 +9,11 @@ import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { SIZES } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
@@ -125,17 +126,11 @@ class RegisterFormModel {
       .then((newUserData) => {
         if (newUserData) {
           this.successfulUserRegistration(newUserData);
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_REGISTRATION,
-            MESSAGE_STATUS.SUCCESS,
-          );
+          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_REGISTRATION, MESSAGE_STATUS.SUCCESS);
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].USER_EXISTS,
-          MESSAGE_STATUS.ERROR,
-        );
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.USER_EXISTS, MESSAGE_STATUS.ERROR);
       })
       .finally(() => loader.remove());
   }
@@ -210,12 +205,7 @@ class RegisterFormModel {
     this.view.getSubmitFormButton().getHTML().append(loader);
     this.updateUserData(newUserData)
       .then(() => getStore().dispatch(switchIsUserLoggedIn(true)))
-      .catch(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        );
-      })
+      .catch(() => showErrorMessage())
       .finally(() => loader.remove());
   }
 

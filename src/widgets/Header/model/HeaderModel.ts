@@ -2,13 +2,12 @@ import type RouterModel from '@/app/Router/model/RouterModel.ts';
 
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentLanguage, setCurrentUser } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import HeaderView from '../view/HeaderView.ts';
 
@@ -28,14 +27,7 @@ class HeaderModel {
   private checkAuthUser(): boolean {
     const { currentUser } = getStore().getState();
     if (!currentUser) {
-      this.router
-        .navigateTo(PAGE_ID.LOGIN_PAGE)
-        .catch(() =>
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-            MESSAGE_STATUS.ERROR,
-          ),
-        );
+      this.router.navigateTo(PAGE_ID.LOGIN_PAGE).catch(() => showErrorMessage());
       return false;
     }
     return true;
@@ -73,10 +65,7 @@ class HeaderModel {
       getCustomerModel().logout();
       await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
     } catch {
-      serverMessageModel.showServerMessage(
-        SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-        MESSAGE_STATUS.ERROR,
-      );
+      showErrorMessage();
     }
     return true;
   }
@@ -95,10 +84,7 @@ class HeaderModel {
       try {
         await this.router.navigateTo(PAGE_ID.CART_PAGE);
       } catch {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        );
+        showErrorMessage();
       }
     });
     return true;
@@ -121,10 +107,7 @@ class HeaderModel {
       try {
         await this.router.navigateTo(PAGE_ID.DEFAULT_PAGE);
       } catch {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        );
+        showErrorMessage();
       }
     });
     return true;
@@ -136,10 +119,7 @@ class HeaderModel {
       try {
         await this.logoutHandler();
       } catch {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        );
+        showErrorMessage();
       }
       logoutButton.setDisabled();
     });
@@ -152,12 +132,7 @@ class HeaderModel {
       event.preventDefault();
       // TBD remove unnecessary check (we don't show this logo when user is not logged in) ??
       if (this.checkAuthUser()) {
-        this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE).catch(() => {
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-            MESSAGE_STATUS.ERROR,
-          );
-        });
+        this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE).catch(() => showErrorMessage());
       }
     });
     return true;

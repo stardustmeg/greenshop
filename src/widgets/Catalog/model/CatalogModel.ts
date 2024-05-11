@@ -2,9 +2,7 @@ import ProductCardModel from '@/entities/ProductCard/model/ProductCardModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import addFilter from '@/shared/API/product/utils/filter.ts';
 import { FilterFields, type OptionsRequest } from '@/shared/API/types/type.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
-import getStore from '@/shared/Store/Store.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import CatalogView from '../view/CatalogView.ts';
 
@@ -45,12 +43,7 @@ class CatalogModel {
           });
         }
       })
-      .catch(() =>
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        ),
-      );
+      .catch(() => showErrorMessage());
   }
 
   public getHTML(): HTMLDivElement {

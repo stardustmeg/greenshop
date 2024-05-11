@@ -2,13 +2,12 @@ import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/common.ts';
 import type { User } from '@/shared/types/user.ts';
 
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { PAGE_ID, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/pages.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 import LoginFormModel from '@/widgets/LoginForm/model/LoginFormModel.ts';
 
 import LoginPageView from '../view/LoginPageView.ts';
@@ -34,10 +33,7 @@ class LoginPageModel implements Page {
         await this.router.navigateTo(PAGE_ID.MAIN_PAGE);
         return currentUser;
       } catch (error) {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        );
+        showErrorMessage();
         return null;
       }
     }
@@ -47,12 +43,7 @@ class LoginPageModel implements Page {
 
   private init(): boolean {
     getStore().dispatch(setCurrentPage(PAGE_ID.LOGIN_PAGE));
-    this.checkAuthUser().catch(() => {
-      serverMessageModel.showServerMessage(
-        SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-        MESSAGE_STATUS.ERROR,
-      );
-    });
+    this.checkAuthUser().catch(() => showErrorMessage());
     this.view.getAuthWrapper().append(this.loginForm.getHTML());
     this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
     this.setRegisterLinkHandler();
@@ -65,10 +56,7 @@ class LoginPageModel implements Page {
     try {
       await this.router.navigateTo(PAGE_ID.REGISTRATION_PAGE);
     } catch (error) {
-      serverMessageModel.showServerMessage(
-        SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-        MESSAGE_STATUS.ERROR,
-      );
+      showErrorMessage();
     }
   }
 

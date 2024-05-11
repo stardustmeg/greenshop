@@ -1,13 +1,12 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/common.ts';
 
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { PAGE_ID, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/pages.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 import RegisterFormModel from '@/widgets/RegistrationForm/model/RegistrationFormModel.ts';
 
 import RegistrationPageView from '../view/RegistrationPageView.ts';
@@ -38,10 +37,7 @@ class RegistrationPageModel implements Page {
     try {
       await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
     } catch {
-      serverMessageModel.showServerMessage(
-        SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-        MESSAGE_STATUS.ERROR,
-      );
+      showErrorMessage();
     }
   }
 

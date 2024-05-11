@@ -1,10 +1,9 @@
 import type RouterModel from '@/app/Router/model/RouterModel';
 
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import NavigationView from '../view/NavigationView.ts';
 
@@ -50,10 +49,7 @@ class NavigationModel {
         try {
           await this.router.navigateTo(route);
         } catch {
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-            MESSAGE_STATUS.ERROR,
-          );
+          showErrorMessage();
         }
       });
     });
