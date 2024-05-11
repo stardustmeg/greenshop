@@ -63,7 +63,7 @@ class AppModel {
       },
       [PAGE_ID.USER_PROFILE_PAGE]: async (): Promise<Page> => {
         const { default: UserProfilePageModel } = await import('@/pages/UserProfilePage/model/UserProfilePageModel.ts');
-        return new UserProfilePageModel(this.appView.getHTML());
+        return new UserProfilePageModel(this.appView.getHTML(), this.router);
       },
     };
 

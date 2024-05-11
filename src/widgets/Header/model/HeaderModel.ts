@@ -150,6 +150,7 @@ class HeaderModel {
     const logo = this.view.getToProfileLink().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
+      // TBD remove unnecessary check (we don't show this logo when user is not logged in) ??
       if (this.checkAuthUser()) {
         this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE).catch(() => {
           serverMessageModel.showServerMessage(

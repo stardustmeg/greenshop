@@ -5,6 +5,26 @@
   animation: show 0.2s ease-out forwards;
 }
 
+.userInfoWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: 0 auto;
+  width: 500px;
+  height: 500px;
+  background-color: var(--steam-green-800);
+}
+
+.accountMenu {
+  width: fit-content;
+  height: fit-content;
+}
+
+.accountMenuItem {
+  width: fit-content;
+  height: fit-content;
+}
+
 @keyframes show {
   0% {
     opacity: 0;
@@ -13,5 +33,33 @@
   100% {
     display: block;
     opacity: 1;
+  }
+}
+
+.logoutButton {
+  order: 4;
+  border-radius: var(--medium-br);
+  padding: calc(var(--small-offset) / 3) var(--small-offset);
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--white);
+  background-color: var(--steam-green-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  &:focus {
+    background-color: var(--steam-green-700);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--steam-green-700);
+    }
+  }
+
+  &:disabled {
+    background-color: var(--noble-gray-300);
+    pointer-events: none;
   }
 }
