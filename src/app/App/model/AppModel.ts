@@ -14,11 +14,9 @@ class AppModel {
   private router = new RouterModel();
 
   constructor() {
-    this.initialize()
-      .then()
-      .catch(() => {
-        throw new Error('AppModel initialization error');
-      });
+    this.initialize().catch(() => {
+      throw new Error('AppModel initialization error');
+    });
   }
 
   private createRoutes(): Promise<Map<string, () => Promise<Page>>> {
