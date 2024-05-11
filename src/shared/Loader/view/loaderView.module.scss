@@ -27,6 +27,13 @@
   height: 40px;
 }
 
+.extraLarge {
+  border: 10px solid var(--noble-gray-200);
+  border-top: 10px solid var(--steam-green-800);
+  width: 80px;
+  height: 80px;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -35,4 +42,11 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.absolute {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
