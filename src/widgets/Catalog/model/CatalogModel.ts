@@ -5,6 +5,7 @@ import { FilterFields, type OptionsRequest } from '@/shared/API/types/type.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
+import { SIZE } from '@/shared/types/product.ts';
 
 import CatalogView from '../view/CatalogView.ts';
 
@@ -19,8 +20,8 @@ class CatalogModel {
     const productList = this.view.getItemsList();
 
     const options: OptionsRequest = {
-      filter: [addFilter(FilterFields.SIZE, 'M')],
-      limit: 15,
+      filter: [addFilter(FilterFields.SIZE, 'S')],
+      limit: 5,
       sort: {
         direction: 'asc',
         field: 'name',
@@ -33,15 +34,7 @@ class CatalogModel {
       .then((data) => {
         if (data) {
           data.forEach((productData) => {
-            productList.append(
-              new ProductCardModel({
-                description: productData.description,
-                images: productData.images,
-                key: productData.key,
-                name: productData.name,
-                variant: productData.variant,
-              }).getHTML(),
-            );
+            productList.append(new ProductCardModel(productData, SIZE.S).getHTML());
           });
         }
       })

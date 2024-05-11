@@ -51,8 +51,8 @@ describe('Checking Customer Model', () => {
   });
 
   it('should return true for valid email', async () => {
-    const result = await customerModel.hasEmail('getting-started@example.com');
-    expect(result?.email).toBe('getting-started@example.com');
+    const result = await customerModel.hasEmail('jane@doe.com');
+    expect(result?.email).toBe('jane@doe.com');
   });
 
   it('should return false for invalid email', async () => {
