@@ -88,12 +88,12 @@ vi.mock('./Store.ts', async (importOriginal) => {
   return {
     ...actual,
     getState: (): State => ({
-      appTheme: 'light',
       billingCountry: '',
       categories: [],
       currentLanguage: 'en',
       currentPage: '',
       currentUser: null,
+      isAppThemeLight: true,
       isUserLoggedIn: false,
       products: [],
       shippingCountry: '',
@@ -135,12 +135,12 @@ it('observeStore should call select and onChange when state changes', () => {
   };
 
   const mockState: State = {
-    appTheme: 'light',
     billingCountry: '',
     categories: [],
     currentLanguage: 'en',
     currentPage: 'main',
     currentUser: mockUser,
+    isAppThemeLight: true,
     isUserLoggedIn: false,
     products: [],
     shippingCountry: '',
@@ -164,12 +164,12 @@ describe('rootReducer', () => {
 
   beforeEach(() => {
     initialState = {
-      appTheme: 'light',
       billingCountry: '',
       categories: [],
       currentLanguage: 'en',
       currentPage: '',
       currentUser: null,
+      isAppThemeLight: true,
       isUserLoggedIn: false,
       products: [],
       shippingCountry: '',

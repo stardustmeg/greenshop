@@ -174,18 +174,15 @@ class HeaderView {
       type: INPUT_TYPE.CHECK_BOX,
     });
     this.switchThemeCheckbox.getHTML().classList.add(styles.switchThemeCheckbox);
-    document.body.classList.add(getStore().getState().appTheme);
+    document.body.classList.add(getStore().getState().isAppThemeLight ? APP_THEME.LIGHT : APP_THEME.DARK);
 
-    this.switchThemeCheckbox.getHTML().checked = getStore().getState().appTheme === APP_THEME.LIGHT;
+    this.switchThemeCheckbox.getHTML().checked = getStore().getState().isAppThemeLight;
 
     this.switchThemeCheckbox.getHTML().addEventListener('click', () => {
       document.body.classList.toggle(APP_THEME.DARK);
       document.body.classList.toggle(APP_THEME.LIGHT);
-      if (getStore().getState().appTheme === APP_THEME.LIGHT) {
-        getStore().dispatch(switchAppTheme(APP_THEME.DARK));
-      } else {
-        getStore().dispatch(switchAppTheme(APP_THEME.LIGHT));
-      }
+
+      getStore().dispatch(switchAppTheme());
     });
 
     return this.switchThemeCheckbox;

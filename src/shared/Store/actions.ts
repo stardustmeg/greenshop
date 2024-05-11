@@ -20,6 +20,10 @@ interface ActionWithPayload<T, U extends ActionType> {
   type: U;
 }
 
+interface ActionWithoutPayload<U extends ActionType> {
+  type: U;
+}
+
 export const setCategories = (value: Category[]): ActionWithPayload<Category[], typeof ACTION.SET_CATEGORIES> => ({
   payload: value,
   type: ACTION.SET_CATEGORIES,
@@ -64,9 +68,6 @@ export const setCurrentPage = (value: string): ActionWithPayload<string, typeof 
   type: ACTION.SET_CURRENT_PAGE,
 });
 
-export const switchAppTheme = (
-  value: 'dark' | 'light',
-): ActionWithPayload<'dark' | 'light', typeof ACTION.SWITCH_APP_THEME> => ({
-  payload: value,
+export const switchAppTheme = (): ActionWithoutPayload<typeof ACTION.SWITCH_APP_THEME> => ({
   type: ACTION.SWITCH_APP_THEME,
 });
