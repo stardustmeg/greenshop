@@ -16,12 +16,12 @@ export const SIZE = {
   XL: 'XL',
 } as const;
 
-export type Size = (typeof SIZE)[keyof typeof SIZE];
+export type SizeType = (typeof SIZE)[keyof typeof SIZE];
 
 export interface Variant {
   discount: number;
   price: number;
-  size: Size | null;
+  size: SizeType | null;
 }
 
 export interface Product {

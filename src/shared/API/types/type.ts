@@ -1,4 +1,4 @@
-import { type Category, type Size } from '@/shared/types/product.ts';
+import { type Category, type SizeType } from '@/shared/types/product.ts';
 
 export const Attribute = {
   FULL_DESCRIPTION: 'full_description',
@@ -67,5 +67,5 @@ export type CategoriesProductCount = {
 
 export type SizeProductCount = {
   count: number;
-  size: Size;
+  size: SizeType;
 };
