@@ -9,12 +9,14 @@ export interface Category {
   name: localization[];
 }
 
-export enum Size {
-  L = 'L',
-  M = 'M',
-  S = 'S',
-  XL = 'XL',
-}
+export const SIZE = {
+  L: 'L',
+  M: 'M',
+  S: 'S',
+  XL: 'XL',
+} as const;
+
+export type Size = (typeof SIZE)[keyof typeof SIZE];
 
 export interface Variant {
   discount: number;
