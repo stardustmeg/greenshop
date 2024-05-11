@@ -109,8 +109,11 @@ class HeaderModel {
     switchLanguageButton.addEventListener('click', () => {
       const newLanguage =
         getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
+
+      serverMessageModel.showServerMessage(SERVER_MESSAGE[newLanguage].LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
       getStore().dispatch(setCurrentLanguage(newLanguage));
     });
+
     return true;
   }
 
