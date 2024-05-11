@@ -1,8 +1,11 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage, selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
+import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { EMAIL_FIELD } from '@/shared/constants/forms/login/fieldParams.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
@@ -25,6 +28,8 @@ class HeaderView {
 
   private switchLanguageButton: ButtonModel;
 
+  private switchThemeCheckbox: InputModel;
+
   private toCartLink: LinkModel;
 
   private toProfileLink: LinkModel;
@@ -36,6 +41,7 @@ class HeaderView {
     this.linkLogo = this.createLinkLogo();
     this.toCartLink = this.createToCartLink();
     this.toProfileLink = this.createToProfileLink();
+    this.switchThemeCheckbox = this.createSwitchThemeCheckbox();
     this.switchLanguageButton = this.createSwitchLanguageButton();
     this.navigationWrapper = this.createNavigationWrapper();
     this.burgerButton = this.createBurgerButton();
@@ -46,7 +52,9 @@ class HeaderView {
       if (
         target !== this.navigationWrapper &&
         this.burgerButton.getHTML().classList.contains(styles.open) &&
-        target !== this.burgerButton.getHTML()
+        target !== this.burgerButton.getHTML() &&
+        target !== this.switchThemeCheckbox.getHTML() &&
+        target !== this.switchThemeCheckbox.getHTML().parentElement
       ) {
         this.burgerButton.getHTML().classList.toggle(styles.open);
         this.navigationWrapper.classList.toggle(styles.open);
@@ -135,6 +143,7 @@ class HeaderView {
       this.logoutButton.getHTML(),
       this.toCartLink.getHTML(),
       this.toProfileLink.getHTML(),
+      this.createSwitchThemeLabel(),
     );
 
     return this.navigationWrapper;
@@ -153,6 +162,45 @@ class HeaderView {
     });
 
     return this.switchLanguageButton;
+  }
+
+  private createSwitchThemeCheckbox(): InputModel {
+    this.switchThemeCheckbox = new InputModel({
+      autocomplete: EMAIL_FIELD.inputParams.autocomplete,
+      id: styles.switchThemeLabel,
+      placeholder: '',
+      type: INPUT_TYPE.CHECK_BOX,
+    });
+    this.switchThemeCheckbox.getHTML().classList.add(styles.switchThemeCheckbox);
+    document.body.classList.add('light');
+
+    this.switchThemeCheckbox.getHTML().addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      document.body.classList.toggle('light');
+    });
+
+    return this.switchThemeCheckbox;
+  }
+
+  private createSwitchThemeLabel(): HTMLLabelElement {
+    const label = createBaseElement({
+      attributes: { for: styles.switchThemeLabel },
+      cssClasses: [styles.switchThemeLabel],
+      tag: 'label',
+    });
+    const span = createBaseElement({
+      cssClasses: [styles.switchThemeLabelSpan],
+      tag: 'span',
+    });
+    const darkSVG = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    darkSVG.classList.add(styles.darkSVG);
+    const lightSVG = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    lightSVG.classList.add(styles.lightSVG);
+    darkSVG.append(createSVGUse(SVG_DETAILS.DARK));
+    lightSVG.append(createSVGUse(SVG_DETAILS.LIGHT));
+
+    label.append(darkSVG, lightSVG, this.switchThemeCheckbox.getHTML(), span);
+    return label;
   }
 
   private createToCartLink(): LinkModel {
