@@ -124,7 +124,7 @@ const postsData: Post[] = [
     time: 2,
     tittle: {
       en: 'New Digs: Moving Plants Small & Tall',
-      ru: 'На Новом Месте: Переезд Маленьких М Больших Растений',
+      ru: 'На Новом Месте: Переезд Маленьких И Больших Растений',
     },
   },
   {
