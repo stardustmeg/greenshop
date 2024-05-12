@@ -1,4 +1,3 @@
-import type { SizeType } from '@/shared/types/product.ts';
 import type ProductCardParams from '@/shared/types/productCard';
 
 import ProductCardView from '../view/ProductCardView.ts';
@@ -6,7 +5,7 @@ import ProductCardView from '../view/ProductCardView.ts';
 class ProductCardModel {
   private view: ProductCardView;
 
-  constructor(params: ProductCardParams, size: SizeType | null) {
+  constructor(params: ProductCardParams, size: null | string) {
     this.view = new ProductCardView(params, size);
   }
 

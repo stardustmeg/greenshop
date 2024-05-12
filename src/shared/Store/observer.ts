@@ -73,4 +73,11 @@ export const selectSelectedFiltersPrice = (state: State): { max: number; min: nu
   return null;
 };
 
+export const selectSelectedFiltersSize = (state: State): null | string => {
+  if (state.selectedFilters) {
+    return state.selectedFilters.size;
+  }
+  return null;
+};
+
 export default observeStore;

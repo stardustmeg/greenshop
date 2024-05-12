@@ -5,8 +5,8 @@ import getStore from '@/shared/Store/Store.ts';
 import { switchAppTheme } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage, selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
+import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
-import { EMAIL_FIELD } from '@/shared/constants/forms/login/fieldParams.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import APP_THEME from '@/shared/constants/styles.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
@@ -168,7 +168,7 @@ class HeaderView {
 
   private createSwitchThemeCheckbox(): InputModel {
     this.switchThemeCheckbox = new InputModel({
-      autocomplete: EMAIL_FIELD.inputParams.autocomplete,
+      autocomplete: AUTOCOMPLETE_OPTION.OFF,
       id: styles.switchThemeLabel,
       placeholder: '',
       type: INPUT_TYPE.CHECK_BOX,

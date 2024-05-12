@@ -1,3 +1,4 @@
+import type { SizeProductCount } from '@/shared/API/types/type';
 import type { Category } from '@/shared/types/product';
 import type ProductFiltersParams from '@/shared/types/productFilters';
 
@@ -6,14 +7,17 @@ import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
+import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
+import { FILTER_INPUT_RANGE_LABEL, FILTER_TITLE } from '@/shared/constants/filters.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import * as noUiSlider from 'nouislider';
 
 import styles from './productFiltersView.module.scss';
 
-const BASE_CATEGORY_LINK_COUNT = '(0)';
-const TEXT_RADIX = 10;
+const BASE_FILTER_LINK_COUNT = '(0)';
+const SLIDER_PRICE_OFFSET = 10;
+const INPUT_PRICE_STEP = 5;
 
 class ProductFiltersView {
   private categoryCountSpan: HTMLSpanElement[] = [];
@@ -30,10 +34,17 @@ class ProductFiltersView {
 
   private priceSlider: noUiSlider.API;
 
+  private sizeCountSpan: HTMLSpanElement[] = [];
+
+  private sizeLinks: LinkModel[] = [];
+
+  private sizesList: HTMLUListElement;
+
   constructor(params: ProductFiltersParams) {
     this.params = params;
     this.categoryList = this.createCategoryList();
     this.priceSlider = this.createPriceSlider();
+    this.sizesList = this.createSizesList();
     this.filters = this.createHTML();
   }
 
@@ -57,38 +68,31 @@ class ProductFiltersView {
         id: category.id,
       },
       cssClasses: [styles.categoryLinkCount],
-      innerContent: BASE_CATEGORY_LINK_COUNT,
+      innerContent: BASE_FILTER_LINK_COUNT,
       tag: 'span',
     });
 
     this.categoryCountSpan.push(span);
     categoryLink.getHTML().append(span);
 
-    this.params.products?.forEach((product) => {
-      product.category.forEach((categoryEl) => {
-        if (category.key === categoryEl.key) {
-          const text = span.innerText.match(/\d+/);
-          const updatedText = text ? `(${Number(parseInt(text[0], TEXT_RADIX)) + 1})` : BASE_CATEGORY_LINK_COUNT;
-          span.innerText = updatedText;
-        }
-      });
-    });
+    const productsCount =
+      this.params.categoriesProductCount?.find((item) => item.category.key === category.key)?.count ?? 0;
+    span.textContent = `(${productsCount})`;
+
     this.categoryLinks.push(categoryLink);
     return categoryLink;
   }
 
   private createCategoryList(): HTMLUListElement {
-    this.categoryList = createBaseElement({
-      cssClasses: [styles.categoryList],
-      tag: 'ul',
-    });
+    const { filtersList, filtersListTitle } = this.createFiltersList(
+      {
+        list: [styles.categoryList],
+        title: [styles.categoryTitle],
+      },
+      FILTER_TITLE[getStore().getState().currentLanguage].CATEGORY,
+    );
 
-    const title = createBaseElement({
-      cssClasses: [styles.categoryTitle],
-      innerContent: 'Categories',
-      tag: 'h3',
-    });
-    this.categoryList.append(title);
+    this.categoryList = filtersList;
 
     this.params.categories?.forEach((category) => {
       const li = createBaseElement({
@@ -104,7 +108,8 @@ class ProductFiltersView {
       this.categoryCountSpan.length = 0;
       this.categoryLinks.length = 0;
       this.categoryList.innerHTML = '';
-      this.categoryList.append(title);
+      this.categoryList.append(filtersListTitle);
+      filtersListTitle.textContent = FILTER_TITLE[getStore().getState().currentLanguage].CATEGORY;
       this.params.categories?.forEach((category) => {
         this.categoryList.append(this.createCategoryLink(category).getHTML());
       });
@@ -113,18 +118,42 @@ class ProductFiltersView {
     return this.categoryList;
   }
 
+  private createFiltersList(
+    classes: Record<string, string[]>,
+    title: string,
+  ): {
+    filtersList: HTMLUListElement;
+    filtersListTitle: HTMLHeadingElement;
+  } {
+    const filtersList = createBaseElement({
+      cssClasses: classes.list,
+      tag: 'ul',
+    });
+
+    const filtersListTitle = createBaseElement({
+      cssClasses: classes.title,
+      innerContent: title,
+      tag: 'h3',
+    });
+    filtersList.append(filtersListTitle);
+    return { filtersList, filtersListTitle };
+  }
+
   private createHTML(): HTMLDivElement {
     this.filters = createBaseElement({
       cssClasses: [styles.filters],
       tag: 'div',
     });
 
-    this.filters.append(this.categoryList, this.createPriceWrapper(), this.priceSlider.target);
+    this.filters.append(this.categoryList, this.createPriceWrapper(), this.priceSlider.target, this.sizesList);
 
     return this.filters;
   }
 
-  private createPriceLabel(direction: string): HTMLLabelElement {
+  private createPriceLabel(direction: string): {
+    priceLabel: HTMLLabelElement;
+    priceSpan: HTMLSpanElement;
+  } {
     const priceLabel = createBaseElement({
       attributes: {
         for: direction,
@@ -143,19 +172,29 @@ class ProductFiltersView {
     const maxPrice = this.params.priceRange?.max.toFixed(2) ?? '';
 
     const priceInput = new InputModel({
-      autocomplete: 'off',
-      id: direction,
-      placeholder: direction === 'from' ? minPrice : maxPrice,
+      autocomplete: AUTOCOMPLETE_OPTION.OFF,
+      id:
+        direction === FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM
+          ? FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM
+          : FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].TO,
+      max: this.params.priceRange?.max,
+      min: this.params.priceRange?.min,
+      placeholder:
+        direction === FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM ? minPrice : maxPrice,
+      step: INPUT_PRICE_STEP,
       type: INPUT_TYPE.NUMBER,
-      value: direction === 'from' ? minPrice : maxPrice,
+      value: direction === FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM ? minPrice : maxPrice,
     });
     priceInput.getHTML().classList.add(styles.priceInput, styles[direction]);
     this.priceInputs.set(direction, priceInput);
     priceLabel.append(priceSpan, priceInput.getHTML());
-    return priceLabel;
+    return { priceLabel, priceSpan };
   }
 
   private createPriceSlider(): noUiSlider.API {
+    const { max, min } = this.params.priceRange ?? { max: 0, min: 0 };
+    const SLIDER_START_MIN = min + max / SLIDER_PRICE_OFFSET;
+    const SLIDER_START_MAX = max - max / SLIDER_PRICE_OFFSET;
     const slider = createBaseElement({
       attributes: {
         id: 'slider',
@@ -168,8 +207,8 @@ class ProductFiltersView {
       behaviour: 'tap',
       connect: true,
       keyboardSupport: true,
-      range: this.params.priceRange ?? { max: 100, min: 0 },
-      start: [40, 320],
+      range: this.params.priceRange ?? { max: 0, min: 0 },
+      start: [SLIDER_START_MIN, SLIDER_START_MAX],
     });
 
     return this.priceSlider;
@@ -183,12 +222,86 @@ class ProductFiltersView {
 
     const title = createBaseElement({
       cssClasses: [styles.priceTitle],
-      innerContent: 'Price range',
+      innerContent: FILTER_TITLE[getStore().getState().currentLanguage].PRICE,
       tag: 'h3',
     });
 
-    priceWrapper.append(title, this.createPriceLabel('from'), this.createPriceLabel('to'));
+    observeStore(selectCurrentLanguage, () => {
+      title.textContent = FILTER_TITLE[getStore().getState().currentLanguage].PRICE;
+    });
+
+    const from = this.createPriceLabel(FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
+    const to = this.createPriceLabel(FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    priceWrapper.append(from.priceLabel, this.priceSlider.target, to.priceLabel);
+
+    observeStore(selectCurrentLanguage, () => {
+      from.priceSpan.textContent = FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
+      to.priceSpan.textContent = FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].TO;
+    });
     return priceWrapper;
+  }
+
+  private createSizeLink(size: SizeProductCount): LinkModel {
+    const sizeLink = new LinkModel({
+      attrs: {
+        href: size.size,
+        id: size.size,
+      },
+      classes: [styles.sizeLink],
+      text: size.size,
+    });
+
+    sizeLink.getHTML().addEventListener('click', (event) => {
+      event.preventDefault();
+    });
+
+    const span = createBaseElement({
+      attributes: {
+        id: size.size,
+      },
+      cssClasses: [styles.sizeLinkCount],
+      innerContent: `(${size.count})`,
+      tag: 'span',
+    });
+
+    this.sizeCountSpan.push(span);
+    sizeLink.getHTML().append(span);
+
+    this.sizeLinks.push(sizeLink);
+    return sizeLink;
+  }
+
+  private createSizesList(): HTMLUListElement {
+    const { filtersList, filtersListTitle } = this.createFiltersList(
+      {
+        list: [styles.sizesList],
+        title: [styles.sizesTitle],
+      },
+      FILTER_TITLE[getStore().getState().currentLanguage].SIZE,
+    );
+
+    this.sizesList = filtersList;
+
+    this.params.sizes?.forEach((size) => {
+      const li = createBaseElement({
+        cssClasses: [styles.sizeItem],
+        tag: 'li',
+      });
+
+      li.append(this.createSizeLink(size).getHTML());
+      this.sizesList.append(li);
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      this.sizeCountSpan.length = 0;
+      this.sizeLinks.length = 0;
+      this.sizesList.innerHTML = '';
+      this.sizesList.append(filtersListTitle);
+      filtersListTitle.textContent = FILTER_TITLE[getStore().getState().currentLanguage].SIZE;
+      this.params.sizes?.forEach((size) => this.sizesList.append(this.createSizeLink(size).getHTML()));
+    });
+
+    return this.sizesList;
   }
 
   public getCategoryLinks(): LinkModel[] {
@@ -207,26 +320,21 @@ class ProductFiltersView {
     return this.priceSlider;
   }
 
-  public switchSelectCategory(categoryLink: LinkModel): void {
-    categoryLink.getHTML().classList.toggle(styles.activeLink);
+  public getSizeLinks(): LinkModel[] {
+    return this.sizeLinks;
+  }
+
+  public switchSelectedFilter(filterLink: LinkModel, toggle?: boolean): void {
+    filterLink.getHTML().classList.toggle(styles.activeLink, toggle);
   }
 
   public updateParams(params: ProductFiltersParams): void {
     this.params = params;
-    this.params.categories?.forEach((category) => {
-      const currentSpan = this.categoryCountSpan.find((span) => span.id === category.id) ?? null;
+    this.params.categoriesProductCount?.forEach((categoryCount) => {
+      const currentSpan = this.categoryCountSpan.find((span) => span.id === categoryCount.category.id) ?? null;
       if (currentSpan) {
-        currentSpan.innerText = BASE_CATEGORY_LINK_COUNT;
+        currentSpan.innerText = `(${categoryCount.count})`;
       }
-      this.params.products?.forEach((product) => {
-        product.category.forEach((categoryEl) => {
-          if (category.id === categoryEl.id && currentSpan) {
-            const text = currentSpan?.innerText.match(/\d+/);
-            const updatedText = text ? `(${Number(parseInt(text[0], TEXT_RADIX)) + 1})` : BASE_CATEGORY_LINK_COUNT;
-            currentSpan.innerText = updatedText;
-          }
-        });
-      });
     });
   }
 }

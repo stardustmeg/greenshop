@@ -1,4 +1,3 @@
-import type { SizeType } from '@/shared/types/product';
 import type ProductCardParams from '@/shared/types/productCard.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
@@ -36,9 +35,9 @@ class ProductCardView {
 
   private productShortDescription: HTMLParagraphElement;
 
-  private size: SizeType | null;
+  private size: null | string;
 
-  constructor(params: ProductCardParams, size: SizeType | null) {
+  constructor(params: ProductCardParams, size: null | string) {
     this.size = size;
     this.params = params;
     this.productImage = this.createProductImage();

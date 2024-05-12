@@ -15,6 +15,7 @@ class ProductFiltersModel {
       max: 0,
       min: 0,
     },
+    size: null,
   };
 
   private view: ProductFiltersView;
@@ -25,22 +26,25 @@ class ProductFiltersModel {
   }
 
   private init(): void {
+    this.selectedFilters = getStore().getState().selectedFilters ?? this.selectedFilters;
     this.initCategoryFilters();
     this.initPriceFilters();
+    this.initSizeFilters();
 
     observeStore(selectCurrentLanguage, () => {
+      this.selectedFilters = getStore().getState().selectedFilters ?? this.selectedFilters;
+      this.initSizeFilters();
       this.initCategoryFilters();
     });
   }
 
   private initCategoryFilters(): void {
     this.setCategoryLinksHandlers();
-    this.selectedFilters = getStore().getState().selectedFilters ?? this.selectedFilters;
     const categoryLinks = this.view.getCategoryLinks();
     this.selectedFilters.category.forEach((categoryID) => {
       const currentLink = categoryLinks.find((link) => link.getHTML().id === categoryID);
       if (currentLink) {
-        this.view.switchSelectCategory(currentLink);
+        this.view.switchSelectedFilter(currentLink, true);
       }
     });
   }
@@ -76,16 +80,38 @@ class ProductFiltersModel {
       .addEventListener('change', () => priceSlider.set([fromInput.getHTML().value, toInput.getHTML().value]));
   }
 
+  private initSizeFilters(): void {
+    this.setSizeLinksHandlers();
+    const sizeLinks = this.view.getSizeLinks();
+    const currentLink = sizeLinks.find((link) => link.getHTML().id === this.selectedFilters.size);
+    if (currentLink) {
+      this.view.switchSelectedFilter(currentLink, true);
+    }
+  }
+
   private setCategoryLinksHandlers(): void {
     this.view.getCategoryLinks().forEach((categoryLink) => {
       categoryLink.getHTML().addEventListener('click', () => {
-        this.view.switchSelectCategory(categoryLink);
+        this.view.switchSelectedFilter(categoryLink);
         const categoryID = categoryLink.getHTML().id;
         if (this.selectedFilters.category.has(categoryID)) {
           this.selectedFilters.category.delete(categoryID);
         } else {
           this.selectedFilters.category.add(categoryID);
         }
+
+        getStore().dispatch(setSelectedFilters(this.selectedFilters));
+      });
+    });
+  }
+
+  private setSizeLinksHandlers(): void {
+    this.view.getSizeLinks().forEach((sizeLink) => {
+      sizeLink.getHTML().addEventListener('click', () => {
+        this.view.getSizeLinks().forEach((link) => this.view.switchSelectedFilter(link, false));
+        this.view.switchSelectedFilter(sizeLink, true);
+        const sizeID = sizeLink.getHTML().id;
+        this.selectedFilters.size = sizeID;
 
         getStore().dispatch(setSelectedFilters(this.selectedFilters));
       });

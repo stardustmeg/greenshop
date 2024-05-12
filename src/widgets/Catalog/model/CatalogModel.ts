@@ -11,6 +11,7 @@ import observeStore, {
   observeSetInStore,
   selectSelectedFiltersCategory,
   selectSelectedFiltersPrice,
+  selectSelectedFiltersSize,
 } from '@/shared/Store/observer.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import showBadRequestMessage from '@/shared/utils/showBadRequestMessage.ts';
@@ -37,7 +38,9 @@ class CatalogModel {
       try {
         const products = await getProductModel().getProducts(options);
         const priceRange = await getProductModel().getPriceRange();
-        return { categories, priceRange, products };
+        const sizes = await getProductModel().getSizeProductCount();
+        const categoriesProductCount = await getProductModel().getCategoriesProductCount();
+        return { categories, categoriesProductCount, priceRange, products, sizes };
       } catch {
         showBadRequestMessage();
       }
@@ -51,57 +54,62 @@ class CatalogModel {
   }
 
   private getSelectedFilters(): OptionsRequest {
-    const { category, price } = getStore().getState().selectedFilters || {};
+    const { category, price, size } = getStore().getState().selectedFilters || {};
     const filter: OptionsRequest['filter'] = [];
     category?.forEach((categoryID) => filter.push(addFilter(FilterFields.CATEGORY, categoryID)));
     if (price) {
       filter.push(addFilter(FilterFields.PRICE, price));
     }
-    return { filter, limit: 100, sort: { direction: 'desc', field: 'name', locale: 'en' } };
+    if (size) {
+      filter.push(addFilter(FilterFields.SIZE, size));
+    }
+    return { filter, sort: { direction: 'desc', field: 'name', locale: 'en' } };
   }
 
   private init(): void {
     const productList = this.view.getItemsList();
+    const { selectedFilters } = getStore().getState();
     this.getProductItems(this.getSelectedFilters())
       .then((data) => {
         if (!data?.products?.length) {
           productList.textContent = 'Ничего не найдено';
         } else {
-          data.products.forEach((productData) => productList.append(new ProductCardModel(productData, null).getHTML()));
-          this.productFilters = new ProductFiltersModel(data);
-          this.getHTML().append(this.productFilters.getHTML());
+          data.products.forEach((productData) =>
+            productList.append(
+              new ProductCardModel(productData, selectedFilters ? selectedFilters.size : null).getHTML(),
+            ),
+          );
         }
+        this.productFilters = new ProductFiltersModel(
+          data ?? { categories: null, categoriesProductCount: null, priceRange: null, products: null, sizes: null },
+        );
+        this.getHTML().append(this.productFilters.getHTML());
       })
-      .catch(() => {
-        showBadRequestMessage();
-      });
+      .catch(() => showBadRequestMessage());
 
-    observeSetInStore(selectSelectedFiltersCategory, () => {
-      this.redrawProductList(this.getSelectedFilters());
-    });
-
-    observeStore(selectSelectedFiltersPrice, () => {
-      this.redrawProductList(this.getSelectedFilters());
-    });
+    observeSetInStore(selectSelectedFiltersCategory, () => this.redrawProductList(this.getSelectedFilters()));
+    observeStore(selectSelectedFiltersPrice, () => this.redrawProductList(this.getSelectedFilters()));
+    observeStore(selectSelectedFiltersSize, () => this.redrawProductList(this.getSelectedFilters()));
   }
 
   private redrawProductList(options?: OptionsRequest): void {
     const productList = this.view.getItemsList();
+    const { selectedFilters } = getStore().getState();
     productList.innerHTML = '';
     this.getProductItems(options ?? {})
       .then((data) => {
         if (data?.products?.length) {
           data?.products?.forEach((productData) =>
-            productList.append(new ProductCardModel(productData, null).getHTML()),
+            productList.append(
+              new ProductCardModel(productData, selectedFilters ? selectedFilters.size : null).getHTML(),
+            ),
           );
           this.productFilters?.updateParams(data);
         } else {
           productList.textContent = 'Ничего не найдено';
         }
       })
-      .catch(() => {
-        showBadRequestMessage();
-      });
+      .catch(() => showBadRequestMessage());
   }
 
   public getHTML(): HTMLDivElement {
