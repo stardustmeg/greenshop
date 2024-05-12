@@ -242,7 +242,7 @@ class ProductFiltersView {
 
     const from = this.createPriceLabel(FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
     const to = this.createPriceLabel(FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].TO);
-    priceWrapper.append(from.priceLabel, this.priceSlider.target, to.priceLabel);
+    priceWrapper.append(title, from.priceLabel, this.priceSlider.target, to.priceLabel);
 
     observeStore(selectCurrentLanguage, () => {
       from.priceSpan.textContent = FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
