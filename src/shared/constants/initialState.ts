@@ -11,6 +11,7 @@ const initialState: State = {
   products: [],
   selectedFilters: {
     category: new Set(),
+    price: null,
   },
   shippingCountry: '',
 };

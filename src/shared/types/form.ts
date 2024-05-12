@@ -4,6 +4,7 @@ export interface InputParams {
   lang?: string;
   placeholder: null | string;
   type: 'checkbox' | 'color' | 'date' | 'email' | 'number' | 'password' | 'search' | 'tel' | 'text';
+  value?: null | string;
 }
 
 export interface LabelParams {

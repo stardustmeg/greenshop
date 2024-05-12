@@ -59,9 +59,16 @@ export const selectIsUserLoggedIn = (state: State): boolean => state.isUserLogge
 
 export const selectCurrentPage = (state: State): string => state.currentPage;
 
-export const selectSelectedFilters = (state: State): Set<string> | null => {
+export const selectSelectedFiltersCategory = (state: State): Set<string> | null => {
   if (state.selectedFilters) {
     return state.selectedFilters.category;
+  }
+  return null;
+};
+
+export const selectSelectedFiltersPrice = (state: State): { max: number; min: number } | null => {
+  if (state.selectedFilters) {
+    return state.selectedFilters.price;
   }
   return null;
 };

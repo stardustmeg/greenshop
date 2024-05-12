@@ -17,6 +17,7 @@ class InputView {
         lang: attrs.lang || '',
         placeholder: attrs.placeholder || '',
         type: attrs.type,
+        value: attrs.value || '',
       },
       tag: 'input',
     });

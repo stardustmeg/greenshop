@@ -11,6 +11,10 @@ import ProductFiltersView from '../view/ProductFiltersView.ts';
 class ProductFiltersModel {
   private selectedFilters: SelectedFilters = {
     category: new Set(),
+    price: {
+      max: 0,
+      min: 0,
+    },
   };
 
   private view: ProductFiltersView;
@@ -22,6 +26,7 @@ class ProductFiltersModel {
 
   private init(): void {
     this.initCategoryFilters();
+    this.initPriceFilters();
 
     observeStore(selectCurrentLanguage, () => {
       this.initCategoryFilters();
@@ -38,6 +43,37 @@ class ProductFiltersModel {
         this.view.switchSelectCategory(currentLink);
       }
     });
+  }
+
+  private initPriceFilters(): void {
+    const fromInput = this.view.getPriceInputs().get('from');
+    const toInput = this.view.getPriceInputs().get('to');
+    const priceSlider = this.view.getPriceSlider();
+    if (!fromInput || !toInput) {
+      return;
+    }
+    priceSlider.on('update', (values) => {
+      const [min, max] = values;
+      fromInput.getHTML().value = min.toString();
+      toInput.getHTML().value = max.toString();
+    });
+
+    priceSlider.on('set', (values) => {
+      const [min, max] = values;
+      this.selectedFilters.price = {
+        max: +max,
+        min: +min,
+      };
+
+      getStore().dispatch(setSelectedFilters(this.selectedFilters));
+    });
+
+    fromInput
+      .getHTML()
+      .addEventListener('change', () => priceSlider.set([fromInput.getHTML().value, toInput.getHTML().value]));
+    toInput
+      .getHTML()
+      .addEventListener('change', () => priceSlider.set([fromInput.getHTML().value, toInput.getHTML().value]));
   }
 
   private setCategoryLinksHandlers(): void {
