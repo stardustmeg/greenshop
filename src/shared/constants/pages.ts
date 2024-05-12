@@ -43,6 +43,23 @@ export const PAGE_DESCRIPTION = {
   },
 } as const;
 
+export const BLOG_DESCRIPTION = {
+  en: {
+    LIST_DESCRIPTION:
+      'Empowering all people to be plant people—a collection of articles from ours team of plant experts across a variety of plant care topics to inspire confidence in the next generation of plant parents. Welcome to GREENSHOP',
+    LIST_TITTLE: 'Your Journey to Plant Parenthood',
+    WIDGET_DESCRIPTIONS: 'This is where we share our experiences with all green friend lovers',
+    WIDGET_TITTLE: 'Our Blog Posts',
+  },
+  ru: {
+    LIST_DESCRIPTION:
+      'Дать возможность всем людям стать родителями растений - сборник статей от нашей команды экспертов по уходу за растениями на самые разные темы, чтобы вселить уверенность в следующее поколение родителей растений. Добро пожаловать на сайт GREENSHOP',
+    LIST_TITTLE: 'Превращение в заботливого родителя растений',
+    WIDGET_DESCRIPTIONS: 'Здесь мы делимся своим опытом со всеми любителями зеленых друзей',
+    WIDGET_TITTLE: 'Наши статьи в Блоге',
+  },
+} as const;
+
 export const PAGE_DESCRIPTION_KEYS = {
   404: '404',
   BLOG: 'BLOG',

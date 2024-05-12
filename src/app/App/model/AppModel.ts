@@ -28,8 +28,8 @@ class AppModel {
         return new AboutUsPageModel(this.appView.getHTML());
       },
       [PAGE_ID.BLOG]: async (): Promise<Page> => {
-        const { default: BlogPageModel } = await import('@/pages/Blog/model/BlogPageModel.ts');
-        return new BlogPageModel(this.appView.getHTML());
+        const { default: PostListModel } = await import('@/pages/Blog/PostList/model/PostListModel.ts');
+        return new PostListModel(this.appView.getHTML(), this.router);
       },
       [PAGE_ID.CART_PAGE]: async (): Promise<Page> => {
         const { default: CartPageModel } = await import('@/pages/CartPage/model/CartPageModel.ts');
