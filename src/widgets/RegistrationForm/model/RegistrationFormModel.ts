@@ -10,7 +10,7 @@ import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
-import { SIZES } from '@/shared/constants/sizes.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
 
@@ -118,7 +118,7 @@ class RegisterFormModel {
   }
 
   private registerUser(): void {
-    const loader = new LoaderModel(SIZES.SMALL).getHTML();
+    const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .registerNewCustomer(this.getFormUserData())
@@ -206,7 +206,7 @@ class RegisterFormModel {
   }
 
   private successfulUserRegistration(newUserData: User): void {
-    const loader = new LoaderModel(SIZES.SMALL).getHTML();
+    const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     this.updateUserData(newUserData)
       .then(() => getStore().dispatch(switchIsUserLoggedIn(true)))

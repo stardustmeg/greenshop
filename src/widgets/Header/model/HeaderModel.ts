@@ -15,11 +15,14 @@ import HeaderView from '../view/HeaderView.ts';
 class HeaderModel {
   private navigation: NavigationModel;
 
+  private parent: HTMLDivElement;
+
   private router: RouterModel;
 
   private view = new HeaderView();
 
-  constructor(router: RouterModel) {
+  constructor(router: RouterModel, parent: HTMLDivElement) {
+    this.parent = parent;
     this.router = router;
     this.navigation = new NavigationModel(this.router);
     this.init();
@@ -56,6 +59,7 @@ class HeaderModel {
 
   private init(): boolean {
     this.view.getWrapper().append(this.navigation.getHTML());
+    this.parent.insertAdjacentElement('beforebegin', this.view.getNavigationWrapper());
     this.checkCurrentUser();
     this.setLogoHandler();
     this.observeCurrentUser();

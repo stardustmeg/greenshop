@@ -96,6 +96,7 @@ vi.mock('./Store.ts', async (importOriginal) => {
       isAppThemeLight: true,
       isUserLoggedIn: false,
       products: [],
+      selectedFilters: null,
       shippingCountry: '',
     }),
   };
@@ -143,6 +144,7 @@ it('observeStore should call select and onChange when state changes', () => {
     isAppThemeLight: true,
     isUserLoggedIn: false,
     products: [],
+    selectedFilters: null,
     shippingCountry: '',
   };
 
@@ -172,6 +174,7 @@ describe('rootReducer', () => {
       isAppThemeLight: true,
       isUserLoggedIn: false,
       products: [],
+      selectedFilters: null,
       shippingCountry: '',
     };
   });

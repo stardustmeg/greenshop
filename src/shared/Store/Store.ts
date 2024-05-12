@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
 import type { Action, State } from './reducer.ts';
 import type { Reducer, ReduxStore } from './types';
 
 import initialState from '../constants/initialState.ts';
+import { parseToLoad } from '../services/helper.ts';
 import { STORAGE_KEY, saveCurrentStateToLocalStorage } from '../services/localStorage.ts';
 import { rootReducer } from './reducer.ts';
 
@@ -19,7 +19,7 @@ export class Store<S, A> implements ReduxStore<S, A> {
     let stateToSet: S;
 
     if (storedData) {
-      stateToSet = structuredClone(JSON.parse(storedData) as S);
+      stateToSet = structuredClone(parseToLoad<S>(storedData));
     } else {
       stateToSet = initialData;
     }

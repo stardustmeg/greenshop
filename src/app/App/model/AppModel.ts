@@ -14,11 +14,9 @@ class AppModel {
   private router = new RouterModel();
 
   constructor() {
-    this.initialize()
-      .then()
-      .catch(() => {
-        throw new Error('AppModel initialization error');
-      });
+    this.initialize().catch(() => {
+      throw new Error('AppModel initialization error');
+    });
   }
 
   private createRoutes(): Promise<Map<string, () => Promise<Page>>> {
@@ -79,7 +77,9 @@ class AppModel {
 
   private async initialize(): Promise<void> {
     document.body.append(this.appView.getHTML());
-    this.appView.getHTML().insertAdjacentElement('beforebegin', new HeaderModel(this.router).getHTML());
+    this.appView
+      .getHTML()
+      .insertAdjacentElement('beforebegin', new HeaderModel(this.router, this.appView.getHTML()).getHTML());
     this.appView.getHTML().insertAdjacentElement('afterend', new FooterModel(this.router).getHTML());
 
     const routes = await this.createRoutes();

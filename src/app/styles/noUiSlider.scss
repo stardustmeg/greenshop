@@ -1,0 +1,100 @@
+/* stylelint-disable selector-class-pattern */
+.noUi-touch-area {
+  width: 100%;
+  height: 100%;
+}
+
+.noUi-handle.noUi-handle-lower,
+.noUi-handle.noUi-handle-upper {
+  outline: 0;
+}
+
+.noUi-horizontal .noUi-handle {
+  right: -12px;
+  top: -5px;
+  width: var(--extra-small-offset);
+  height: var(--extra-small-offset);
+}
+
+.noUi-handle {
+  position: absolute;
+  border: 2px solid var(--noble-white-100);
+  border-radius: 50%;
+  box-shadow: none;
+  background-color: var(--steam-green-800);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: background-color 0.3;
+  cursor: pointer;
+}
+
+.noUi-target,
+.noUi-target * {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -ms-touch-action: none;
+  touch-action: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.noUi-horizontal .noUi-origin {
+  height: 0;
+}
+
+.noUi-connect,
+.noUi-origin {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  -ms-transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+  -webkit-transform-style: preserve-3d;
+  transform-style: flat;
+  will-change: transform;
+}
+
+.noUi-connect {
+  height: 8px;
+  background: var(--steam-green-800);
+  cursor: pointer;
+}
+
+.noUi-base,
+.noUi-connects {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.noUi-connects {
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.noUi-target {
+  position: relative;
+  border-radius: 4px;
+  background: var(--steam-green-400);
+  cursor: pointer;
+}
+
+.noUi-horizontal {
+  height: 8px;
+}
+
+.noUi-state-tap .noUi-connect,
+.noUi-state-tap .noUi-origin {
+  -webkit-transition: transform 0.3s;
+  transition: transform 0.3s;
+}

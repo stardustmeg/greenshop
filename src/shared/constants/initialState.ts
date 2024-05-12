@@ -9,6 +9,11 @@ const initialState: State = {
   isAppThemeLight: true,
   isUserLoggedIn: false,
   products: [],
+  selectedFilters: {
+    category: new Set(),
+    price: null,
+    size: null,
+  },
   shippingCountry: '',
 };
 

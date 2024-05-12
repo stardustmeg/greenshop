@@ -1,4 +1,3 @@
-import type { SizeType } from '@/shared/types/product';
 import type ProductCardParams from '@/shared/types/productCard.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
@@ -6,8 +5,9 @@ import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { MORE_TEXT } from '@/shared/constants/buttons.ts';
-import { SIZES } from '@/shared/constants/sizes.ts';
+import { LANGUAGE_CHOICE, MORE_TEXT } from '@/shared/constants/buttons.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './productCardView.module.scss';
@@ -35,9 +35,9 @@ class ProductCardView {
 
   private productShortDescription: HTMLParagraphElement;
 
-  private size: SizeType;
+  private size: null | string;
 
-  constructor(params: ProductCardParams, size: SizeType) {
+  constructor(params: ProductCardParams, size: null | string) {
     this.size = size;
     this.params = params;
     this.productImage = this.createProductImage();
@@ -62,10 +62,13 @@ class ProductCardView {
   }
 
   private createBasicPrice(): HTMLSpanElement {
-    const { discount, price } = this.params.variant.find(({ size }) => size === this.size) ?? {};
+    const { discount, price } = this.size
+      ? this.params.variant.find(({ size }) => size === this.size) ?? {}
+      : this.params.variant[0];
+    const innerContent = discount ? `$${discount.toFixed(2)}` : `$${price?.toFixed(2)}`;
     this.basicPrice = createBaseElement({
       cssClasses: [styles.basicPrice],
-      innerContent: discount ? `$${discount.toFixed(2)}` : `$${price?.toFixed(2)}`,
+      innerContent,
       tag: 'span',
     });
 
@@ -114,10 +117,13 @@ class ProductCardView {
   }
 
   private createOldPrice(): HTMLSpanElement {
-    const { discount, price } = this.params.variant.find(({ size }) => size === this.size) ?? {};
+    const { discount, price } = this.size
+      ? this.params.variant.find(({ size }) => size === this.size) ?? {}
+      : this.params.variant[0];
+    const innerContent = discount ? `$${price?.toFixed(2)}` : '';
     this.oldPrice = createBaseElement({
       cssClasses: [styles.oldPrice],
-      innerContent: discount ? `$${price?.toFixed(2)}` : '',
+      innerContent,
       tag: 'span',
     });
 
@@ -137,6 +143,7 @@ class ProductCardView {
   private createProductImage(): HTMLImageElement {
     const productImage = createBaseElement({
       attributes: {
+        alt: this.params.name[0].value,
         src: this.params.images[0],
       },
       cssClasses: [styles.productImage],
@@ -151,7 +158,7 @@ class ProductCardView {
       tag: 'div',
     });
 
-    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    const loader = new LoaderModel(LOADER_SIZE.MEDIUM).getHTML();
     this.productImageWrapper.append(this.productImage, loader);
     this.productImage.classList.add(styles.hidden);
 
@@ -172,26 +179,45 @@ class ProductCardView {
 
     this.productLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      window.location.href = this.params.key;
+      // TBD: fix href on product page
+      window.location.href = `${PAGE_ID.CATALOG_PAGE}/${this.params.key}`;
     });
 
     return this.productLink;
   }
 
   private createProductName(): HTMLHeadingElement {
+    // TBD: replace on locale
+    const innerContent = this.params.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
     const productName = createBaseElement({
       cssClasses: [styles.productName],
-      innerContent: this.params.name[0].value,
+      innerContent,
       tag: 'h3',
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      // TBD: replace on locale
+      const textContent = this.params.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+      productName.textContent = textContent;
     });
     return productName;
   }
 
   private createProductShortDescription(): HTMLParagraphElement {
+    // TBD: replace on locale
+    const innerContent =
+      this.params.description[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
     this.productShortDescription = createBaseElement({
       cssClasses: [styles.productShortDescription],
-      innerContent: this.params.description[0].value,
+      innerContent,
       tag: 'p',
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      // TBD: replace on locale
+      const textContent =
+        this.params.description[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+      this.productShortDescription.textContent = textContent;
     });
 
     return this.productShortDescription;
