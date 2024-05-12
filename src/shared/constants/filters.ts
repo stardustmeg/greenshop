@@ -21,3 +21,12 @@ export const FILTER_INPUT_RANGE_LABEL = {
     TO: 'До',
   },
 } as const;
+
+export const FILTER_RESET_BUTTON = {
+  en: {
+    RESET: 'Reset',
+  },
+  ru: {
+    RESET: 'Сбросить',
+  },
+} as const;

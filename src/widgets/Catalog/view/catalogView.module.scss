@@ -12,7 +12,7 @@
   align-items: stretch;
   justify-content: center;
   order: 2;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, auto);
   width: 80%;
   height: max-content;
   min-height: 500px;

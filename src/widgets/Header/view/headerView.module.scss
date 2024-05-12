@@ -6,7 +6,8 @@
   z-index: 1;
   border-bottom: 1px solid var(--steam-green-300);
   width: 100%;
-  background-color: var(--white);
+  background-color: #1a1a1ab5;
+  backdrop-filter: blur(10px);
 }
 
 .wrapper {
@@ -32,11 +33,10 @@
   order: 3;
   padding: 70px var(--extra-small-offset) 0;
   width: 20%;
-  height: 100%;
-  background-color: var(--steam-green-gr-800);
+  height: 100dvh;
+  background-color: #1a1a1ab5;
   transform: none;
   transition: transform 0.3s;
-  backdrop-filter: blur(2px);
   gap: var(--medium-offset);
 
   &.open {

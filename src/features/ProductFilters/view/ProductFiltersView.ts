@@ -2,13 +2,14 @@ import type { SizeProductCount } from '@/shared/API/types/type';
 import type { Category } from '@/shared/types/product';
 import type ProductFiltersParams from '@/shared/types/productFilters';
 
+import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
-import { FILTER_INPUT_RANGE_LABEL, FILTER_TITLE } from '@/shared/constants/filters.ts';
+import { FILTER_INPUT_RANGE_LABEL, FILTER_RESET_BUTTON, FILTER_TITLE } from '@/shared/constants/filters.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import * as noUiSlider from 'nouislider';
@@ -34,6 +35,8 @@ class ProductFiltersView {
 
   private priceSlider: noUiSlider.API;
 
+  private resetFiltersButton: ButtonModel;
+
   private sizeCountSpan: HTMLSpanElement[] = [];
 
   private sizeLinks: LinkModel[] = [];
@@ -45,6 +48,7 @@ class ProductFiltersView {
     this.categoryList = this.createCategoryList();
     this.priceSlider = this.createPriceSlider();
     this.sizesList = this.createSizesList();
+    this.resetFiltersButton = this.createResetFiltersButton();
     this.filters = this.createHTML();
   }
 
@@ -145,7 +149,13 @@ class ProductFiltersView {
       tag: 'div',
     });
 
-    this.filters.append(this.categoryList, this.createPriceWrapper(), this.priceSlider.target, this.sizesList);
+    this.filters.append(
+      this.categoryList,
+      this.createPriceWrapper(),
+      this.priceSlider.target,
+      this.sizesList,
+      this.resetFiltersButton.getHTML(),
+    );
 
     return this.filters;
   }
@@ -241,6 +251,15 @@ class ProductFiltersView {
     return priceWrapper;
   }
 
+  private createResetFiltersButton(): ButtonModel {
+    this.resetFiltersButton = new ButtonModel({
+      classes: [styles.resetFiltersButton],
+      text: FILTER_RESET_BUTTON[getStore().getState().currentLanguage].RESET,
+    });
+
+    return this.resetFiltersButton;
+  }
+
   private createSizeLink(size: SizeProductCount): LinkModel {
     const sizeLink = new LinkModel({
       attrs: {
@@ -306,6 +325,10 @@ class ProductFiltersView {
 
   public getCategoryLinks(): LinkModel[] {
     return this.categoryLinks;
+  }
+
+  public getFiltersResetButton(): ButtonModel {
+    return this.resetFiltersButton;
   }
 
   public getHTML(): HTMLDivElement {

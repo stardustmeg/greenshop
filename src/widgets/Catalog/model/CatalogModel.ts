@@ -57,13 +57,14 @@ class CatalogModel {
     const { category, price, size } = getStore().getState().selectedFilters || {};
     const filter: OptionsRequest['filter'] = [];
     category?.forEach((categoryID) => filter.push(addFilter(FilterFields.CATEGORY, categoryID)));
-    if (price) {
+    if (price?.max || price?.min) {
       filter.push(addFilter(FilterFields.PRICE, price));
     }
     if (size) {
       filter.push(addFilter(FilterFields.SIZE, size));
     }
-    return { filter, sort: { direction: 'desc', field: 'name', locale: 'en' } };
+
+    return { filter, limit: 100, sort: { direction: 'desc', field: 'name', locale: 'en' } };
   }
 
   private init(): void {
