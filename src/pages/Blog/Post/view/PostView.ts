@@ -23,7 +23,6 @@ export default class PostView {
     this.post = post;
     this.router = router;
     this.callback = postClickCallback;
-    // this.parent = parent;
     this.card = this.createCardHTML();
     this.blogPost = this.createPostHtml();
 
@@ -69,21 +68,6 @@ export default class PostView {
   }
 
   public createPostHtml(): HTMLDivElement {
-    // const ln = getStore().getState().currentLanguage;
-    // this.post.content = this.post.content.replace(/<p>/g, `<p class=${styles.paragraph}>`);
-    // this.post.content = this.post.content.replace(/<h2>/g, `<h4 class=${styles.headText}>`);
-    // this.post.content = this.post.content.replace(/<h3>/g, `<h4 class=${styles.headText}>`);
-    // this.post.content = this.post.content.replace(/<h4>/g, `<h4 class=${styles.headText}>`);
-    // this.post.content = this.post.content.replace(/<h5>/g, `<h4 class=${styles.headText}>`);
-    // const tittle = `
-    // <div class=${styles.head}>
-    //   <h1 class=${styles.title}>${this.post.tittle[ln]}</h1>
-    //   <p class=${styles.shortDescription}>${this.post.shortDescription[ln]}</p>
-    // </div>
-    // <img src="/${this.post.image}" alt="${this.post.tittle[ln]}" class=${styles.img}></img>
-    // <div class=${styles.info}>
-    //   ${this.post.content}
-    // </div>`;
     const div = createBaseElement({
       cssClasses: [styles.post],
       innerContent: this.createPostInfoHtml(),
@@ -132,7 +116,6 @@ export default class PostView {
   }
 
   public updateLanguage(): void {
-    // this.card.remove();
     this.card.innerHTML = this.createCardInfoHTML();
     this.blogPost.innerHTML = this.createPostInfoHtml();
   }

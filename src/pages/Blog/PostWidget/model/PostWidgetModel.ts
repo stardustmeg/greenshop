@@ -6,6 +6,9 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import postsData from '../../data/posts.ts';
 import PostWidgetView from '../view/PostWidgetView.ts';
 
+const CART_COUNT = 3;
+const HALF_RANDOM = 0.5;
+
 export default class PostWidgetModel {
   private postClickHandler = (post: PostView): void => {
     this.view.openPost(post);
@@ -18,8 +21,8 @@ export default class PostWidgetModel {
   private view: PostWidgetView;
 
   constructor(parent: HTMLDivElement, router: RouterModel) {
-    const shuffledPosts = [...postsData].sort(() => 0.5 - Math.random());
-    const newPost = shuffledPosts.slice(0, 3);
+    const shuffledPosts = [...postsData].sort(() => HALF_RANDOM - Math.random());
+    const newPost = shuffledPosts.slice(0, CART_COUNT);
     this.router = router;
     this.posts = newPost.map((post) => new PostView(post, this.postClickHandler, this.router));
     this.view = new PostWidgetView(parent, this.posts);
