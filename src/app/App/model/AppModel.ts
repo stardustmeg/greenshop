@@ -73,7 +73,9 @@ class AppModel {
 
   private async initialize(): Promise<void> {
     document.body.append(this.appView.getHTML());
-    this.appView.getHTML().insertAdjacentElement('beforebegin', new HeaderModel(this.router).getHTML());
+    this.appView
+      .getHTML()
+      .insertAdjacentElement('beforebegin', new HeaderModel(this.router, this.appView.getHTML()).getHTML());
     this.appView.getHTML().insertAdjacentElement('afterend', new FooterModel(this.router).getHTML());
 
     const routes = await this.createRoutes();

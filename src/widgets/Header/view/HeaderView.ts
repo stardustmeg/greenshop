@@ -273,7 +273,7 @@ class HeaderView {
       tag: 'div',
     });
 
-    this.wrapper.append(this.linkLogo.getHTML(), this.navigationWrapper, this.burgerButton.getHTML());
+    this.wrapper.append(this.linkLogo.getHTML(), this.burgerButton.getHTML());
     return this.wrapper;
   }
 
@@ -291,6 +291,10 @@ class HeaderView {
 
   public getLogoutButton(): ButtonModel {
     return this.logoutButton;
+  }
+
+  public getNavigationWrapper(): HTMLDivElement {
+    return this.navigationWrapper;
   }
 
   public getSwitchLanguageButton(): ButtonModel {
