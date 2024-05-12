@@ -1,12 +1,14 @@
 import type { User, UserCredentials } from '@/shared/types/user.ts';
 
 import { DEFAULT_PAGE, MAX_PRICE, MIN_PRICE, PRODUCT_LIMIT } from '@/shared/constants/product.ts';
+import findAddressIndex from '@/shared/utils/address.ts';
 import {
   type CategoryPagedQueryResponse,
   type ClientResponse,
   type Customer,
   type CustomerPagedQueryResponse,
   type CustomerSignInResult,
+  type MyCustomerDraft,
   type MyCustomerUpdateAction,
   type Product,
   type ProductProjectionPagedQueryResponse,
@@ -52,6 +54,27 @@ export class RootApi {
       this.credentials.clientSecret || '',
       this.credentials.scopes || '',
     );
+  }
+
+  private makeCustomerDraft(userData: User): MyCustomerDraft {
+    const billingAddress = userData.defaultBillingAddressId
+      ? findAddressIndex(userData.addresses, userData.defaultBillingAddressId)
+      : null;
+    const shippingAddress = userData.defaultShippingAddressId
+      ? findAddressIndex(userData.addresses, userData.defaultShippingAddressId)
+      : null;
+
+    return {
+      addresses: [...userData.addresses],
+      dateOfBirth: userData.birthDate,
+      ...(billingAddress !== null && billingAddress >= 0 && { defaultBillingAddress: billingAddress }),
+      ...(shippingAddress !== null && shippingAddress >= 0 && { defaultShippingAddress: shippingAddress }),
+      email: userData.email,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      locale: userData.locale,
+      password: userData.password,
+    };
   }
 
   public async authenticateUser(userLoginData: UserCredentials): Promise<ClientResponse<CustomerSignInResult>> {
@@ -181,12 +204,12 @@ export class RootApi {
   }
 
   public async registrationUser(userData: User): Promise<ClientResponse<CustomerSignInResult>> {
-    const userCredentials = {
-      email: userData.email,
-      password: userData.password,
-    };
-
-    const data = await this.client.apiRoot().me().signup().post({ body: userCredentials }).execute();
+    const data = await this.client
+      .apiRoot()
+      .me()
+      .signup()
+      .post({ body: this.makeCustomerDraft(userData) })
+      .execute();
     if (!isErrorResponse(data)) {
       this.client.createAuthConnection(userData);
       this.client.approveAuth();
