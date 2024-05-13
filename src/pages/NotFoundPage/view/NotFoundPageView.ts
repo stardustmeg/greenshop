@@ -24,6 +24,7 @@ class NotFoundPageView {
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
+    this.parent.innerHTML = '';
     this.logo = this.createPageLogo();
     this.title = this.createPageTitle();
     this.description = this.createPageDescription();

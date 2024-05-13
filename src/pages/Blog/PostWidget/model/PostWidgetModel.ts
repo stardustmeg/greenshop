@@ -1,5 +1,3 @@
-import type RouterModel from '@/app/Router/model/RouterModel.ts';
-
 import PostView from '@/pages/Blog/Post/view/PostView.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 
@@ -16,15 +14,12 @@ export default class PostWidgetModel {
 
   private posts: PostView[];
 
-  private router: RouterModel;
-
   private view: PostWidgetView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel) {
+  constructor(parent: HTMLDivElement) {
     const shuffledPosts = [...postsData].sort(() => HALF_RANDOM - Math.random());
     const newPost = shuffledPosts.slice(0, CART_COUNT);
-    this.router = router;
-    this.posts = newPost.map((post) => new PostView(post, this.postClickHandler, this.router));
+    this.posts = newPost.map((post) => new PostView(post, this.postClickHandler));
     this.view = new PostWidgetView(parent, this.posts);
     this.init();
   }

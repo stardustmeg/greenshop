@@ -25,22 +25,13 @@ class MainPageModel implements Page {
     this.parent = parent;
     this.view = new MainPageView(this.parent);
     this.navigation = new NavigationModel(this.router);
-    this.blogWidget = new PostWidgetModel(this.view.getHTML(), router);
+    this.blogWidget = new PostWidgetModel(this.view.getHTML());
     this.init();
   }
 
   private init(): void {
     this.getHTML().append(this.navigation.getHTML(), this.blogWidget.getHTML());
     getStore().dispatch(setCurrentPage(PAGE_ID.MAIN_PAGE));
-    window.addEventListener('popstate', () => this.onHistoryChange());
-  }
-
-  private async onHistoryChange(): Promise<void> {
-    const path = window.location.pathname;
-
-    if (path === '/main') {
-      await this.router.navigateTo(PAGE_ID.MAIN_PAGE);
-    }
   }
 
   public getHTML(): HTMLDivElement {
