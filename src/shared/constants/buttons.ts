@@ -7,12 +7,14 @@ export const BUTTON_TYPE = {
 export const BUTTON_TEXT = {
   en: {
     BACK_TO_MAIN: 'Back to main',
+    EDIT_INFO: 'Edit info',
     LOG_OUT: 'Log out',
     LOGIN: 'Login',
     REGISTRATION: 'Register',
   },
   ru: {
     BACK_TO_MAIN: 'Вернуться на главную',
+    EDIT_INFO: 'Редактировать',
     LOG_OUT: 'Выйти',
     LOGIN: 'Войти',
     REGISTRATION: 'Регистрация',
@@ -21,6 +23,7 @@ export const BUTTON_TEXT = {
 
 export const BUTTON_TEXT_KEYS = {
   BACK_TO_MAIN: 'BACK_TO_MAIN',
+  EDIT_INFO: 'EDIT_INFO',
   LOG_OUT: 'LOG_OUT',
   LOGIN: 'LOGIN',
   REGISTRATION: 'REGISTRATION',

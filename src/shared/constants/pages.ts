@@ -75,3 +75,54 @@ export const PAGE_ID = {
   REGISTRATION_PAGE: 'register',
   USER_PROFILE_PAGE: 'profile',
 } as const;
+
+export const USER_INFO_TEXT = {
+  en: {
+    DATE_OF_BIRTH: 'Date of Birth: ',
+    EMAIL: 'Email: ',
+    LAST_NAME: 'Last Name: ',
+    NAME: 'First Name: ',
+  },
+  ru: {
+    DATE_OF_BIRTH: 'Дата рождения: ',
+    EMAIL: 'Электронная почта: ',
+    LAST_NAME: 'Фамилия: ',
+    NAME: 'Имя: ',
+  },
+} as const;
+
+export const USER_INFO_TEXT_KEYS = {
+  DATE_OF_BIRTH: 'DATE_OF_BIRTH',
+  EMAIL: 'EMAIL',
+  LAST_NAME: 'LAST_NAME',
+  NAME: 'NAME',
+} as const;
+
+export type UserInfoTextKeysType = (typeof USER_INFO_TEXT_KEYS)[keyof typeof USER_INFO_TEXT_KEYS];
+
+export const USER_INFO_MENU_LINK = {
+  en: {
+    ADDRESSES: 'Addresses',
+    ORDERS: 'Orders',
+    PERSONAL_INFO: 'Personal Info',
+    SUPPORT: 'Support',
+    WISHLIST: 'Wishlist',
+  },
+  ru: {
+    ADDRESSES: 'Адреса',
+    ORDERS: 'Заказы',
+    PERSONAL_INFO: 'Персональные данные',
+    SUPPORT: 'Поддержка',
+    WISHLIST: 'Избранное',
+  },
+} as const;
+
+export const USER_INFO_MENU_LINK_KEYS = {
+  ADDRESSES: 'ADDRESSES',
+  ORDERS: 'ORDERS',
+  PERSONAL_INFO: 'PERSONAL_INFO',
+  SUPPORT: 'SUPPORT',
+  WISHLIST: 'WISHLIST',
+} as const;
+
+export type UserInfoMenuLinkKeysType = (typeof USER_INFO_MENU_LINK_KEYS)[keyof typeof USER_INFO_MENU_LINK_KEYS];
