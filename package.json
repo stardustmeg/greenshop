@@ -69,6 +69,7 @@
     "js-cookie": "^3.0.5",
     "materialize-css": "^1.0.0-rc.2",
     "modern-normalize": "^2.0.0",
+    "nouislider": "^15.7.1",
     "postcode-validator": "^3.8.20",
     "vite-plugin-checker": "^0.6.4",
     "vite-plugin-image-optimizer": "^1.1.7",

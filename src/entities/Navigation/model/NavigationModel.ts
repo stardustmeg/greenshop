@@ -63,7 +63,7 @@ class NavigationModel {
 
   private switchLinksState(): boolean {
     const { currentPage } = getStore().getState();
-    const currentPath = currentPage === '' ? PAGE_ID.MAIN_PAGE : currentPage;
+    const currentPath = currentPage === PAGE_ID.DEFAULT_PAGE ? PAGE_ID.MAIN_PAGE : currentPage;
     const navigationLinks = this.view.getNavigationLinks();
     const currentLink = navigationLinks.get(String(currentPath));
     navigationLinks.forEach((link) => link.setEnabled());

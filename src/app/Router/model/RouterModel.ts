@@ -1,10 +1,8 @@
 import type { Page } from '@/shared/types/common.ts';
 
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { isValidPath, isValidState } from '@/shared/types/validation/paths.ts';
 
-const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
-const NEXT_SEGMENT = import.meta.env.VITE_APP_NEXT_SEGMENT;
-const PATH_SEGMENTS_TO_KEEP = import.meta.env.VITE_APP_PATH_SEGMENTS_TO_KEEP;
 const PROJECT_TITLE = import.meta.env.VITE_APP_PROJECT_TITLE;
 
 class RouterModel {
@@ -12,11 +10,19 @@ class RouterModel {
 
   constructor() {
     document.addEventListener('DOMContentLoaded', async () => {
-      const currentPath = window.location.pathname
-        .split(DEFAULT_SEGMENT)
-        .slice(PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
-        .join(DEFAULT_SEGMENT);
+      const currentPath = window.location.pathname.slice(1) || PAGE_ID.DEFAULT_PAGE;
       await this.navigateTo(currentPath);
+    });
+
+    window.addEventListener('popstate', async (event) => {
+      const currentPath: unknown = event.state;
+
+      if (!isValidState(currentPath) || !isValidPath(currentPath.path)) {
+        window.location.pathname = PAGE_ID.DEFAULT_PAGE;
+        return;
+      }
+
+      await this.handleRequest(currentPath.path);
     });
   }
 
@@ -25,24 +31,29 @@ class RouterModel {
     document.title = title;
   }
 
-  public async navigateTo(path: string): Promise<void> {
-    const pathnameApp = window.location.pathname
-      .split(DEFAULT_SEGMENT)
-      .slice(NEXT_SEGMENT, PATH_SEGMENTS_TO_KEEP + NEXT_SEGMENT)
-      .join(DEFAULT_SEGMENT);
-    const url = `${pathnameApp}/${path}`;
-
-    const pathParts = url.split(DEFAULT_SEGMENT);
-    const hasRoute = this.routes.has(pathParts[1]);
-    this.changeAppTitle(pathParts[1], hasRoute);
+  private async handleRequest(path: string): Promise<void> {
+    const hasRoute = this.routes.has(path);
+    this.changeAppTitle(path === PAGE_ID.DEFAULT_PAGE ? PAGE_ID.MAIN_PAGE : path, hasRoute);
 
     if (!hasRoute) {
       await this.routes.get(PAGE_ID.NOT_FOUND_PAGE)?.();
       return;
     }
 
-    await this.routes.get(pathParts[1])?.();
-    history.pushState(path, '', url);
+    await this.routes.get(path)?.();
+  }
+
+  public async navigateTo(path: string): Promise<void> {
+    const hasRoute = this.routes.has(path);
+    this.changeAppTitle(path === PAGE_ID.DEFAULT_PAGE ? PAGE_ID.MAIN_PAGE : path, hasRoute);
+
+    if (!hasRoute) {
+      await this.routes.get(PAGE_ID.NOT_FOUND_PAGE)?.();
+      return;
+    }
+
+    await this.routes.get(path)?.();
+    history.pushState({ path }, '', path);
   }
 
   public setRoutes(routes: Map<string, () => Promise<Page>>): Map<string, () => Promise<Page>> {

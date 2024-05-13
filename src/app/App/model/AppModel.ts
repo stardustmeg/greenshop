@@ -14,11 +14,9 @@ class AppModel {
   private router = new RouterModel();
 
   constructor() {
-    this.initialize()
-      .then()
-      .catch(() => {
-        throw new Error('AppModel initialization error');
-      });
+    this.initialize().catch(() => {
+      throw new Error('AppModel initialization error');
+    });
   }
 
   private createRoutes(): Promise<Map<string, () => Promise<Page>>> {
@@ -26,6 +24,10 @@ class AppModel {
       [PAGE_ID.ABOUT_US_PAGE]: async (): Promise<Page> => {
         const { default: AboutUsPageModel } = await import('@/pages/AboutUsPage/model/AboutUsPageModel.ts');
         return new AboutUsPageModel(this.appView.getHTML());
+      },
+      [PAGE_ID.BLOG]: async (): Promise<Page> => {
+        const { default: PostListModel } = await import('@/pages/Blog/PostList/model/PostListModel.ts');
+        return new PostListModel(this.appView.getHTML());
       },
       [PAGE_ID.CART_PAGE]: async (): Promise<Page> => {
         const { default: CartPageModel } = await import('@/pages/CartPage/model/CartPageModel.ts');
@@ -75,7 +77,9 @@ class AppModel {
 
   private async initialize(): Promise<void> {
     document.body.append(this.appView.getHTML());
-    this.appView.getHTML().insertAdjacentElement('beforebegin', new HeaderModel(this.router).getHTML());
+    this.appView
+      .getHTML()
+      .insertAdjacentElement('beforebegin', new HeaderModel(this.router, this.appView.getHTML()).getHTML());
     this.appView.getHTML().insertAdjacentElement('afterend', new FooterModel(this.router).getHTML());
 
     const routes = await this.createRoutes();

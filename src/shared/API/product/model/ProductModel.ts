@@ -1,4 +1,4 @@
-import type { Category, Product, Size, localization } from '@/shared/types/product.ts';
+import type { Category, Product, SizeType, localization } from '@/shared/types/product.ts';
 import type {
   Attribute as AttributeResponse,
   CategoryPagedQueryResponse,
@@ -145,7 +145,7 @@ export class ProductModel {
     return result;
   }
 
-  private adaptSize(attribute: AttributeResponse): Size | null {
+  private adaptSize(attribute: AttributeResponse): SizeType | null {
     if (Array.isArray(attribute.value) && attribute.value.length && isAttributePlainEnumValue(attribute.value[0])) {
       return getSize(attribute.value[0].key);
     }
@@ -155,7 +155,7 @@ export class ProductModel {
   private adaptVariants(product: Product, response: ProductProjection): Product {
     const variants = [...response.variants, response.masterVariant];
     variants.forEach((variant) => {
-      let size: Size | null = null;
+      let size: SizeType | null = null;
 
       if (variant.attributes && variant.attributes.length) {
         variant.attributes.forEach((attribute) => {

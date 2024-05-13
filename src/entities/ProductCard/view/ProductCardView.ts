@@ -1,17 +1,27 @@
 import type ProductCardParams from '@/shared/types/productCard.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { MORE_TEXT } from '@/shared/constants/buttons.ts';
-import { SIZES } from '@/shared/constants/sizes.ts';
+import { LANGUAGE_CHOICE, MORE_TEXT } from '@/shared/constants/buttons.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './productCardView.module.scss';
 
 class ProductCardView {
+  private basicPrice: HTMLSpanElement;
+
+  private bottomWrapper: HTMLDivElement;
+
+  private oldPrice: HTMLSpanElement;
+
   private params: ProductCardParams;
+
+  private priceWrapper: HTMLDivElement;
 
   private productCard: HTMLLIElement;
 
@@ -19,16 +29,26 @@ class ProductCardView {
 
   private productImageWrapper: HTMLDivElement;
 
+  private productLink: LinkModel;
+
   private productName: HTMLHeadingElement;
 
   private productShortDescription: HTMLParagraphElement;
 
-  constructor(params: ProductCardParams) {
+  private size: null | string;
+
+  constructor(params: ProductCardParams, size: null | string) {
+    this.size = size;
     this.params = params;
     this.productImage = this.createProductImage();
     this.productImageWrapper = this.createProductImageWrapper();
     this.productName = this.createProductName();
     this.productShortDescription = this.createProductShortDescription();
+    this.productLink = this.createProductLink();
+    this.basicPrice = this.createBasicPrice();
+    this.oldPrice = this.createOldPrice();
+    this.priceWrapper = this.createPriceWrapper();
+    this.bottomWrapper = this.createBottomWrapper();
     this.productCard = this.createHTML();
   }
 
@@ -41,13 +61,49 @@ class ProductCardView {
     button.textContent = button.textContent === moreText.HIDE ? moreText.MORE : moreText.HIDE;
   }
 
+  private createBasicPrice(): HTMLSpanElement {
+    const { discount, price } = this.size
+      ? this.params.variant.find(({ size }) => size === this.size) ?? {}
+      : this.params.variant[0];
+    const innerContent = discount ? `$${discount.toFixed(2)}` : `$${price?.toFixed(2)}`;
+    this.basicPrice = createBaseElement({
+      cssClasses: [styles.basicPrice],
+      innerContent,
+      tag: 'span',
+    });
+
+    if (!discount) {
+      this.basicPrice.classList.add(styles.gray);
+    }
+
+    return this.basicPrice;
+  }
+
+  private createBottomWrapper(): HTMLDivElement {
+    this.bottomWrapper = createBaseElement({
+      cssClasses: [styles.bottomWrapper],
+      tag: 'div',
+    });
+
+    const moreButton = this.createMoreButton();
+
+    observeStore(selectCurrentLanguage, () => {
+      this.updateMoreButtonText(moreButton);
+    });
+
+    moreButton.addEventListener('click', () => this.changeButtonText(this.productShortDescription, moreButton));
+
+    this.bottomWrapper.append(this.productName, this.priceWrapper, this.productShortDescription, moreButton);
+    return this.bottomWrapper;
+  }
+
   private createHTML(): HTMLLIElement {
     this.productCard = createBaseElement({
       cssClasses: [styles.productCard],
       tag: 'li',
     });
 
-    this.productCard.append(this.productImageWrapper, this.productName, this.productShortDescription);
+    this.productCard.append(this.productImageWrapper, this.bottomWrapper, this.productLink.getHTML());
     return this.productCard;
   }
 
@@ -60,9 +116,34 @@ class ProductCardView {
     return moreButton.getHTML();
   }
 
+  private createOldPrice(): HTMLSpanElement {
+    const { discount, price } = this.size
+      ? this.params.variant.find(({ size }) => size === this.size) ?? {}
+      : this.params.variant[0];
+    const innerContent = discount ? `$${price?.toFixed(2)}` : '';
+    this.oldPrice = createBaseElement({
+      cssClasses: [styles.oldPrice],
+      innerContent,
+      tag: 'span',
+    });
+
+    return this.oldPrice;
+  }
+
+  private createPriceWrapper(): HTMLDivElement {
+    this.priceWrapper = createBaseElement({
+      cssClasses: [styles.priceWrapper],
+      tag: 'div',
+    });
+
+    this.priceWrapper.append(this.basicPrice, this.oldPrice);
+    return this.priceWrapper;
+  }
+
   private createProductImage(): HTMLImageElement {
     const productImage = createBaseElement({
       attributes: {
+        alt: this.params.name[0].value,
         src: this.params.images[0],
       },
       cssClasses: [styles.productImage],
@@ -77,7 +158,7 @@ class ProductCardView {
       tag: 'div',
     });
 
-    const loader = new LoaderModel(SIZES.MEDIUM).getHTML();
+    const loader = new LoaderModel(LOADER_SIZE.MEDIUM).getHTML();
     this.productImageWrapper.append(this.productImage, loader);
     this.productImage.classList.add(styles.hidden);
 
@@ -88,32 +169,58 @@ class ProductCardView {
     return this.productImageWrapper;
   }
 
+  private createProductLink(): LinkModel {
+    this.productLink = new LinkModel({
+      attrs: {
+        href: this.params.key,
+      },
+      classes: [styles.productLink],
+    });
+
+    this.productLink.getHTML().addEventListener('click', (event) => {
+      event.preventDefault();
+      // TBD: fix href on product page
+      window.location.href = `${PAGE_ID.CATALOG_PAGE}/${this.params.key}`;
+    });
+
+    return this.productLink;
+  }
+
   private createProductName(): HTMLHeadingElement {
+    // TBD: replace on locale
+    const innerContent = this.params.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
     const productName = createBaseElement({
       cssClasses: [styles.productName],
-      innerContent: this.params.name[0].value,
+      innerContent,
       tag: 'h3',
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      // TBD: replace on locale
+      const textContent = this.params.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+      productName.textContent = textContent;
     });
     return productName;
   }
 
   private createProductShortDescription(): HTMLParagraphElement {
-    const productShortDescription = createBaseElement({
+    // TBD: replace on locale
+    const innerContent =
+      this.params.description[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+    this.productShortDescription = createBaseElement({
       cssClasses: [styles.productShortDescription],
-      innerContent: this.params.description[0].value,
+      innerContent,
       tag: 'p',
     });
 
-    const moreButton = this.createMoreButton();
-    productShortDescription.append(moreButton);
-
     observeStore(selectCurrentLanguage, () => {
-      this.updateMoreButtonText(moreButton);
+      // TBD: replace on locale
+      const textContent =
+        this.params.description[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+      this.productShortDescription.textContent = textContent;
     });
 
-    moreButton.addEventListener('click', () => this.changeButtonText(productShortDescription, moreButton));
-
-    return productShortDescription;
+    return this.productShortDescription;
   }
 
   private updateMoreButtonText(moreButton: HTMLButtonElement): void {

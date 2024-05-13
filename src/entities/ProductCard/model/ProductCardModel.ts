@@ -5,8 +5,8 @@ import ProductCardView from '../view/ProductCardView.ts';
 class ProductCardModel {
   private view: ProductCardView;
 
-  constructor(params: ProductCardParams) {
-    this.view = new ProductCardView(params);
+  constructor(params: ProductCardParams, size: null | string) {
+    this.view = new ProductCardView(params, size);
   }
 
   public getHTML(): HTMLLIElement {

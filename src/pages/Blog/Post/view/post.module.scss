@@ -1,0 +1,126 @@
+.cardItem {
+  background-color: var(--white);
+
+  &:hover {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+
+    .reed {
+      color: var(--steam-green-800);
+    }
+  }
+}
+
+.img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.dataTime {
+  font: var(--regular-font);
+  color: var(--steam-green-800);
+  margin: 0 var(--extra-small-offset);
+}
+
+.wrapImage {
+  width: 100%;
+}
+
+.title {
+  font: var(--extra-regular-font);
+  color: var(--black);
+  letter-spacing: 1px;
+  margin: 0 var(--extra-small-offset);
+  max-width: 75%;
+}
+
+.short .title {
+  font: var(--regular-font);
+}
+
+.shortDescription {
+  font: var(--regular-font);
+  color: var(--noble-gray-700);
+  letter-spacing: 1px;
+  margin: 0 var(--extra-small-offset);
+}
+
+.short .shortDescription {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reed {
+  display: block;
+  font: var(--regular-font);
+  color: var(--black);
+  transition: color 0.2s;
+  margin: 0 var(--extra-small-offset);
+  margin-top: 0;
+}
+
+.article {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  padding-bottom: var(--extra-small-offset);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: var(--extra-large-offset);
+  margin: 0;
+  background-color: rgba($color: #46a358, $alpha: 0.1);
+}
+
+.info {
+  display: block;
+  margin: 0 auto;
+  padding: var(--small-offset);
+  background-color: var(--white);
+  @media (max-width: 768px) {
+    margin: 0 var(--small-offset);
+  }
+}
+
+.list {
+  font: var(--extra-regular-font);
+  letter-spacing: 1px;
+  color: var(--noble-gray-800);
+  margin: var(--extra-small-offset);
+}
+.item {
+  color: var(--noble-gray-700);
+  letter-spacing: 1px;
+  margin: var(--small-offset);
+}
+.paragraph {
+  color: var(--noble-gray-700);
+  letter-spacing: 1px;
+  margin: var(--small-offset);
+}
+
+.headText {
+  font: var(--extra-regular-font);
+  letter-spacing: 1px;
+  color: var(--noble-gray-800);
+  margin: var(--extra-small-offset);
+}
+
+.post {
+  width: 75%;
+  margin: 0 auto;
+  @media (max-width: 768px) {
+    width: auto;
+  }
+}

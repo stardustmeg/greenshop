@@ -3,10 +3,11 @@
   left: 0;
   right: 0;
   top: 0;
-  z-index: 1;
+  z-index: 10;
   border-bottom: 1px solid var(--steam-green-300);
   width: 100%;
-  background-color: var(--white);
+  background-color: var(--noble-gray-1000);
+  backdrop-filter: blur(10px);
 }
 
 .wrapper {
@@ -24,19 +25,19 @@
 .navigationWrapper {
   position: fixed;
   right: -100%;
-  top: 0;
-  z-index: 2;
+  top: 69px;
+  z-index: 12;
   display: flex;
   flex-direction: column;
   align-items: center;
   order: 3;
   padding: 70px var(--extra-small-offset) 0;
   width: 20%;
-  height: 100%;
-  background-color: var(--steam-green-gr-800);
+  height: 100dvh;
+  background-color: var(--noble-gray-1000);
   transform: none;
   transition: transform 0.3s;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(10px);
   gap: var(--medium-offset);
 
   &.open {

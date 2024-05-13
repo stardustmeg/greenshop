@@ -5,6 +5,9 @@ import Cookies from 'js-cookie';
 import type { TokenTypeType } from '../../types/type.ts';
 
 import { TokenType } from '../../types/type.ts';
+import { isTokenType } from '../../types/validation.ts';
+
+const NAME = 'token-data';
 
 export class MyTokenCache implements TokenCache {
   private myCache: TokenStore = {
@@ -17,19 +20,26 @@ export class MyTokenCache implements TokenCache {
 
   constructor(name: string) {
     this.name = name;
-    const token = Cookies.get(`${this.name}-token`);
-    const expirationTime = Number(Cookies.get(`${this.name}-expirationTime`));
-    const refreshToken = Cookies.get(`${this.name}-refreshToken`);
-    if (token && refreshToken) {
-      this.myCache = { expirationTime, refreshToken, token };
+    const soreData = Cookies.get(`${this.name}-${NAME}`);
+    if (soreData) {
+      const cookieData: unknown = JSON.parse(soreData);
+      if (isTokenType(cookieData)) {
+        const { expirationTime, refreshToken, token } = cookieData;
+        if (token && refreshToken) {
+          this.myCache = { expirationTime, refreshToken, token };
+        }
+      }
     }
   }
 
   private saveToken(): void {
     if (this.myCache.token) {
-      Cookies.set(`${this.name}-token`, this.myCache.token);
-      Cookies.set(`${this.name}-expirationTime`, this.myCache.expirationTime.toString());
-      Cookies.set(`${this.name}-refreshToken`, this.myCache.refreshToken || '');
+      const cookieData = {
+        expirationTime: this.myCache.expirationTime.toString(),
+        refreshToken: this.myCache.refreshToken || '',
+        token: this.myCache.token,
+      };
+      Cookies.set(`${this.name}-${NAME}`, JSON.stringify(cookieData));
     }
   }
 
@@ -39,9 +49,7 @@ export class MyTokenCache implements TokenCache {
       refreshToken: undefined,
       token: '',
     };
-    Cookies.remove(`${this.name}-token`);
-    Cookies.remove(`${this.name}-expirationTime`);
-    Cookies.remove(`${this.name}-refreshToken`);
+    Cookies.remove(`${this.name}-${NAME}`);
   }
 
   public get(): TokenStore {
@@ -64,5 +72,5 @@ const anonymTokenCache = createTokenCache(TokenType.ANONYM);
 const authTokenCache = createTokenCache(TokenType.AUTH);
 
 export default function getTokenCache(tokenType?: TokenTypeType): MyTokenCache {
-  return tokenType === TokenType.AUTH || authTokenCache.isExist() ? authTokenCache : anonymTokenCache;
+  return tokenType === TokenType.AUTH ? authTokenCache : anonymTokenCache;
 }
