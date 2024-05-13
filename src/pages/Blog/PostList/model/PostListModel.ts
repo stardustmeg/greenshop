@@ -1,4 +1,3 @@
-import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Post } from '@/shared/constants/blog.ts';
 import type { Page } from '@/shared/types/common.ts';
 
@@ -20,15 +19,12 @@ export default class PostListModel implements Page {
 
   private posts: PostView[];
 
-  private router: RouterModel;
-
   private view: BlogPageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel) {
+  constructor(parent: HTMLDivElement) {
     const newPost: Post[] = postsData;
     this.parent = parent;
-    this.router = router;
-    this.posts = newPost.map((post) => new PostView(post, this.postClickHandler, this.router));
+    this.posts = newPost.map((post) => new PostView(post, this.postClickHandler));
     this.view = new BlogPageView(parent, this.posts);
     this.render();
     this.init();
@@ -37,7 +33,6 @@ export default class PostListModel implements Page {
   private init(): boolean {
     getStore().dispatch(setCurrentPage(PAGE_ID.BLOG));
     this.observeStoreLanguage();
-    window.addEventListener('popstate', () => this.render());
     return true;
   }
 

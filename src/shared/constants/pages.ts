@@ -91,7 +91,7 @@ export const PAGE_ID = {
   BLOG: 'blog',
   CART_PAGE: 'cart',
   CATALOG_PAGE: 'catalog',
-  DEFAULT_PAGE: '',
+  DEFAULT_PAGE: '/',
   ITEM_PAGE: 'item',
   LOGIN_PAGE: 'login',
   MAIN_PAGE: 'main',

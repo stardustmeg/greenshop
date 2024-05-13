@@ -64,7 +64,7 @@ class CatalogModel {
       filter.push(addFilter(FilterFields.SIZE, size));
     }
 
-    return { filter, limit: 100, sort: { direction: 'desc', field: 'name', locale: 'en' } };
+    return { filter, limit: 100, sort: { direction: 'asc', field: 'price' } };
   }
 
   private init(): void {
