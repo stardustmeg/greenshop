@@ -15,6 +15,7 @@ import type {
   RangeFacetResult,
   TermFacetResult,
 } from '@commercetools/platform-sdk';
+import type { TokenStore } from '@commercetools/sdk-client-v2';
 
 export function isClientResponse(data: unknown): data is ClientResponse {
   return Boolean(
@@ -191,5 +192,18 @@ export function isErrorResponse(data: unknown): data is ErrorResponse {
       data.statusCode >= 400 &&
       'message' in data &&
       typeof data.message === 'string',
+  );
+}
+
+export function isTokenType(data: unknown): data is TokenStore {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'expirationTime' in data &&
+      typeof data.expirationTime === 'number' &&
+      'refreshToken' in data &&
+      typeof data.refreshToken === 'string' &&
+      'token' in data &&
+      typeof data.token === 'string',
   );
 }

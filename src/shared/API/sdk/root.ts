@@ -16,10 +16,9 @@ import {
 } from '@commercetools/platform-sdk';
 
 import makeSortRequest from '../product/utils/sort.ts';
-import { type OptionsRequest, TokenType } from '../types/type.ts';
+import { type OptionsRequest } from '../types/type.ts';
 import { isErrorResponse } from '../types/validation.ts';
 import ApiClient from './client.ts';
-import getTokenCache from './token-cache/token-cache.ts';
 
 type Nullable<T> = T | null;
 
@@ -78,8 +77,8 @@ export class RootApi {
   }
 
   public async authenticateUser(userLoginData: UserCredentials): Promise<ClientResponse<CustomerSignInResult>> {
-    this.client.createAuthConnection(userLoginData);
-    const data = await this.client.apiRoot().me().login().post({ body: userLoginData }).execute();
+    const client = this.client.createAuthConnection(userLoginData);
+    const data = await client.me().login().post({ body: userLoginData }).execute();
     if (!isErrorResponse(data)) {
       this.client.approveAuth();
     }
@@ -199,7 +198,6 @@ export class RootApi {
   }
 
   public logoutUser(): boolean {
-    getTokenCache(TokenType.AUTH).clear();
     return this.client.deleteAuthConnection();
   }
 
