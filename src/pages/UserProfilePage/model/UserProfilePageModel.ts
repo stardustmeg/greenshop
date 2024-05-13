@@ -3,7 +3,7 @@ import type { Page } from '@/shared/types/common.ts';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentPage, setCurrentUser } from '@/shared/Store/actions.ts';
+import { setCurrentPage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
@@ -28,6 +28,7 @@ class UserProfilePageModel implements Page {
   private async logoutHandler(): Promise<boolean> {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
+    getStore().dispatch(switchIsUserLoggedIn(false));
     try {
       getCustomerModel().logout();
       await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);

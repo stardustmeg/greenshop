@@ -1,7 +1,7 @@
 import type RouterModel from '@/app/Router/model/RouterModel';
 
 import getStore from '@/shared/Store/Store.ts';
-import observeStore, { selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
+import observeStore, { selectCurrentPage, selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
@@ -36,7 +36,7 @@ class NavigationModel {
   }
 
   private observeState(): boolean {
-    observeStore(selectCurrentUser, () => this.checkCurrentUser());
+    observeStore(selectIsUserLoggedIn, () => this.checkCurrentUser());
     observeStore(selectCurrentPage, () => this.switchLinksState());
     return true;
   }

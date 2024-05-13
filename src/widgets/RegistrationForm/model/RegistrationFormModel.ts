@@ -280,6 +280,7 @@ class RegisterFormModel {
     currentUserData = await this.updateUserAddresses(currentUserData);
 
     getStore().dispatch(setCurrentUser(currentUserData));
+    getStore().dispatch(switchIsUserLoggedIn(true));
     return currentUserData;
   }
 

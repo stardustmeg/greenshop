@@ -5,24 +5,150 @@
   animation: show 0.2s ease-out forwards;
 }
 
-.userInfoWrapper {
+.userProfileWrapper {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  margin: 0 auto;
-  width: 500px;
-  height: 500px;
-  background-color: var(--steam-green-800);
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+}
+
+.userInfoWrapper,
+.addressesWrapper {
+  position: relative;
+  display: grid;
+  align-items: center;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(6, auto);
+  margin: 0 var(--small-offset);
+  padding: var(--small-offset);
+  min-width: 40%;
+  max-width: fit-content;
+  box-shadow: var(--mellow-shadow-100);
+  font: var(--extra-regular-font);
+  letter-spacing: 1px;
+  color: var(--noble-gray-900);
+  background-color: var(--noble-gray-tr-800);
+  gap: var(--small-offset);
+}
+
+.info {
+  grid-column: 2 span;
+  max-width: 100%;
+  word-break: break-all;
+
+  @media (max-width: 810px) {
+    font: var(--medium-font);
+  }
+
+  @media (max-width: 500px) {
+    font: var(--regular-font);
+  }
 }
 
 .accountMenu {
-  width: fit-content;
+  display: flex;
+  flex-flow: column wrap;
+  padding: var(--small-offset);
   height: fit-content;
+  max-width: fit-content;
+  background-color: var(--white-tr);
+  gap: var(--small-offset);
 }
 
 .accountMenuItem {
   width: fit-content;
   height: fit-content;
+}
+
+.switchLanguageLabel {
+  position: relative;
+  display: inline-block;
+  grid-column: 2;
+  grid-row: 1;
+  margin-right: 0;
+  margin-left: auto;
+  width: var(--large-offset);
+  height: calc(calc(var(--small-offset) / 1.5) + var(--extra-small-offset));
+  cursor: pointer;
+
+  @media (max-width: 768px) {
+    width: var(--large-offset);
+  }
+
+  &:disabled {
+    background-color: var(--noble-gray-300);
+    pointer-events: none;
+  }
+}
+
+.switchLanguageCheckbox {
+  width: 0;
+  height: 0;
+  opacity: 1;
+
+  &:checked {
+    + .switchLanguageLabelSpan {
+      background-color: #c4c4c4a8;
+    }
+
+    + .switchLanguageLabelSpan::before {
+      background-color: #c4c4c4a8;
+      transform: translate(calc(var(--small-offset) + 3.5px), -50%);
+    }
+
+    @media (max-width: 768px) {
+      + .switchLanguageLabelSpan::before {
+        transform: translate(calc(var(--small-offset) - 3.5px), -50%);
+      }
+    }
+  }
+}
+
+.switchLanguageLabelSpan {
+  position: absolute;
+  border-radius: calc(var(--large-br) * 2);
+  background-color: #d8d8d85c;
+  transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
+  cursor: pointer;
+  pointer-events: none;
+  inset: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    bottom: 0;
+    z-index: 2;
+    border-radius: var(--large-br);
+    width: calc(var(--small-offset) / 1.5);
+    height: calc(var(--small-offset) / 1.5);
+    box-shadow: 0 1px 5px #353535;
+    background-color: #c4c4c4a8;
+    transform: translateY(-50%);
+    transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
+  }
+}
+
+.enSVG,
+.ruSVG {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  border-radius: 50%;
+  width: calc(var(--small-offset) / 1.5);
+  height: calc(var(--small-offset) / 1.5);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.enSVG {
+  left: 5px;
+  fill: var(--noble-gray-800);
+}
+
+.ruSVG {
+  right: 5px;
+  fill: var(--white);
 }
 
 @keyframes show {
@@ -36,8 +162,8 @@
   }
 }
 
-.logoutButton {
-  order: 4;
+.logoutButton,
+.editInfoButton {
   border-radius: var(--medium-br);
   padding: calc(var(--small-offset) / 3) var(--small-offset);
   font: var(--regular-font);
@@ -61,5 +187,62 @@
   &:disabled {
     background-color: var(--noble-gray-300);
     pointer-events: none;
+  }
+}
+
+.editInfoButton {
+  grid-column: 2 span;
+  grid-row: 6;
+  margin: 0 auto;
+  height: max-content;
+  max-width: max-content;
+}
+
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--noble-gray-800);
+  transition: color 0.2s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    width: 100%;
+    height: 2px;
+    background-color: currentcolor;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition:
+      transform 0.2s,
+      opacity 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--steam-green-800);
+
+      &::after {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
+.active {
+  color: var(--steam-green-800);
+  opacity: 1;
+
+  &::after {
+    opacity: 1;
+    transform: scaleX(1);
   }
 }

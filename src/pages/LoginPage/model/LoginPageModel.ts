@@ -4,7 +4,7 @@ import type { User } from '@/shared/types/user.ts';
 
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
-import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
+import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { PAGE_ID, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/pages.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
@@ -47,7 +47,7 @@ class LoginPageModel implements Page {
     this.view.getAuthWrapper().append(this.loginForm.getHTML());
     this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
     this.setRegisterLinkHandler();
-    observeStore(selectCurrentUser, () => this.checkAuthUser());
+    observeStore(selectIsUserLoggedIn, () => this.checkAuthUser());
     return true;
   }
 

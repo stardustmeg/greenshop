@@ -3,7 +3,11 @@ import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { switchAppTheme } from '@/shared/Store/actions.ts';
-import observeStore, { selectCurrentLanguage, selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
+import observeStore, {
+  selectCurrentLanguage,
+  selectCurrentPage,
+  selectIsUserLoggedIn,
+} from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { EMAIL_FIELD } from '@/shared/constants/forms/login/fieldParams.ts';
@@ -250,7 +254,7 @@ class HeaderView {
       this.toProfileLink.getHTML().classList.add(styles.hidden);
     }
 
-    observeStore(selectCurrentUser, () =>
+    observeStore(selectIsUserLoggedIn, () =>
       this.toProfileLink.getHTML().classList.toggle(styles.hidden, getStore().getState().currentUser === null),
     );
 

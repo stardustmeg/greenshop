@@ -3,8 +3,8 @@ import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentLanguage, setCurrentUser } from '@/shared/Store/actions.ts';
-import observeStore, { selectCurrentUser } from '@/shared/Store/observer.ts';
+import { setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
@@ -61,6 +61,7 @@ class HeaderModel {
   private async logoutHandler(): Promise<boolean> {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
+    getStore().dispatch(switchIsUserLoggedIn(false));
     try {
       getCustomerModel().logout();
       await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
@@ -71,7 +72,7 @@ class HeaderModel {
   }
 
   private observeCurrentUser(): boolean {
-    observeStore(selectCurrentUser, () => {
+    observeStore(selectIsUserLoggedIn, () => {
       this.checkCurrentUser();
     });
     return true;
