@@ -3,7 +3,6 @@ import type ProductFiltersParams from '@/shared/types/productFilters.ts';
 import ProductCardModel from '@/entities/ProductCard/model/ProductCardModel.ts';
 import ProductFiltersModel from '@/features/ProductFilters/model/ProductFiltersModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
-// import addFilter from '@/shared/API/product/utils/filter.ts';
 import FilterProduct from '@/shared/API/product/utils/filter.ts';
 import { FilterFields, type OptionsRequest } from '@/shared/API/types/type.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
