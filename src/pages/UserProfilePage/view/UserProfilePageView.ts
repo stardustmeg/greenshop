@@ -1,27 +1,15 @@
-import type { LanguageChoiceType } from '@/shared/constants/buttons.ts';
-
-import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentLanguage, setCurrentUser } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS, LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { INPUT_TYPE } from '@/shared/constants/forms.ts';
-import { EMAIL_FIELD } from '@/shared/constants/forms/login/fieldParams.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { USER_INFO_MENU_LINK, USER_INFO_MENU_LINK_KEYS } from '@/shared/constants/pages.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
 import { userInfoDateOfBirth, userInfoEmail, userInfoLastName, userInfoName } from '@/shared/utils/messageTemplate.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import styles from './userProfilePageView.module.scss';
 
@@ -48,8 +36,6 @@ class UserProfilePageView {
 
   private supportLink: LinkModel;
 
-  private switchLanguageCheckbox: InputModel;
-
   private userInfoWrapper: HTMLDivElement;
 
   private userProfileWrapper: HTMLDivElement;
@@ -58,7 +44,7 @@ class UserProfilePageView {
 
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
-    this.parent.innerHTML = '';
+    clearOutElement(this.parent);
 
     this.accountLogoutButton = this.createLogoutButton();
     this.accountDetailsLink = this.createAccountDetailsLink();
@@ -68,7 +54,6 @@ class UserProfilePageView {
     this.wishListLink = this.createWishListLink();
     this.accountMenu = this.createAccountMenu();
 
-    this.switchLanguageCheckbox = this.createSwitchLanguageCheckbox();
     this.userInfoWrapper = this.createUserInfoWrapper();
     this.addressesWrapper = this.createAddresses();
     this.editInfoButton = this.createEditInfoButton();
@@ -184,12 +169,6 @@ class UserProfilePageView {
     return this.page;
   }
 
-  private createLanguageSVG(lang: LanguageChoiceType): SVGSVGElement {
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(lang));
-    return svg;
-  }
-
   private createLogoutButton(): ButtonModel {
     this.accountLogoutButton = new ButtonModel({
       classes: [styles.logoutButton],
@@ -229,56 +208,6 @@ class UserProfilePageView {
     observeCurrentLanguage(this.supportLink.getHTML(), USER_INFO_MENU_LINK, USER_INFO_MENU_LINK_KEYS.SUPPORT);
 
     return this.supportLink;
-  }
-
-  private createSwitchLanguageCheckbox(): InputModel {
-    this.switchLanguageCheckbox = new InputModel({
-      autocomplete: EMAIL_FIELD.inputParams.autocomplete,
-      id: styles.switchLanguageLabel,
-      placeholder: '',
-      type: INPUT_TYPE.CHECK_BOX,
-    });
-    this.switchLanguageCheckbox.getHTML().classList.add(styles.switchLanguageCheckbox);
-    this.switchLanguageCheckbox.getHTML().checked = getStore().getState().currentUser?.locale === LANGUAGE_CHOICE.EN;
-    this.switchLanguageCheckbox.getHTML().addEventListener('click', async () => {
-      const { currentUser } = getStore().getState();
-
-      try {
-        if (currentUser) {
-          const newLanguage = currentUser.locale === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
-          const newUser = await getCustomerModel().editCustomer(
-            [CustomerModel.actionSetLocale(newLanguage)],
-            currentUser,
-          );
-          getStore().dispatch(setCurrentLanguage(newLanguage));
-          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
-          getStore().dispatch(setCurrentUser(newUser));
-        }
-      } catch {
-        showErrorMessage();
-      }
-    });
-
-    return this.switchLanguageCheckbox;
-  }
-
-  private createSwitchLanguageLabel(): HTMLLabelElement {
-    const label = createBaseElement({
-      attributes: { for: styles.switchLanguageLabel },
-      cssClasses: [styles.switchLanguageLabel, styles.switchLanguageLabelAbs],
-      tag: 'label',
-    });
-    const span = createBaseElement({
-      cssClasses: [styles.switchLanguageLabelSpan],
-      tag: 'span',
-    });
-    const enSVG = this.createLanguageSVG(LANGUAGE_CHOICE.EN);
-    enSVG.classList.add(styles.enSVG);
-    const ruSVG = this.createLanguageSVG(LANGUAGE_CHOICE.RU);
-    ruSVG.classList.add(styles.ruSVG);
-
-    label.append(enSVG, ruSVG, this.switchLanguageCheckbox.getHTML(), span);
-    return label;
   }
 
   private createUserElement(
@@ -338,7 +267,6 @@ class UserProfilePageView {
     nameWrapper.append(
       this.createUserElement(userInfoName(firstName)),
       this.createUserElement(userInfoLastName(lastName)),
-      this.createSwitchLanguageLabel(),
       this.editInfoButton.getHTML(),
     );
 
