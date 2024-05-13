@@ -1,4 +1,7 @@
+import type { LanguageChoiceType } from '../constants/buttons.ts';
+import type { PageIdType } from '../constants/pages.ts';
 import type { Category, Product } from '../types/product';
+import type { SelectedFilters } from '../types/productFilters';
 import type { User } from '../types/user';
 
 const ACTION = {
@@ -8,6 +11,7 @@ const ACTION = {
   SET_CURRENT_PAGE: 'setCurrentPage',
   SET_CURRENT_USER: 'setCurrentUser',
   SET_PRODUCTS: 'setProducts',
+  SET_SELECTED_FILTERS: 'setSelectedFilters',
   SET_SHIPPING_COUNTRY: 'setShippingCountry',
   SWITCH_APP_THEME: 'switchAppTheme',
   SWITCH_IS_USER_LOGGED_IN: 'switchIsUserLoggedIn',
@@ -50,8 +54,8 @@ export const setShippingCountry = (value: string): ActionWithPayload<string, typ
 });
 
 export const setCurrentLanguage = (
-  value: 'en' | 'ru',
-): ActionWithPayload<'en' | 'ru', typeof ACTION.SET_CURRENT_LANGUAGE> => ({
+  value: LanguageChoiceType,
+): ActionWithPayload<LanguageChoiceType, typeof ACTION.SET_CURRENT_LANGUAGE> => ({
   payload: value,
   type: ACTION.SET_CURRENT_LANGUAGE,
 });
@@ -63,11 +67,18 @@ export const switchIsUserLoggedIn = (
   type: ACTION.SWITCH_IS_USER_LOGGED_IN,
 });
 
-export const setCurrentPage = (value: string): ActionWithPayload<string, typeof ACTION.SET_CURRENT_PAGE> => ({
+export const setCurrentPage = (value: PageIdType): ActionWithPayload<PageIdType, typeof ACTION.SET_CURRENT_PAGE> => ({
   payload: value,
   type: ACTION.SET_CURRENT_PAGE,
 });
 
 export const switchAppTheme = (): ActionWithoutPayload<typeof ACTION.SWITCH_APP_THEME> => ({
   type: ACTION.SWITCH_APP_THEME,
+});
+
+export const setSelectedFilters = (
+  value: SelectedFilters | null,
+): ActionWithPayload<SelectedFilters | null, typeof ACTION.SET_SELECTED_FILTERS> => ({
+  payload: value,
+  type: ACTION.SET_SELECTED_FILTERS,
 });
