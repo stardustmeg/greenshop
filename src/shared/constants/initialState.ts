@@ -13,6 +13,7 @@ const initialState: State = {
   products: [],
   selectedFilters: {
     category: new Set(),
+    metaFilter: 'All products',
     price: null,
     size: null,
   },

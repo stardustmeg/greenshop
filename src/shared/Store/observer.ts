@@ -1,3 +1,4 @@
+import type { MetaFiltersType } from '../constants/filters.ts';
 import type { User } from '../types/user.ts';
 import type { State } from './reducer.ts';
 
@@ -76,6 +77,13 @@ export const selectSelectedFiltersPrice = (state: State): { max: number; min: nu
 export const selectSelectedFiltersSize = (state: State): null | string => {
   if (state.selectedFilters) {
     return state.selectedFilters.size;
+  }
+  return null;
+};
+
+export const selectSelectedFiltersMetaFilter = (state: State): MetaFiltersType | null => {
+  if (state.selectedFilters) {
+    return state.selectedFilters.metaFilter;
   }
   return null;
 };

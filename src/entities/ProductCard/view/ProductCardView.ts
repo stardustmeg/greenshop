@@ -62,9 +62,7 @@ class ProductCardView {
   }
 
   private createBasicPrice(): HTMLSpanElement {
-    const { discount, price } = this.size
-      ? this.params.variant.find(({ size }) => size === this.size) ?? {}
-      : this.params.variant[0];
+    const { discount, price } = this.params.variant.find(({ size }) => size === this.size) ?? this.params.variant[0];
     const innerContent = discount ? `$${discount.toFixed(2)}` : `$${price?.toFixed(2)}`;
     this.basicPrice = createBaseElement({
       cssClasses: [styles.basicPrice],
@@ -117,9 +115,7 @@ class ProductCardView {
   }
 
   private createOldPrice(): HTMLSpanElement {
-    const { discount, price } = this.size
-      ? this.params.variant.find(({ size }) => size === this.size) ?? {}
-      : this.params.variant[0];
+    const { discount, price } = this.params.variant.find(({ size }) => size === this.size) ?? this.params.variant[0];
     const innerContent = discount ? `$${price?.toFixed(2)}` : '';
     this.oldPrice = createBaseElement({
       cssClasses: [styles.oldPrice],
