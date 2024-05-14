@@ -1,4 +1,4 @@
-import type { AddCartItem } from '@/shared/types/product.ts';
+import type { AddCartItem, DeleteCartItem } from '@/shared/types/product.ts';
 import type { Cart, CartPagedQueryResponse, ClientResponse, MyCartDraft } from '@commercetools/platform-sdk';
 
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
@@ -47,6 +47,27 @@ export class CartApi {
       .execute();
 
     return newCart;
+  }
+
+  public async deleteProductToCart(deleteCartItem: DeleteCartItem): Promise<ClientResponse> {
+    const data = await this.client
+      .apiRoot()
+      .me()
+      .carts()
+      .withId({ ID: deleteCartItem.cart.id })
+      .post({
+        body: {
+          actions: [
+            {
+              action: 'removeLineItem',
+              lineItemId: deleteCartItem.product.lineItemId,
+            },
+          ],
+          version: deleteCartItem.cart.version,
+        },
+      })
+      .execute();
+    return data;
   }
 
   public async getCarts(): Promise<ClientResponse<CartPagedQueryResponse>> {

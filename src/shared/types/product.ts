@@ -39,18 +39,14 @@ export interface Product {
 }
 
 export interface CartProduct {
-  // category: Category[];
-  // description: localization[];
-  // fullDescription: localization[];
-  id: string;
   images: string;
   key: string;
+  lineItemId: string;
   name: localization[];
   price: number;
-
+  productId: string;
   quantity: number;
   totalPrice: number;
-  // variant: Variant;
 }
 
 export interface AddCartItem {
@@ -58,4 +54,9 @@ export interface AddCartItem {
   productId: string;
   quantity: number;
   variantId: number;
+}
+
+export interface DeleteCartItem {
+  cart: Cart;
+  product: CartProduct;
 }

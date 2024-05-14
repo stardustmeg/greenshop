@@ -98,6 +98,7 @@ export class CustomerApi {
     if (!isErrorResponse(data)) {
       this.client.createAuthConnection(userData);
       this.client.approveAuth();
+      // TBD: dele auth
       const auth = await this.authenticateUser(userData);
       if (!isErrorResponse(auth)) {
         data = auth;

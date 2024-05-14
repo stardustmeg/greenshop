@@ -1,6 +1,11 @@
-import type { AddCartItem } from '@/shared/types/product.ts';
+import type { AddCartItem, CartProduct, DeleteCartItem } from '@/shared/types/product.ts';
 import type { Cart } from '@/shared/types/user.ts';
-import type { CartPagedQueryResponse, Cart as CartResponse, ClientResponse } from '@commercetools/platform-sdk';
+import type {
+  CartPagedQueryResponse,
+  Cart as CartResponse,
+  ClientResponse,
+  LineItem,
+} from '@commercetools/platform-sdk';
 
 import getProductModel from '../../product/model/ProductModel.ts';
 import { isCart, isCartPagedQueryResponse, isClientResponse } from '../../types/validation.ts';
@@ -16,9 +21,25 @@ export class CartModel {
   private adaptCart(data: CartResponse): Cart {
     return {
       id: data.id,
-      products: data.lineItems.map((lineItem) => getProductModel().adaptLineItem(lineItem)),
+      products: data.lineItems.map((lineItem) => this.adaptLineItem(lineItem)),
       version: data.version,
     };
+  }
+
+  private adaptLineItem(product: LineItem): CartProduct {
+    const result: CartProduct = {
+      images: '',
+      key: product.key || '',
+      lineItemId: product.id,
+      name: [],
+      price: product.price.value.centAmount || 0,
+      productId: product.productId || '',
+      quantity: product.quantity || 0,
+
+      totalPrice: product.totalPrice.centAmount || 0,
+    };
+    result.name.push(...getProductModel().adaptLocalizationValue(product.name));
+    return result;
   }
 
   private getCartFromData(data: ClientResponse<CartPagedQueryResponse | CartResponse>): Cart {
@@ -37,6 +58,11 @@ export class CartModel {
 
   public async addProductToCart(addCartItem: AddCartItem): Promise<Cart> {
     const data = await this.root.addProductToCart(addCartItem);
+    return this.getCartFromData(data);
+  }
+
+  public async deleteProductFromCart(deleteCartItem: DeleteCartItem): Promise<Cart> {
+    const data = await this.root.deleteProductToCart(deleteCartItem);
     return this.getCartFromData(data);
   }
 

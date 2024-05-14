@@ -1,10 +1,9 @@
-import type { CartProduct, Category, Product, SizeType, localization } from '@/shared/types/product.ts';
+import type { Category, Product, SizeType, localization } from '@/shared/types/product.ts';
 import type {
   Attribute as AttributeResponse,
   CategoryPagedQueryResponse,
   CategoryReference,
   ClientResponse,
-  LineItem,
   LocalizedString,
   ProductProjection,
   ProductProjectionPagedQueryResponse,
@@ -67,7 +66,6 @@ export class ProductModel {
   }
 
   private adaptCategoryReference(data: CategoryReference[]): Category[] {
-    // const categoryList = getStore().getState().categories;
     const response: Category[] = [];
     data.forEach((category) => {
       const categoryEl = this.categories.find((el) => el.id === category.id);
@@ -95,17 +93,6 @@ export class ProductModel {
       return this.adaptLocalizationValue(attribute.value);
     }
     return [];
-  }
-
-  private adaptLocalizationValue(data: LocalizedString | undefined): localization[] {
-    const result: localization[] = [];
-    Object.entries(data || {}).forEach(([language, value]) => {
-      result.push({
-        language,
-        value,
-      });
-    });
-    return result;
   }
 
   private adaptPrice(variant: ProductVariant): number {
@@ -187,11 +174,9 @@ export class ProductModel {
   }
 
   private getCategoriesFromData(data: ClientResponse<CategoryPagedQueryResponse>): Category[] | null {
-    // let category: Category[] | null = null;
     if (isClientResponse(data)) {
       if (isCategoryPagedQueryResponse(data.body)) {
         this.categories = this.adaptCategoryPagedQueryToClient(data.body);
-        // getStore().dispatch(setCategories(category));
       }
     }
     return this.categories;
@@ -208,7 +193,6 @@ export class ProductModel {
     ) {
       const categoriesFacet = data.body.facets['categories.id'];
       if (isTermFacetResult(categoriesFacet)) {
-        // const categoryList = getStore().getState().categories;
         categoriesFacet.terms.forEach((term) => {
           if (isFacetTerm(term)) {
             const currentCategory = this.categories.find((el) => el.id === term.term);
@@ -281,30 +265,14 @@ export class ProductModel {
     return category;
   }
 
-  public adaptLineItem(product: LineItem): CartProduct {
-    const result: CartProduct = {
-      // category: [],
-      // description: [],
-      // fullDescription: [],
-      id: product.productId || '',
-      images: '',
-      key: product.key || '',
-      name: [],
-      price: product.price.value.centAmount || 0,
-      quantity: product.quantity || 0,
-
-      totalPrice: product.totalPrice.centAmount || 0,
-    };
-    // result.category.push(...this.adaptCategoryReference(product.categories));
-    // result.description.push(...this.adaptLocalizationValue(product.description));
-    result.name.push(...this.adaptLocalizationValue(product.name));
-
-    // Object.assign(result, this.adaptVariants(result, product));
-
-    // result.fullDescription = [...new Set(result.fullDescription)];
-    // result.variant = [...new Set(result.variant)];
-    // result.images = [...new Set(result.images)];
-
+  public adaptLocalizationValue(data: LocalizedString | undefined): localization[] {
+    const result: localization[] = [];
+    Object.entries(data || {}).forEach(([language, value]) => {
+      result.push({
+        language,
+        value,
+      });
+    });
     return result;
   }
 
@@ -323,9 +291,6 @@ export class ProductModel {
     const products = this.getProductsFromData(data);
     const sizeCount = this.getSizeProductCountFromData(data);
     const categoryCount = this.getCategoriesProductCountFromData(data);
-    // if (products) {
-    //   getStore().dispatch(setProducts(products));
-    // }
     const result: ProductWithCount = {
       categoryCount,
       products,
