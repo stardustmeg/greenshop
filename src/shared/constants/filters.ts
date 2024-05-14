@@ -1,4 +1,4 @@
-export const FILTER_TITLE = {
+export const TITLE = {
   en: {
     CATEGORY: 'Category',
     PRICE: 'Price',
@@ -11,7 +11,7 @@ export const FILTER_TITLE = {
   },
 } as const;
 
-export const FILTER_INPUT_RANGE_LABEL = {
+export const PRICE_RANGE_LABEL = {
   en: {
     FROM: 'From',
     TO: 'To',
@@ -22,11 +22,29 @@ export const FILTER_INPUT_RANGE_LABEL = {
   },
 } as const;
 
-export const FILTER_RESET_BUTTON = {
+export const META_FILTERS = {
   en: {
-    RESET: 'Reset',
+    ALL_PRODUCTS: 'All products',
+    NEW_ARRIVALS: 'New Arrivals',
+    SALE: 'Sale',
   },
   ru: {
-    RESET: 'Сбросить',
+    ALL_PRODUCTS: 'Все продукты',
+    NEW_ARRIVALS: 'Новые поступления',
+    SALE: 'Скидки',
   },
+} as const;
+
+export const META_FILTERS_KEY = {
+  ALL_PRODUCTS: 'ALL_PRODUCTS',
+  NEW_ARRIVALS: 'NEW_ARRIVALS',
+  SALE: 'SALE',
+};
+
+export type MetaFiltersType = (typeof META_FILTERS_KEY)[keyof typeof META_FILTERS_KEY];
+
+export const META_FILTERS_ID = {
+  ALL_PRODUCTS: 'all-products',
+  NEW_ARRIVALS: 'new-arrivals',
+  SALE: 'sale',
 } as const;

@@ -1,8 +1,8 @@
 import type { SizeProductCount } from '../API/types/type.ts';
+import type { MetaFiltersType } from '../constants/filters.ts';
 import type { Category, Product } from './product.ts';
 
 interface ProductFiltersParams {
-  categories: Category[] | null;
   categoriesProductCount:
     | {
         category: Category;
@@ -19,6 +19,7 @@ interface ProductFiltersParams {
 
 export interface SelectedFilters {
   category: Set<string>;
+  metaFilter: MetaFiltersType;
   price: {
     max: number;
     min: number;

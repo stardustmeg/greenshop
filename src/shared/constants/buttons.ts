@@ -10,12 +10,14 @@ export const BUTTON_TEXT = {
     LOG_OUT: 'Log out',
     LOGIN: 'Login',
     REGISTRATION: 'Register',
+    RESET: 'Reset',
   },
   ru: {
     BACK_TO_MAIN: 'Вернуться на главную',
     LOG_OUT: 'Выйти',
     LOGIN: 'Войти',
     REGISTRATION: 'Регистрация',
+    RESET: 'Сбросить',
   },
 } as const;
 
@@ -24,6 +26,7 @@ export const BUTTON_TEXT_KEYS = {
   LOG_OUT: 'LOG_OUT',
   LOGIN: 'LOGIN',
   REGISTRATION: 'REGISTRATION',
+  RESET: 'RESET',
 } as const;
 
 export type ButtonTextKeysType = (typeof BUTTON_TEXT_KEYS)[keyof typeof BUTTON_TEXT_KEYS];
