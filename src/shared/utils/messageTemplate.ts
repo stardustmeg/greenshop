@@ -1,5 +1,5 @@
 import getStore from '../Store/Store.ts';
-import { LANGUAGE_CHOICE } from '../constants/buttons.ts';
+import { LANGUAGE_CHOICE } from '../constants/common.ts';
 import { SERVER_MESSAGE } from '../constants/messages.ts';
 import { PAGE_DESCRIPTION, USER_INFO_TEXT } from '../constants/pages.ts';
 

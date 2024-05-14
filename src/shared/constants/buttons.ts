@@ -36,13 +36,6 @@ export const IS_DISABLED = {
   ENABLED: false,
 } as const;
 
-export const LANGUAGE_CHOICE = {
-  EN: 'en',
-  RU: 'ru',
-} as const;
-
-export type LanguageChoiceType = (typeof LANGUAGE_CHOICE)[keyof typeof LANGUAGE_CHOICE];
-
 export const MORE_TEXT = {
   en: { HIDE: 'Hide', MORE: 'More' },
   ru: { HIDE: 'Скрыть', MORE: 'Подробнее' },

@@ -5,7 +5,7 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
