@@ -32,6 +32,11 @@ class InputModel {
     this.view.getHTML().disabled = IS_DISABLED.ENABLED;
     return this.view.getHTML().disabled;
   }
+
+  public setValue(value: string): string {
+    this.view.getHTML().value = value;
+    return this.view.getHTML().value;
+  }
 }
 
 export default InputModel;

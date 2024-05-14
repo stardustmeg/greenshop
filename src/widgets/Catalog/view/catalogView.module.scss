@@ -1,9 +1,17 @@
 .catalog {
   position: relative;
   display: flex;
-  justify-content: space-between;
-  min-height: max-content;
   gap: var(--small-offset);
+}
+
+.leftWrapper {
+  width: 30%;
+}
+
+.rightWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
 }
 
 .itemsList {
@@ -13,9 +21,12 @@
   justify-content: center;
   order: 2;
   grid-template-columns: repeat(3, auto);
-  width: 80%;
   height: max-content;
   min-height: 500px;
+  font-size: var(--regular-font);
+  letter-spacing: 1px;
+  text-align: center;
+  color: var(--steam-green-500);
   gap: var(--small-offset);
 
   @media (max-width: 768px) {
@@ -24,5 +35,16 @@
 
   @media (max-width: 500px) {
     grid-template-columns: repeat(1, 1fr);
+  }
+
+  &.emptyList {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: url('../../../shared/img/png/notFound.png');
+    background-position: center 100px;
+    background-size: 400px;
+    background-repeat: no-repeat;
   }
 }
