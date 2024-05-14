@@ -15,8 +15,12 @@ class InputView {
         autocomplete: attrs.autocomplete,
         id: attrs.id,
         lang: attrs.lang || '',
+        max: String(attrs.max || 0),
+        min: String(attrs.min || 0),
         placeholder: attrs.placeholder || '',
+        step: String(attrs.step || 1),
         type: attrs.type,
+        value: attrs.value || '',
       },
       tag: 'input',
     });

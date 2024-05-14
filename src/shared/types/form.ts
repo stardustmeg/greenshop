@@ -2,8 +2,12 @@ export interface InputParams {
   autocomplete: 'off' | 'on';
   id: string;
   lang?: string;
+  max?: null | number;
+  min?: null | number;
   placeholder: null | string;
+  step?: null | number;
   type: 'checkbox' | 'color' | 'date' | 'email' | 'number' | 'password' | 'search' | 'tel' | 'text';
+  value?: null | string;
 }
 
 export interface LabelParams {

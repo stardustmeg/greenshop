@@ -1,11 +1,13 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
 
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
-import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
+import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
+import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
@@ -14,11 +16,14 @@ import HeaderView from '../view/HeaderView.ts';
 class HeaderModel {
   private navigation: NavigationModel;
 
+  private parent: HTMLDivElement;
+
   private router: RouterModel;
 
   private view = new HeaderView();
 
-  constructor(router: RouterModel) {
+  constructor(router: RouterModel, parent: HTMLDivElement) {
+    this.parent = parent;
     this.router = router;
     this.navigation = new NavigationModel(this.router);
     this.init();
@@ -48,13 +53,14 @@ class HeaderModel {
 
   private init(): boolean {
     this.view.getWrapper().append(this.navigation.getHTML());
+    this.parent.insertAdjacentElement('beforebegin', this.view.getNavigationWrapper());
     this.checkCurrentUser();
     this.setLogoHandler();
     this.observeCurrentUser();
     this.setLogoutButtonHandler();
     this.setCartLinkHandler();
     this.setProfileLinkHandler();
-    this.setChangeLanguageButtonHandler();
+    this.setChangeLanguageCheckboxHandler();
     return true;
   }
 
@@ -91,13 +97,28 @@ class HeaderModel {
     return true;
   }
 
-  private setChangeLanguageButtonHandler(): boolean {
-    const switchLanguageButton = this.view.getSwitchLanguageButton().getHTML();
-    switchLanguageButton.addEventListener('click', () => {
-      const newLanguage =
-        getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
-      getStore().dispatch(setCurrentLanguage(newLanguage));
+  private setChangeLanguageCheckboxHandler(): boolean {
+    const switchLanguageCheckbox = this.view.getSwitchLanguageCheckbox().getHTML();
+    switchLanguageCheckbox.addEventListener('click', async () => {
+      const { currentUser } = getStore().getState();
+
+      try {
+        if (currentUser) {
+          const newLanguage = currentUser.locale === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
+          const newUser = await getCustomerModel().editCustomer(
+            [CustomerModel.actionSetLocale(newLanguage)],
+            currentUser,
+          );
+          getStore().dispatch(setCurrentLanguage(newLanguage));
+          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
+          getStore().dispatch(setCurrentUser(newUser));
+        }
+      } catch {
+        // TBD Change to showError
+        showErrorMessage();
+      }
     });
+
     return true;
   }
 

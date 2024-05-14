@@ -1,6 +1,6 @@
-import type { SizesType } from '@/shared/constants/sizes.ts';
+import type { LoaderSizeType } from '@/shared/constants/sizes.ts';
 
-import { SIZES } from '@/shared/constants/sizes.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './loaderView.module.scss';
@@ -8,11 +8,11 @@ import styles from './loaderView.module.scss';
 class LoaderView {
   private loader: HTMLDivElement;
 
-  constructor(size: SizesType) {
+  constructor(size: LoaderSizeType) {
     this.loader = this.createHTML(size);
   }
 
-  private createHTML(size: SizesType): HTMLDivElement {
+  private createHTML(size: LoaderSizeType): HTMLDivElement {
     this.loader = createBaseElement({
       cssClasses: [styles.loader],
       tag: 'div',
@@ -23,21 +23,28 @@ class LoaderView {
     return this.loader;
   }
 
-  private selectSize(size: SizesType): void {
+  private selectSize(size: LoaderSizeType): void {
     switch (size) {
-      case SIZES.SMALL:
+      case LOADER_SIZE.SMALL:
         this.setSmallStyle();
         break;
-      case SIZES.MEDIUM:
+      case LOADER_SIZE.MEDIUM:
         this.setMediumStyle();
         break;
-      case SIZES.LARGE:
+      case LOADER_SIZE.LARGE:
         this.setLargeStyle();
+        break;
+      case LOADER_SIZE.EXTRA_LARGE:
+        this.setExtraLargeStyle();
         break;
       default:
         this.setSmallStyle();
         break;
     }
+  }
+
+  private setExtraLargeStyle(): void {
+    this.loader.classList.add(styles.extraLarge);
   }
 
   private setLargeStyle(): void {
@@ -54,6 +61,10 @@ class LoaderView {
 
   public getHTML(): HTMLDivElement {
     return this.loader;
+  }
+
+  public setAbsolutePosition(): void {
+    this.loader.classList.add(styles.absolute);
   }
 }
 
