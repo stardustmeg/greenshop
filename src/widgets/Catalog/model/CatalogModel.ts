@@ -3,7 +3,7 @@ import type ProductFiltersParams from '@/shared/types/productFilters.ts';
 import ProductCardModel from '@/entities/ProductCard/model/ProductCardModel.ts';
 import ProductFiltersModel from '@/features/ProductFilters/model/ProductFiltersModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
-import addFilter from '@/shared/API/product/utils/filter.ts';
+import FilterProduct from '@/shared/API/product/utils/filter.ts';
 import { FilterFields, type OptionsRequest } from '@/shared/API/types/type.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
@@ -36,11 +36,9 @@ class CatalogModel {
     try {
       const categories = await getProductModel().getCategories();
       try {
-        const products = await getProductModel().getProducts(options);
+        const { categoryCount, products, sizeCount } = await getProductModel().getProducts(options);
         const priceRange = await getProductModel().getPriceRange();
-        const sizes = await getProductModel().getSizeProductCount();
-        const categoriesProductCount = await getProductModel().getCategoriesProductCount();
-        return { categories, categoriesProductCount, priceRange, products, sizes };
+        return { categories, categoriesProductCount: categoryCount, priceRange, products, sizes: sizeCount };
       } catch {
         showBadRequestMessage();
       }
@@ -55,16 +53,16 @@ class CatalogModel {
 
   private getSelectedFilters(): OptionsRequest {
     const { category, price, size } = getStore().getState().selectedFilters || {};
-    const filter: OptionsRequest['filter'] = [];
-    category?.forEach((categoryID) => filter.push(addFilter(FilterFields.CATEGORY, categoryID)));
+    const filter = new FilterProduct();
+    category?.forEach((categoryID) => filter.addFilter(FilterFields.CATEGORY, categoryID));
     if (price?.max || price?.min) {
-      filter.push(addFilter(FilterFields.PRICE, price));
+      filter.addFilter(FilterFields.PRICE, price);
     }
     if (size) {
-      filter.push(addFilter(FilterFields.SIZE, size));
+      filter.addFilter(FilterFields.SIZE, size);
     }
 
-    return { filter, limit: 100, sort: { direction: 'asc', field: 'price' } };
+    return { filter: filter.getFilter(), limit: 100, sort: { direction: 'desc', field: 'name', locale: 'en' } };
   }
 
   private init(): void {

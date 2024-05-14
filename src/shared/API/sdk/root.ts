@@ -11,7 +11,6 @@ import {
   type MyCustomerDraft,
   type MyCustomerUpdateAction,
   type Product,
-  type ProductProjectionPagedQueryResponse,
   type ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
 
@@ -115,21 +114,6 @@ export class RootApi {
     return data;
   }
 
-  public async getCategoriesProductCount(): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
-    const data = await this.client
-      .apiRoot()
-      .productProjections()
-      .search()
-      .get({
-        queryArgs: {
-          facet: [`categories.id counting products`],
-          limit: 0,
-        },
-      })
-      .execute();
-    return data;
-  }
-
   public async getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
     const data = await this.client
       .apiRoot()
@@ -159,7 +143,7 @@ export class RootApi {
     return data;
   }
 
-  public async getProducts(options?: OptionsRequest): Promise<ClientResponse<ProductProjectionPagedQueryResponse>> {
+  public async getProducts(options?: OptionsRequest): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
     const { filter, limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, search, sort } = options || {};
 
     const data = await this.client
@@ -168,29 +152,16 @@ export class RootApi {
       .search()
       .get({
         queryArgs: {
+          facet: [`categories.id counting products`, `variants.attributes.size.key`],
           limit,
           markMatchingVariants: true,
           offset: (page - 1) * PRODUCT_LIMIT,
           ...(search && { [`text.${search.locale}`]: search.value }),
           ...(search && { fuzzy: true }),
           ...(sort && { sort: makeSortRequest(sort) }),
-          ...(filter && { filter }),
+          ...(filter && { 'filter.query': filter }),
+          ...(filter && { 'filter.facets': filter }),
           withTotal: true,
-        },
-      })
-      .execute();
-    return data;
-  }
-
-  public async getSizeProductCount(): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
-    const data = await this.client
-      .apiRoot()
-      .productProjections()
-      .search()
-      .get({
-        queryArgs: {
-          facet: [`variants.attributes.size.key`],
-          limit: 0,
         },
       })
       .execute();
