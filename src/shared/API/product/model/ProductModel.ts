@@ -22,6 +22,7 @@ import {
   type CategoriesProductCount,
   type OptionsRequest,
   type PriceRange,
+  type ProductWithCount,
   type SizeProductCount,
 } from '../../types/type.ts';
 import {
@@ -245,8 +246,8 @@ export class ProductModel {
     return priceRange;
   }
 
-  private getProductsFromData(data: ClientResponse<ProductProjectionPagedQueryResponse>): Product[] | null {
-    let productList: Product[] | null = null;
+  private getProductsFromData(data: ClientResponse<ProductProjectionPagedSearchResponse>): Product[] {
+    let productList: Product[] = [];
     if (isClientResponse(data) && isProductProjectionPagedQueryResponse(data.body)) {
       productList = this.adaptProductProjectionPagedQueryToClient(data.body);
     }
@@ -283,28 +284,25 @@ export class ProductModel {
     return this.getCategoriesFromData(data);
   }
 
-  public async getCategoriesProductCount(): Promise<CategoriesProductCount[]> {
-    const data = await this.root.getCategoriesProductCount();
-    return this.getCategoriesProductCountFromData(data);
-  }
-
   public async getPriceRange(): Promise<PriceRange> {
     const data = await this.root.getPriceRange();
     return this.getPriceRangeFromData(data);
   }
 
-  public async getProducts(options?: OptionsRequest): Promise<Product[] | null> {
+  public async getProducts(options?: OptionsRequest): Promise<ProductWithCount> {
     const data = await this.root.getProducts(options);
     const products = this.getProductsFromData(data);
+    const sizeCount = this.getSizeProductCountFromData(data);
+    const categoryCount = this.getCategoriesProductCountFromData(data);
     if (products) {
       getStore().dispatch(setProducts(products));
     }
-    return products;
-  }
-
-  public async getSizeProductCount(): Promise<SizeProductCount[]> {
-    const data = await this.root.getSizeProductCount();
-    return this.getSizeProductCountFromData(data);
+    const result: ProductWithCount = {
+      categoryCount,
+      products,
+      sizeCount,
+    };
+    return result;
   }
 }
 

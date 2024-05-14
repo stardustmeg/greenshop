@@ -36,11 +36,9 @@ class CatalogModel {
     try {
       const categories = await getProductModel().getCategories();
       try {
-        const products = await getProductModel().getProducts(options);
+        const { categoryCount, products, sizeCount } = await getProductModel().getProducts(options);
         const priceRange = await getProductModel().getPriceRange();
-        const sizes = await getProductModel().getSizeProductCount();
-        const categoriesProductCount = await getProductModel().getCategoriesProductCount();
-        return { categories, categoriesProductCount, priceRange, products, sizes };
+        return { categories, categoriesProductCount: categoryCount, priceRange, products, sizes: sizeCount };
       } catch {
         showBadRequestMessage();
       }

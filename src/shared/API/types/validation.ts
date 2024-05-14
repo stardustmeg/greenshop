@@ -143,6 +143,25 @@ export function isProductProjectionPagedQueryResponse(data: unknown): data is Pr
   );
 }
 
+export function isProductProjectionPagedQueryResponseWithFacet(
+  data: unknown,
+): data is ProductProjectionPagedQueryResponse {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'count' in data &&
+      typeof data.count === 'number' &&
+      'limit' in data &&
+      typeof data.limit === 'number' &&
+      'total' in data &&
+      typeof data.total === 'number' &&
+      'facets' in data &&
+      typeof data.facets === 'object' &&
+      'results' in data &&
+      Array.isArray(data.results),
+  );
+}
+
 export function isRangeFacetResult(data: unknown): data is RangeFacetResult {
   return Boolean(
     typeof data === 'object' && data && 'ranges' in data && Array.isArray(data.ranges) && data.ranges.length,

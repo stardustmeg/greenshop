@@ -30,10 +30,10 @@ describe('Checking Product Model', () => {
   });
 
   it('should get the products list', async () => {
-    const productsArr = await productModel.getProducts();
-    if (productsArr) {
-      expect(productsArr).toBeDefined();
-      productsArr.forEach((product) => {
+    const { products } = await productModel.getProducts();
+    if (products) {
+      expect(products).toBeDefined();
+      products.forEach((product) => {
         expect(typeof product.id).toBe('string');
         expect(typeof product.key).toBe('string');
         expect(Array.isArray(product.name)).toBe(true);
