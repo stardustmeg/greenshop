@@ -9,19 +9,19 @@ import type {
   MyCustomerUpdateAction,
 } from '@commercetools/platform-sdk';
 
-import getRoot, { type RootApi } from '../../sdk/root.ts';
 import {
   isClientResponse,
   isCustomerPagedQueryResponse,
   isCustomerResponse,
   isCustomerSignInResultResponse,
 } from '../../types/validation.ts';
+import getCustomerApi, { type CustomerApi } from '../CustomerApi.ts';
 
 export class CustomerModel {
-  private root: RootApi;
+  private root: CustomerApi;
 
   constructor() {
-    this.root = getRoot();
+    this.root = getCustomerApi();
   }
 
   public static actionAddAddress(address: Address): MyCustomerUpdateAction {

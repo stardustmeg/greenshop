@@ -1,9 +1,10 @@
-import type { Category, Product, SizeType, localization } from '@/shared/types/product.ts';
+import type { CartProduct, Category, Product, SizeType, localization } from '@/shared/types/product.ts';
 import type {
   Attribute as AttributeResponse,
   CategoryPagedQueryResponse,
   CategoryReference,
   ClientResponse,
+  LineItem,
   LocalizedString,
   ProductProjection,
   ProductProjectionPagedQueryResponse,
@@ -11,12 +12,9 @@ import type {
   ProductVariant,
 } from '@commercetools/platform-sdk';
 
-import getStore from '@/shared/Store/Store.ts';
-import { setCategories, setProducts } from '@/shared/Store/actions.ts';
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 import getSize from '@/shared/utils/size.ts';
 
-import getRoot, { type RootApi } from '../../sdk/root.ts';
 import {
   Attribute,
   type CategoriesProductCount,
@@ -37,12 +35,15 @@ import {
   isRangeFacetResult,
   isTermFacetResult,
 } from '../../types/validation.ts';
+import getProductApi, { type ProductApi } from '../ProductApi.ts';
 
 export class ProductModel {
-  private root: RootApi;
+  private categories: Category[] = [];
+
+  private root: ProductApi;
 
   constructor() {
-    this.root = getRoot();
+    this.root = getProductApi();
   }
 
   private adaptCategoryPagedQueryToClient(data: CategoryPagedQueryResponse): Category[] {
@@ -66,10 +67,10 @@ export class ProductModel {
   }
 
   private adaptCategoryReference(data: CategoryReference[]): Category[] {
-    const categoryList = getStore().getState().categories;
+    // const categoryList = getStore().getState().categories;
     const response: Category[] = [];
     data.forEach((category) => {
-      const categoryEl = categoryList.find((el) => el.id === category.id);
+      const categoryEl = this.categories.find((el) => el.id === category.id);
       if (categoryEl) {
         response.push(categoryEl);
       }
@@ -171,6 +172,7 @@ export class ProductModel {
 
       product.variant.push({
         discount: this.adaptDiscount(variant) || 0,
+        id: variant.id,
         price: this.adaptPrice(variant) || 0,
         size,
       });
@@ -185,14 +187,14 @@ export class ProductModel {
   }
 
   private getCategoriesFromData(data: ClientResponse<CategoryPagedQueryResponse>): Category[] | null {
-    let category: Category[] | null = null;
+    // let category: Category[] | null = null;
     if (isClientResponse(data)) {
       if (isCategoryPagedQueryResponse(data.body)) {
-        category = this.adaptCategoryPagedQueryToClient(data.body);
-        getStore().dispatch(setCategories(category));
+        this.categories = this.adaptCategoryPagedQueryToClient(data.body);
+        // getStore().dispatch(setCategories(category));
       }
     }
-    return category;
+    return this.categories;
   }
 
   private getCategoriesProductCountFromData(
@@ -206,10 +208,10 @@ export class ProductModel {
     ) {
       const categoriesFacet = data.body.facets['categories.id'];
       if (isTermFacetResult(categoriesFacet)) {
-        const categoryList = getStore().getState().categories;
+        // const categoryList = getStore().getState().categories;
         categoriesFacet.terms.forEach((term) => {
           if (isFacetTerm(term)) {
-            const currentCategory = categoryList.find((el) => el.id === term.term);
+            const currentCategory = this.categories.find((el) => el.id === term.term);
             if (currentCategory) {
               category.push({
                 category: currentCategory,
@@ -279,6 +281,33 @@ export class ProductModel {
     return category;
   }
 
+  public adaptLineItem(product: LineItem): CartProduct {
+    const result: CartProduct = {
+      // category: [],
+      // description: [],
+      // fullDescription: [],
+      id: product.productId || '',
+      images: '',
+      key: product.key || '',
+      name: [],
+      price: product.price.value.centAmount || 0,
+      quantity: product.quantity || 0,
+
+      totalPrice: product.totalPrice.centAmount || 0,
+    };
+    // result.category.push(...this.adaptCategoryReference(product.categories));
+    // result.description.push(...this.adaptLocalizationValue(product.description));
+    result.name.push(...this.adaptLocalizationValue(product.name));
+
+    // Object.assign(result, this.adaptVariants(result, product));
+
+    // result.fullDescription = [...new Set(result.fullDescription)];
+    // result.variant = [...new Set(result.variant)];
+    // result.images = [...new Set(result.images)];
+
+    return result;
+  }
+
   public async getCategories(): Promise<Category[] | null> {
     const data = await this.root.getCategories();
     return this.getCategoriesFromData(data);
@@ -294,9 +323,9 @@ export class ProductModel {
     const products = this.getProductsFromData(data);
     const sizeCount = this.getSizeProductCountFromData(data);
     const categoryCount = this.getCategoriesProductCountFromData(data);
-    if (products) {
-      getStore().dispatch(setProducts(products));
-    }
+    // if (products) {
+    //   getStore().dispatch(setProducts(products));
+    // }
     const result: ProductWithCount = {
       categoryCount,
       products,

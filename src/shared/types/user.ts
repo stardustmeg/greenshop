@@ -1,3 +1,5 @@
+import type { CartProduct } from './product';
+
 export interface UserCredentials {
   email: string;
   password: string;
@@ -30,4 +32,10 @@ export interface Address extends FormAddress, PersonalData {
   id: string;
   state: string;
   streetNumber: string;
+}
+
+export interface Cart {
+  id: string;
+  products: CartProduct[];
+  version: number;
 }
