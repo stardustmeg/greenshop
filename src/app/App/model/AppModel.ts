@@ -2,6 +2,7 @@
 import type { Page } from '@/shared/types/common.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
+import modal from '@/shared/Modal/model/ModalModel.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import FooterModel from '@/widgets/Footer/model/FooterModel.ts';
 import HeaderModel from '@/widgets/Header/model/HeaderModel.ts';
@@ -81,6 +82,7 @@ class AppModel {
       .getHTML()
       .insertAdjacentElement('beforebegin', new HeaderModel(this.router, this.appView.getHTML()).getHTML());
     this.appView.getHTML().insertAdjacentElement('afterend', new FooterModel(this.router).getHTML());
+    this.appView.getHTML().insertAdjacentElement('afterend', modal.getHTML());
 
     const routes = await this.createRoutes();
     this.router.setRoutes(routes);

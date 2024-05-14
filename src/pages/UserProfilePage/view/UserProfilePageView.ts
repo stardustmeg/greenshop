@@ -276,7 +276,7 @@ class UserProfilePageView {
       this.createUserElement(userInfoDateOfBirth(birthDate)),
       this.createUserElement(userInfoEmail(email)),
       // TBD Move to another wrapper
-      // this.addressesWrapper
+      this.addressesWrapper,
     );
     this.userInfoWrapper.append(userInfoWrapper);
 
