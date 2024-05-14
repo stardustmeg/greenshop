@@ -12,7 +12,7 @@ import type {
 } from '@commercetools/platform-sdk';
 
 import getStore from '@/shared/Store/Store.ts';
-import { setCategories, setProducts } from '@/shared/Store/actions.ts';
+import { setCategories } from '@/shared/Store/actions.ts';
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 import getSize from '@/shared/utils/size.ts';
 
@@ -297,7 +297,7 @@ export class ProductModel {
     const data = await this.root.getProducts(options);
     const products = this.getProductsFromData(data);
     if (products) {
-      getStore().dispatch(setProducts(products));
+      // getStore().dispatch(setProducts(products));
     }
     return products;
   }

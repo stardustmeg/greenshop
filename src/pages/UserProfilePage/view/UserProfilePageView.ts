@@ -1,14 +1,12 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { USER_INFO_MENU_LINK, USER_INFO_MENU_LINK_KEYS } from '@/shared/constants/pages.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
-import { userInfoDateOfBirth, userInfoEmail, userInfoLastName, userInfoName } from '@/shared/utils/messageTemplate.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './userProfilePageView.module.scss';
@@ -24,8 +22,6 @@ class UserProfilePageView {
 
   private addressesWrapper: HTMLDivElement;
 
-  private editInfoButton: ButtonModel;
-
   private links: LinkModel[] = [];
 
   private ordersLink: LinkModel;
@@ -35,8 +31,6 @@ class UserProfilePageView {
   private parent: HTMLDivElement;
 
   private supportLink: LinkModel;
-
-  private userInfoWrapper: HTMLDivElement;
 
   private userProfileWrapper: HTMLDivElement;
 
@@ -54,10 +48,7 @@ class UserProfilePageView {
     this.wishListLink = this.createWishListLink();
     this.accountMenu = this.createAccountMenu();
 
-    this.userInfoWrapper = this.createUserInfoWrapper();
     this.addressesWrapper = this.createAddresses();
-    this.editInfoButton = this.createEditInfoButton();
-    this.showUserInfo();
 
     this.userProfileWrapper = this.createUserProfileWrapper();
     this.page = this.createHTML();
@@ -146,17 +137,6 @@ class UserProfilePageView {
     return this.addressesLink;
   }
 
-  private createEditInfoButton(): ButtonModel {
-    this.editInfoButton = new ButtonModel({
-      classes: [styles.editInfoButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].EDIT_INFO,
-    });
-
-    observeCurrentLanguage(this.editInfoButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.EDIT_INFO);
-
-    return this.editInfoButton;
-  }
-
   private createHTML(): HTMLDivElement {
     this.page = createBaseElement({
       cssClasses: [styles.userProfilePage],
@@ -222,21 +202,13 @@ class UserProfilePageView {
     });
   }
 
-  private createUserInfoWrapper(): HTMLDivElement {
-    this.userInfoWrapper = createBaseElement({
-      cssClasses: [styles.userInfoWrapper],
-      tag: 'div',
-    });
-    return this.userInfoWrapper;
-  }
-
   private createUserProfileWrapper(): HTMLDivElement {
     this.userProfileWrapper = createBaseElement({
       cssClasses: [styles.userProfileWrapper],
       tag: 'div',
     });
 
-    this.userProfileWrapper.append(this.accountMenu, this.userInfoWrapper);
+    this.userProfileWrapper.append(this.accountMenu);
     return this.userProfileWrapper;
   }
 
@@ -253,39 +225,6 @@ class UserProfilePageView {
     observeCurrentLanguage(this.wishListLink.getHTML(), USER_INFO_MENU_LINK, USER_INFO_MENU_LINK_KEYS.WISHLIST);
 
     return this.wishListLink;
-  }
-
-  private showUserInfo(): boolean {
-    const { currentUser } = getStore().getState();
-    if (!currentUser) {
-      return false;
-    }
-
-    const { birthDate, email, firstName, lastName } = currentUser;
-
-    const nameWrapper = document.createDocumentFragment();
-    nameWrapper.append(
-      this.createUserElement(userInfoName(firstName)),
-      this.createUserElement(userInfoLastName(lastName)),
-      this.editInfoButton.getHTML(),
-    );
-
-    const userInfoWrapper = document.createDocumentFragment();
-    userInfoWrapper.append(
-      nameWrapper,
-      this.createUserElement(userInfoDateOfBirth(birthDate)),
-      this.createUserElement(userInfoEmail(email)),
-      // TBD Move to another wrapper
-      this.addressesWrapper,
-    );
-    this.userInfoWrapper.append(userInfoWrapper);
-
-    observeStore(selectCurrentLanguage, () => {
-      clearOutElement(this.userInfoWrapper);
-      this.showUserInfo();
-    });
-
-    return true;
   }
 
   public getAccountLogoutButton(): ButtonModel {
