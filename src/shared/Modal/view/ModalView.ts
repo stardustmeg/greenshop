@@ -29,7 +29,7 @@ class ModalView {
 
   private createModalContent(): HTMLDivElement {
     this.modalContent = createBaseElement({
-      cssClasses: [styles.modalContent],
+      cssClasses: [styles.modalContent, styles.modalContent_hidden],
       tag: 'div',
     });
 
@@ -38,7 +38,7 @@ class ModalView {
 
   private createModalOverlay(): HTMLDivElement {
     this.modalOverlay = createBaseElement({
-      cssClasses: [styles.modalOverlay],
+      cssClasses: [styles.modalOverlay, styles.modalOverlay_hidden],
       tag: 'div',
     });
 
