@@ -1,10 +1,9 @@
-import UserInfoView from '../view/UserInfoView.ts';
+import UserAddressView from '../view/UserAddressView.ts';
 
-class UserInfoModel {
-  private view = new UserInfoView();
+class UserAddressModel {
+  private view = new UserAddressView();
 
   constructor() {
-    this.view.show();
     this.setEditInfoButtonHandler();
   }
 
@@ -16,7 +15,7 @@ class UserInfoModel {
     return true;
   }
 
-  public getHTML(): HTMLDivElement {
+  public getHTML(): HTMLElement {
     return this.view.getHTML();
   }
 
@@ -29,4 +28,4 @@ class UserInfoModel {
   }
 }
 
-export default UserInfoModel;
+export default UserAddressModel;

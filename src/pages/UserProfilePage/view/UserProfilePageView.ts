@@ -2,25 +2,20 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
-import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
+import { USER_PROFILE_MENU_LINK } from '@/shared/constants/links.ts';
 import { USER_INFO_MENU_LINK, USER_INFO_MENU_LINK_KEYS } from '@/shared/constants/pages.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './userProfilePageView.module.scss';
 
 class UserProfilePageView {
-  private accountDetailsLink: LinkModel;
-
   private accountLogoutButton: ButtonModel;
 
   private accountMenu: HTMLUListElement;
 
   private addressesLink: LinkModel;
-
-  private addressesWrapper: HTMLDivElement;
 
   private links: LinkModel[] = [];
 
@@ -29,6 +24,8 @@ class UserProfilePageView {
   private page: HTMLDivElement;
 
   private parent: HTMLDivElement;
+
+  private personalInfoLink: LinkModel;
 
   private supportLink: LinkModel;
 
@@ -41,36 +38,16 @@ class UserProfilePageView {
     clearOutElement(this.parent);
 
     this.accountLogoutButton = this.createLogoutButton();
-    this.accountDetailsLink = this.createAccountDetailsLink();
+    this.personalInfoLink = this.createPersonalInfoLink();
     this.addressesLink = this.createAddressesLink();
     this.ordersLink = this.createOrdersLink();
     this.supportLink = this.createSupportLink();
     this.wishListLink = this.createWishListLink();
     this.accountMenu = this.createAccountMenu();
 
-    this.addressesWrapper = this.createAddresses();
-
+    this.setLinksHandlers();
     this.userProfileWrapper = this.createUserProfileWrapper();
     this.page = this.createHTML();
-  }
-
-  private createAccountDetailsLink(): LinkModel {
-    this.accountDetailsLink = new LinkModel({
-      attrs: {
-        href: '#account-details',
-      },
-      classes: [styles.link],
-      text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].PERSONAL_INFO,
-    });
-    this.links.push(this.accountDetailsLink);
-
-    observeCurrentLanguage(
-      this.accountDetailsLink.getHTML(),
-      USER_INFO_MENU_LINK,
-      USER_INFO_MENU_LINK_KEYS.PERSONAL_INFO,
-    );
-
-    return this.accountDetailsLink;
   }
 
   private createAccountMenu(): HTMLUListElement {
@@ -92,40 +69,10 @@ class UserProfilePageView {
     return this.accountMenu;
   }
 
-  private createAddresses(): HTMLDivElement {
-    const { currentUser } = getStore().getState();
-    if (!currentUser) {
-      return createBaseElement({
-        cssClasses: [styles.addressesWrapper],
-        tag: 'div',
-      });
-    }
-    const { addresses, defaultBillingAddressId, defaultShippingAddressId, locale } = currentUser;
-    this.addressesWrapper = createBaseElement({
-      cssClasses: [styles.addressesWrapper],
-      tag: 'div',
-    });
-    addresses.forEach((address) => {
-      const country = findKeyByValue(COUNTRIES_LIST[locale], address.country);
-      const standartAddressText = `${address.streetName}, ${address.city}, ${country}, ${address.postalCode}`;
-      let addressText = `${standartAddressText}`;
-      // TBD check the format of default addresses
-      if (defaultBillingAddressId) {
-        addressText = `${standartAddressText} (default billing address)`;
-      }
-      if (defaultShippingAddressId) {
-        addressText = `${standartAddressText} (default shipping address)`;
-      }
-      const addressWrapper = this.createUserElement(addressText);
-      this.addressesWrapper.append(addressWrapper);
-    });
-    return this.addressesWrapper;
-  }
-
   private createAddressesLink(): LinkModel {
     this.addressesLink = new LinkModel({
       attrs: {
-        href: '#addresses',
+        href: USER_PROFILE_MENU_LINK.ADDRESSES,
       },
       classes: [styles.link],
       text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].ADDRESSES,
@@ -163,7 +110,7 @@ class UserProfilePageView {
   private createOrdersLink(): LinkModel {
     this.ordersLink = new LinkModel({
       attrs: {
-        href: '#orders',
+        href: USER_PROFILE_MENU_LINK.ORDERS,
       },
       classes: [styles.link],
       text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].ORDERS,
@@ -175,10 +122,30 @@ class UserProfilePageView {
     return this.ordersLink;
   }
 
+  private createPersonalInfoLink(): LinkModel {
+    this.personalInfoLink = new LinkModel({
+      attrs: {
+        href: USER_PROFILE_MENU_LINK.PERSONAL_INFO,
+      },
+      classes: [styles.link],
+      text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].PERSONAL_INFO,
+    });
+    this.links.push(this.personalInfoLink);
+
+    observeCurrentLanguage(
+      this.personalInfoLink.getHTML(),
+      USER_INFO_MENU_LINK,
+      USER_INFO_MENU_LINK_KEYS.PERSONAL_INFO,
+    );
+    this.personalInfoLink.getHTML().classList.add(styles.active);
+    this.personalInfoLink.setDisabled();
+    return this.personalInfoLink;
+  }
+
   private createSupportLink(): LinkModel {
     this.supportLink = new LinkModel({
       attrs: {
-        href: '#support',
+        href: USER_PROFILE_MENU_LINK.SUPPORT,
       },
       classes: [styles.link],
       text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].SUPPORT,
@@ -188,18 +155,6 @@ class UserProfilePageView {
     observeCurrentLanguage(this.supportLink.getHTML(), USER_INFO_MENU_LINK, USER_INFO_MENU_LINK_KEYS.SUPPORT);
 
     return this.supportLink;
-  }
-
-  private createUserElement(
-    text: string,
-    tag: keyof HTMLElementTagNameMap = 'li',
-    classes: string[] = [styles.info],
-  ): HTMLElement {
-    return createBaseElement({
-      cssClasses: classes,
-      innerContent: text,
-      tag,
-    });
   }
 
   private createUserProfileWrapper(): HTMLDivElement {
@@ -215,7 +170,7 @@ class UserProfilePageView {
   private createWishListLink(): LinkModel {
     this.wishListLink = new LinkModel({
       attrs: {
-        href: '#wishlist',
+        href: USER_PROFILE_MENU_LINK.WISHLIST,
       },
       classes: [styles.link],
       text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].WISHLIST,
@@ -227,12 +182,56 @@ class UserProfilePageView {
     return this.wishListLink;
   }
 
+  private setLinksHandlers(): boolean {
+    this.links.forEach((link) => {
+      link.getHTML().addEventListener('click', (event) => {
+        event.preventDefault();
+        // TBD replace route with route
+        const route = link.getHTML().attributes.getNamedItem('href')?.value;
+        if (route) {
+          this.switchActiveLink(route);
+        }
+      });
+    });
+    return true;
+  }
+
+  private switchActiveLink(route: string): void {
+    this.links.forEach((link) => {
+      link.getHTML().classList.remove(styles.active);
+      link.setEnabled();
+    });
+
+    const currentLink = this.links.find((link) => link.getHTML().attributes.getNamedItem('href')?.value === route);
+
+    if (currentLink) {
+      currentLink.getHTML().classList.add(styles.active);
+      currentLink.setDisabled();
+    }
+  }
+
   public getAccountLogoutButton(): ButtonModel {
     return this.accountLogoutButton;
   }
 
+  public getAddressesLink(): LinkModel {
+    return this.addressesLink;
+  }
+
   public getHTML(): HTMLDivElement {
     return this.page;
+  }
+
+  public getLinks(): LinkModel[] {
+    return this.links;
+  }
+
+  public getPersonalInfoLink(): LinkModel {
+    return this.personalInfoLink;
+  }
+
+  public getUserProfileWrapper(): HTMLDivElement {
+    return this.userProfileWrapper;
   }
 }
 export default UserProfilePageView;

@@ -11,7 +11,6 @@
   justify-content: space-evenly;
 }
 
-.userInfoWrapper,
 .addressesWrapper {
   position: relative;
   display: grid;
@@ -30,7 +29,7 @@
   gap: var(--small-offset);
 }
 
-.info {
+.address {
   grid-column: 2 span;
   max-width: 100%;
   word-break: break-all;
@@ -59,8 +58,7 @@
   height: fit-content;
 }
 
-.logoutButton,
-.editInfoButton {
+.logoutButton {
   border-radius: var(--medium-br);
   padding: calc(var(--small-offset) / 3) var(--small-offset);
   font: var(--regular-font);
@@ -85,14 +83,6 @@
     background-color: var(--noble-gray-300);
     pointer-events: none;
   }
-}
-
-.editInfoButton {
-  grid-column: 2 span;
-  grid-row: 6;
-  margin: 0 auto;
-  height: max-content;
-  max-width: max-content;
 }
 
 .link {

@@ -40,6 +40,12 @@ export const maxLengthMessage = (maxLength: number): string =>
 
 const maxAgeRu = (maxAge: number): string => textTemplate('Вам должно быть не более', maxAge, ' лет');
 
+export const defaultBillingAddress = (address: string): string =>
+  textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].DEFAULT_BILLING_ADDRESS);
+
+export const defaultShippingAddress = (address: string): string =>
+  textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].DEFAULT_SHIPPING_ADDRESS);
+
 const maxAgeEn = (maxAge: number): string => textTemplate('You must be at most', maxAge, ' years old');
 
 export const maxAgeMessage = (maxAge: number): string =>

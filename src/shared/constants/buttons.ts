@@ -7,7 +7,7 @@ export const BUTTON_TYPE = {
 export const BUTTON_TEXT = {
   en: {
     BACK_TO_MAIN: 'Back to main',
-    EDIT_INFO: 'Edit info',
+    EDIT_INFO: 'Edit',
     LOG_OUT: 'Log out',
     LOGIN: 'Login',
     REGISTRATION: 'Register',

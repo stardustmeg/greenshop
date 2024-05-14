@@ -103,12 +103,16 @@ export const PAGE_ID = {
 export const USER_INFO_TEXT = {
   en: {
     DATE_OF_BIRTH: 'Date of Birth: ',
+    DEFAULT_BILLING_ADDRESS: ' (default billing)',
+    DEFAULT_SHIPPING_ADDRESS: ' (default shipping)',
     EMAIL: 'Email: ',
     LAST_NAME: 'Last Name: ',
     NAME: 'First Name: ',
   },
   ru: {
     DATE_OF_BIRTH: 'Дата рождения: ',
+    DEFAULT_BILLING_ADDRESS: ' (по умолчанию - для оплаты)',
+    DEFAULT_SHIPPING_ADDRESS: ' (по умолчанию - для доставки)',
     EMAIL: 'Электронная почта: ',
     LAST_NAME: 'Фамилия: ',
     NAME: 'Имя: ',
@@ -117,6 +121,8 @@ export const USER_INFO_TEXT = {
 
 export const USER_INFO_TEXT_KEYS = {
   DATE_OF_BIRTH: 'DATE_OF_BIRTH',
+  DEFAULT_BILLING_ADDRESS: 'DEFAULT_BILLING_ADDRESS',
+  DEFAULT_SHIPPING_ADDRESS: 'DEFAULT_SHIPPING_ADDRESS',
   EMAIL: 'EMAIL',
   LAST_NAME: 'LAST_NAME',
   NAME: 'NAME',

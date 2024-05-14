@@ -45,7 +45,7 @@ class UserInfoView {
 
   private createUserInfoWrapper(): HTMLDivElement {
     this.userInfoWrapper = createBaseElement({
-      cssClasses: [styles.userInfoWrapper],
+      cssClasses: [styles.userInfoWrapper, styles.hidden],
       tag: 'div',
     });
     return this.userInfoWrapper;
@@ -80,6 +80,22 @@ class UserInfoView {
     });
 
     return true;
+  }
+
+  public getEditInfoButton(): ButtonModel {
+    return this.editInfoButton;
+  }
+
+  public getHTML(): HTMLDivElement {
+    return this.userInfoWrapper;
+  }
+
+  public hide(): void {
+    this.userInfoWrapper.classList.add(styles.hidden);
+  }
+
+  public show(): void {
+    this.userInfoWrapper.classList.remove(styles.hidden);
   }
 }
 export default UserInfoView;
