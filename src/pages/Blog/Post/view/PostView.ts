@@ -1,9 +1,7 @@
-import type RouterModel from '@/app/Router/model/RouterModel';
 import type { Post } from '@/shared/constants/blog';
 
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './post.module.scss';
@@ -17,16 +15,13 @@ export default class PostView {
 
   private post: Post;
 
-  private router: RouterModel;
-
-  constructor(post: Post, postClickCallback: (post: PostView) => void, router: RouterModel) {
+  constructor(post: Post, postClickCallback: (post: PostView) => void) {
     this.post = post;
-    this.router = router;
     this.callback = postClickCallback;
     this.card = this.createCardHTML();
     this.blogPost = this.createPostHtml();
 
-    this.card.addEventListener('click', (event) => this.onPostClick(event));
+    this.card.addEventListener('click', () => this.onPostClick());
     observeStore(selectCurrentLanguage, () => this.updateLanguage());
   }
 
@@ -61,9 +56,7 @@ export default class PostView {
     return content;
   }
 
-  private async onPostClick(event: Event): Promise<void> {
-    event.preventDefault();
-    await this.router.navigateTo(`${PAGE_ID.BLOG}/${this.post.id}`);
+  private onPostClick(): void {
     this.callback(this);
   }
 

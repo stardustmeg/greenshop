@@ -1,16 +1,18 @@
+import type { LanguageChoiceType } from '@/shared/constants/buttons.ts';
+
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { switchAppTheme } from '@/shared/Store/actions.ts';
-import observeStore, { selectCurrentLanguage, selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
+import observeStore, { selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEYS, LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { EMAIL_FIELD } from '@/shared/constants/forms/login/fieldParams.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import APP_THEME from '@/shared/constants/styles.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
-import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
@@ -28,7 +30,7 @@ class HeaderView {
 
   private navigationWrapper: HTMLDivElement;
 
-  private switchLanguageButton: ButtonModel;
+  private switchLanguageCheckbox: InputModel;
 
   private switchThemeCheckbox: InputModel;
 
@@ -44,7 +46,7 @@ class HeaderView {
     this.toCartLink = this.createToCartLink();
     this.toProfileLink = this.createToProfileLink();
     this.switchThemeCheckbox = this.createSwitchThemeCheckbox();
-    this.switchLanguageButton = this.createSwitchLanguageButton();
+    this.switchLanguageCheckbox = this.createSwitchLanguageCheckbox();
     this.navigationWrapper = this.createNavigationWrapper();
     this.burgerButton = this.createBurgerButton();
     this.wrapper = this.createWrapper();
@@ -104,9 +106,9 @@ class HeaderView {
     return this.header;
   }
 
-  private createLanguageButtonSVG(): SVGSVGElement {
+  private createLanguageSVG(lang: LanguageChoiceType): SVGSVGElement {
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.SWITCH_LANGUAGE[getStore().getState().currentLanguage]));
+    svg.append(createSVGUse(lang));
     return svg;
   }
 
@@ -141,7 +143,7 @@ class HeaderView {
       tag: 'div',
     });
     this.navigationWrapper.append(
-      this.switchLanguageButton.getHTML(),
+      this.createSwitchLanguageLabel(),
       this.logoutButton.getHTML(),
       this.toCartLink.getHTML(),
       this.toProfileLink.getHTML(),
@@ -151,19 +153,36 @@ class HeaderView {
     return this.navigationWrapper;
   }
 
-  private createSwitchLanguageButton(): ButtonModel {
-    this.switchLanguageButton = new ButtonModel({
-      classes: [styles.switchLanguageButton],
+  private createSwitchLanguageCheckbox(): InputModel {
+    this.switchLanguageCheckbox = new InputModel({
+      autocomplete: EMAIL_FIELD.inputParams.autocomplete,
+      id: styles.switchLanguageLabel,
+      placeholder: '',
+      type: INPUT_TYPE.CHECK_BOX,
     });
+    this.switchLanguageCheckbox.getHTML().classList.add(styles.switchLanguageCheckbox);
+    this.switchLanguageCheckbox.getHTML().checked = getStore().getState().currentUser?.locale === LANGUAGE_CHOICE.EN;
 
-    this.switchLanguageButton.getHTML().append(this.createLanguageButtonSVG());
+    return this.switchLanguageCheckbox;
+  }
 
-    observeStore(selectCurrentLanguage, () => {
-      clearOutElement(this.switchLanguageButton.getHTML());
-      this.switchLanguageButton.getHTML().append(this.createLanguageButtonSVG());
+  private createSwitchLanguageLabel(): HTMLLabelElement {
+    const label = createBaseElement({
+      attributes: { for: styles.switchLanguageLabel },
+      cssClasses: [styles.switchLanguageLabel, styles.switchLanguageLabelAbs],
+      tag: 'label',
     });
+    const span = createBaseElement({
+      cssClasses: [styles.switchLanguageLabelSpan],
+      tag: 'span',
+    });
+    const enSVG = this.createLanguageSVG(LANGUAGE_CHOICE.EN);
+    enSVG.classList.add(styles.enSVG);
+    const ruSVG = this.createLanguageSVG(LANGUAGE_CHOICE.RU);
+    ruSVG.classList.add(styles.ruSVG);
 
-    return this.switchLanguageButton;
+    label.append(enSVG, ruSVG, this.switchLanguageCheckbox.getHTML(), span);
+    return label;
   }
 
   private createSwitchThemeCheckbox(): InputModel {
@@ -297,8 +316,8 @@ class HeaderView {
     return this.navigationWrapper;
   }
 
-  public getSwitchLanguageButton(): ButtonModel {
-    return this.switchLanguageButton;
+  public getSwitchLanguageCheckbox(): InputModel {
+    return this.switchLanguageCheckbox;
   }
 
   public getToCartLink(): LinkModel {
