@@ -1,13 +1,11 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
 
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
-import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
+import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
@@ -86,35 +84,34 @@ class HeaderModel {
 
   private setCartLinkHandler(): boolean {
     const logo = this.view.getToCartLink().getHTML();
-    logo.addEventListener('click', async (event) => {
+    logo.addEventListener('click', (event) => {
       event.preventDefault();
-      try {
-        await this.router.navigateTo(PAGE_ID.CART_PAGE);
-      } catch {
-        showErrorMessage();
-      }
+      this.router.navigateTo(PAGE_ID.CART_PAGE).catch(() => showErrorMessage());
     });
     return true;
   }
 
   private setChangeLanguageCheckboxHandler(): boolean {
     const switchLanguageCheckbox = this.view.getSwitchLanguageCheckbox().getHTML();
-    switchLanguageCheckbox.addEventListener('click', async () => {
-      const { currentUser } = getStore().getState();
-
+    switchLanguageCheckbox.addEventListener('click', () => {
+      const {
+        currentLanguage,
+        // currentUser
+      } = getStore().getState();
+      const newLanguage = currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
       try {
-        if (currentUser) {
-          const newLanguage = currentUser.locale === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
-          const newUser = await getCustomerModel().editCustomer(
-            [CustomerModel.actionSetLocale(newLanguage)],
-            currentUser,
-          );
-          getStore().dispatch(setCurrentLanguage(newLanguage));
-          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
-          getStore().dispatch(setCurrentUser(newUser));
-        }
+        // if (currentUser) {
+        // const newLanguage = currentUser.locale === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
+        // const newUser = await getCustomerModel().editCustomer(
+        //   [CustomerModel.actionSetLocale(newLanguage)],
+        //   currentUser,
+        // );
+        // getStore().dispatch(setCurrentLanguage(newLanguage));
+        // serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
+        // getStore().dispatch(setCurrentUser(newUser));
+        // }
+        getStore().dispatch(setCurrentLanguage(newLanguage));
       } catch {
-        // TBD Change to showError
         showErrorMessage();
       }
     });
