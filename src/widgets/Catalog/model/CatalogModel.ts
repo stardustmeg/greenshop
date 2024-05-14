@@ -31,8 +31,6 @@ class CatalogModel {
 
   private addCurrentMetaFilter(filter: FilterProduct, metaFilter: string): FilterProduct {
     switch (metaFilter) {
-      case META_FILTERS.ru.ALL_PRODUCTS:
-        return filter;
       case META_FILTERS.en.NEW_ARRIVALS:
         filter.addFilter(FilterFields.NEW_ARRIVAL);
         return filter;
