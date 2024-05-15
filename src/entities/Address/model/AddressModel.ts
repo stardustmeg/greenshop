@@ -1,8 +1,9 @@
+import type { AddressOptions, AddressType } from '@/shared/types/address.ts';
 import type { Address, PersonalData } from '@/shared/types/user.ts';
 
 import CountryChoiceModel from '@/features/CountryChoice/model/CountryChoiceModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { ADDRESS_TYPE, type AddressOptions, type AddressType } from '@/shared/types/address.ts';
+import { ADDRESS_TYPE } from '@/shared/types/address.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
 
 import AddressView from '../view/AddressView.ts';

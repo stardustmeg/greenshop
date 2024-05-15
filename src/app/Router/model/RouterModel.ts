@@ -4,13 +4,15 @@ import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { isValidPath, isValidState } from '@/shared/types/validation/paths.ts';
 
 const PROJECT_TITLE = import.meta.env.VITE_APP_PROJECT_TITLE;
+const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
+const NEXT_SEGMENT = import.meta.env.VITE_APP_NEXT_SEGMENT;
 
 class RouterModel {
   private routes: Map<string, () => Promise<Page>> = new Map();
 
   constructor() {
     document.addEventListener('DOMContentLoaded', async () => {
-      const currentPath = window.location.pathname.slice(1) || PAGE_ID.DEFAULT_PAGE;
+      const currentPath = window.location.pathname.split(DEFAULT_SEGMENT)[NEXT_SEGMENT] || PAGE_ID.DEFAULT_PAGE;
       await this.navigateTo(currentPath);
     });
 

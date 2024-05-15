@@ -1,5 +1,3 @@
-export const KEY = 'registration_';
-
 export const TITLE_TEXT = {
   en: {
     BILLING_ADDRESS: 'Billing Address',

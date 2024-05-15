@@ -11,6 +11,14 @@
   --medium-br: 10px;
   --large-br: 20px;
 
+  // shadows
+  --mellow-shadow-100: rgb(0 0 0 / 19%) 0 10px 20px, rgb(0 0 0 / 23%) 0 6px 6px;
+  --mellow-shadow-200: rgb(255 255 255 / 10%) 0 1px 1px 0 inset, rgb(50 50 93 / 25%) 0 50px 100px -20px,
+    rgb(0 0 0 / 30%) 0 30px 60px -30px;
+  --mellow-shadow-300: rgb(0 0 0 / 25%) 0 14px 28px, rgb(0 0 0 / 22%) 0 10px 10px;
+  --mellow-shadow-400: rgb(0 0 0 / 9%) 0 2px 1px, rgb(0 0 0 / 9%) 0 4px 2px, rgb(0 0 0 / 9%) 0 8px 4px,
+    rgb(0 0 0 / 9%) 0 16px 8px, rgb(0 0 0 / 9%) 0 32px 16px;
+
   // fonts
   --regular-font: 400 13px 'Cerapro', sans-serif;
   --extra-regular-font: 400 24px 'Cerapro', sans-serif;
@@ -24,6 +32,7 @@
   body.light {
     // colors
     --white: #fff;
+    --white-tr: #ffffffa9;
     --black: #000;
     --noble-white-100: #f5f5f5;
     --noble-white-200: #f0f0f0;
@@ -34,6 +43,8 @@
     --noble-gray-600: #a5a5a5;
     --noble-gray-700: #727272;
     --noble-gray-800: #3d3d3d;
+    --noble-gray-tr-800: #acacacbd;
+    --noble-gray-900: #1d1d1d;
     --noble-gray-1000: #1a1a1ab5;
     --red-power-600: #d0302f;
     --steam-green-300: #46a35880;

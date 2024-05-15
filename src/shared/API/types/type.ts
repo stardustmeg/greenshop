@@ -22,7 +22,7 @@ export const FilterFields = {
 
 export type FilterFieldsType = (typeof FilterFields)[keyof typeof FilterFields];
 
-const SortFields = {
+export const SortFields = {
   NAME: 'name',
   PRICE: 'price',
 } as const;

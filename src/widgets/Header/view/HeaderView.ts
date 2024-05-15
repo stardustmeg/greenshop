@@ -1,15 +1,14 @@
-import type { LanguageChoiceType } from '@/shared/constants/buttons.ts';
+import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { switchAppTheme } from '@/shared/Store/actions.ts';
-import observeStore, { selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS, LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
-import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
+import observeStore, { selectCurrentPage, selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
+import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
-import { EMAIL_FIELD } from '@/shared/constants/forms/login/fieldParams.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import APP_THEME from '@/shared/constants/styles.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
@@ -155,7 +154,7 @@ class HeaderView {
 
   private createSwitchLanguageCheckbox(): InputModel {
     this.switchLanguageCheckbox = new InputModel({
-      autocomplete: EMAIL_FIELD.inputParams.autocomplete,
+      autocomplete: AUTOCOMPLETE_OPTION.OFF,
       id: styles.switchLanguageLabel,
       placeholder: '',
       type: INPUT_TYPE.CHECK_BOX,
@@ -269,7 +268,7 @@ class HeaderView {
       this.toProfileLink.getHTML().classList.add(styles.hidden);
     }
 
-    observeStore(selectCurrentUser, () =>
+    observeStore(selectIsUserLoggedIn, () =>
       this.toProfileLink.getHTML().classList.toggle(styles.hidden, getStore().getState().currentUser === null),
     );
 

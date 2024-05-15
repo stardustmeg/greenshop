@@ -1,6 +1,4 @@
-import type { LanguageChoiceType } from '../constants/buttons.ts';
-
-import { LANGUAGE_CHOICE } from '../constants/buttons.ts';
+import { LANGUAGE_CHOICE, type LanguageChoiceType } from '../constants/common.ts';
 import COUNTRIES_LIST from '../constants/countriesList.ts';
 
 export const checkInputLanguage = (text: string): LanguageChoiceType =>

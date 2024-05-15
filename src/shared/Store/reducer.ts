@@ -1,7 +1,8 @@
 /* eslint-disable max-lines-per-function */
-import type { LanguageChoiceType } from '../constants/buttons.ts';
+import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
 import type { SelectedFilters } from '../types/productFilters.ts';
+import type { SelectedSorting } from '../types/productSorting.ts';
 import type { User } from '../types/user.ts';
 import type * as actions from './actions.ts';
 import type { Reducer } from './types.ts';
@@ -16,6 +17,7 @@ export interface State {
   isAppThemeLight: boolean;
   isUserLoggedIn: boolean;
   selectedFilters: SelectedFilters | null;
+  selectedSorting: SelectedSorting | null;
   shippingCountry: string;
 }
 
@@ -54,7 +56,6 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
         ...state,
         currentLanguage: action.payload,
       };
-
     case 'switchIsUserLoggedIn':
       return {
         ...state,
@@ -65,7 +66,6 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
         ...state,
         currentPage: action.payload,
       };
-
     case 'switchAppTheme':
       return {
         ...state,
@@ -75,6 +75,11 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         selectedFilters: action.payload,
+      };
+    case 'setSelectedSorting':
+      return {
+        ...state,
+        selectedSorting: action.payload,
       };
     default:
       return state;

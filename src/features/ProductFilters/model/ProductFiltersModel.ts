@@ -5,15 +5,16 @@ import type { SelectedFilters } from '@/shared/types/productFilters.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setSelectedFilters } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { FILTER_INPUT_RANGE_LABEL } from '@/shared/constants/filters.ts';
+import { META_FILTERS } from '@/shared/constants/filters.ts';
 
 import ProductFiltersView from '../view/ProductFiltersView.ts';
 
 class ProductFiltersModel {
-  private params: ProductFiltersParams;
+  private params: ProductFiltersParams | null;
 
   private selectedFilters: SelectedFilters = {
     category: new Set(),
+    metaFilter: META_FILTERS.en.ALL_PRODUCTS,
     price: {
       max: 0,
       min: 0,
@@ -23,17 +24,17 @@ class ProductFiltersModel {
 
   private view: ProductFiltersView;
 
-  constructor(params: ProductFiltersParams) {
+  constructor(params: ProductFiltersParams | null) {
     this.params = params;
     this.view = new ProductFiltersView(params);
     this.init();
   }
 
   private init(): void {
-    this.selectedFilters = getStore().getState().selectedFilters ?? this.selectedFilters;
     this.initCategoryFilters();
     this.initPriceFilters();
     this.initSizeFilters();
+    this.setMetaLinksHandlers();
     this.setResetFiltersButtonHandler();
 
     observeStore(selectCurrentLanguage, () => {
@@ -55,21 +56,7 @@ class ProductFiltersModel {
   }
 
   private initPriceFilters(): void {
-    const fromInput = this.view
-      .getPriceInputs()
-      .get(FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
-    const toInput = this.view.getPriceInputs().get(FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].TO);
-    const priceSlider = this.view.getPriceSlider();
-    if (!fromInput || !toInput) {
-      return;
-    }
-    priceSlider.on('update', (values) => {
-      const [min, max] = values;
-      fromInput.getHTML().value = min.toString();
-      toInput.getHTML().value = max.toString();
-    });
-
-    priceSlider.on('set', (values) => {
+    this.view.getPriceSlider().on('set', (values) => {
       const [min, max] = values;
       this.selectedFilters.price = {
         max: +max,
@@ -78,13 +65,6 @@ class ProductFiltersModel {
 
       getStore().dispatch(setSelectedFilters(this.selectedFilters));
     });
-
-    fromInput
-      .getHTML()
-      .addEventListener('change', () => priceSlider.set([fromInput.getHTML().value, toInput.getHTML().value]));
-    toInput
-      .getHTML()
-      .addEventListener('change', () => priceSlider.set([fromInput.getHTML().value, toInput.getHTML().value]));
   }
 
   private initSizeFilters(): void {
@@ -112,6 +92,16 @@ class ProductFiltersModel {
     });
   }
 
+  private setMetaLinksHandlers(): void {
+    this.view.getMetaLinks().forEach((metaLink) => {
+      metaLink.getHTML().addEventListener('click', () => {
+        this.switchLinkState(metaLink);
+        this.selectedFilters.metaFilter = metaLink.getHTML().id;
+        getStore().dispatch(setSelectedFilters(this.selectedFilters));
+      });
+    });
+  }
+
   private setResetFiltersButtonHandler(): void {
     const filtersResetButton = this.view.getFiltersResetButton();
     filtersResetButton.getHTML().addEventListener('click', () => {
@@ -119,14 +109,22 @@ class ProductFiltersModel {
       this.view.getSizeLinks().forEach((link) => this.view.switchSelectedFilter(link, false));
       this.selectedFilters = {
         category: new Set(),
+        metaFilter: META_FILTERS.en.ALL_PRODUCTS,
         price: {
-          max: this.params.priceRange?.max ?? 0,
-          min: this.params.priceRange?.min ?? 0,
+          max: this.params?.priceRange?.max ?? 0,
+          min: this.params?.priceRange?.min ?? 0,
         },
         size: null,
       };
+      this.setMetaLinksHandlers();
+      this.view.getMetaLinks().forEach((link) => {
+        this.view.switchSelectedFilter(link, false);
+        if (link.getHTML().id === this.selectedFilters.metaFilter) {
+          this.view.switchSelectedFilter(link, true);
+        }
+      });
 
-      this.view.getPriceSlider().set([this.params.priceRange?.min ?? 0, this.params.priceRange?.max ?? 0]);
+      this.view.getPriceSlider().set([this.params?.priceRange?.min ?? 0, this.params?.priceRange?.max ?? 0]);
 
       getStore().dispatch(setSelectedFilters(this.selectedFilters));
     });
@@ -145,15 +143,22 @@ class ProductFiltersModel {
     });
   }
 
-  public getCategoryLinks(): LinkModel[] {
-    return this.view.getCategoryLinks();
+  private switchLinkState(metaLink: LinkModel): void {
+    this.view.getMetaLinks().forEach((link) => {
+      this.view.switchSelectedFilter(link, false);
+    });
+    this.view.switchSelectedFilter(metaLink, true);
   }
 
-  public getHTML(): HTMLDivElement {
-    return this.view.getHTML();
+  public getDefaultFilters(): HTMLDivElement {
+    return this.view.getDefaultFilters();
   }
 
-  public updateParams(params: ProductFiltersParams): void {
+  public getMetaFilters(): HTMLDivElement {
+    return this.view.getMetaFilters();
+  }
+
+  public updateParams(params: ProductFiltersParams | null): void {
     this.view.updateParams(params);
   }
 }

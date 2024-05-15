@@ -119,6 +119,7 @@
   height: 24px;
   background-color: transparent;
   transform: translate(-12%, 0);
+  transition: background-color 0.2s;
   cursor: pointer;
 
   svg {

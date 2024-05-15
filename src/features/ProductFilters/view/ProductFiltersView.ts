@@ -7,16 +7,20 @@ import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
-import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
-import { FILTER_INPUT_RANGE_LABEL, FILTER_RESET_BUTTON, FILTER_TITLE } from '@/shared/constants/filters.ts';
+import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
+import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import { META_FILTERS, META_FILTERS_ID, PRICE_RANGE_LABEL, TITLE } from '@/shared/constants/filters.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import * as noUiSlider from 'nouislider';
 
 import styles from './productFiltersView.module.scss';
 
-const BASE_FILTER_LINK_COUNT = '(0)';
+const SEGMENTS_TO_KEEP = import.meta.env.VITE_APP_PATH_SEGMENTS_TO_KEEP;
+const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
+
+const BASE_PRODUCT_COUNT = '(0)';
 const SLIDER_PRICE_OFFSET = 10;
 const INPUT_PRICE_STEP = 5;
 
@@ -27,9 +31,13 @@ class ProductFiltersView {
 
   private categoryList: HTMLUListElement;
 
-  private filters: HTMLDivElement;
+  private defaultFilters: HTMLDivElement;
 
-  private params: ProductFiltersParams;
+  private metaFilters: HTMLDivElement;
+
+  private metaLinks: LinkModel[] = [];
+
+  private params: ProductFiltersParams | null;
 
   private priceInputs: Map<string, InputModel> = new Map();
 
@@ -43,21 +51,23 @@ class ProductFiltersView {
 
   private sizesList: HTMLUListElement;
 
-  constructor(params: ProductFiltersParams) {
+  constructor(params: ProductFiltersParams | null) {
     this.params = params;
     this.categoryList = this.createCategoryList();
     this.priceSlider = this.createPriceSlider();
     this.sizesList = this.createSizesList();
     this.resetFiltersButton = this.createResetFiltersButton();
-    this.filters = this.createHTML();
+    this.defaultFilters = this.createDefaultFilters();
+    this.metaFilters = this.createMetaFilters();
+    this.setPriceSliderHandlers();
   }
 
-  private createCategoryLink(category: Category): LinkModel {
-    const text = category.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+  private createCategoryLink(category: { category: Category; count: number }): LinkModel {
+    const text = category.category.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
     const categoryLink = new LinkModel({
       attrs: {
-        href: category.key,
-        id: category.id,
+        href: category.category.key,
+        id: category.category.id,
       },
       classes: [styles.categoryLink],
       text,
@@ -69,19 +79,15 @@ class ProductFiltersView {
 
     const span = createBaseElement({
       attributes: {
-        id: category.id,
+        id: category.category.id,
       },
       cssClasses: [styles.categoryLinkCount],
-      innerContent: BASE_FILTER_LINK_COUNT,
+      innerContent: `(${category.count})`,
       tag: 'span',
     });
 
     this.categoryCountSpan.push(span);
     categoryLink.getHTML().append(span);
-
-    const productsCount =
-      this.params.categoriesProductCount?.find((item) => item.category.key === category.key)?.count ?? 0;
-    span.textContent = `(${productsCount})`;
 
     this.categoryLinks.push(categoryLink);
     return categoryLink;
@@ -93,12 +99,12 @@ class ProductFiltersView {
         list: [styles.categoryList],
         title: [styles.categoryTitle],
       },
-      FILTER_TITLE[getStore().getState().currentLanguage].CATEGORY,
+      TITLE[getStore().getState().currentLanguage].CATEGORY,
     );
 
     this.categoryList = filtersList;
 
-    this.params.categories?.forEach((category) => {
+    this.params?.categoriesProductCount?.forEach((category) => {
       const li = createBaseElement({
         cssClasses: [styles.categoryItem],
         tag: 'li',
@@ -113,13 +119,30 @@ class ProductFiltersView {
       this.categoryLinks.length = 0;
       this.categoryList.innerHTML = '';
       this.categoryList.append(filtersListTitle);
-      filtersListTitle.textContent = FILTER_TITLE[getStore().getState().currentLanguage].CATEGORY;
-      this.params.categories?.forEach((category) => {
+      filtersListTitle.textContent = TITLE[getStore().getState().currentLanguage].CATEGORY;
+      this.params?.categoriesProductCount?.forEach((category) => {
         this.categoryList.append(this.createCategoryLink(category).getHTML());
       });
     });
 
     return this.categoryList;
+  }
+
+  private createDefaultFilters(): HTMLDivElement {
+    this.defaultFilters = createBaseElement({
+      cssClasses: [styles.defaultFilters],
+      tag: 'div',
+    });
+
+    this.defaultFilters.append(
+      this.categoryList,
+      this.createPriceWrapper(),
+      this.priceSlider.target,
+      this.sizesList,
+      this.resetFiltersButton.getHTML(),
+    );
+
+    return this.defaultFilters;
   }
 
   private createFiltersList(
@@ -143,21 +166,53 @@ class ProductFiltersView {
     return { filtersList, filtersListTitle };
   }
 
-  private createHTML(): HTMLDivElement {
-    this.filters = createBaseElement({
-      cssClasses: [styles.filters],
+  private createMetaFilters(): HTMLDivElement {
+    this.metaFilters = createBaseElement({
+      cssClasses: [styles.metaFilters],
       tag: 'div',
     });
 
-    this.filters.append(
-      this.categoryList,
-      this.createPriceWrapper(),
-      this.priceSlider.target,
-      this.sizesList,
-      this.resetFiltersButton.getHTML(),
+    const allProductsLink = this.createMetaLink(
+      META_FILTERS[getStore().getState().currentLanguage].ALL_PRODUCTS,
+      META_FILTERS_ID.ALL_PRODUCTS,
+      META_FILTERS.en.ALL_PRODUCTS,
     );
+    const newArrivalsLink = this.createMetaLink(
+      META_FILTERS[getStore().getState().currentLanguage].NEW_ARRIVALS,
+      META_FILTERS_ID.NEW_ARRIVALS,
+      META_FILTERS.en.NEW_ARRIVALS,
+    );
+    const saleLink = this.createMetaLink(
+      META_FILTERS[getStore().getState().currentLanguage].SALE,
+      META_FILTERS_ID.SALE,
+      META_FILTERS.en.SALE,
+    );
+    allProductsLink.getHTML().classList.add(styles.activeLink);
+    this.metaFilters.append(allProductsLink.getHTML(), newArrivalsLink.getHTML(), saleLink.getHTML());
 
-    return this.filters;
+    return this.metaFilters;
+  }
+
+  private createMetaLink(text: string, href: string, id: string): LinkModel {
+    const link = new LinkModel({
+      attrs: {
+        href,
+        id,
+      },
+      classes: [styles.metaLink],
+      text,
+    });
+
+    link.getHTML().addEventListener('click', (event) => {
+      event.preventDefault();
+      const path = PAGE_ID.CATALOG_PAGE;
+      const url = `${window.location.pathname.split(DEFAULT_SEGMENT)[SEGMENTS_TO_KEEP]}/${path}/${href}`;
+      history.pushState({ path }, '', url);
+    });
+
+    this.metaLinks.push(link);
+
+    return link;
   }
 
   private createPriceLabel(direction: string): {
@@ -178,22 +233,20 @@ class ProductFiltersView {
       tag: 'span',
     });
 
-    const minPrice = this.params.priceRange?.min.toFixed(2) ?? '';
-    const maxPrice = this.params.priceRange?.max.toFixed(2) ?? '';
+    const minPrice = this.params?.priceRange?.min.toFixed(2) ?? '';
+    const maxPrice = this.params?.priceRange?.max.toFixed(2) ?? '';
+    const from = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
+    const to = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO;
 
     const priceInput = new InputModel({
       autocomplete: AUTOCOMPLETE_OPTION.OFF,
-      id:
-        direction === FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM
-          ? FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM
-          : FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].TO,
-      max: this.params.priceRange?.max,
-      min: this.params.priceRange?.min,
-      placeholder:
-        direction === FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM ? minPrice : maxPrice,
+      id: direction === from ? from : to,
+      max: this.params?.priceRange?.max,
+      min: this.params?.priceRange?.min,
+      placeholder: direction === from ? minPrice : maxPrice,
       step: INPUT_PRICE_STEP,
       type: INPUT_TYPE.NUMBER,
-      value: direction === FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM ? minPrice : maxPrice,
+      value: direction === from ? minPrice : maxPrice,
     });
     priceInput.getHTML().classList.add(styles.priceInput, styles[direction]);
     this.priceInputs.set(direction, priceInput);
@@ -202,13 +255,10 @@ class ProductFiltersView {
   }
 
   private createPriceSlider(): noUiSlider.API {
-    const { max, min } = this.params.priceRange ?? { max: 0, min: 0 };
+    const { max, min } = this.params?.priceRange ?? { max: 0, min: 0 };
     const SLIDER_START_MIN = min + max / SLIDER_PRICE_OFFSET;
     const SLIDER_START_MAX = max - max / SLIDER_PRICE_OFFSET;
     const slider = createBaseElement({
-      attributes: {
-        id: 'slider',
-      },
       cssClasses: [styles.slider],
       tag: 'div',
     });
@@ -217,7 +267,7 @@ class ProductFiltersView {
       behaviour: 'tap',
       connect: true,
       keyboardSupport: true,
-      range: this.params.priceRange ?? { max: 0, min: 0 },
+      range: this.params?.priceRange ?? { max: 0, min: 0 },
       start: [SLIDER_START_MIN, SLIDER_START_MAX],
     });
 
@@ -232,21 +282,21 @@ class ProductFiltersView {
 
     const title = createBaseElement({
       cssClasses: [styles.priceTitle],
-      innerContent: FILTER_TITLE[getStore().getState().currentLanguage].PRICE,
+      innerContent: TITLE[getStore().getState().currentLanguage].PRICE,
       tag: 'h3',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      title.textContent = FILTER_TITLE[getStore().getState().currentLanguage].PRICE;
+      title.textContent = TITLE[getStore().getState().currentLanguage].PRICE;
     });
 
-    const from = this.createPriceLabel(FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
-    const to = this.createPriceLabel(FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    const from = this.createPriceLabel(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
+    const to = this.createPriceLabel(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
     priceWrapper.append(title, from.priceLabel, this.priceSlider.target, to.priceLabel);
 
     observeStore(selectCurrentLanguage, () => {
-      from.priceSpan.textContent = FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
-      to.priceSpan.textContent = FILTER_INPUT_RANGE_LABEL[getStore().getState().currentLanguage].TO;
+      from.priceSpan.textContent = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
+      to.priceSpan.textContent = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO;
     });
     return priceWrapper;
   }
@@ -254,7 +304,7 @@ class ProductFiltersView {
   private createResetFiltersButton(): ButtonModel {
     this.resetFiltersButton = new ButtonModel({
       classes: [styles.resetFiltersButton],
-      text: FILTER_RESET_BUTTON[getStore().getState().currentLanguage].RESET,
+      text: BUTTON_TEXT[getStore().getState().currentLanguage].RESET,
     });
 
     return this.resetFiltersButton;
@@ -296,12 +346,12 @@ class ProductFiltersView {
         list: [styles.sizesList],
         title: [styles.sizesTitle],
       },
-      FILTER_TITLE[getStore().getState().currentLanguage].SIZE,
+      TITLE[getStore().getState().currentLanguage].SIZE,
     );
 
     this.sizesList = filtersList;
 
-    this.params.sizes?.forEach((size) => {
+    this.params?.sizes?.forEach((size) => {
       const li = createBaseElement({
         cssClasses: [styles.sizeItem],
         tag: 'li',
@@ -316,23 +366,65 @@ class ProductFiltersView {
       this.sizeLinks.length = 0;
       this.sizesList.innerHTML = '';
       this.sizesList.append(filtersListTitle);
-      filtersListTitle.textContent = FILTER_TITLE[getStore().getState().currentLanguage].SIZE;
-      this.params.sizes?.forEach((size) => this.sizesList.append(this.createSizeLink(size).getHTML()));
+      filtersListTitle.textContent = TITLE[getStore().getState().currentLanguage].SIZE;
+      this.params?.sizes?.forEach((size) => this.sizesList.append(this.createSizeLink(size).getHTML()));
     });
 
     return this.sizesList;
+  }
+
+  private redrawProductsCount(): void {
+    this.params?.categoriesProductCount?.forEach((categoryCount) => {
+      const currentSpan = this.categoryCountSpan.find((span) => span.id === categoryCount.category.id) ?? null;
+      if (currentSpan) {
+        currentSpan.innerText = `(${categoryCount.count})`;
+      }
+    });
+
+    this.params?.sizes?.forEach((size) => {
+      const currentSpan = this.sizeCountSpan.find((span) => span.id === size.size) ?? null;
+      if (currentSpan) {
+        currentSpan.innerText = `(${size.count})`;
+      }
+    });
+  }
+
+  private setPriceSliderHandlers(): void {
+    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
+    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+
+    this.priceSlider.on('update', (values) => {
+      const [min, max] = values;
+      fromInput?.setValue(String(min));
+      toInput?.setValue(String(max));
+    });
+
+    fromInput
+      ?.getHTML()
+      .addEventListener('change', () => this.priceSlider.set([fromInput.getValue(), toInput?.getValue() ?? 0]));
+    toInput
+      ?.getHTML()
+      .addEventListener('change', () => this.priceSlider.set([fromInput?.getValue() ?? 0, toInput.getValue()]));
   }
 
   public getCategoryLinks(): LinkModel[] {
     return this.categoryLinks;
   }
 
+  public getDefaultFilters(): HTMLDivElement {
+    return this.defaultFilters;
+  }
+
   public getFiltersResetButton(): ButtonModel {
     return this.resetFiltersButton;
   }
 
-  public getHTML(): HTMLDivElement {
-    return this.filters;
+  public getMetaFilters(): HTMLDivElement {
+    return this.metaFilters;
+  }
+
+  public getMetaLinks(): LinkModel[] {
+    return this.metaLinks;
   }
 
   public getPriceInputs(): Map<string, InputModel> {
@@ -351,14 +443,17 @@ class ProductFiltersView {
     filterLink.getHTML().classList.toggle(styles.activeLink, toggle);
   }
 
-  public updateParams(params: ProductFiltersParams): void {
+  public updateParams(params: ProductFiltersParams | null): void {
     this.params = params;
-    this.params.categoriesProductCount?.forEach((categoryCount) => {
-      const currentSpan = this.categoryCountSpan.find((span) => span.id === categoryCount.category.id) ?? null;
-      if (currentSpan) {
-        currentSpan.innerText = `(${categoryCount.count})`;
-      }
+    this.categoryCountSpan.forEach((span) => {
+      const currentSpan = span;
+      currentSpan.innerText = BASE_PRODUCT_COUNT;
     });
+    this.sizeCountSpan.forEach((span) => {
+      const currentSpan = span;
+      currentSpan.innerText = BASE_PRODUCT_COUNT;
+    });
+    this.redrawProductsCount();
   }
 }
 

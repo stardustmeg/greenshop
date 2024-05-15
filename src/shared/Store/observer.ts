@@ -1,3 +1,4 @@
+import type { MetaFiltersType } from '../constants/filters.ts';
 import type { User } from '../types/user.ts';
 import type { State } from './reducer.ts';
 
@@ -32,11 +33,11 @@ export function observeSetInStore<T>(select: (state: State) => T, onChange: (sel
   return unsubscribe;
 }
 
-function isSet<T>(value: unknown): value is Set<T> {
+export function isSet<T>(value: unknown): value is Set<T> {
   return value instanceof Set;
 }
 
-function setsHaveEqualContent<T>(setA: Set<T>, setB: Set<T>): boolean {
+export function setsHaveEqualContent<T>(setA: Set<T>, setB: Set<T>): boolean {
   if (setA.size !== setB.size) {
     return false;
   }
@@ -76,6 +77,27 @@ export const selectSelectedFiltersPrice = (state: State): { max: number; min: nu
 export const selectSelectedFiltersSize = (state: State): null | string => {
   if (state.selectedFilters) {
     return state.selectedFilters.size;
+  }
+  return null;
+};
+
+export const selectSelectedFiltersMetaFilter = (state: State): MetaFiltersType | null => {
+  if (state.selectedFilters) {
+    return state.selectedFilters.metaFilter;
+  }
+  return null;
+};
+
+export const selectSelectedSortingField = (state: State): null | string => {
+  if (state.selectedSorting) {
+    return state.selectedSorting.field;
+  }
+  return null;
+};
+
+export const selectSelectedSortingDirection = (state: State): null | string => {
+  if (state.selectedSorting) {
+    return state.selectedSorting.direction;
   }
   return null;
 };

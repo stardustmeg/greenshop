@@ -2,9 +2,9 @@ import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { FORM_TEXT, FORM_TEXT_KEYS, INPUT_TYPE } from '@/shared/constants/forms.ts';
-import { TITLE_TEXT, TITLE_TEXT_KEYS } from '@/shared/constants/forms/register/constant.ts';
-import * as FORM_FIELDS from '@/shared/constants/forms/register/fieldParams.ts';
-import * as FORM_VALIDATION from '@/shared/constants/forms/register/validationParams.ts';
+import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
+import { TITLE_TEXT, TITLE_TEXT_KEYS } from '@/shared/constants/forms/text.ts';
+import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
 import { ADDRESS_TYPE, type AddressOptions, type AddressType, SINGLE_ADDRESS } from '@/shared/types/address.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
@@ -124,15 +124,9 @@ class AddressView {
 
   private createCityField(): InputFieldModel {
     if (this.addressType === ADDRESS_TYPE.SHIPPING) {
-      this.cityField = new InputFieldModel(
-        FORM_FIELDS.SHIPPING_ADDRESS_CITY,
-        FORM_VALIDATION.SHIPPING_ADDRESS_CITY_VALIDATE,
-      );
+      this.cityField = new InputFieldModel(FORM_FIELDS.SHIPPING_ADDRESS_CITY, FORM_VALIDATION.ADDRESS_CITY_VALIDATE);
     } else {
-      this.cityField = new InputFieldModel(
-        FORM_FIELDS.BILLING_ADDRESS_CITY,
-        FORM_VALIDATION.BILLING_ADDRESS_CITY_VALIDATE,
-      );
+      this.cityField = new InputFieldModel(FORM_FIELDS.BILLING_ADDRESS_CITY, FORM_VALIDATION.ADDRESS_CITY_VALIDATE);
     }
 
     this.inputFields.push(this.cityField);
@@ -144,12 +138,12 @@ class AddressView {
     if (this.addressType === ADDRESS_TYPE.SHIPPING) {
       this.countryField = new InputFieldModel(
         FORM_FIELDS.SHIPPING_ADDRESS_COUNTRY,
-        FORM_VALIDATION.SHIPPING_ADDRESS_COUNTRY_VALIDATE,
+        FORM_VALIDATION.ADDRESS_COUNTRY_VALIDATE,
       );
     } else {
       this.countryField = new InputFieldModel(
         FORM_FIELDS.BILLING_ADDRESS_COUNTRY,
-        FORM_VALIDATION.BILLING_ADDRESS_COUNTRY_VALIDATE,
+        FORM_VALIDATION.ADDRESS_COUNTRY_VALIDATE,
       );
     }
 
@@ -185,12 +179,12 @@ class AddressView {
     if (this.addressType === ADDRESS_TYPE.SHIPPING) {
       this.postalCodeField = new InputFieldModel(
         FORM_FIELDS.SHIPPING_ADDRESS_POSTAL_CODE,
-        FORM_VALIDATION.SHIPPING_ADDRESS_POSTAL_CODE_VALIDATE,
+        FORM_VALIDATION.ADDRESS_POSTAL_CODE_VALIDATE,
       );
     } else {
       this.postalCodeField = new InputFieldModel(
         FORM_FIELDS.BILLING_ADDRESS_POSTAL_CODE,
-        FORM_VALIDATION.BILLING_ADDRESS_POSTAL_CODE_VALIDATE,
+        FORM_VALIDATION.ADDRESS_POSTAL_CODE_VALIDATE,
       );
     }
 
@@ -203,12 +197,12 @@ class AddressView {
     if (this.addressType === ADDRESS_TYPE.SHIPPING) {
       this.streetField = new InputFieldModel(
         FORM_FIELDS.SHIPPING_ADDRESS_STREET,
-        FORM_VALIDATION.SHIPPING_ADDRESS_STREET_VALIDATE,
+        FORM_VALIDATION.ADDRESS_STREET_VALIDATE,
       );
     } else {
       this.streetField = new InputFieldModel(
         FORM_FIELDS.BILLING_ADDRESS_STREET,
-        FORM_VALIDATION.BILLING_ADDRESS_STREET_VALIDATE,
+        FORM_VALIDATION.ADDRESS_STREET_VALIDATE,
       );
     }
 
