@@ -294,8 +294,10 @@ export class ProductModel {
     const products = this.getProductsFromData(data);
     const sizeCount = this.getSizeProductCountFromData(data);
     const categoryCount = this.getCategoriesProductCountFromData(data);
+    const priceRange = this.getPriceRangeFromData(data);
     const result: ProductWithCount = {
       categoryCount,
+      priceRange,
       products,
       sizeCount,
     };

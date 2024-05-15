@@ -72,6 +72,7 @@ export type SizeProductCount = {
 
 export type ProductWithCount = {
   categoryCount: CategoriesProductCount[];
+  priceRange: PriceRange;
   products: Product[];
   sizeCount: SizeProductCount[];
 };

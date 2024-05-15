@@ -52,7 +52,11 @@ export class ProductApi {
       .search()
       .get({
         queryArgs: {
-          facet: [`categories.id counting products`, `variants.attributes.size.key`],
+          facet: [
+            `categories.id counting products`,
+            `variants.attributes.size.key`,
+            `variants.price.centAmount:range(${MIN_PRICE} to ${MAX_PRICE})`,
+          ],
           limit,
           markMatchingVariants: true,
           offset: (page - 1) * PRODUCT_LIMIT,
