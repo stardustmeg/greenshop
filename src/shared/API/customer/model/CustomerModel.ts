@@ -9,19 +9,21 @@ import type {
   MyCustomerUpdateAction,
 } from '@commercetools/platform-sdk';
 
-import getRoot, { type RootApi } from '../../sdk/root.ts';
 import {
   isClientResponse,
   isCustomerPagedQueryResponse,
   isCustomerResponse,
   isCustomerSignInResultResponse,
 } from '../../types/validation.ts';
+import getCustomerApi, { type CustomerApi } from '../CustomerApi.ts';
 
 export class CustomerModel {
-  private root: RootApi;
+  private anonymousId = '';
+
+  private root: CustomerApi;
 
   constructor() {
-    this.root = getRoot();
+    this.root = getCustomerApi();
   }
 
   public static actionAddAddress(address: Address): MyCustomerUpdateAction {
@@ -191,6 +193,10 @@ export class CustomerModel {
     return this.getCustomerFromData(data);
   }
 
+  public getAnonymousId(): string {
+    return this.anonymousId;
+  }
+
   public async hasEmail(email: string): Promise<User | null> {
     const data = await this.root.getCustomerByEmail(email);
     return this.getCustomerFromData(data);
@@ -203,6 +209,10 @@ export class CustomerModel {
   public async registerNewCustomer(userData: User): Promise<User | null> {
     const data = await this.root.registrationUser(userData);
     return this.getCustomerFromData(data);
+  }
+
+  public setAnonymousId(anonymousId: string): void {
+    this.anonymousId = anonymousId;
   }
 }
 

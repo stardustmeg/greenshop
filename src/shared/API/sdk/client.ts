@@ -2,9 +2,11 @@ import type { UserCredentials } from '@/shared/types/user';
 
 import { type ByProjectKeyRequestBuilder, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import {
+  type AnonymousAuthMiddlewareOptions,
   type AuthMiddlewareOptions,
   type Client,
   ClientBuilder,
+  type ExistingTokenMiddlewareOptions,
   type HttpMiddlewareOptions,
   type PasswordAuthMiddlewareOptions,
   type RefreshAuthMiddlewareOptions,
@@ -15,6 +17,10 @@ import type { TokenTypeType } from '../types/type.ts';
 import { TokenType } from '../types/type.ts';
 import getTokenCache from './token-cache/token-cache.ts';
 
+const PROJECT_KEY = import.meta.env.VITE_APP_CTP_PROJECT_KEY;
+const SCOPES = import.meta.env.VITE_APP_CTP_SCOPES;
+const CLIENT_ID = import.meta.env.VITE_APP_CTP_CLIENT_ID;
+const CLIENT_SECRET = import.meta.env.VITE_APP_CTP_CLIENT_SECRET;
 const URL_AUTH = 'https://auth.europe-west1.gcp.commercetools.com';
 const URL_HTTP = 'https://api.europe-west1.gcp.commercetools.com';
 const USE_SAVE_TOKEN = true;
@@ -24,7 +30,7 @@ const httpMiddlewareOptions: HttpMiddlewareOptions = {
   host: URL_HTTP,
 };
 
-export default class ApiClient {
+export class ApiClient {
   private adminConnection: ByProjectKeyRequestBuilder;
 
   private anonymConnection: ByProjectKeyRequestBuilder | null = null;
@@ -41,11 +47,11 @@ export default class ApiClient {
 
   private scopes: string[];
 
-  constructor(projectKey: string, clientID: string, clientSecret: string, scopes: string) {
-    this.projectKey = projectKey;
-    this.clientID = clientID;
-    this.clientSecret = clientSecret;
-    this.scopes = scopes.split(',');
+  constructor() {
+    this.projectKey = PROJECT_KEY;
+    this.clientID = CLIENT_ID;
+    this.clientSecret = CLIENT_SECRET;
+    this.scopes = SCOPES.split(' ');
 
     if (USE_SAVE_TOKEN && getTokenCache(TokenType.AUTH).isExist()) {
       this.authConnection = this.createAuthConnectionWithRefreshToken();
@@ -73,6 +79,16 @@ export default class ApiClient {
       },
     };
     return authOptions;
+  }
+
+  private addExistTokenMiddleware(tokenType: TokenTypeType, client: ClientBuilder): void {
+    const { token } = getTokenCache(tokenType).get();
+    if (token) {
+      const optionsToken: ExistingTokenMiddlewareOptions = {
+        force: true,
+      };
+      client.withExistingTokenFlow(`Bearer ${token}`, optionsToken);
+    }
   }
 
   private addRefreshMiddleware(
@@ -104,9 +120,17 @@ export default class ApiClient {
     const defaultOptions = this.getDefaultOptions(TokenType.ANONYM);
     const client = this.getDefaultClient();
 
-    client.withAnonymousSessionFlow(defaultOptions);
+    const anonymOptions: AnonymousAuthMiddlewareOptions = {
+      ...defaultOptions,
+      credentials: {
+        ...defaultOptions.credentials,
+      },
+    };
+
+    client.withAnonymousSessionFlow(anonymOptions);
 
     this.addRefreshMiddleware(TokenType.ANONYM, client, defaultOptions);
+    this.addExistTokenMiddleware(TokenType.ANONYM, client);
 
     this.anonymConnection = this.getConnection(client.build());
     return this.anonymConnection;
@@ -118,6 +142,7 @@ export default class ApiClient {
       const client = this.getDefaultClient();
 
       this.addRefreshMiddleware(TokenType.AUTH, client, defaultOptions);
+      this.addExistTokenMiddleware(TokenType.AUTH, client);
 
       this.authConnection = this.getConnection(client.build());
     }
@@ -196,4 +221,12 @@ export default class ApiClient {
 
     return this.authConnection === null;
   }
+}
+
+const createClient = (): ApiClient => new ApiClient();
+
+const apiClient = createClient();
+
+export default function getApiClient(): ApiClient {
+  return apiClient;
 }

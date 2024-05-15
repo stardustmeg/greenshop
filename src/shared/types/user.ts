@@ -3,6 +3,13 @@ export interface UserCredentials {
   password: string;
 }
 
+export interface AuthCredentials extends UserCredentials {
+  anonymousCartId?: string;
+  anonymousCartSignInMode?: string;
+  anonymousId?: string;
+  updateProductData?: boolean;
+}
+
 export interface PersonalData {
   email: string;
   firstName: string;

@@ -11,12 +11,9 @@ import type {
   ProductVariant,
 } from '@commercetools/platform-sdk';
 
-import getStore from '@/shared/Store/Store.ts';
-import { setCategories } from '@/shared/Store/actions.ts';
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 import getSize from '@/shared/utils/size.ts';
 
-import getRoot, { type RootApi } from '../../sdk/root.ts';
 import {
   Attribute,
   type CategoriesProductCount,
@@ -37,12 +34,15 @@ import {
   isRangeFacetResult,
   isTermFacetResult,
 } from '../../types/validation.ts';
+import getProductApi, { type ProductApi } from '../ProductApi.ts';
 
 export class ProductModel {
-  private root: RootApi;
+  private categories: Category[] = [];
+
+  private root: ProductApi;
 
   constructor() {
-    this.root = getRoot();
+    this.root = getProductApi();
   }
 
   private adaptCategoryPagedQueryToClient(data: CategoryPagedQueryResponse): Category[] {
@@ -66,10 +66,9 @@ export class ProductModel {
   }
 
   private adaptCategoryReference(data: CategoryReference[]): Category[] {
-    const categoryList = getStore().getState().categories;
     const response: Category[] = [];
     data.forEach((category) => {
-      const categoryEl = categoryList.find((el) => el.id === category.id);
+      const categoryEl = this.categories.find((el) => el.id === category.id);
       if (categoryEl) {
         response.push(categoryEl);
       }
@@ -94,17 +93,6 @@ export class ProductModel {
       return this.adaptLocalizationValue(attribute.value);
     }
     return [];
-  }
-
-  private adaptLocalizationValue(data: LocalizedString | undefined): localization[] {
-    const result: localization[] = [];
-    Object.entries(data || {}).forEach(([language, value]) => {
-      result.push({
-        language,
-        value,
-      });
-    });
-    return result;
   }
 
   private adaptPrice(variant: ProductVariant): number {
@@ -171,6 +159,7 @@ export class ProductModel {
 
       product.variant.push({
         discount: this.adaptDiscount(variant) || 0,
+        id: variant.id,
         price: this.adaptPrice(variant) || 0,
         size,
       });
@@ -184,15 +173,13 @@ export class ProductModel {
     return product;
   }
 
-  private getCategoriesFromData(data: ClientResponse<CategoryPagedQueryResponse>): Category[] | null {
-    let category: Category[] | null = null;
+  private getCategoriesFromData(data: ClientResponse<CategoryPagedQueryResponse>): Category[] {
     if (isClientResponse(data)) {
       if (isCategoryPagedQueryResponse(data.body)) {
-        category = this.adaptCategoryPagedQueryToClient(data.body);
-        getStore().dispatch(setCategories(category));
+        this.categories = this.adaptCategoryPagedQueryToClient(data.body);
       }
     }
-    return category;
+    return this.categories;
   }
 
   private getCategoriesProductCountFromData(
@@ -206,10 +193,9 @@ export class ProductModel {
     ) {
       const categoriesFacet = data.body.facets['categories.id'];
       if (isTermFacetResult(categoriesFacet)) {
-        const categoryList = getStore().getState().categories;
         categoriesFacet.terms.forEach((term) => {
           if (isFacetTerm(term)) {
-            const currentCategory = categoryList.find((el) => el.id === term.term);
+            const currentCategory = this.categories.find((el) => el.id === term.term);
             if (currentCategory) {
               category.push({
                 category: currentCategory,
@@ -279,9 +265,23 @@ export class ProductModel {
     return category;
   }
 
+  public adaptLocalizationValue(data: LocalizedString | undefined): localization[] {
+    const result: localization[] = [];
+    Object.entries(data || {}).forEach(([language, value]) => {
+      result.push({
+        language,
+        value,
+      });
+    });
+    return result;
+  }
+
   public async getCategories(): Promise<Category[] | null> {
-    const data = await this.root.getCategories();
-    return this.getCategoriesFromData(data);
+    if (!this.categories.length) {
+      const data = await this.root.getCategories();
+      return this.getCategoriesFromData(data);
+    }
+    return this.categories;
   }
 
   public async getPriceRange(): Promise<PriceRange> {
@@ -294,12 +294,10 @@ export class ProductModel {
     const products = this.getProductsFromData(data);
     const sizeCount = this.getSizeProductCountFromData(data);
     const categoryCount = this.getCategoriesProductCountFromData(data);
-    if (products) {
-      // TBD Remove when possible to improve performance
-      // getStore().dispatch(setProducts(products));
-    }
+    const priceRange = this.getPriceRangeFromData(data);
     const result: ProductWithCount = {
       categoryCount,
+      priceRange,
       products,
       sizeCount,
     };
