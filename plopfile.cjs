@@ -10,17 +10,17 @@ module.exports = function (plop) {
       return [
         {
           path: `${upperCaseComponentName}/model/${upperCaseComponentName}Model.ts`,
-          templateFile: 'templates/NewComponent/model/TemplateModel.ts',
+          templateFile: 'src/templates/NewComponent/model/TemplateModel.ts',
           type: 'add',
         },
         {
           path: `${upperCaseComponentName}/view/${upperCaseComponentName}View.ts`,
-          templateFile: 'templates/NewComponent/view/TemplateView.ts',
+          templateFile: 'src/templates/NewComponent/view/TemplateView.ts',
           type: 'add',
         },
         {
           path: `${upperCaseComponentName}/view/${lowerCaseComponentName}View.module.scss`,
-          templateFile: 'templates/NewComponent/view/templateView.module.scss',
+          templateFile: 'src/templates/NewComponent/view/templateView.module.scss',
           type: 'add',
         },
       ];
