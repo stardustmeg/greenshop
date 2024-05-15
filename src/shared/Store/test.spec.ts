@@ -1,4 +1,3 @@
-import type { Category, Product } from '../types/product.ts';
 import type { SelectedFilters } from '../types/productFilters.ts';
 import type { User } from '../types/user.ts';
 import type { State } from './reducer.ts';
@@ -43,28 +42,6 @@ it('should check if setBillingCountry is a function', () => {
   expect(actions.setBillingCountry).toBeInstanceOf(Function);
 });
 
-it('should check if setCategories is a function', () => {
-  expect(actions.setCategories).toBeInstanceOf(Function);
-});
-
-it('should check if setProducts is a function', () => {
-  expect(actions.setProducts).toBeInstanceOf(Function);
-});
-
-it('setCategories should create a correct action', () => {
-  const value: Category[] = [];
-  const action = actions.setCategories(value);
-  expect(action.type).toBe('setCategories');
-  expect(action.payload).toBe(value);
-});
-
-it('setProducts should create a correct action', () => {
-  const value: Product[] = [];
-  const action = actions.setProducts(value);
-  expect(action.type).toBe('setProducts');
-  expect(action.payload).toBe(value);
-});
-
 it('setCurrentUser should create a correct action', () => {
   const value: User | null = null;
   const action = actions.setCurrentUser(value);
@@ -91,14 +68,14 @@ vi.mock('./Store.ts', async (importOriginal) => {
   return {
     ...actual,
     getState: (): State => ({
+      anonymousCartId: null,
+      anonymousId: null,
       billingCountry: '',
-      categories: [],
       currentLanguage: 'en',
       currentPage: '/',
       currentUser: null,
       isAppThemeLight: true,
       isUserLoggedIn: false,
-      products: [],
       selectedFilters: null,
       selectedSorting: null,
       shippingCountry: '',
@@ -202,14 +179,14 @@ it('observeStore should call select and onChange when state changes', () => {
   };
 
   const mockState: State = {
+    anonymousCartId: null,
+    anonymousId: null,
     billingCountry: '',
-    categories: [],
     currentLanguage: 'en',
     currentPage: 'main',
     currentUser: mockUser,
     isAppThemeLight: true,
     isUserLoggedIn: false,
-    products: [],
     selectedFilters: null,
     selectedSorting: null,
     shippingCountry: '',
@@ -275,14 +252,14 @@ describe('rootReducer', () => {
 
   beforeEach(() => {
     initialState = {
+      anonymousCartId: null,
+      anonymousId: null,
       billingCountry: '',
-      categories: [],
       currentLanguage: 'en',
       currentPage: '/',
       currentUser: null,
       isAppThemeLight: true,
       isUserLoggedIn: false,
-      products: [],
       selectedFilters: null,
       selectedSorting: null,
       shippingCountry: '',
@@ -320,20 +297,6 @@ describe('rootReducer', () => {
     const action = actions.setBillingCountry(country);
     const newState = rootReducer(initialState, action);
     expect(newState.billingCountry).toEqual(country);
-  });
-
-  it('should handle setCategories action', () => {
-    const categories: Category[] = [];
-    const action = actions.setCategories(categories);
-    const newState = rootReducer(initialState, action);
-    expect(newState.categories).toEqual(categories);
-  });
-
-  it('should handle setProducts action', () => {
-    const products: Product[] = [];
-    const action = actions.setProducts(products);
-    const newState = rootReducer(initialState, action);
-    expect(newState.products).toEqual(products);
   });
 
   it('should handle setCurrentLanguage action', () => {

@@ -20,6 +20,7 @@ export type SizeType = (typeof SIZE)[keyof typeof SIZE];
 
 export interface Variant {
   discount: number;
+  id: number;
   price: number;
   size: SizeType | null;
 }

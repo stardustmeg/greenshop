@@ -1,17 +1,16 @@
 import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
-import type { Category, Product } from '../types/product';
 import type { SelectedFilters } from '../types/productFilters';
 import type { SelectedSorting } from '../types/productSorting.ts';
 import type { User } from '../types/user';
 
 const ACTION = {
+  SET_ANONYMOUS_CART_ID: 'setAnonymousCartId',
+  SET_ANONYMOUS_ID: 'setAnonymousId',
   SET_BILLING_COUNTRY: 'setBillingCountry',
-  SET_CATEGORIES: 'setCategories',
   SET_CURRENT_LANGUAGE: 'setCurrentLanguage',
   SET_CURRENT_PAGE: 'setCurrentPage',
   SET_CURRENT_USER: 'setCurrentUser',
-  SET_PRODUCTS: 'setProducts',
   SET_SELECTED_FILTERS: 'setSelectedFilters',
   SET_SELECTED_SORTING: 'setSelectedSorting',
   SET_SHIPPING_COUNTRY: 'setShippingCountry',
@@ -30,14 +29,18 @@ interface ActionWithoutPayload<U extends ActionType> {
   type: U;
 }
 
-export const setCategories = (value: Category[]): ActionWithPayload<Category[], typeof ACTION.SET_CATEGORIES> => ({
+export const setAnonymousCartId = (
+  value: null | string,
+): ActionWithPayload<null | string, typeof ACTION.SET_ANONYMOUS_CART_ID> => ({
   payload: value,
-  type: ACTION.SET_CATEGORIES,
+  type: ACTION.SET_ANONYMOUS_CART_ID,
 });
 
-export const setProducts = (value: Product[]): ActionWithPayload<Product[], typeof ACTION.SET_PRODUCTS> => ({
+export const setAnonymousId = (
+  value: null | string,
+): ActionWithPayload<null | string, typeof ACTION.SET_ANONYMOUS_ID> => ({
   payload: value,
-  type: ACTION.SET_PRODUCTS,
+  type: ACTION.SET_ANONYMOUS_ID,
 });
 
 export const setCurrentUser = (value: User | null): ActionWithPayload<User | null, typeof ACTION.SET_CURRENT_USER> => ({

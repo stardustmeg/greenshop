@@ -1,21 +1,21 @@
 .blog {
-  padding: 0 var(--small-offset);
   flex-grow: 1;
+  padding: 0 var(--small-offset);
 }
 
 .pageTitle {
-  font: var(--extra-regular-font);
-  color: var(--black);
-  letter-spacing: 1px;
-  max-width: 25rem;
   margin: var(--extra-small-offset);
+  max-width: 25rem;
+  font: var(--extra-regular-font);
+  letter-spacing: 1px;
+  color: var(--black);
 }
 
 .postList {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--extra-small-offset);
   margin: 0 auto;
+  gap: var(--extra-small-offset);
 
   @media (max-width: 768px) {
     display: flex;
@@ -24,32 +24,33 @@
 }
 
 .wrap {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 0.5rem;
-  padding: var(--medium-offset);
   margin: 0;
   margin-bottom: var(--extra-small-offset);
-  background-color: rgba($color: #46a358, $alpha: 0.1);
-  position: relative;
+  padding: var(--medium-offset);
+  background-color: rgba($color: #46a358, $alpha: 10%);
+  gap: 0.5rem;
 }
 
 .pageDescription {
-  font: var(--regular-font);
-  color: var(--noble-gray-700);
-  letter-spacing: 1px;
   margin: 0 var(--extra-small-offset);
   max-width: 25rem;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--noble-gray-700);
 }
 
 .blogLogo {
   position: absolute;
+  right: 0;
+  top: 0;
   z-index: 0;
   height: 100%;
   max-width: 100%;
-  top: 0;
-  right: 0;
+
   @media (max-width: 768px) {
     display: none;
   }
