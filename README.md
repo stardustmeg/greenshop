@@ -66,6 +66,7 @@ _you can run the following scripts in the project directory:_
 - `npm run test`: Runs tests using Vitest.
 - `npm run test-ui`: Runs tests in the browser using Vitest.
 - `npm run coverage`: Runs tests and generates a code coverage report using Vitest.
+- `npm run generate`: Generates a new component using Plop.
 
 ## Contact us 📩
 
