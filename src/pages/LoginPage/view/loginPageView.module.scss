@@ -21,10 +21,10 @@
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(4, max-content);
   margin: 0 auto;
-  border-bottom: 10px solid var(--steam-green-800);
+  border-bottom: calc(var(--extra-small-offset) / 2) solid var(--steam-green-800);
   border-radius: var(--medium-br);
-  padding: calc(var(--extra-large-offset) / 2) var(--extra-large-offset);
-  max-width: 500px;
+  padding: calc(var(--extra-large-offset) / 2) var(--extra-large-offset); // 10px
+  max-width: calc(var(--extra-large-offset) * 5); // 500px
   background-color: var(--white);
 }
 
@@ -42,8 +42,8 @@
 
 .designElement {
   margin: 0 var(--extra-small-offset);
-  width: 3px;
-  height: 16px;
+  width: calc(var(--one) * 3);
+  height: 1rem;
   background-color: var(--noble-gray-800);
 }
 
@@ -68,7 +68,7 @@
     left: 0;
     bottom: -4px;
     width: 100%;
-    height: 2px;
+    height: var(--two);
     background-color: currentcolor;
     opacity: 0;
     transform: scaleX(0);

@@ -15,23 +15,18 @@
   align-items: center;
   margin: 0 auto;
   padding: 0 var(--small-offset);
-  max-width: 1440px;
-
-  @media (max-width: 576px) {
-    padding: 0 var(--extra-small-offset);
-  }
 }
 
 .navigationWrapper {
   position: fixed;
   right: -100%;
-  top: 69px;
+  top: calc(var(--tiny-offset) * 6.9); // 69px
   z-index: 12;
   display: flex;
   flex-direction: column;
   align-items: center;
   order: 3;
-  padding: 70px var(--extra-small-offset) 0;
+  padding: calc(var(--extra-small-offset) * 3.5) var(--extra-small-offset) 0; // 70px
   width: 20%;
   height: 100dvh;
   background-color: var(--noble-gray-1000);
@@ -47,12 +42,12 @@
 
 .logo {
   order: 1;
-  width: 40px;
-  height: 40px;
+  width: var(--small-offset);
+  height: var(--small-offset);
 
   svg {
-    width: 40px;
-    height: 40px;
+    width: var(--small-offset);
+    height: var(--small-offset);
     fill: var(--steam-green-800);
     transition: fill 0.2s;
   }
@@ -62,16 +57,6 @@
       svg {
         fill: var(--steam-green-700);
       }
-    }
-  }
-
-  @media (max-width: 576px) {
-    width: 30px;
-    height: 30px;
-
-    svg {
-      width: 30px;
-      height: 30px;
     }
   }
 }
@@ -169,16 +154,16 @@
 
 .burgerButton {
   position: absolute;
-  right: 15px;
+  right: calc(var(--tiny-offset) * 1.5);
   z-index: 10;
   order: 4;
-  width: 25px;
-  height: 20px;
+  width: calc(var(--tiny-offset) * 2.5);
+  height: var(--extra-small-offset);
 }
 
 .burgerLine {
   position: absolute;
-  border-radius: 2px;
+  border-radius: var(--two);
   background-color: var(--steam-green-800);
   transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
   pointer-events: none;
@@ -196,20 +181,20 @@
   left: 0;
   display: block;
   width: 100%;
-  height: 2px;
+  height: var(--two); // 2px
   transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
 }
 
 .burgerButton:not(.open):hover .burgerLine:nth-child(1) {
-  top: -2px;
+  top: -var(--two); // -2px
 }
 
 .burgerButton:not(.open):hover .burgerLine:nth-child(2) {
-  top: 9px;
+  top: calc(var(--tiny-offset) * 0.9); // 9px
 }
 
 .burgerButton:not(.open):hover .burgerLine:nth-child(3) {
-  bottom: -2px;
+  bottom: -var(--two); // -2px
 }
 
 .burgerButton > .burgerLine:nth-child(1),
@@ -219,7 +204,7 @@
   left: 0;
   display: block;
   width: 100%;
-  height: 2px;
+  height: var(--two);
 }
 
 .burgerButton > .burgerLine:nth-child(1) {
@@ -227,7 +212,7 @@
 }
 
 .burgerButton > .burgerLine:nth-child(2) {
-  top: 9px;
+  top: calc(var(--tiny-offset) * 0.9); // 9px
 }
 
 .burgerButton > .burgerLine:nth-child(3) {
@@ -246,25 +231,25 @@
 }
 
 .burgerButton.open .burgerLine:nth-child(1) {
-  left: 5px;
-  top: 12px;
-  width: 20px;
+  left: var(--five); // 5px
+  top: calc(var(--tiny-offset) * 1.5); // 15px
+  width: var(--extra-small-offset); // 20px
   transform: rotate(90deg);
   transition-delay: 150ms;
 }
 
 .burgerButton.open .burgerLine:nth-child(2) {
-  left: 3px;
-  top: 17px;
-  width: 15px;
+  left: calc(var(--one) * 3); // 3px
+  top: calc(var(--tiny-offset) * 1.7); // 17px
+  width: calc(var(--tiny-offset) * 1.5); // 15px
   transform: rotate(45deg);
   transition-delay: 50ms;
 }
 
 .burgerButton.open .burgerLine:nth-child(3) {
-  left: 13px;
-  top: 17px;
-  width: 14px;
+  left: calc(var(--tiny-offset) * 1.3); // 13px
+  top: calc(var(--tiny-offset) * 1.7); // 17px
+  width: calc(var(--tiny-offset) * 1.4); // 14px
   transform: rotate(-45deg);
   transition-delay: 100ms;
 }
@@ -297,12 +282,12 @@
 
     + .switchThemeLabelSpan::before {
       background-color: #a7e599;
-      transform: translate(calc(var(--small-offset) + var(--small-offset) + 4px), -50%);
+      transform: translate(calc(var(--small-offset) + var(--small-offset) + calc(var(--two) * 2)), -50%);
     }
 
     @media (max-width: 768px) {
       + .switchThemeLabelSpan::before {
-        transform: translate(calc(var(--small-offset) + var(--small-offset) - 4px), -50%);
+        transform: translate(calc(var(--small-offset) + var(--small-offset) - calc(var(--two) * 2)), -50%);
       }
     }
   }
@@ -327,7 +312,7 @@
     border-radius: var(--large-br);
     width: calc(var(--small-offset) / 1.5);
     height: calc(var(--small-offset) / 1.5);
-    box-shadow: 0 1px 5px #353535;
+    box-shadow: var(--mellow-shadow-600);
     background-color: #46a032;
     transform: translateY(-50%);
     transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
@@ -346,12 +331,12 @@
 }
 
 .darkSVG {
-  left: 5px;
+  left: var(--five);
   fill: var(--noble-gray-800);
 }
 
 .lightSVG {
-  right: 5px;
+  right: var(--five);
   fill: var(--white);
 }
 
@@ -385,12 +370,12 @@
 
     + .switchLanguageLabelSpan::before {
       background-color: #c4c4c4a8;
-      transform: translate(calc(var(--small-offset) + 3.5px), -50%);
+      transform: translate(calc(var(--small-offset) + calc(var(--one) * 3.5)), -50%);
     }
 
     @media (max-width: 768px) {
       + .switchLanguageLabelSpan::before {
-        transform: translate(calc(var(--small-offset) - 3.5px), -50%);
+        transform: translate(calc(var(--small-offset) - calc(var(--one) * 3.5)), -50%);
       }
     }
   }
@@ -408,7 +393,7 @@
   &::before {
     content: '';
     position: absolute;
-    left: 5px;
+    left: calc(var(--one) * 5);
     top: 50%;
     bottom: 0;
     z-index: 2;
@@ -435,12 +420,12 @@
 }
 
 .enSVG {
-  left: 5px;
-  fill: var(--noble-gray-800);
+  left: calc(var(--one) * 5); // 5px
+  fill: var(--noble-gray-800); // 5px
 }
 
 .ruSVG {
-  right: 5px;
+  right: calc(var(--one) * 5);
   fill: var(--white);
 }
 

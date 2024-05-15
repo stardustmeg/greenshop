@@ -1,5 +1,5 @@
 .defaultFilters {
-  outline: 2px solid var(--noble-white-200);
+  outline: var(--two) solid var(--noble-white-200);
   border-radius: var(--medium-br);
   padding-bottom: var(--extra-small-offset);
   height: max-content;
@@ -31,7 +31,7 @@
     left: 0;
     bottom: -1px;
     width: 100%;
-    height: 2px;
+    height: var(--two);
     background-color: currentcolor;
     opacity: 0;
     transform: scaleX(0);
@@ -138,12 +138,12 @@
 }
 
 .priceInput {
-  border: 2px solid var(--noble-gray-800);
+  border: var(--two) solid var(--noble-gray-800);
   border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 2);
   width: 85%;
   height: var(--extra-small-offset);
-  max-width: 150px;
+  max-width: calc(var(--extra-large-offset) * 1.5); // 150px
   font: var(--regular-font);
   letter-spacing: 1px;
   color: var(--steam-green-800);

@@ -1,17 +1,18 @@
 .catalog {
   position: relative;
   display: flex;
+  justify-content: center;
   gap: var(--small-offset);
 }
 
 .leftWrapper {
-  width: 30%;
+  width: 20%;
 }
 
 .rightWrapper {
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 60%;
 }
 
 .rightTopWrapper {
@@ -36,7 +37,7 @@
   order: 2;
   grid-template-columns: repeat(3, auto);
   height: max-content;
-  min-height: 500px;
+  min-height: calc(var(--extra-large-offset) * 5); // 500px
   font-size: var(--regular-font);
   letter-spacing: 1px;
   text-align: center;
@@ -58,7 +59,7 @@
     height: 100%;
     background: url('../../../shared/img/png/notFound.png');
     background-position: center 100px;
-    background-size: 400px;
+    background-size: calc(var(--extra-large-offset) * 4); // 400px
     background-repeat: no-repeat;
   }
 }

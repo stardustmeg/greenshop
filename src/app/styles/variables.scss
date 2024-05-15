@@ -1,15 +1,24 @@
 :root {
+  // body wrapper
+  --wrapper-width: calc(var(--large-offset) * 18);
+
+  // small vars
+  --one: 0.0625rem; // 1px
+  --two: 0.125rem; // 2px
+  --five: 0.3125rem; // 5px
+
   // offsets
-  --extra-small-offset: 20px;
-  --small-offset: 40px;
-  --medium-offset: 60px;
-  --large-offset: 80px;
-  --extra-large-offset: 100px;
+  --tiny-offset: calc(var(--extra-small-offset) / 2); // 10px
+  --extra-small-offset: 1.25rem; // 20px
+  --small-offset: 2.5rem; // 40px
+  --medium-offset: 3.75rem; // 60px
+  --large-offset: 5rem; // 80px
+  --extra-large-offset: 6.25rem; // 100px
 
   // border-radius
-  --small-br: 5px;
-  --medium-br: 10px;
-  --large-br: 20px;
+  --large-br: var(--extra-small-offset); // 20px
+  --medium-br: calc(var(--large-br) / 2); // 10px
+  --small-br: calc(var(--large-br) / 4); // 5px
 
   // shadows
   --mellow-shadow-100: rgb(0 0 0 / 19%) 0 10px 20px, rgb(0 0 0 / 23%) 0 6px 6px;
@@ -18,17 +27,20 @@
   --mellow-shadow-300: rgb(0 0 0 / 25%) 0 14px 28px, rgb(0 0 0 / 22%) 0 10px 10px;
   --mellow-shadow-400: rgb(0 0 0 / 9%) 0 2px 1px, rgb(0 0 0 / 9%) 0 4px 2px, rgb(0 0 0 / 9%) 0 8px 4px,
     rgb(0 0 0 / 9%) 0 16px 8px, rgb(0 0 0 / 9%) 0 32px 16px;
+  --mellow-shadow-500: 0 0 10px 0 rgb(0 0 0 / 10%);
+  --mellow-shadow-600: 0 1px 5px #353535;
 
   // fonts
-  --regular-font: 400 13px 'Cerapro', sans-serif;
-  --extra-regular-font: 400 24px 'Cerapro', sans-serif;
-  --medium-font: 500 20px 'Cerapro', sans-serif;
-  --extra-medium-font: 500 30px 'Cerapro', sans-serif;
-  --bold-font: 700 16px 'Cerapro', sans-serif;
-  --extra-bold-font: 700 35px 'Cerapro', sans-serif;
-  --black-font: 900 35px 'Cerapro', sans-serif;
-  --extra-black-font: 900 40px 'Cerapro', sans-serif;
+  --regular-font: 400 0.8125rem 'Cerapro', sans-serif; // 13px
+  --extra-regular-font: 400 1.5rem 'Cerapro', sans-serif; // 24px
+  --medium-font: 500 1.25rem 'Cerapro', sans-serif; // 20px
+  --extra-medium-font: 500 1.875rem 'Cerapro', sans-serif; // 30px
+  --bold-font: 700 1rem 'Cerapro', sans-serif; // 16px
+  --extra-bold-font: 700 2.1875rem 'Cerapro', sans-serif; // 35px
+  --black-font: 900 2.1875rem 'Cerapro', sans-serif; // 35px
+  --extra-black-font: 900 2.5rem 'Cerapro', sans-serif; // 40px
 
+  // 1440px
   body.light {
     // colors
     --white: #fff;
@@ -76,17 +88,5 @@
     --steam-green-700: #70d27a;
     --steam-green-800: #46a358;
     --steam-green-gr-800: #c5e1cb2b;
-  }
-
-  @media (max-width: 768px) {
-    --extra-small-offset: 10px;
-    --small-offset: 20px;
-    --medium-offset: 30px;
-    --large-offset: 40px;
-    --extra-large-offset: 50px;
-    --small-br: 5px;
-    --medium-br: 5px;
-    --large-br: 10px;
-    --regular-font: 400 10px 'Cerapro', sans-serif;
   }
 }

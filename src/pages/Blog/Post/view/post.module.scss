@@ -2,7 +2,7 @@
   background-color: var(--white);
 
   &:hover {
-    box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
+    box-shadow: var(--mellow-shadow-500);
 
     .reed {
       color: var(--steam-green-800);
