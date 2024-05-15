@@ -33,11 +33,11 @@ export function observeSetInStore<T>(select: (state: State) => T, onChange: (sel
   return unsubscribe;
 }
 
-function isSet<T>(value: unknown): value is Set<T> {
+export function isSet<T>(value: unknown): value is Set<T> {
   return value instanceof Set;
 }
 
-function setsHaveEqualContent<T>(setA: Set<T>, setB: Set<T>): boolean {
+export function setsHaveEqualContent<T>(setA: Set<T>, setB: Set<T>): boolean {
   if (setA.size !== setB.size) {
     return false;
   }
