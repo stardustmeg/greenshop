@@ -15,6 +15,7 @@ module.exports = {
     'plugin:perfectionist/recommended-natural',
     'prettier',
   ],
+
   overrides: [
     {
       extends: ['plugin:@typescript-eslint/disable-type-checked'],
