@@ -13,7 +13,7 @@ class InputView {
     this.input = createBaseElement({
       attributes: {
         autocomplete: attrs.autocomplete,
-        id: attrs.id,
+        id: attrs.id || '',
         lang: attrs.lang || '',
         max: String(attrs.max || 0),
         min: String(attrs.min || 0),
@@ -24,8 +24,15 @@ class InputView {
       },
       tag: 'input',
     });
+    this.setDataAttributes(attrs.data ?? {});
 
     return this.input;
+  }
+
+  private setDataAttributes(dataAttributes: Record<string, string>): void {
+    Object.entries(dataAttributes).forEach(([key, value]) => {
+      this.input.setAttribute(`data-${key}`, value);
+    });
   }
 
   public getHTML(): HTMLInputElement {

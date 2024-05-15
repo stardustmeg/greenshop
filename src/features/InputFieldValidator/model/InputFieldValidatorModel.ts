@@ -1,13 +1,16 @@
-import type { InputFieldValidatorParams } from '@/shared/types/form';
+import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types/form';
 
 import * as Validator from '../validators/validators.ts';
 
 class InputFieldValidatorModel {
+  private inputFieldParams: InputFieldParams;
+
   private isValid = false;
 
   private validParams;
 
-  constructor(validParams: InputFieldValidatorParams) {
+  constructor(inputFieldParams: InputFieldParams, validParams: InputFieldValidatorParams) {
+    this.inputFieldParams = inputFieldParams;
     this.validParams = validParams;
   }
 
@@ -24,7 +27,7 @@ class InputFieldValidatorModel {
       Validator.checkMinAge(value, this.validParams),
       Validator.checkMaxAge(value, this.validParams),
       Validator.checkValidCountry(value, this.validParams),
-      Validator.checkValidPostalCode(value, this.validParams),
+      Validator.checkValidPostalCode(value, this.validParams, this.inputFieldParams),
     ];
 
     const errorMessages: string[] = [];

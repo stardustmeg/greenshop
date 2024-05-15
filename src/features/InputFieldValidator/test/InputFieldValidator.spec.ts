@@ -1,9 +1,8 @@
-import type { InputFieldValidatorParams } from '@/shared/types/form';
+import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types/form';
 
 import InputFieldValidatorModel from '../model/InputFieldValidatorModel.ts';
 
 const validatorParams: InputFieldValidatorParams = {
-  key: '',
   maxLength: 10,
   minLength: 2,
   notSpecialSymbols: {
@@ -22,7 +21,24 @@ const validatorParams: InputFieldValidatorParams = {
   },
 };
 
-const validator = new InputFieldValidatorModel(validatorParams);
+const fieldParams: InputFieldParams = {
+  inputParams: {
+    autocomplete: 'off',
+    data: {
+      addressType: 'shippingAddress',
+    },
+    placeholder: 'Canada',
+    type: 'text',
+  },
+  labelParams: {
+    text: {
+      en: 'Country',
+      ru: 'Страна',
+    },
+  },
+};
+
+const validator = new InputFieldValidatorModel(fieldParams, validatorParams);
 
 describe('Checking InputFieldValidatorModel', () => {
   it('InputFieldValidatorModel instance should be defined', () => {

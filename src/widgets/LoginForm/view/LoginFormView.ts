@@ -3,8 +3,8 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
-import * as FORM_INPUTS from '@/shared/constants/forms/login/fieldParams.ts';
-import * as FORM_VALIDATION from '@/shared/constants/forms/login/validationParams.ts';
+import * as FORM_INPUTS from '@/shared/constants/forms/fieldParams.ts';
+import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
@@ -34,7 +34,7 @@ class LoginFormView {
   }
 
   private createEmailField(): InputFieldModel {
-    this.emailField = new InputFieldModel(FORM_INPUTS.EMAIL_FIELD, FORM_VALIDATION.EMAIL_FIELD_VALIDATE);
+    this.emailField = new InputFieldModel(FORM_INPUTS.EMAIL, FORM_VALIDATION.EMAIL_VALIDATE);
     this.inputFields.push(this.emailField);
     return this.emailField;
   }
@@ -50,6 +50,7 @@ class LoginFormView {
 
       if (inputFieldElement instanceof HTMLLabelElement) {
         this.form.append(inputFieldElement);
+        inputFieldElement.classList.add(styles.label);
       } else {
         this.form.append(inputFieldElement.getHTML());
       }
@@ -60,7 +61,7 @@ class LoginFormView {
   }
 
   private createPasswordField(): InputFieldModel {
-    this.passwordField = new InputFieldModel(FORM_INPUTS.PASSWORD_FIELD, FORM_VALIDATION.PASSWORD_FIELD_VALIDATE);
+    this.passwordField = new InputFieldModel(FORM_INPUTS.PASSWORD, FORM_VALIDATION.PASSWORD_VALIDATE);
     this.inputFields.push(this.passwordField);
     const inputElement = this.passwordField.getView().getHTML();
     if (inputElement instanceof HTMLLabelElement) {

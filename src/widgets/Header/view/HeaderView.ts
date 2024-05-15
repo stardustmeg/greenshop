@@ -9,7 +9,6 @@ import observeStore, { selectCurrentPage, selectIsUserLoggedIn } from '@/shared/
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
-import { EMAIL_FIELD } from '@/shared/constants/forms/login/fieldParams.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import APP_THEME from '@/shared/constants/styles.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
@@ -155,7 +154,7 @@ class HeaderView {
 
   private createSwitchLanguageCheckbox(): InputModel {
     this.switchLanguageCheckbox = new InputModel({
-      autocomplete: EMAIL_FIELD.inputParams.autocomplete,
+      autocomplete: AUTOCOMPLETE_OPTION.OFF,
       id: styles.switchLanguageLabel,
       placeholder: '',
       type: INPUT_TYPE.CHECK_BOX,
