@@ -4,9 +4,6 @@
   "version": "1.0.0",
   "description": "The Best eCommerce Application",
   "type": "module",
-  "eslintIgnore": [
-    "src/templates"
-  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
