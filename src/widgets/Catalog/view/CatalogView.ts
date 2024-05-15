@@ -12,11 +12,17 @@ class CatalogView {
 
   private leftWrapper: HTMLDivElement;
 
+  private rightBottomWrapper: HTMLDivElement;
+
+  private rightTopWrapper: HTMLDivElement;
+
   private rightWrapper: HTMLDivElement;
 
   constructor() {
     this.itemsList = this.createItemsList();
     this.leftWrapper = this.createLeftWrapper();
+    this.rightTopWrapper = this.createRightTopWrapper();
+    this.rightBottomWrapper = this.createRightBottomWrapper();
     this.rightWrapper = this.createRightWrapper();
     this.catalog = this.createHTML();
   }
@@ -52,13 +58,33 @@ class CatalogView {
     return this.leftWrapper;
   }
 
+  private createRightBottomWrapper(): HTMLDivElement {
+    this.rightBottomWrapper = createBaseElement({
+      cssClasses: [styles.rightBottomWrapper],
+      tag: 'div',
+    });
+
+    this.rightBottomWrapper.append(this.itemsList);
+
+    return this.rightBottomWrapper;
+  }
+
+  private createRightTopWrapper(): HTMLDivElement {
+    this.rightTopWrapper = createBaseElement({
+      cssClasses: [styles.rightTopWrapper],
+      tag: 'div',
+    });
+
+    return this.rightTopWrapper;
+  }
+
   private createRightWrapper(): HTMLDivElement {
     this.rightWrapper = createBaseElement({
       cssClasses: [styles.rightWrapper],
       tag: 'div',
     });
 
-    this.rightWrapper.append(this.itemsList);
+    this.rightWrapper.append(this.rightTopWrapper, this.rightBottomWrapper);
 
     return this.rightWrapper;
   }
@@ -73,6 +99,14 @@ class CatalogView {
 
   public getLeftWrapper(): HTMLDivElement {
     return this.leftWrapper;
+  }
+
+  public getRightBottomWrapper(): HTMLDivElement {
+    return this.rightBottomWrapper;
+  }
+
+  public getRightTopWrapper(): HTMLDivElement {
+    return this.rightTopWrapper;
   }
 
   public getRightWrapper(): HTMLDivElement {

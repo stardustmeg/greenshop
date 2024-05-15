@@ -17,6 +17,10 @@ const initialState: State = {
     price: null,
     size: null,
   },
+  selectedSorting: {
+    direction: 'asc',
+    field: 'price',
+  },
   shippingCountry: '',
 };
 

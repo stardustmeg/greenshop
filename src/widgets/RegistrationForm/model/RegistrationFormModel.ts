@@ -94,6 +94,7 @@ class RegisterFormModel {
       .then((newUserData) => {
         if (newUserData) {
           getStore().dispatch(setCurrentUser(newUserData));
+          getStore().dispatch(switchIsUserLoggedIn(false));
           getStore().dispatch(switchIsUserLoggedIn(true));
           serverMessageModel.showServerMessage(
             SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_REGISTRATION,
