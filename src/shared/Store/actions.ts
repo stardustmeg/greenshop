@@ -1,4 +1,4 @@
-import type { LanguageChoiceType } from '../constants/buttons.ts';
+import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
 import type { Category, Product } from '../types/product';
 import type { SelectedFilters } from '../types/productFilters';

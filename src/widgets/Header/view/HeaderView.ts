@@ -1,13 +1,13 @@
-import type { LanguageChoiceType } from '@/shared/constants/buttons.ts';
+import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { switchAppTheme } from '@/shared/Store/actions.ts';
-import observeStore, { selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS, LANGUAGE_CHOICE } from '@/shared/constants/buttons.ts';
-import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
+import observeStore, { selectCurrentPage, selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
+import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import APP_THEME from '@/shared/constants/styles.ts';
@@ -268,7 +268,7 @@ class HeaderView {
       this.toProfileLink.getHTML().classList.add(styles.hidden);
     }
 
-    observeStore(selectCurrentUser, () =>
+    observeStore(selectIsUserLoggedIn, () =>
       this.toProfileLink.getHTML().classList.toggle(styles.hidden, getStore().getState().currentUser === null),
     );
 

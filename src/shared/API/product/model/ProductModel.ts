@@ -12,7 +12,7 @@ import type {
 } from '@commercetools/platform-sdk';
 
 import getStore from '@/shared/Store/Store.ts';
-import { setCategories, setProducts } from '@/shared/Store/actions.ts';
+import { setCategories } from '@/shared/Store/actions.ts';
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 import getSize from '@/shared/utils/size.ts';
 
@@ -295,7 +295,8 @@ export class ProductModel {
     const sizeCount = this.getSizeProductCountFromData(data);
     const categoryCount = this.getCategoriesProductCountFromData(data);
     if (products) {
-      getStore().dispatch(setProducts(products));
+      // TBD Remove when possible to improve performance
+      // getStore().dispatch(setProducts(products));
     }
     const result: ProductWithCount = {
       categoryCount,

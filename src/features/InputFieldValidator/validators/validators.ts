@@ -6,7 +6,7 @@ import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
 import { ERROR_MESSAGE } from '@/shared/constants/messages.ts';
 import { checkInputLanguage } from '@/shared/utils/getCountryIndex.ts';
-import { maxAgeMessage, maxLengthMessage, minAgeMessage, minLengthMessage } from '@/shared/utils/messageTemplate.ts';
+import { maxAgeMessage, maxLengthMessage, minAgeMessage, minLengthMessage } from '@/shared/utils/messageTemplates.ts';
 import { postcodeValidator } from 'postcode-validator';
 
 export const checkMaxLength = (value: string, validParams: InputFieldValidatorParams): boolean | string => {

@@ -1,12 +1,12 @@
-import type { MessageStatusType } from '@/shared/constants/messages.ts';
+import type { MessageStatusType, ServerMessageKeysType } from '@/shared/constants/messages.ts';
 
 import ServerMessageView from '../view/ServerMessageView.ts';
 
 class ServerMessageModel {
   private view: ServerMessageView = new ServerMessageView();
 
-  public showServerMessage(message: string, status: MessageStatusType): boolean {
-    return this.view.setServerMessage(message, status);
+  public showServerMessage(key: ServerMessageKeysType, status: MessageStatusType, message?: string): boolean {
+    return this.view.setServerMessage(key, status, message);
   }
 }
 

@@ -1,0 +1,69 @@
+.editInfoButton {
+  grid-column: 2 span;
+  grid-row: 5;
+  margin: 0 auto;
+  border-radius: var(--medium-br);
+  padding: calc(var(--small-offset) / 3) var(--small-offset);
+  height: max-content;
+  max-width: max-content;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--white);
+  background-color: var(--steam-green-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  &:focus {
+    background-color: var(--steam-green-700);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--steam-green-700);
+    }
+  }
+
+  &:disabled {
+    background-color: var(--noble-gray-300);
+    pointer-events: none;
+  }
+}
+
+.info {
+  grid-column: 2 span;
+  max-width: 100%;
+  word-break: break-all;
+
+  @media (max-width: 810px) {
+    font: var(--medium-font);
+  }
+
+  @media (max-width: 500px) {
+    font: var(--regular-font);
+  }
+}
+
+.userInfoWrapper {
+  position: relative;
+  display: grid;
+  align-items: center;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, auto);
+  margin: 0 var(--small-offset);
+  padding: var(--small-offset);
+  min-width: 40%;
+  max-width: fit-content;
+  box-shadow: var(--mellow-shadow-100);
+  font: var(--extra-regular-font);
+  letter-spacing: 1px;
+  color: var(--noble-gray-900);
+  background-color: var(--noble-gray-tr-800);
+  gap: var(--small-offset);
+}
+
+.hidden {
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+}

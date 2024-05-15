@@ -12,6 +12,11 @@ declare module '*.svg' {
   export default content;
 }
 
+declare module '*.png' {
+  const content: string;
+  export default content;
+}
+
 interface ImportMeta {
   env: {
     [key: string]: boolean | string | undefined;
