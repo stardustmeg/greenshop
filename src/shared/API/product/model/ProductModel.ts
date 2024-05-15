@@ -173,7 +173,7 @@ export class ProductModel {
     return product;
   }
 
-  private getCategoriesFromData(data: ClientResponse<CategoryPagedQueryResponse>): Category[] | null {
+  private getCategoriesFromData(data: ClientResponse<CategoryPagedQueryResponse>): Category[] {
     if (isClientResponse(data)) {
       if (isCategoryPagedQueryResponse(data.body)) {
         this.categories = this.adaptCategoryPagedQueryToClient(data.body);
@@ -277,8 +277,11 @@ export class ProductModel {
   }
 
   public async getCategories(): Promise<Category[] | null> {
-    const data = await this.root.getCategories();
-    return this.getCategoriesFromData(data);
+    if (!this.categories.length) {
+      const data = await this.root.getCategories();
+      return this.getCategoriesFromData(data);
+    }
+    return this.categories;
   }
 
   public async getPriceRange(): Promise<PriceRange> {
