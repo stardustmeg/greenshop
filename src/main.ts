@@ -3,25 +3,28 @@ import '@/styles.scss';
 
 // import type {
 // AddCartItem,
-// DeleteCartItem
-// } from './shared/types/product.ts';
+// } from './shared/types/cart.ts';
 
 // import getCustomerModel from './shared/API/customer/model/CustomerModel.ts';
 // import getCartModel from './shared/API/cart/model/CartModel.ts';
+// import getStore from './shared/Store/Store.ts';
 
 const myApp = new AppModel();
 myApp.start();
 
+// console.log('start', getStore().getState().anonymousCartId);
+
 // const cart = await getCartModel().getCart();
 // console.log(cart);
+
+// console.log('after', getStore().getState().anonymousCartId);
 // const addItem: AddCartItem = {
-//   cart,
-//   productId: '80430fed-35ff-4d11-9b90-86796dd6c8ec',
-//   quantity: 1,
+//   productId: 'f947dfa9-9485-46ff-9957-0a0a156840dd',
+//   quantity: 15,
 //   variantId: 1,
 // }
 
-// await getCartModel().addProductToCart(addItem);
+// console.log(await getCartModel().addProductToCart(addItem));
 
 // const delItem: DeleteCartItem = {
 //   cart,

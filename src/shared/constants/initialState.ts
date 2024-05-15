@@ -3,6 +3,8 @@ import type { State } from '../Store/reducer';
 import { PAGE_ID } from './pages.ts';
 
 const initialState: State = {
+  anonymousCartId: null,
+  anonymousId: null,
   billingCountry: '',
   currentLanguage: 'en',
   currentPage: PAGE_ID.DEFAULT_PAGE,

@@ -1,4 +1,4 @@
-import type { User, UserCredentials } from '@/shared/types/user.ts';
+import type { AuthCredentials, User, UserCredentials } from '@/shared/types/user.ts';
 import type {
   ClientResponse,
   Customer,
@@ -8,8 +8,11 @@ import type {
   MyCustomerUpdateAction,
 } from '@commercetools/platform-sdk';
 
+import getStore from '@/shared/Store/Store.ts';
+import { setAnonymousCartId, setAnonymousId } from '@/shared/Store/actions.ts';
 import findAddressIndex from '@/shared/utils/address.ts';
 
+import getCartModel from '../cart/model/CartModel.ts';
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
 import { isErrorResponse } from '../types/validation.ts';
 
@@ -18,6 +21,36 @@ export class CustomerApi {
 
   constructor() {
     this.client = getApiClient();
+  }
+
+  private cerateAuthData(userLoginData: UserCredentials): UserCredentials {
+    const authData: AuthCredentials = {
+      email: userLoginData.email,
+      password: userLoginData.password,
+    };
+    const { anonymousCartId, anonymousId } = getStore().getState();
+
+    if (anonymousCartId && anonymousId) {
+      authData.anonymousCartId = anonymousCartId;
+      authData.anonymousId = anonymousId;
+      authData.anonymousCartSignInMode = 'MergeWithExistingCustomerCart';
+      authData.updateProductData = true;
+    }
+    return authData;
+  }
+
+  private checkAuthConnection(authData: UserCredentials): boolean {
+    let isOk = false;
+    const client = this.client.createAuthConnection(authData);
+    const testConnect = client.get().execute();
+    if (!isErrorResponse(testConnect)) {
+      this.client.approveAuth();
+      getCartModel().clear();
+      getStore().dispatch(setAnonymousCartId(null));
+      getStore().dispatch(setAnonymousId(null));
+      isOk = true;
+    }
+    return isOk;
   }
 
   private makeCustomerDraft(userData: User): MyCustomerDraft {
@@ -42,10 +75,10 @@ export class CustomerApi {
   }
 
   public async authenticateUser(userLoginData: UserCredentials): Promise<ClientResponse<CustomerSignInResult>> {
-    const client = this.client.createAuthConnection(userLoginData);
-    const data = await client.me().login().post({ body: userLoginData }).execute();
+    const authData = this.cerateAuthData(userLoginData);
+    const data = await this.client.apiRoot().me().login().post({ body: authData }).execute();
     if (!isErrorResponse(data)) {
-      this.client.approveAuth();
+      this.checkAuthConnection(authData);
     }
     return data;
   }
@@ -85,24 +118,27 @@ export class CustomerApi {
   }
 
   public logoutUser(): boolean {
-    return this.client.deleteAuthConnection();
+    const client = this.client.deleteAuthConnection();
+    const testConnect = this.client.apiRoot().get().execute();
+    return client && !isErrorResponse(testConnect);
   }
 
   public async registrationUser(userData: User): Promise<ClientResponse<CustomerSignInResult>> {
-    let data = await this.client
+    const data = await this.client
       .apiRoot()
       .me()
       .signup()
       .post({ body: this.makeCustomerDraft(userData) })
       .execute();
     if (!isErrorResponse(data)) {
-      this.client.createAuthConnection(userData);
-      this.client.approveAuth();
-      // TBD: dele auth
-      const auth = await this.authenticateUser(userData);
-      if (!isErrorResponse(auth)) {
-        data = auth;
-      }
+      this.checkAuthConnection(userData);
+      // this.client.createAuthConnection(userData);
+      // this.client.approveAuth();
+      // // TBD: dele auth
+      // const auth = await this.authenticateUser(userData);
+      // if (!isErrorResponse(auth)) {
+      //   data = auth;
+      // }
     }
     return data;
   }

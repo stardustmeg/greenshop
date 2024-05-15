@@ -1,5 +1,4 @@
-import type { AddCartItem, CartProduct, DeleteCartItem } from '@/shared/types/product.ts';
-import type { Cart } from '@/shared/types/user.ts';
+import type { AddCartItem, Cart, CartProduct } from '@/shared/types/cart.ts';
 import type {
   CartPagedQueryResponse,
   Cart as CartResponse,
@@ -7,11 +6,16 @@ import type {
   LineItem,
 } from '@commercetools/platform-sdk';
 
+import getStore from '@/shared/Store/Store.ts';
+import { setAnonymousCartId, setAnonymousId } from '@/shared/Store/actions.ts';
+
 import getProductModel from '../../product/model/ProductModel.ts';
 import { isCart, isCartPagedQueryResponse, isClientResponse } from '../../types/validation.ts';
 import getCartApi, { type CartApi } from '../CartApi.ts';
 
 export class CartModel {
+  private cart: Cart | null = null;
+
   private root: CartApi;
 
   constructor() {
@@ -19,6 +23,10 @@ export class CartModel {
   }
 
   private adaptCart(data: CartResponse): Cart {
+    if (data.anonymousId) {
+      getStore().dispatch(setAnonymousCartId(data.id));
+      getStore().dispatch(setAnonymousId(data.anonymousId));
+    }
     return {
       id: data.id,
       products: data.lineItems.map((lineItem) => this.adaptLineItem(lineItem)),
@@ -57,23 +65,37 @@ export class CartModel {
   }
 
   public async addProductToCart(addCartItem: AddCartItem): Promise<Cart> {
-    const data = await this.root.addProductToCart(addCartItem);
-    return this.getCartFromData(data);
+    if (!this.cart) {
+      this.cart = await this.getCart();
+    }
+    const data = await this.root.addProduct(this.cart, addCartItem);
+    this.cart = this.getCartFromData(data);
+    return this.cart;
   }
 
-  public async deleteProductFromCart(deleteCartItem: DeleteCartItem): Promise<Cart> {
-    const data = await this.root.deleteProductToCart(deleteCartItem);
-    return this.getCartFromData(data);
+  public clear(): boolean {
+    this.cart = null;
+    return true;
+  }
+
+  public async deleteProductFromCart(products: CartProduct): Promise<Cart | null> {
+    if (this.cart) {
+      const data = await this.root.deleteProduct(this.cart, products);
+      this.cart = this.getCartFromData(data);
+    }
+    return this.cart;
   }
 
   public async getCart(): Promise<Cart> {
-    const data = await this.root.getCarts();
-    let cart = this.getCartFromData(data);
-    if (!cart.id) {
-      const newCart = await this.root.createCarts();
-      cart = this.getCartFromData(newCart);
+    if (!this.cart) {
+      const data = await this.root.getCarts();
+      this.cart = this.getCartFromData(data);
+      if (!this.cart.id) {
+        const newCart = await this.root.create();
+        this.cart = this.getCartFromData(newCart);
+      }
     }
-    return cart;
+    return this.cart;
   }
 }
 

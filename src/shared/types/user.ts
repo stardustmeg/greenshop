@@ -1,8 +1,13 @@
-import type { CartProduct } from './product';
-
 export interface UserCredentials {
   email: string;
   password: string;
+}
+
+export interface AuthCredentials extends UserCredentials {
+  anonymousCartId?: string;
+  anonymousCartSignInMode?: string;
+  anonymousId?: string;
+  updateProductData?: boolean;
 }
 
 export interface PersonalData {
@@ -32,10 +37,4 @@ export interface Address extends FormAddress, PersonalData {
   id: string;
   state: string;
   streetNumber: string;
-}
-
-export interface Cart {
-  id: string;
-  products: CartProduct[];
-  version: number;
 }

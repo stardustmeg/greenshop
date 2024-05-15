@@ -65,6 +65,8 @@ vi.mock('./Store.ts', async (importOriginal) => {
   return {
     ...actual,
     getState: (): State => ({
+      anonymousCartId: null,
+      anonymousId: null,
       billingCountry: '',
       currentLanguage: 'en',
       currentPage: '/',
@@ -111,6 +113,8 @@ it('observeStore should call select and onChange when state changes', () => {
   };
 
   const mockState: State = {
+    anonymousCartId: null,
+    anonymousId: null,
     billingCountry: '',
     currentLanguage: 'en',
     currentPage: 'main',
@@ -139,6 +143,8 @@ describe('rootReducer', () => {
 
   beforeEach(() => {
     initialState = {
+      anonymousCartId: null,
+      anonymousId: null,
       billingCountry: '',
       currentLanguage: 'en',
       currentPage: '/',

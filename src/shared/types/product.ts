@@ -1,5 +1,3 @@
-import type { Cart } from './user';
-
 export interface localization {
   language: string;
   value: string;
@@ -36,27 +34,4 @@ export interface Product {
   key: string;
   name: localization[];
   variant: Variant[];
-}
-
-export interface CartProduct {
-  images: string;
-  key: string;
-  lineItemId: string;
-  name: localization[];
-  price: number;
-  productId: string;
-  quantity: number;
-  totalPrice: number;
-}
-
-export interface AddCartItem {
-  cart: Cart;
-  productId: string;
-  quantity: number;
-  variantId: number;
-}
-
-export interface DeleteCartItem {
-  cart: Cart;
-  product: CartProduct;
 }

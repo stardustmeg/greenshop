@@ -1,5 +1,12 @@
-import type { AddCartItem, DeleteCartItem } from '@/shared/types/product.ts';
-import type { Cart, CartPagedQueryResponse, ClientResponse, MyCartDraft } from '@commercetools/platform-sdk';
+import type { AddCartItem, Cart, CartProduct } from '@/shared/types/cart.ts';
+import type {
+  CartPagedQueryResponse,
+  Cart as CartResponse,
+  ClientResponse,
+  MyCartDraft,
+} from '@commercetools/platform-sdk';
+
+import { CURRENCY } from '@/shared/constants/product.ts';
 
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
 
@@ -10,12 +17,12 @@ export class CartApi {
     this.client = getApiClient();
   }
 
-  public async addProductToCart(addCartItem: AddCartItem): Promise<ClientResponse> {
+  public async addProduct(cart: Cart, addCartItem: AddCartItem): Promise<ClientResponse> {
     const data = await this.client
       .apiRoot()
       .me()
       .carts()
-      .withId({ ID: addCartItem.cart.id })
+      .withId({ ID: cart.id })
       .post({
         body: {
           actions: [
@@ -26,16 +33,16 @@ export class CartApi {
               variantId: addCartItem.variantId,
             },
           ],
-          version: addCartItem.cart.version,
+          version: cart.version,
         },
       })
       .execute();
     return data;
   }
 
-  public async createCarts(): Promise<ClientResponse<Cart>> {
+  public async create(): Promise<ClientResponse<CartResponse>> {
     const myCart: MyCartDraft = {
-      currency: 'USD',
+      currency: CURRENCY,
     };
     const newCart = await this.client
       .apiRoot()
@@ -49,21 +56,21 @@ export class CartApi {
     return newCart;
   }
 
-  public async deleteProductToCart(deleteCartItem: DeleteCartItem): Promise<ClientResponse> {
+  public async deleteProduct(cart: Cart, product: CartProduct): Promise<ClientResponse> {
     const data = await this.client
       .apiRoot()
       .me()
       .carts()
-      .withId({ ID: deleteCartItem.cart.id })
+      .withId({ ID: cart.id })
       .post({
         body: {
           actions: [
             {
               action: 'removeLineItem',
-              lineItemId: deleteCartItem.product.lineItemId,
+              lineItemId: product.lineItemId,
             },
           ],
-          version: deleteCartItem.cart.version,
+          version: cart.version,
         },
       })
       .execute();

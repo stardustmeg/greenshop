@@ -235,8 +235,8 @@ export function isCart(data: unknown): data is Cart {
       data &&
       'id' in data &&
       typeof data.id === 'string' &&
-      'customerId' in data &&
-      typeof data.customerId === 'string' &&
+      'cartState' in data &&
+      typeof data.cartState === 'string' &&
       'lineItems' in data &&
       Array.isArray(data.lineItems),
   );

@@ -7,6 +7,8 @@ import type * as actions from './actions.ts';
 import type { Reducer } from './types.ts';
 
 export interface State {
+  anonymousCartId: null | string;
+  anonymousId: null | string;
   billingCountry: string;
   currentLanguage: LanguageChoiceType;
   currentPage: PageIdType;
@@ -22,6 +24,16 @@ type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 export type Action = ReturnType<InferValueTypes<typeof actions>>;
 export const rootReducer: Reducer<State, Action> = (state: State, action: Action): State => {
   switch (action.type) {
+    case 'setAnonymousCartId':
+      return {
+        ...state,
+        anonymousCartId: action.payload,
+      };
+    case 'setAnonymousId':
+      return {
+        ...state,
+        anonymousId: action.payload,
+      };
     case 'setCurrentUser':
       return {
         ...state,

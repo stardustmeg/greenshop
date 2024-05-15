@@ -4,6 +4,8 @@ import type { SelectedFilters } from '../types/productFilters';
 import type { User } from '../types/user';
 
 const ACTION = {
+  SET_ANONYMOUS_CART_ID: 'setAnonymousCartId',
+  SET_ANONYMOUS_ID: 'setAnonymousId',
   SET_BILLING_COUNTRY: 'setBillingCountry',
   SET_CURRENT_LANGUAGE: 'setCurrentLanguage',
   SET_CURRENT_PAGE: 'setCurrentPage',
@@ -24,6 +26,20 @@ interface ActionWithPayload<T, U extends ActionType> {
 interface ActionWithoutPayload<U extends ActionType> {
   type: U;
 }
+
+export const setAnonymousCartId = (
+  value: null | string,
+): ActionWithPayload<null | string, typeof ACTION.SET_ANONYMOUS_CART_ID> => ({
+  payload: value,
+  type: ACTION.SET_ANONYMOUS_CART_ID,
+});
+
+export const setAnonymousId = (
+  value: null | string,
+): ActionWithPayload<null | string, typeof ACTION.SET_ANONYMOUS_ID> => ({
+  payload: value,
+  type: ACTION.SET_ANONYMOUS_ID,
+});
 
 export const setCurrentUser = (value: User | null): ActionWithPayload<User | null, typeof ACTION.SET_CURRENT_USER> => ({
   payload: value,
