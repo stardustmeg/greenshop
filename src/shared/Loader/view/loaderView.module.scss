@@ -1,37 +1,37 @@
 .loader {
   margin: 0 calc(var(--extra-small-offset) / 4);
-  border: 2px solid var(--noble-gray-200);
-  border-top: 2px solid var(--steam-green-800);
+  border: var(--two) solid var(--noble-gray-200);
+  border-top: var(--two) solid var(--steam-green-800);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 .small {
-  border: 4px solid var(--noble-gray-200);
-  border-top: 4px solid var(--steam-green-800);
-  width: 20px;
-  height: 20px;
+  border: calc(var(--two) * 2) solid var(--noble-gray-200);
+  border-top: calc(var(--two) * 2) solid var(--steam-green-800);
+  width: var(--extra-small-offset);
+  height: var(--extra-small-offset);
 }
 
 .medium {
-  border: 5px solid var(--noble-gray-200);
-  border-top: 5px solid var(--steam-green-800);
-  width: 30px;
-  height: 30px;
+  border: var(--five) solid var(--noble-gray-200);
+  border-top: var(--five) solid var(--steam-green-800);
+  width: calc(var(--medium-offset) / 2);
+  height: calc(var(--medium-offset) / 2);
 }
 
 .large {
-  border: 10px solid var(--noble-gray-200);
-  border-top: 10px solid var(--steam-green-800);
-  width: 40px;
-  height: 40px;
+  border: var(--tiny-offset) solid var(--noble-gray-200);
+  border-top: var(--tiny-offset) solid var(--steam-green-800);
+  width: var(--small-offset);
+  height: var(--small-offset);
 }
 
 .extraLarge {
-  border: 10px solid var(--noble-gray-200);
-  border-top: 10px solid var(--steam-green-800);
-  width: 80px;
-  height: 80px;
+  border: var(--tiny-offset) solid var(--noble-gray-200);
+  border-top: var(--tiny-offset) solid var(--steam-green-800);
+  width: var(--large-offset);
+  height: var(--large-offset);
 }
 
 @keyframes spin {

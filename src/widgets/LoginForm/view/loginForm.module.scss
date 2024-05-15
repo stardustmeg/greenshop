@@ -73,20 +73,20 @@
 
 .showPasswordElement {
   position: absolute;
-  right: 0;
-  top: 17px;
+  right: 0.3rem;
+  top: 2.35rem;
   border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 8);
-  width: 24px;
-  height: 24px;
+  width: calc(var(--extra-small-offset) * 1.2); // 24px
+  height: calc(var(--extra-small-offset) * 1.2); // 24px
   background-color: transparent;
   transform: translate(-12%, 0);
   transition: background-color 0.2s;
   cursor: pointer;
 
   svg {
-    width: 20px;
-    height: 20px;
+    width: var(--extra-small-offset); // 20px
+    height: var(--extra-small-offset); // 20px
     stroke: var(--noble-gray-600);
     transition: stroke 0.2s;
   }
@@ -107,9 +107,5 @@
         stroke: var(--steam-green-800);
       }
     }
-  }
-
-  @media (max-width: 768px) {
-    top: 7px;
   }
 }

@@ -27,7 +27,7 @@
     border-radius: var(--small-br);
     padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
     width: max-content;
-    max-height: 40px;
+    max-height: var(--small-offset); // 40px
     font: var(--bold-font);
     letter-spacing: 1px;
     color: var(--white);
@@ -111,20 +111,21 @@
 
 .showPasswordElement {
   position: absolute;
-  right: 0;
-  top: 33px;
+  right: 0.5rem;
+  top: 2.05rem;
   border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 8);
-  width: 24px;
-  height: 24px;
+  width: calc(var(--extra-small-offset) * 1.2); // 24px
+  height: calc(var(--extra-small-offset) * 1.2); // 24px
   background-color: transparent;
-  transform: translate(-12%, 0);
+
+  // transform: translate(-12%, 0);
   transition: background-color 0.2s;
   cursor: pointer;
 
   svg {
-    width: 20px;
-    height: 20px;
+    width: var(--extra-small-offset); // 20px
+    height: var(--extra-small-offset); // 20px
     stroke: var(--noble-gray-600);
     transition: stroke 0.2s;
   }
@@ -145,10 +146,6 @@
         stroke: var(--steam-green-800);
       }
     }
-  }
-
-  @media (max-width: 768px) {
-    top: 18px;
   }
 }
 
@@ -176,7 +173,7 @@
       bottom: -10px;
       border-radius: var(--medium-br);
       width: 100%;
-      height: 2px;
+      height: var(--two);
       background-color: var(--steam-green-800);
       transform: translateX(-50%);
     }

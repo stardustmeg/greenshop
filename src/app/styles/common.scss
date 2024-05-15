@@ -16,6 +16,10 @@ body {
   scroll-behavior: smooth;
 }
 
+html {
+  font-size: clamp(8px, 1vw, 50px);
+}
+
 *::before,
 *::after {
   box-sizing: inherit;

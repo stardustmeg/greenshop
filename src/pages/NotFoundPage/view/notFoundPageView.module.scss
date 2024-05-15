@@ -8,7 +8,7 @@
   border-radius: var(--medium-br);
   padding: var(--small-offset);
   padding-bottom: calc(var(--extra-large-offset) / 2 + calc(var(--extra-small-offset) / 2));
-  max-width: 500px;
+  max-width: calc(var(--extra-large-offset) * 5);
   background-color: var(--white);
   animation: show 0.2s ease-out forwards;
   gap: var(--extra-small-offset);

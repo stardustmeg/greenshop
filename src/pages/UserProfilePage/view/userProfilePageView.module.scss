@@ -33,34 +33,30 @@
   grid-column: 2 span;
   max-width: 100%;
   word-break: break-all;
-
-  @media (max-width: 810px) {
-    font: var(--medium-font);
-  }
-
-  @media (max-width: 500px) {
-    font: var(--regular-font);
-  }
 }
 
 .accountMenu {
   display: flex;
   flex-flow: column wrap;
   padding: var(--small-offset);
+  width: 20%;
   height: fit-content;
-  max-width: fit-content;
   background-color: var(--white-tr);
-  gap: var(--small-offset);
+  gap: var(--extra-small-offset);
 }
 
 .accountMenuItem {
-  width: fit-content;
+  display: flex;
+  align-items: center;
+  width: 100%;
   height: fit-content;
 }
 
 .logoutButton {
+  margin: var(--small-offset) auto;
   border-radius: var(--medium-br);
   padding: calc(var(--small-offset) / 3) var(--small-offset);
+  max-width: max-content;
   font: var(--regular-font);
   letter-spacing: 1px;
   color: var(--white);
@@ -89,9 +85,11 @@
   position: relative;
   display: flex;
   align-items: center;
-  height: 100%;
+  width: 100%;
+  height: 2.5rem;
   font: var(--regular-font);
   letter-spacing: 1px;
+  text-align: center;
   text-transform: uppercase;
   color: var(--noble-gray-800);
   transition: color 0.2s;
@@ -100,9 +98,9 @@
     content: '';
     position: absolute;
     left: 0;
-    bottom: -15px;
+    bottom: -5px;
     width: 100%;
-    height: 2px;
+    height: var(--two);
     background-color: currentcolor;
     opacity: 0;
     transform: scaleX(0);
@@ -131,5 +129,16 @@
   &::after {
     opacity: 1;
     transform: scaleX(1);
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    display: block;
+    opacity: 1;
   }
 }
