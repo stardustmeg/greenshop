@@ -36,8 +36,8 @@ export class CartModel {
 
   private adaptLineItem(product: LineItem): CartProduct {
     const result: CartProduct = {
-      images: '',
-      key: product.key || '',
+      images: product.variant.images?.length ? product.variant.images[0].url : '',
+      key: product.productKey || '',
       lineItemId: product.id,
       name: [],
       price: product.price.value.centAmount || 0,
@@ -78,6 +78,12 @@ export class CartModel {
     return true;
   }
 
+  public async create(): Promise<Cart> {
+    const newCart = await this.root.create();
+    this.cart = this.getCartFromData(newCart);
+    return this.cart;
+  }
+
   public async deleteProductFromCart(products: CartProduct): Promise<Cart | null> {
     if (this.cart) {
       const data = await this.root.deleteProduct(this.cart, products);
@@ -89,11 +95,20 @@ export class CartModel {
   public async getCart(): Promise<Cart> {
     if (!this.cart) {
       const data = await this.root.getCarts();
-      this.cart = this.getCartFromData(data);
-      if (!this.cart.id) {
+      if (data.body.count === 1) {
+        this.cart = this.getCartFromData(data);
+      } else if (data.body.count === 0) {
         const newCart = await this.root.create();
         this.cart = this.getCartFromData(newCart);
+      } else {
+        const activeCart = await this.root.getActiveCart();
+        this.cart = this.getCartFromData(activeCart);
       }
+
+      // if (!this.cart.id) {
+      //   const newCart = await this.root.create();
+      //   this.cart = this.getCartFromData(newCart);
+      // }
     }
     return this.cart;
   }

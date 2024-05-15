@@ -1,6 +1,8 @@
 import type { AddCartItem, Cart, CartProduct } from '@/shared/types/cart.ts';
 import type {
   CartPagedQueryResponse,
+  // CartReference,
+  // CartResponse,
   Cart as CartResponse,
   ClientResponse,
   MyCartDraft,
@@ -74,6 +76,11 @@ export class CartApi {
         },
       })
       .execute();
+    return data;
+  }
+
+  public async getActiveCart(): Promise<ClientResponse<CartResponse>> {
+    const data = await this.client.apiRoot().me().activeCart().get().execute();
     return data;
   }
 

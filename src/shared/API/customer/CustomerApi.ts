@@ -131,14 +131,14 @@ export class CustomerApi {
       .post({ body: this.makeCustomerDraft(userData) })
       .execute();
     if (!isErrorResponse(data)) {
-      this.checkAuthConnection(userData);
+      const auth = this.checkAuthConnection(userData);
       // this.client.createAuthConnection(userData);
       // this.client.approveAuth();
       // // TBD: dele auth
       // const auth = await this.authenticateUser(userData);
-      // if (!isErrorResponse(auth)) {
-      //   data = auth;
-      // }
+      if (!isErrorResponse(auth)) {
+        await getCartModel().create();
+      }
     }
     return data;
   }
