@@ -88,4 +88,18 @@ export const selectSelectedFiltersMetaFilter = (state: State): MetaFiltersType |
   return null;
 };
 
+export const selectSelectedSortingField = (state: State): null | string => {
+  if (state.selectedSorting) {
+    return state.selectedSorting.field;
+  }
+  return null;
+};
+
+export const selectSelectedSortingDirection = (state: State): null | string => {
+  if (state.selectedSorting) {
+    return state.selectedSorting.direction;
+  }
+  return null;
+};
+
 export default observeStore;

@@ -2,6 +2,7 @@ import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
 import type { Category, Product } from '../types/product';
 import type { SelectedFilters } from '../types/productFilters';
+import type { SelectedSorting } from '../types/productSorting.ts';
 import type { User } from '../types/user';
 
 const ACTION = {
@@ -12,6 +13,7 @@ const ACTION = {
   SET_CURRENT_USER: 'setCurrentUser',
   SET_PRODUCTS: 'setProducts',
   SET_SELECTED_FILTERS: 'setSelectedFilters',
+  SET_SELECTED_SORTING: 'setSelectedSorting',
   SET_SHIPPING_COUNTRY: 'setShippingCountry',
   SWITCH_APP_THEME: 'switchAppTheme',
   SWITCH_IS_USER_LOGGED_IN: 'switchIsUserLoggedIn',
@@ -81,4 +83,11 @@ export const setSelectedFilters = (
 ): ActionWithPayload<SelectedFilters | null, typeof ACTION.SET_SELECTED_FILTERS> => ({
   payload: value,
   type: ACTION.SET_SELECTED_FILTERS,
+});
+
+export const setSelectedSorting = (
+  value: SelectedSorting | null,
+): ActionWithPayload<SelectedSorting | null, typeof ACTION.SET_SELECTED_SORTING> => ({
+  payload: value,
+  type: ACTION.SET_SELECTED_SORTING,
 });
