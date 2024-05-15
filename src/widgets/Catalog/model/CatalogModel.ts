@@ -21,9 +21,7 @@ import observeStore, {
 import { META_FILTERS } from '@/shared/constants/filters.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { SORTING_ID } from '@/shared/constants/sorting.ts';
-import showBadRequestMessage from '@/shared/utils/showBadRequestMessage.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
-
 
 import CatalogView from '../view/CatalogView.ts';
 
@@ -102,7 +100,7 @@ class CatalogModel {
   private init(): void {
     getProductModel()
       .getCategories()
-      .catch(() => showBadRequestMessage());
+      .catch(() => showErrorMessage());
     const productList = this.view.getItemsList();
     // TBD(SPRINT-5): create method to collect filters from the url
     this.getProductItems({})
