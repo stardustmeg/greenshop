@@ -14,6 +14,7 @@ import findAddressIndex from '@/shared/utils/address.ts';
 
 import getCartModel from '../cart/model/CartModel.ts';
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
+import getShoppingListModel from '../shopping-list/model/ShoppingListModel.ts';
 import { isErrorResponse } from '../types/validation.ts';
 
 export class CustomerApi {
@@ -134,6 +135,7 @@ export class CustomerApi {
       const auth = this.checkAuthConnection(userData);
       if (!isErrorResponse(auth)) {
         await getCartModel().create();
+        await getShoppingListModel().create();
       }
     }
     return data;
