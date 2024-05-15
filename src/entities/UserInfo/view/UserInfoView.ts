@@ -4,7 +4,7 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-import { userInfoDateOfBirth, userInfoEmail, userInfoLastName, userInfoName } from '@/shared/utils/messageTemplate.ts';
+import { userInfoDateOfBirth, userInfoEmail, userInfoLastName, userInfoName } from '@/shared/utils/messageTemplates.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './userInfoView.module.scss';

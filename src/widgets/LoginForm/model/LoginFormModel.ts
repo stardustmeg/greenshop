@@ -10,7 +10,7 @@ import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import isLanguageChoiceType from '@/shared/types/validation/language.ts';
-import { createGreetingMessage } from '@/shared/utils/messageTemplate.ts';
+import { createGreetingMessage } from '@/shared/utils/messageTemplates.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';

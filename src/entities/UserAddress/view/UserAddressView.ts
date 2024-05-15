@@ -1,21 +1,15 @@
-import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
-import { defaultBillingAddress, defaultShippingAddress } from '@/shared/utils/messageTemplate.ts';
-import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
+import { defaultBillingAddress, defaultShippingAddress } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './userAddressView.module.scss';
 
 class UserAddressView {
   private addressesWrapper: HTMLDivElement;
 
-  private editInfoButton: ButtonModel;
-
   constructor() {
-    this.editInfoButton = this.createEditInfoButton();
     this.addressesWrapper = this.createAddresses();
   }
 
@@ -59,23 +53,7 @@ class UserAddressView {
       const addressWrapper = this.createAddressElement(addressText);
       this.addressesWrapper.append(addressWrapper);
     });
-    this.addressesWrapper.append(this.editInfoButton.getHTML());
     return this.addressesWrapper;
-  }
-
-  private createEditInfoButton(): ButtonModel {
-    this.editInfoButton = new ButtonModel({
-      classes: [styles.editInfoButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].EDIT_INFO,
-    });
-
-    observeCurrentLanguage(this.editInfoButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.EDIT_INFO);
-
-    return this.editInfoButton;
-  }
-
-  public getEditInfoButton(): ButtonModel {
-    return this.editInfoButton;
   }
 
   public getHTML(): HTMLDivElement {

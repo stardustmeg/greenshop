@@ -16,7 +16,7 @@ import observeStore, {
 } from '@/shared/Store/observer.ts';
 import { META_FILTERS } from '@/shared/constants/filters.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import showBadRequestMessage from '@/shared/utils/showBadRequestMessage.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import CatalogView from '../view/CatalogView.ts';
 
@@ -53,7 +53,7 @@ class CatalogModel {
       const priceRange = await getProductModel().getPriceRange();
       return { categoriesProductCount: categoryCount, priceRange, products, sizes: sizeCount };
     } catch {
-      showBadRequestMessage();
+      showErrorMessage();
     } finally {
       loader.getHTML().remove();
     }
@@ -89,7 +89,7 @@ class CatalogModel {
         this.view.getLeftWrapper().append(this.productFilters.getDefaultFilters());
         this.view.getRightWrapper().append(this.productFilters.getMetaFilters());
       })
-      .catch(() => showBadRequestMessage());
+      .catch(() => showErrorMessage());
 
     observeSetInStore(selectSelectedFiltersCategory, () => this.redrawProductList(this.getSelectedFilters()));
     observeStore(selectSelectedFiltersPrice, () => this.redrawProductList(this.getSelectedFilters()));
@@ -111,7 +111,7 @@ class CatalogModel {
         this.view.switchEmptyList(!data?.products?.length);
         this.productFilters?.updateParams(data);
       })
-      .catch(() => showBadRequestMessage());
+      .catch(() => showErrorMessage());
   }
 
   public getHTML(): HTMLDivElement {
