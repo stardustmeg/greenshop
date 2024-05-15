@@ -30,5 +30,6 @@
     /* Testing */
     "types": ["vitest/globals"]
   },
-  "include": ["src"]
+  "include": ["src", "plopfile.cjs", "templates"],
+  "exclude": ["templates"]
 }
