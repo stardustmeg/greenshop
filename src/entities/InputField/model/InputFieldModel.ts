@@ -14,7 +14,7 @@ class InputFieldModel {
     this.view = new InputFieldView(inputFieldParams);
 
     if (validParams) {
-      this.validator = new InputFieldValidatorModel(validParams);
+      this.validator = new InputFieldValidatorModel(inputFieldParams, validParams);
       this.setInputHandler();
     }
 
