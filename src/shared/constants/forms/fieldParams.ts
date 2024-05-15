@@ -3,9 +3,6 @@ import { USER_ADDRESS_TYPE } from '../forms.ts';
 export const EMAIL = {
   inputParams: {
     autocomplete: 'off',
-    data: {
-      name: 'email',
-    },
     placeholder: 'user@example.com',
     type: 'text',
   },
