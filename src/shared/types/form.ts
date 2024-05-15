@@ -1,6 +1,7 @@
 export interface InputParams {
   autocomplete: 'off' | 'on';
-  id: string;
+  data?: Record<string, string>;
+  id?: string;
   lang?: string;
   max?: null | number;
   min?: null | number;
@@ -11,7 +12,7 @@ export interface InputParams {
 }
 
 export interface LabelParams {
-  for: string;
+  for?: string;
   text: {
     en: string;
     ru: string;
@@ -24,7 +25,6 @@ export interface InputFieldParams {
 }
 
 export interface InputFieldValidatorParams {
-  key: string;
   maxLength?: null | number;
   minLength?: null | number;
   notSpecialSymbols?: {

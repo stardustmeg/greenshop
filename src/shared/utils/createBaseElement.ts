@@ -16,7 +16,9 @@ const createBaseElement = <T extends keyof HTMLElementTagNameMap>({
   elem.classList.add(...cssClasses);
 
   Object.entries(attributes).forEach(([attrName, attrValue]) => {
-    elem.setAttribute(attrName, attrValue);
+    if (attrValue) {
+      elem.setAttribute(attrName, attrValue);
+    }
   });
 
   elem.innerHTML = innerContent;

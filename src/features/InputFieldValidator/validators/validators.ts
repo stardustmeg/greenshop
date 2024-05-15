@@ -1,9 +1,9 @@
-import type { InputFieldValidatorParams } from '@/shared/types/form.ts';
+import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types/form.ts';
 
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { USER_POSTAL_CODE } from '@/shared/constants/forms.ts';
+import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
 import { ERROR_MESSAGE } from '@/shared/constants/messages.ts';
 import { checkInputLanguage } from '@/shared/utils/getCountryIndex.ts';
 import { maxAgeMessage, maxLengthMessage, minAgeMessage, minLengthMessage } from '@/shared/utils/messageTemplate.ts';
@@ -92,10 +92,15 @@ export const checkValidMail = (value: string, validParams: InputFieldValidatorPa
   return true;
 };
 
-export const checkValidPostalCode = (value: string, validParams: InputFieldValidatorParams): boolean | string => {
-  if (validParams.validPostalCode) {
+export const checkValidPostalCode = (
+  value: string,
+  validParams: InputFieldValidatorParams,
+  inputParams: InputFieldParams,
+): boolean | string => {
+  if (validParams.validPostalCode && inputParams.inputParams.data) {
     const { billingCountry, shippingCountry } = getStore().getState();
-    const currentCountry = validParams.key === USER_POSTAL_CODE.POSTAL_CODE ? shippingCountry : billingCountry;
+    const currentCountry =
+      inputParams.inputParams.data.addressType === USER_ADDRESS_TYPE.SHIPPING ? shippingCountry : billingCountry;
     try {
       const result = postcodeValidator(value, currentCountry);
       if (!result) {

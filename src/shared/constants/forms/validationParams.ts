@@ -1,5 +1,4 @@
 export const EMAIL_VALIDATE = {
-  key: 'registration_email',
   notWhitespace: {
     messages: { en: 'Email must not contain white spaces', ru: 'Адрес электронной почты не должен содержать пробелы' },
     pattern: /^\S+$/,
@@ -15,7 +14,6 @@ export const EMAIL_VALIDATE = {
 } as const;
 
 export const PASSWORD_VALIDATE = {
-  key: 'registration_password',
   minLength: 8,
   notWhitespace: {
     messages: { en: 'Password must not contain white spaces', ru: 'Пароль не должен содержать пробелы' },
@@ -32,7 +30,6 @@ export const PASSWORD_VALIDATE = {
 } as const;
 
 export const FIRST_NAME_VALIDATE = {
-  key: 'firstName',
   minLength: 1,
   notSpecialSymbols: {
     messages: {
@@ -52,7 +49,6 @@ export const FIRST_NAME_VALIDATE = {
 } as const;
 
 export const LAST_NAME_VALIDATE = {
-  key: 'lastName',
   minLength: 1,
   notSpecialSymbols: {
     messages: {
@@ -72,7 +68,6 @@ export const LAST_NAME_VALIDATE = {
 } as const;
 
 export const BIRTHDAY_VALIDATE = {
-  key: 'birthDate',
   required: true,
   validBirthday: {
     maxAge: 120,
@@ -85,14 +80,12 @@ export const BIRTHDAY_VALIDATE = {
   },
 } as const;
 
-export const SHIPPING_ADDRESS_STREET_VALIDATE = {
-  key: 'address',
+export const ADDRESS_STREET_VALIDATE = {
   minLength: 1,
   required: true,
 };
 
-export const SHIPPING_ADDRESS_CITY_VALIDATE = {
-  key: 'city',
+export const ADDRESS_CITY_VALIDATE = {
   minLength: 1,
   notSpecialSymbols: {
     messages: {
@@ -105,45 +98,12 @@ export const SHIPPING_ADDRESS_CITY_VALIDATE = {
   required: true,
 };
 
-export const SHIPPING_ADDRESS_COUNTRY_VALIDATE = {
-  key: 'shippingCountry',
+export const ADDRESS_COUNTRY_VALIDATE = {
   required: true,
   validCountry: true,
 };
 
-export const SHIPPING_ADDRESS_POSTAL_CODE_VALIDATE = {
-  key: 'postalCode',
-  required: true,
-  validPostalCode: true,
-};
-
-export const BILLING_ADDRESS_STREET_VALIDATE = {
-  key: 'billing_address',
-  minLength: 1,
-  required: true,
-};
-
-export const BILLING_ADDRESS_CITY_VALIDATE = {
-  key: 'billing_city',
-  minLength: 1,
-  notSpecialSymbols: {
-    messages: {
-      en: 'City must contain only letters',
-      ru: 'Город должен содержать только буквы',
-    },
-    pattern: /^[a-zA-Zа-яА-я\s]*$/,
-  },
-  required: true,
-};
-
-export const BILLING_ADDRESS_COUNTRY_VALIDATE = {
-  key: 'billing_country',
-  required: true,
-  validCountry: true,
-};
-
-export const BILLING_ADDRESS_POSTAL_CODE_VALIDATE = {
-  key: 'billing_postalCode',
+export const ADDRESS_POSTAL_CODE_VALIDATE = {
   required: true,
   validPostalCode: true,
 };
@@ -154,12 +114,8 @@ export const INPUT_VALIDATION = [
   FIRST_NAME_VALIDATE,
   LAST_NAME_VALIDATE,
   BIRTHDAY_VALIDATE,
-  SHIPPING_ADDRESS_STREET_VALIDATE,
-  SHIPPING_ADDRESS_CITY_VALIDATE,
-  SHIPPING_ADDRESS_COUNTRY_VALIDATE,
-  SHIPPING_ADDRESS_POSTAL_CODE_VALIDATE,
-  BILLING_ADDRESS_STREET_VALIDATE,
-  BILLING_ADDRESS_CITY_VALIDATE,
-  BILLING_ADDRESS_COUNTRY_VALIDATE,
-  BILLING_ADDRESS_POSTAL_CODE_VALIDATE,
+  ADDRESS_STREET_VALIDATE,
+  ADDRESS_CITY_VALIDATE,
+  ADDRESS_COUNTRY_VALIDATE,
+  ADDRESS_POSTAL_CODE_VALIDATE,
 ];

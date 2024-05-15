@@ -1,12 +1,12 @@
+import { USER_ADDRESS_TYPE } from '../forms.ts';
+
 export const EMAIL = {
   inputParams: {
     autocomplete: 'off',
-    id: 'registration_email',
     placeholder: 'user@example.com',
     type: 'text',
   },
   labelParams: {
-    for: 'registration_email',
     text: {
       en: 'Email',
       ru: 'Электронная почта',
@@ -17,12 +17,10 @@ export const EMAIL = {
 export const PASSWORD = {
   inputParams: {
     autocomplete: 'off',
-    id: 'registration_password',
     placeholder: '***********',
     type: 'password',
   },
   labelParams: {
-    for: 'registration_password',
     text: {
       en: 'Password',
       ru: 'Пароль',
@@ -33,12 +31,10 @@ export const PASSWORD = {
 export const FIRST_NAME = {
   inputParams: {
     autocomplete: 'off',
-    id: 'firstName',
     placeholder: 'John',
     type: 'text',
   },
   labelParams: {
-    for: 'firstName',
     text: {
       en: 'First name',
       ru: 'Имя',
@@ -49,12 +45,10 @@ export const FIRST_NAME = {
 export const LAST_NAME = {
   inputParams: {
     autocomplete: 'off',
-    id: 'lastName',
     placeholder: 'Doe',
     type: 'text',
   },
   labelParams: {
-    for: 'lastName',
     text: {
       en: 'Last name',
       ru: 'Фамилия',
@@ -65,13 +59,11 @@ export const LAST_NAME = {
 export const BIRTHDAY = {
   inputParams: {
     autocomplete: 'off',
-    id: 'birthDate',
     lang: 'en',
     placeholder: '01.01.2000',
     type: 'date',
   },
   labelParams: {
-    for: 'birthDate',
     text: {
       en: 'Date of birth',
       ru: 'Дата рождения',
@@ -82,12 +74,10 @@ export const BIRTHDAY = {
 export const SHIPPING_ADDRESS_STREET = {
   inputParams: {
     autocomplete: 'off',
-    id: 'address',
     placeholder: '595 Hornby St. 5th Floor',
     type: 'text',
   },
   labelParams: {
-    for: 'address',
     text: {
       en: 'Address',
       ru: 'Адрес',
@@ -98,12 +88,10 @@ export const SHIPPING_ADDRESS_STREET = {
 export const SHIPPING_ADDRESS_CITY = {
   inputParams: {
     autocomplete: 'off',
-    id: 'city',
     placeholder: 'Vancouver',
     type: 'text',
   },
   labelParams: {
-    for: 'city',
     text: {
       en: 'City',
       ru: 'Город',
@@ -114,12 +102,13 @@ export const SHIPPING_ADDRESS_CITY = {
 export const SHIPPING_ADDRESS_COUNTRY = {
   inputParams: {
     autocomplete: 'off',
-    id: 'shippingCountry',
+    data: {
+      addressType: USER_ADDRESS_TYPE.SHIPPING,
+    },
     placeholder: 'Canada',
     type: 'text',
   },
   labelParams: {
-    for: 'shippingCountry',
     text: {
       en: 'Country',
       ru: 'Страна',
@@ -130,12 +119,13 @@ export const SHIPPING_ADDRESS_COUNTRY = {
 export const SHIPPING_ADDRESS_POSTAL_CODE = {
   inputParams: {
     autocomplete: 'off',
-    id: 'postalCode',
+    data: {
+      addressType: USER_ADDRESS_TYPE.SHIPPING,
+    },
     placeholder: 'A1B 2C3',
     type: 'text',
   },
   labelParams: {
-    for: 'postalCode',
     text: {
       en: 'Postal code',
       ru: 'Почтовый индекс',
@@ -146,12 +136,10 @@ export const SHIPPING_ADDRESS_POSTAL_CODE = {
 export const BILLING_ADDRESS_STREET = {
   inputParams: {
     autocomplete: 'off',
-    id: 'billing_address',
     placeholder: '595 Hornby St. 5th Floor',
     type: 'text',
   },
   labelParams: {
-    for: 'billing_address',
     text: {
       en: 'Address',
       ru: 'Адрес',
@@ -162,12 +150,10 @@ export const BILLING_ADDRESS_STREET = {
 export const BILLING_ADDRESS_CITY = {
   inputParams: {
     autocomplete: 'off',
-    id: 'billing_city',
     placeholder: 'Vancouver',
     type: 'text',
   },
   labelParams: {
-    for: 'billing_city',
     text: {
       en: 'City',
       ru: 'Город',
@@ -178,12 +164,13 @@ export const BILLING_ADDRESS_CITY = {
 export const BILLING_ADDRESS_COUNTRY = {
   inputParams: {
     autocomplete: 'off',
-    id: 'billing_country',
+    data: {
+      addressType: USER_ADDRESS_TYPE.BILLING,
+    },
     placeholder: 'Canada',
     type: 'text',
   },
   labelParams: {
-    for: 'billing_country',
     text: {
       en: 'Country',
       ru: 'Страна',
@@ -194,12 +181,13 @@ export const BILLING_ADDRESS_COUNTRY = {
 export const BILLING_ADDRESS_POSTAL_CODE = {
   inputParams: {
     autocomplete: 'off',
-    id: 'billing_postalCode',
+    data: {
+      addressType: USER_ADDRESS_TYPE.BILLING,
+    },
     placeholder: 'A1B 2C3',
     type: 'text',
   },
   labelParams: {
-    for: 'billing_postalCode',
     text: {
       en: 'Postal code',
       ru: 'Почтовый индекс',
