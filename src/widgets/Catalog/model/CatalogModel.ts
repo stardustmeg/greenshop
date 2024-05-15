@@ -20,6 +20,7 @@ import observeStore, {
 } from '@/shared/Store/observer.ts';
 import { META_FILTERS } from '@/shared/constants/filters.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import { SORTING_ID } from '@/shared/constants/sorting.ts';
 import showBadRequestMessage from '@/shared/utils/showBadRequestMessage.ts';
 
 import CatalogView from '../view/CatalogView.ts';
@@ -90,7 +91,7 @@ class CatalogModel {
     if (field === SortFields.PRICE) {
       return { direction: currentDirection, field: currentField };
     }
-    if (field === 'default') {
+    if (field === SORTING_ID.DEFAULT) {
       return { direction: revertDirection, field: SortFields.NAME, locale: getStore().getState().currentLanguage };
     }
     return { direction: currentDirection, field: currentField, locale: getStore().getState().currentLanguage };
