@@ -1,8 +1,6 @@
-import type { AddCartItem, Cart, CartProduct } from '@/shared/types/cart.ts';
+import type { AddCartItem, Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 import type {
   CartPagedQueryResponse,
-  // CartReference,
-  // CartResponse,
   Cart as CartResponse,
   ClientResponse,
   MyCartDraft,
@@ -70,6 +68,28 @@ export class CartApi {
             {
               action: 'removeLineItem',
               lineItemId: product.lineItemId,
+            },
+          ],
+          version: cart.version,
+        },
+      })
+      .execute();
+    return data;
+  }
+
+  public async editProductCount(cart: Cart, editCartItem: EditCartItem): Promise<ClientResponse> {
+    const data = await this.client
+      .apiRoot()
+      .me()
+      .carts()
+      .withId({ ID: cart.id })
+      .post({
+        body: {
+          actions: [
+            {
+              action: 'changeLineItemQuantity',
+              lineItemId: editCartItem.lineId,
+              quantity: editCartItem.quantity,
             },
           ],
           version: cart.version,

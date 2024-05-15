@@ -1,4 +1,4 @@
-import type { AddCartItem, Cart, CartProduct } from '@/shared/types/cart.ts';
+import type { AddCartItem, Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 import type {
   CartPagedQueryResponse,
   Cart as CartResponse,
@@ -92,6 +92,15 @@ export class CartModel {
     return this.cart;
   }
 
+  public async editProductCount(editCartItem: EditCartItem): Promise<Cart> {
+    if (!this.cart) {
+      this.cart = await this.getCart();
+    }
+    const data = await this.root.editProductCount(this.cart, editCartItem);
+    this.cart = this.getCartFromData(data);
+    return this.cart;
+  }
+
   public async getCart(): Promise<Cart> {
     if (!this.cart) {
       const data = await this.root.getCarts();
@@ -104,11 +113,6 @@ export class CartModel {
         const activeCart = await this.root.getActiveCart();
         this.cart = this.getCartFromData(activeCart);
       }
-
-      // if (!this.cart.id) {
-      //   const newCart = await this.root.create();
-      //   this.cart = this.getCartFromData(newCart);
-      // }
     }
     return this.cart;
   }

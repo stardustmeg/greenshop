@@ -132,10 +132,6 @@ export class CustomerApi {
       .execute();
     if (!isErrorResponse(data)) {
       const auth = this.checkAuthConnection(userData);
-      // this.client.createAuthConnection(userData);
-      // this.client.approveAuth();
-      // // TBD: dele auth
-      // const auth = await this.authenticateUser(userData);
       if (!isErrorResponse(auth)) {
         await getCartModel().create();
       }

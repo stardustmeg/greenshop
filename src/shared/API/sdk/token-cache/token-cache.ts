@@ -39,7 +39,7 @@ export class MyTokenCache implements TokenCache {
         refreshToken: this.myCache.refreshToken || '',
         token: this.myCache.token,
       };
-      Cookies.set(`${this.name}-${NAME}`, JSON.stringify(cookieData));
+      Cookies.set(`${this.name}-${NAME}`, JSON.stringify(cookieData), { secure: true });
     }
   }
 

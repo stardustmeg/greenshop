@@ -22,3 +22,8 @@ export interface AddCartItem {
   quantity: number;
   variantId: number;
 }
+
+export interface EditCartItem {
+  lineId: string;
+  quantity: number;
+}

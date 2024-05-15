@@ -51,7 +51,7 @@ export class ApiClient {
     this.projectKey = PROJECT_KEY;
     this.clientID = CLIENT_ID;
     this.clientSecret = CLIENT_SECRET;
-    this.scopes = SCOPES.split(',');
+    this.scopes = SCOPES.split(' ');
 
     if (USE_SAVE_TOKEN && getTokenCache(TokenType.AUTH).isExist()) {
       this.authConnection = this.createAuthConnectionWithRefreshToken();
