@@ -1,5 +1,6 @@
 export interface InputParams {
   autocomplete: 'off' | 'on';
+  data?: Record<string, string>;
   id: string;
   lang?: string;
   max?: null | number;

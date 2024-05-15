@@ -25,7 +25,15 @@ class InputView {
       tag: 'input',
     });
 
+    this.setDataAttributes(attrs.data ?? {});
+
     return this.input;
+  }
+
+  private setDataAttributes(dataAttributes: Record<string, string>): void {
+    Object.entries(dataAttributes).forEach(([key, value]) => {
+      this.input.setAttribute(`data-${key}`, value);
+    });
   }
 
   public getHTML(): HTMLInputElement {
