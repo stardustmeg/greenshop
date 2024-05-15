@@ -14,7 +14,6 @@ class AppView {
       cssClasses: [styles.siteWrapper],
       tag: 'div',
     });
-
     return this.pagesContainer;
   }
 

@@ -1,0 +1,64 @@
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
+
+  &_hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.modalOverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #27272760;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
+
+  &_hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.modalContent {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 2px solid var(--noble-black-500);
+  border-radius: var(--border-radius);
+  padding: var(--small-offset);
+  font: var(--small-font);
+  letter-spacing: 1px;
+  color: var(--steam-green-500);
+  background-color: var(--noble-black-700);
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
+
+  &_hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.stopScroll {
+  overflow-y: hidden;
+}

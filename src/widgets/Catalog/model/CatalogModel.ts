@@ -22,6 +22,8 @@ import { META_FILTERS } from '@/shared/constants/filters.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { SORTING_ID } from '@/shared/constants/sorting.ts';
 import showBadRequestMessage from '@/shared/utils/showBadRequestMessage.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
+
 
 import CatalogView from '../view/CatalogView.ts';
 
@@ -75,7 +77,7 @@ class CatalogModel {
       const priceRange = await getProductModel().getPriceRange();
       return { categoriesProductCount: categoryCount, priceRange, products, sizes: sizeCount };
     } catch {
-      showBadRequestMessage();
+      showErrorMessage();
     } finally {
       loader.getHTML().remove();
     }
@@ -114,7 +116,7 @@ class CatalogModel {
         this.view.getLeftWrapper().append(this.productFilters.getDefaultFilters());
         this.view.getRightTopWrapper().append(this.productFilters.getMetaFilters(), this.productSorting.getHTML());
       })
-      .catch(() => showBadRequestMessage());
+      .catch(() => showErrorMessage());
 
     this.storeObservers();
   }
@@ -133,7 +135,7 @@ class CatalogModel {
         this.view.switchEmptyList(!data?.products?.length);
         this.productFilters?.updateParams(data);
       })
-      .catch(() => showBadRequestMessage());
+      .catch(() => showErrorMessage());
   }
 
   private storeObservers(): void {

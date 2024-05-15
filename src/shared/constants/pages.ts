@@ -100,4 +100,61 @@ export const PAGE_ID = {
   USER_PROFILE_PAGE: 'profile',
 } as const;
 
+export const USER_INFO_TEXT = {
+  en: {
+    DATE_OF_BIRTH: 'Date of Birth: ',
+    DEFAULT_BILLING_ADDRESS: ' (default billing)',
+    DEFAULT_SHIPPING_ADDRESS: ' (default shipping)',
+    EMAIL: 'Email: ',
+    LAST_NAME: 'Last Name: ',
+    NAME: 'First Name: ',
+  },
+  ru: {
+    DATE_OF_BIRTH: 'Дата рождения: ',
+    DEFAULT_BILLING_ADDRESS: ' (по умолчанию - для оплаты)',
+    DEFAULT_SHIPPING_ADDRESS: ' (по умолчанию - для доставки)',
+    EMAIL: 'Электронная почта: ',
+    LAST_NAME: 'Фамилия: ',
+    NAME: 'Имя: ',
+  },
+} as const;
+
+export const USER_INFO_TEXT_KEYS = {
+  DATE_OF_BIRTH: 'DATE_OF_BIRTH',
+  DEFAULT_BILLING_ADDRESS: 'DEFAULT_BILLING_ADDRESS',
+  DEFAULT_SHIPPING_ADDRESS: 'DEFAULT_SHIPPING_ADDRESS',
+  EMAIL: 'EMAIL',
+  LAST_NAME: 'LAST_NAME',
+  NAME: 'NAME',
+} as const;
+
+export type UserInfoTextKeysType = (typeof USER_INFO_TEXT_KEYS)[keyof typeof USER_INFO_TEXT_KEYS];
+
+export const USER_INFO_MENU_LINK = {
+  en: {
+    ADDRESSES: 'Addresses',
+    ORDERS: 'Orders',
+    PERSONAL_INFO: 'Personal Info',
+    SUPPORT: 'Support',
+    WISHLIST: 'Wishlist',
+  },
+  ru: {
+    ADDRESSES: 'Адреса',
+    ORDERS: 'Заказы',
+    PERSONAL_INFO: 'Персональные данные',
+    SUPPORT: 'Поддержка',
+    WISHLIST: 'Избранное',
+  },
+} as const;
+
+export const USER_INFO_MENU_LINK_KEYS = {
+  ADDRESSES: 'ADDRESSES',
+  ORDERS: 'ORDERS',
+  PERSONAL_INFO: 'PERSONAL_INFO',
+  SUPPORT: 'SUPPORT',
+  WISHLIST: 'WISHLIST',
+} as const;
+
+export type UserInfoMenuLinkKeysType = (typeof USER_INFO_MENU_LINK_KEYS)[keyof typeof USER_INFO_MENU_LINK_KEYS];
+
 export type PageIdType = (typeof PAGE_ID)[keyof typeof PAGE_ID];

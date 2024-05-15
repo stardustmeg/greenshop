@@ -5,22 +5,31 @@ export const MESSAGE_STATUS = {
 
 export type MessageStatusType = (typeof MESSAGE_STATUS)[keyof typeof MESSAGE_STATUS];
 
+export const MESSAGE_STATUS_KEYS = {
+  ERROR: 'ERROR',
+  SUCCESS: 'SUCCESS',
+} as const;
+
+export type MessageStatusKeysType = (typeof MESSAGE_STATUS_KEYS)[keyof typeof MESSAGE_STATUS_KEYS];
+
 export const SERVER_MESSAGE = {
   en: {
     BAD_REQUEST: 'Sorry, something went wrong. Try again later.',
+    GREETING: 'Hi! Welcome to our store. Enjoy shopping!',
     INCORRECT_PASSWORD: 'Please, enter a correct password',
     INVALID_EMAIL: "User with this email doesn't exist. Please, register first",
     LANGUAGE_CHANGED: 'Language preferences have been updated successfully',
-    SUCCESSFUL_LOGIN: 'Enjoy shopping!',
+    SUCCESSFUL_LOGIN: 'Welcome to our store. Enjoy shopping!',
     SUCCESSFUL_REGISTRATION: 'Your registration was successful',
     USER_EXISTS: 'User with this email already exists, please check your email',
   },
   ru: {
     BAD_REQUEST: 'Извините, что-то пошло не так. Попробуйте позже.',
+    GREETING: 'Здравствуйте! Добро пожаловать в наш магазин. Приятных покупок!',
     INCORRECT_PASSWORD: 'Пожалуйста, введите правильный пароль',
     INVALID_EMAIL: 'Пользователь с таким адресом не существует. Пожалуйста, сначала зарегистрируйтесь',
     LANGUAGE_CHANGED: 'Настройки языка успешно обновлены',
-    SUCCESSFUL_LOGIN: 'Приятных покупок!',
+    SUCCESSFUL_LOGIN: 'Добро пожаловать в наш магазин. Приятных покупок!',
     SUCCESSFUL_REGISTRATION: 'Регистрация прошла успешно',
     USER_EXISTS: 'Пользователь с таким адресом уже существует, пожалуйста, проверьте свою почту',
   },
@@ -28,6 +37,7 @@ export const SERVER_MESSAGE = {
 
 export const SERVER_MESSAGE_KEYS = {
   BAD_REQUEST: 'BAD_REQUEST',
+  GREETING: 'GREETING',
   INCORRECT_PASSWORD: 'INCORRECT_PASSWORD',
   INVALID_EMAIL: 'INVALID_EMAIL',
   LANGUAGE_CHANGED: 'LANGUAGE_CHANGED',
@@ -36,7 +46,7 @@ export const SERVER_MESSAGE_KEYS = {
   USER_EXISTS: 'USER_EXISTS',
 } as const;
 
-export type ServerMessageKey = (typeof SERVER_MESSAGE_KEYS)[keyof typeof SERVER_MESSAGE_KEYS];
+export type ServerMessageKeysType = (typeof SERVER_MESSAGE_KEYS)[keyof typeof SERVER_MESSAGE_KEYS];
 
 export const ERROR_MESSAGE = {
   en: {

@@ -5,11 +5,13 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentUser } from '@/shared/Store/actions.ts';
+import { setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import { createGreetingMessage } from '@/shared/utils/messageTemplate.ts';
+import isLanguageChoiceType from '@/shared/types/validation/language.ts';
+import { createGreetingMessage } from '@/shared/utils/messageTemplates.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
 
@@ -46,18 +48,10 @@ class LoginFormModel {
         if (response) {
           this.loginUserHandler(userLoginData);
         } else {
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE[getStore().getState().currentLanguage].INVALID_EMAIL,
-            MESSAGE_STATUS.ERROR,
-          );
+          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.INVALID_EMAIL, MESSAGE_STATUS.ERROR);
         }
       })
-      .catch(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        );
-      })
+      .catch(() => showErrorMessage())
       .finally(() => loader.remove());
   }
 
@@ -69,14 +63,19 @@ class LoginFormModel {
       .then((data) => {
         if (data) {
           getStore().dispatch(setCurrentUser(data));
-          serverMessageModel.showServerMessage(createGreetingMessage(), MESSAGE_STATUS.SUCCESS);
+          getStore().dispatch(switchIsUserLoggedIn(true));
+          if (isLanguageChoiceType(data.locale)) {
+            getStore().dispatch(setCurrentLanguage(data.locale));
+          }
+          serverMessageModel.showServerMessage(
+            SERVER_MESSAGE_KEYS.GREETING,
+            MESSAGE_STATUS.SUCCESS,
+            createGreetingMessage(),
+          );
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].INCORRECT_PASSWORD,
-          MESSAGE_STATUS.ERROR,
-        );
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.INCORRECT_PASSWORD, MESSAGE_STATUS.ERROR);
       })
       .finally(() => loader.remove());
   }
