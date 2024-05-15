@@ -295,6 +295,7 @@ export class ProductModel {
     const sizeCount = this.getSizeProductCountFromData(data);
     const categoryCount = this.getCategoriesProductCountFromData(data);
     if (products) {
+      // TBD Remove when possible to improve performance
       // getStore().dispatch(setProducts(products));
     }
     const result: ProductWithCount = {

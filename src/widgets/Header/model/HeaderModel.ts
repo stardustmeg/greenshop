@@ -96,6 +96,7 @@ class HeaderModel {
     switchLanguageCheckbox.addEventListener('click', () => {
       const {
         currentLanguage,
+        // TBD Uncomment when user is logged in on page reload
         // currentUser
       } = getStore().getState();
       const newLanguage = currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
