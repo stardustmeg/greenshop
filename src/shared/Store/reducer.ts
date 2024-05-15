@@ -55,7 +55,6 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
         ...state,
         currentLanguage: action.payload,
       };
-
     case 'switchIsUserLoggedIn':
       return {
         ...state,
@@ -66,7 +65,6 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
         ...state,
         currentPage: action.payload,
       };
-
     case 'switchAppTheme':
       return {
         ...state,
