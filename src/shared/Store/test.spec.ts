@@ -68,8 +68,10 @@ vi.mock('./Store.ts', async (importOriginal) => {
   return {
     ...actual,
     getState: (): State => ({
+      anonymToken: null,
       anonymousCartId: null,
       anonymousId: null,
+      authToken: null,
       billingCountry: '',
       currentLanguage: 'en',
       currentPage: '/',
@@ -167,6 +169,7 @@ it('should check if selectSelectedFiltersMetaFilter is a function', () => {
 it('observeStore should call select and onChange when state changes', () => {
   const mockUser = {
     addresses: [],
+    billingAddress: [],
     birthDate: '1990-01-01',
     defaultBillingAddressId: null,
     defaultShippingAddressId: null,
@@ -176,12 +179,15 @@ it('observeStore should call select and onChange when state changes', () => {
     lastName: 'Test',
     locale: 'en',
     password: 'Testtest1',
+    shippingAddress: [],
     version: 0,
   };
 
   const mockState: State = {
+    anonymToken: null,
     anonymousCartId: null,
     anonymousId: null,
+    authToken: null,
     billingCountry: '',
     currentLanguage: 'en',
     currentPage: 'main',
@@ -254,8 +260,10 @@ describe('rootReducer', () => {
 
   beforeEach(() => {
     initialState = {
+      anonymToken: null,
       anonymousCartId: null,
       anonymousId: null,
+      authToken: null,
       billingCountry: '',
       currentLanguage: 'en',
       currentPage: '/',
@@ -272,6 +280,7 @@ describe('rootReducer', () => {
   it('should handle setCurrentUser action', () => {
     const user: User = {
       addresses: [],
+      billingAddress: [],
       birthDate: '1990-01-01',
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
@@ -281,6 +290,7 @@ describe('rootReducer', () => {
       lastName: 'Test',
       locale: 'en',
       password: 'Testtest1',
+      shippingAddress: [],
       version: 0,
     };
     const action = actions.setCurrentUser(user);

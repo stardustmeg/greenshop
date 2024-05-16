@@ -1,10 +1,11 @@
 import type { AuthCredentials, User, UserCredentials } from '@/shared/types/user.ts';
 import type {
+  CartResourceIdentifier,
   ClientResponse,
   Customer,
+  CustomerDraft,
   CustomerPagedQueryResponse,
   CustomerSignInResult,
-  MyCustomerDraft,
   MyCustomerUpdateAction,
 } from '@commercetools/platform-sdk';
 
@@ -54,24 +55,40 @@ export class CustomerApi {
     return isOk;
   }
 
-  private makeCustomerDraft(userData: User): MyCustomerDraft {
-    const billingAddress = userData.defaultBillingAddressId
+  private makeCustomerDraft(userData: User): CustomerDraft {
+    const defaultBillingAddress = userData.defaultBillingAddressId
       ? findAddressIndex(userData.addresses, userData.defaultBillingAddressId)
       : null;
-    const shippingAddress = userData.defaultShippingAddressId
+    const defaultShippingAddress = userData.defaultShippingAddressId
       ? findAddressIndex(userData.addresses, userData.defaultShippingAddressId)
       : null;
-
+    const billingAddress = userData.billingAddress.length
+      ? findAddressIndex(userData.addresses, userData.billingAddress[0])
+      : null;
+    const shippingAddress = userData.shippingAddress.length
+      ? findAddressIndex(userData.addresses, userData.shippingAddress[0])
+      : null;
+    const { anonymousCartId, anonymousId } = getStore().getState();
+    const anonymCart: CartResourceIdentifier | undefined = anonymousCartId
+      ? {
+          id: anonymousCartId,
+          typeId: 'cart',
+        }
+      : undefined;
     return {
       addresses: [...userData.addresses],
       dateOfBirth: userData.birthDate,
-      ...(billingAddress !== null && billingAddress >= 0 && { defaultBillingAddress: billingAddress }),
-      ...(shippingAddress !== null && shippingAddress >= 0 && { defaultShippingAddress: shippingAddress }),
+      ...(defaultBillingAddress !== null && defaultBillingAddress >= 0 && { defaultBillingAddress }),
+      ...(defaultShippingAddress !== null && defaultShippingAddress >= 0 && { defaultShippingAddress }),
       email: userData.email,
       firstName: userData.firstName,
       lastName: userData.lastName,
       locale: userData.locale,
       password: userData.password,
+      ...(anonymCart && { anonymousCart: anonymCart }),
+      ...(anonymousId && { anonymousId }),
+      billingAddresses: billingAddress !== null ? [billingAddress] : undefined,
+      shippingAddresses: shippingAddress !== null ? [shippingAddress] : undefined,
     };
   }
 
@@ -127,8 +144,7 @@ export class CustomerApi {
   public async registrationUser(userData: User): Promise<ClientResponse<CustomerSignInResult>> {
     const data = await this.client
       .apiRoot()
-      .me()
-      .signup()
+      .customers()
       .post({ body: this.makeCustomerDraft(userData) })
       .execute();
     if (!isErrorResponse(data)) {

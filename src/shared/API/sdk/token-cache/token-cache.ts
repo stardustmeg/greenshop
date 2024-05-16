@@ -1,13 +1,11 @@
 import type { TokenCache, TokenStore } from '@commercetools/sdk-client-v2';
 
-import Cookies from 'js-cookie';
+import getStore from '@/shared/Store/Store.ts';
+import { setAnonymToken, setAuthToken } from '@/shared/Store/actions.ts';
 
 import type { TokenTypeType } from '../../types/type.ts';
 
 import { TokenType } from '../../types/type.ts';
-import { isTokenType } from '../../types/validation.ts';
-
-const NAME = 'token-data';
 
 export class MyTokenCache implements TokenCache {
   private myCache: TokenStore = {
@@ -20,26 +18,21 @@ export class MyTokenCache implements TokenCache {
 
   constructor(name: string) {
     this.name = name;
-    const soreData = Cookies.get(`${this.name}-${NAME}`);
-    if (soreData) {
-      const cookieData: unknown = JSON.parse(soreData);
-      if (isTokenType(cookieData)) {
-        const { expirationTime, refreshToken, token } = cookieData;
-        if (token && refreshToken) {
-          this.myCache = { expirationTime, refreshToken, token };
-        }
-      }
+    const soreData = getStore().getState();
+    if (this.name === TokenType.ANONYM && soreData.anonymToken) {
+      this.myCache = soreData.anonymToken;
+    } else if (this.name === TokenType.AUTH && soreData.authToken) {
+      this.myCache = soreData.authToken;
     }
   }
 
   private saveToken(): void {
     if (this.myCache.token) {
-      const cookieData = {
-        expirationTime: this.myCache.expirationTime.toString(),
-        refreshToken: this.myCache.refreshToken || '',
-        token: this.myCache.token,
-      };
-      Cookies.set(`${this.name}-${NAME}`, JSON.stringify(cookieData), { secure: true });
+      if (this.name === TokenType.ANONYM) {
+        getStore().dispatch(setAnonymToken(this.myCache));
+      } else if (this.name === TokenType.AUTH) {
+        getStore().dispatch(setAuthToken(this.myCache));
+      }
     }
   }
 
@@ -49,7 +42,11 @@ export class MyTokenCache implements TokenCache {
       refreshToken: undefined,
       token: '',
     };
-    Cookies.remove(`${this.name}-${NAME}`);
+    if (this.name === TokenType.ANONYM) {
+      getStore().dispatch(setAnonymToken(null));
+    } else if (this.name === TokenType.AUTH) {
+      getStore().dispatch(setAuthToken(null));
+    }
   }
 
   public get(): TokenStore {

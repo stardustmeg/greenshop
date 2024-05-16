@@ -108,6 +108,7 @@ export class CustomerModel {
 
     return {
       addresses: this.adaptAddress(data.addresses),
+      billingAddress: [],
       birthDate: data.dateOfBirth || '',
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
@@ -117,6 +118,7 @@ export class CustomerModel {
       lastName: data.lastName || '',
       locale: data.locale || 'en',
       password: data.password || '',
+      shippingAddress: [],
       version: data.version || 0,
     };
   }
@@ -124,8 +126,16 @@ export class CustomerModel {
   private adaptCustomerToClient(data: Customer): User {
     const adaptedCustomer = this.adaptCustomerData(data);
 
+    adaptedCustomer.billingAddress = this.adaptShippingBillingAddress(
+      data.billingAddressIds,
+      adaptedCustomer.addresses,
+    );
     adaptedCustomer.defaultBillingAddressId = this.adaptDefaultAddress(
       data.defaultBillingAddressId,
+      adaptedCustomer.addresses,
+    );
+    adaptedCustomer.shippingAddress = this.adaptShippingBillingAddress(
+      data.shippingAddressIds,
       adaptedCustomer.addresses,
     );
     adaptedCustomer.defaultShippingAddressId = this.adaptDefaultAddress(
@@ -141,6 +151,19 @@ export class CustomerModel {
       return addressFound || null;
     }
     return null;
+  }
+
+  private adaptShippingBillingAddress(currentsAddress: string[] | undefined, allAddress: Address[]): Address[] {
+    const result: Address[] = [];
+    if (currentsAddress) {
+      currentsAddress.forEach((addressId) => {
+        const addressFound = allAddress.find((address) => address.id === addressId);
+        if (addressFound) {
+          result.push(addressFound);
+        }
+      });
+    }
+    return result;
   }
 
   private adaptSignInToClient(data: CustomerSignInResult): User {

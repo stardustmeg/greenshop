@@ -38,6 +38,7 @@ class RegisterFormModel {
   private getFormUserData(): User {
     const userData: User = {
       addresses: [],
+      billingAddress: [],
       birthDate: this.view.getDateOfBirthField().getView().getValue(),
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
@@ -47,6 +48,7 @@ class RegisterFormModel {
       lastName: formattedText(this.view.getLastNameField().getView().getValue()),
       locale: getStore().getState().currentLanguage,
       password: this.view.getPasswordField().getView().getValue(),
+      shippingAddress: [],
       version: 0,
     };
 
@@ -188,27 +190,32 @@ class RegisterFormModel {
     const checkboxDefaultBillingAddress = billing.getView().getAddressByDefaultCheckBox()?.getHTML();
 
     const currentUserData = userData;
-    currentUserData?.addresses.push(shipping.getAddressData(personalData));
+
+    const shippingAddress = shipping.getAddressData(personalData);
+    currentUserData?.addresses.push(shippingAddress);
+    currentUserData?.shippingAddress.push(shippingAddress);
     if (!currentUserData) {
       return null;
     }
 
     if (checkboxDefaultShippingAddress?.checked) {
-      currentUserData.defaultShippingAddressId = shipping.getAddressData(personalData);
+      currentUserData.defaultShippingAddressId = shippingAddress;
     }
 
     if (checkboxSingleAddress?.checked && checkboxDefaultShippingAddress?.checked) {
-      currentUserData.defaultBillingAddressId = shipping.getAddressData(personalData);
+      currentUserData.defaultBillingAddressId = shippingAddress;
       return currentUserData;
     }
 
-    currentUserData?.addresses.push(billing.getAddressData(personalData));
+    const billingAddress = billing.getAddressData(personalData);
+    currentUserData?.billingAddress.push(billingAddress);
+    currentUserData?.addresses.push(billingAddress);
     if (!currentUserData) {
       return null;
     }
 
     if (checkboxDefaultBillingAddress?.checked) {
-      currentUserData.defaultBillingAddressId = billing.getAddressData(personalData);
+      currentUserData.defaultBillingAddressId = billingAddress;
     }
 
     return currentUserData;

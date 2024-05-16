@@ -1,4 +1,6 @@
 /* eslint-disable max-lines-per-function */
+import type { TokenStore } from '@commercetools/sdk-client-v2';
+
 import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
 import type { SelectedFilters } from '../types/productFilters.ts';
@@ -8,8 +10,10 @@ import type * as actions from './actions.ts';
 import type { Reducer } from './types.ts';
 
 export interface State {
+  anonymToken: TokenStore | null;
   anonymousCartId: null | string;
   anonymousId: null | string;
+  authToken: TokenStore | null;
   billingCountry: string;
   currentLanguage: LanguageChoiceType;
   currentPage: PageIdType;
@@ -27,6 +31,16 @@ type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 export type Action = ReturnType<InferValueTypes<typeof actions>>;
 export const rootReducer: Reducer<State, Action> = (state: State, action: Action): State => {
   switch (action.type) {
+    case 'setAnonymToken':
+      return {
+        ...state,
+        anonymToken: action.payload,
+      };
+    case 'setAuthToken':
+      return {
+        ...state,
+        authToken: action.payload,
+      };
     case 'setAnonymousCartId':
       return {
         ...state,

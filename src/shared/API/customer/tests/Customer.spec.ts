@@ -16,6 +16,7 @@ describe('Checking Customer Model', () => {
   beforeAll(() => {
     user = {
       addresses: [],
+      billingAddress: [],
       birthDate: '1990-01-01',
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
@@ -25,6 +26,7 @@ describe('Checking Customer Model', () => {
       lastName: 'Smith',
       locale: 'en',
       password: 'Qqq11',
+      shippingAddress: [],
       version: 0,
     };
 

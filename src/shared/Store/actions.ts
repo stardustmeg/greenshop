@@ -1,3 +1,5 @@
+import type { TokenStore } from '@commercetools/sdk-client-v2';
+
 import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
 import type { SelectedFilters } from '../types/productFilters';
@@ -5,8 +7,10 @@ import type { SelectedSorting } from '../types/productSorting.ts';
 import type { User } from '../types/user';
 
 const ACTION = {
+  SET_ANONYM_TOKEN: 'setAnonymToken',
   SET_ANONYMOUS_CART_ID: 'setAnonymousCartId',
   SET_ANONYMOUS_ID: 'setAnonymousId',
+  SET_AUTH_TOKEN: 'setAuthToken',
   SET_BILLING_COUNTRY: 'setBillingCountry',
   SET_CURRENT_LANGUAGE: 'setCurrentLanguage',
   SET_CURRENT_PAGE: 'setCurrentPage',
@@ -29,6 +33,20 @@ interface ActionWithPayload<T, U extends ActionType> {
 interface ActionWithoutPayload<U extends ActionType> {
   type: U;
 }
+
+export const setAnonymToken = (
+  value: TokenStore | null,
+): ActionWithPayload<TokenStore | null, typeof ACTION.SET_ANONYM_TOKEN> => ({
+  payload: value,
+  type: ACTION.SET_ANONYM_TOKEN,
+});
+
+export const setAuthToken = (
+  value: TokenStore | null,
+): ActionWithPayload<TokenStore | null, typeof ACTION.SET_AUTH_TOKEN> => ({
+  payload: value,
+  type: ACTION.SET_AUTH_TOKEN,
+});
 
 export const setAnonymousCartId = (
   value: null | string,
