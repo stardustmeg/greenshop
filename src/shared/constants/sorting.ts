@@ -1,15 +1,15 @@
 export const TEXT = {
   en: {
-    DEFAULT: 'Default sorting',
+    DEFAULT: 'Default',
     NAME: 'Name',
     PRICE: 'Price',
     SORT_BY: 'Sort by:',
   },
   ru: {
-    DEFAULT: 'По умолчанию',
+    DEFAULT: 'Умолчанию',
     NAME: 'Названию',
     PRICE: 'Цене',
-    SORT_BY: 'Сортировать по:',
+    SORT_BY: 'По:',
   },
 } as const;
 
