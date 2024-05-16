@@ -3,39 +3,16 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-top-right-radius: var(--medium-br);
-  border-bottom-right-radius: var(--medium-br);
-  height: 100%;
+  grid-row: 3;
   min-width: calc(var(--large-offset) * 2);
+  min-height: 2.292rem;
   transition: background-color 0.2s;
   cursor: pointer;
   user-select: none;
 
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    width: 100%;
-    height: 2px;
-    background-color: var(--steam-green-500);
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: center;
-    transition:
-      transform 0.2s,
-      opacity 0.2s,
-      background-color 0.2s;
-  }
-
   @media (hover: hover) {
     &:hover {
       background-color: var(--noble-white-100);
-
-      &::after {
-        opacity: 1;
-        transform: scaleX(1);
-      }
 
       .sortingListTitle {
         color: var(--steam-green-400);
@@ -69,6 +46,7 @@
   outline: 2px solid var(--noble-white-200);
   border-radius: var(--medium-br);
   border-top-left-radius: 0;
+  border-top-right-radius: 0;
   width: 100%;
   background-color: var(--noble-white-200);
   opacity: 0;
@@ -90,9 +68,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  border-radius: var(--medium-br);
-  border-top-left-radius: 0;
-  padding: var(--extra-small-offset);
+  padding: var(--tiny-offset);
   height: 100%;
   font: var(--regular-font);
   letter-spacing: 1px;
@@ -106,37 +82,20 @@
   &::before {
     content: '↑';
     position: absolute;
-    right: 10%;
+    right: 2%;
     transition: transform 0.3s;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    width: 100%;
-    height: var(--two);
-    background-color: currentcolor;
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: center;
-    transition:
-      transform 0.2s,
-      opacity 0.2s,
-      background-color 0.2s;
   }
 
   @media (hover: hover) {
     &:hover {
       color: var(--steam-green-400);
       background-color: var(--noble-white-100);
-
-      &::after {
-        opacity: 1;
-        transform: scaleX(1);
-      }
     }
+  }
+
+  &:last-child {
+    border-bottom-right-radius: var(--medium-br);
+    border-bottom-left-radius: var(--medium-br);
   }
 
   &:nth-child(1) {
@@ -161,10 +120,9 @@
     color: var(--steam-green-400);
     background-color: var(--noble-white-100);
     opacity: 1;
-
-    &::after {
-      opacity: 1;
-      transform: scaleX(1);
-    }
   }
+}
+
+.currentSortingSpan {
+  color: var(--steam-green-400);
 }

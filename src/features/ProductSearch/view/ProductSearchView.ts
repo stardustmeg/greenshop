@@ -17,7 +17,7 @@ class ProductSearchView {
 
   private createHTML(): HTMLDivElement {
     this.view = createBaseElement({
-      cssClasses: [styles.style],
+      cssClasses: [styles.searchWrapper],
       tag: 'div',
     });
 
@@ -32,6 +32,8 @@ class ProductSearchView {
       type: INPUT_TYPE.SEARCH,
     });
 
+    this.searchField.getHTML().classList.add(styles.searchField);
+
     return this.searchField;
   }
 
@@ -39,7 +41,7 @@ class ProductSearchView {
     return this.view;
   }
 
-  public getsearchField(): InputModel {
+  public getSearchField(): InputModel {
     return this.searchField;
   }
 }

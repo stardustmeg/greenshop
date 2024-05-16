@@ -12,6 +12,7 @@ import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, {
   observeSetInStore,
+  selectSearchValue,
   selectSelectedFiltersCategory,
   selectSelectedFiltersMetaFilter,
   selectSelectedFiltersPrice,
@@ -54,6 +55,7 @@ class CatalogModel {
 
   private getOptions(): OptionsRequest {
     const { category, metaFilter, price, size } = getStore().getState().selectedFilters || {};
+    const { currentLanguage, searchValue } = getStore().getState();
     const filter = new FilterProduct();
     category?.forEach((categoryID) => filter.addFilter(FilterFields.CATEGORY, categoryID));
     if (price?.max || price?.min) {
@@ -66,7 +68,7 @@ class CatalogModel {
     this.addCurrentMetaFilter(filter, metaFilter ?? META_FILTERS.en.ALL_PRODUCTS);
     const currentSort = this.getSelectedSorting();
     if (currentSort) {
-      return { filter: filter.getFilter(), sort: currentSort };
+      return { filter: filter.getFilter(), search: { locale: currentLanguage, value: searchValue }, sort: currentSort };
     }
 
     return { filter: filter.getFilter() };
@@ -161,6 +163,7 @@ class CatalogModel {
     observeStore(selectSelectedFiltersMetaFilter, () => this.redrawProductList(this.getOptions()));
     observeStore(selectSelectedSortingField, () => this.redrawProductList(this.getOptions()));
     observeStore(selectSelectedSortingDirection, () => this.redrawProductList(this.getOptions()));
+    observeStore(selectSearchValue, () => this.redrawProductList(this.getOptions()));
   }
 
   public getHTML(): HTMLDivElement {

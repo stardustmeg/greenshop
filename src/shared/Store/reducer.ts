@@ -16,6 +16,7 @@ export interface State {
   currentUser: User | null;
   isAppThemeLight: boolean;
   isUserLoggedIn: boolean;
+  searchValue: string;
   selectedFilters: SelectedFilters | null;
   selectedSorting: SelectedSorting | null;
   shippingCountry: string;
@@ -80,6 +81,11 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         selectedSorting: action.payload,
+      };
+    case 'setSearchValue':
+      return {
+        ...state,
+        searchValue: action.payload,
       };
     default:
       return state;
