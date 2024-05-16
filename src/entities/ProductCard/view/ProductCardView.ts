@@ -276,6 +276,18 @@ class ProductCardView {
     button.textContent = isActive ? moreText.HIDE : moreText.MORE;
   }
 
+  public getAddToCardButton(): ButtonModel {
+    return this.addToCardButton;
+  }
+
+  public getAddToWishListButton(): ButtonModel {
+    return this.addToWishListButton;
+  }
+
+  public getGoDetailsPageButton(): ButtonModel {
+    return this.goDetailsPageButton;
+  }
+
   public getHTML(): HTMLLIElement {
     return this.productCard;
   }
