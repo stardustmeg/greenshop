@@ -17,8 +17,7 @@ import observeStore, {
   selectSelectedFiltersMetaFilter,
   selectSelectedFiltersPrice,
   selectSelectedFiltersSize,
-  selectSelectedSortingDirection,
-  selectSelectedSortingField,
+  selectSelectedSorting,
 } from '@/shared/Store/observer.ts';
 import { META_FILTERS } from '@/shared/constants/filters.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
@@ -122,6 +121,7 @@ class CatalogModel {
             this.productFilters = new ProductFiltersModel(data);
             this.productSorting = new ProductSortsModel();
             this.productSearch = new ProductSearchModel();
+            this.storeObservers();
             this.view.getLeftWrapper().append(this.productFilters.getDefaultFilters());
             this.view
               .getRightTopWrapper()
@@ -134,8 +134,6 @@ class CatalogModel {
           .catch(() => showErrorMessage());
       })
       .catch(() => showErrorMessage());
-
-    this.storeObservers();
   }
 
   private redrawProductList(options?: OptionsRequest): void {
@@ -144,7 +142,6 @@ class CatalogModel {
     productList.innerHTML = '';
     this.getProductItems(options ?? {})
       .then((data) => {
-        productList.innerHTML = '';
         if (data?.products?.length) {
           data?.products?.forEach((productData) =>
             productList.append(new ProductCardModel(productData, currentSize).getHTML()),
@@ -161,8 +158,7 @@ class CatalogModel {
     observeStore(selectSelectedFiltersPrice, () => this.redrawProductList(this.getOptions()));
     observeStore(selectSelectedFiltersSize, () => this.redrawProductList(this.getOptions()));
     observeStore(selectSelectedFiltersMetaFilter, () => this.redrawProductList(this.getOptions()));
-    observeStore(selectSelectedSortingField, () => this.redrawProductList(this.getOptions()));
-    observeStore(selectSelectedSortingDirection, () => this.redrawProductList(this.getOptions()));
+    observeStore(selectSelectedSorting, () => this.redrawProductList(this.getOptions()));
     observeStore(selectSearchValue, () => this.redrawProductList(this.getOptions()));
   }
 
