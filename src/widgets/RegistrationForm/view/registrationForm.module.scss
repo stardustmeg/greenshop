@@ -149,9 +149,10 @@
   }
 }
 
-.credentialsWrapper,
-.personalDataWrapper {
+.credentialsWrapper {
   display: grid;
+  grid-column: 2 span;
+  grid-row: 1;
   grid-template-columns: repeat(2, 1fr);
   padding: var(--extra-small-offset);
   gap: calc(var(--extra-small-offset) * 1.5) var(--extra-small-offset);
@@ -187,16 +188,6 @@
     grid-column: 1 span;
     grid-template-columns: repeat(1, 1fr);
   }
-}
-
-.credentialsWrapper {
-  grid-column: 2 span;
-  grid-row: 1;
-}
-
-.personalDataWrapper {
-  grid-column: 2 span;
-  grid-row: 2;
 }
 
 .settingsAddressWrapper {

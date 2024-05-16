@@ -17,21 +17,13 @@ import styles from './registrationForm.module.scss';
 class RegistrationFormView {
   private credentialsWrapper: HTMLDivElement;
 
-  private dateOfBirthField: InputFieldModel;
-
   private emailField: InputFieldModel;
-
-  private firstNameField: InputFieldModel;
 
   private form: HTMLFormElement;
 
   private inputFields: InputFieldModel[] = [];
 
-  private lastNameField: InputFieldModel;
-
   private passwordField: InputFieldModel;
-
-  private personalDataWrapper: HTMLDivElement;
 
   private showPasswordElement: HTMLDivElement;
 
@@ -41,11 +33,7 @@ class RegistrationFormView {
     this.showPasswordElement = this.createShowPasswordElement();
     this.emailField = this.createEmailField();
     this.passwordField = this.createPasswordField();
-    this.firstNameField = this.createFirstNameField();
-    this.lastNameField = this.createLastNameField();
-    this.dateOfBirthField = this.createDateOfBirthField();
     this.credentialsWrapper = this.createCredentialsWrapper();
-    this.personalDataWrapper = this.createPersonalDataWrapper();
     this.submitFormButton = this.createSubmitFormButton();
     this.form = this.createHTML();
   }
@@ -60,22 +48,10 @@ class RegistrationFormView {
     return this.credentialsWrapper;
   }
 
-  private createDateOfBirthField(): InputFieldModel {
-    this.dateOfBirthField = new InputFieldModel(FORM_FIELDS.BIRTHDAY, FORM_VALIDATION.BIRTHDAY_VALIDATE);
-    this.inputFields.push(this.dateOfBirthField);
-    return this.dateOfBirthField;
-  }
-
   private createEmailField(): InputFieldModel {
     this.emailField = new InputFieldModel(FORM_FIELDS.EMAIL, FORM_VALIDATION.EMAIL_VALIDATE);
     this.inputFields.push(this.emailField);
     return this.emailField;
-  }
-
-  private createFirstNameField(): InputFieldModel {
-    this.firstNameField = new InputFieldModel(FORM_FIELDS.FIRST_NAME, FORM_VALIDATION.FIRST_NAME_VALIDATE);
-    this.inputFields.push(this.firstNameField);
-    return this.firstNameField;
   }
 
   private createHTML(): HTMLFormElement {
@@ -84,14 +60,8 @@ class RegistrationFormView {
       tag: 'form',
     });
 
-    this.form.append(this.credentialsWrapper, this.personalDataWrapper, this.submitFormButton.getHTML());
+    this.form.append(this.credentialsWrapper, this.submitFormButton.getHTML());
     return this.form;
-  }
-
-  private createLastNameField(): InputFieldModel {
-    this.lastNameField = new InputFieldModel(FORM_FIELDS.LAST_NAME, FORM_VALIDATION.LAST_NAME_VALIDATE);
-    this.inputFields.push(this.lastNameField);
-    return this.lastNameField;
   }
 
   private createPasswordField(): InputFieldModel {
@@ -102,18 +72,6 @@ class RegistrationFormView {
       inputElement.append(this.showPasswordElement);
     }
     return this.passwordField;
-  }
-
-  private createPersonalDataWrapper(): HTMLDivElement {
-    const currentInputFields = [this.firstNameField, this.lastNameField, this.dateOfBirthField];
-
-    this.personalDataWrapper = this.createWrapperElement(
-      FORM_CONSTANT.TITLE_TEXT_KEYS.PERSONAL,
-      [styles.personalDataWrapper],
-      currentInputFields,
-    );
-
-    return this.personalDataWrapper;
   }
 
   private createShowPasswordElement(): HTMLDivElement {
@@ -171,16 +129,8 @@ class RegistrationFormView {
     return wrapperElement;
   }
 
-  public getDateOfBirthField(): InputFieldModel {
-    return this.dateOfBirthField;
-  }
-
   public getEmailField(): InputFieldModel {
     return this.emailField;
-  }
-
-  public getFirstNameField(): InputFieldModel {
-    return this.firstNameField;
   }
 
   public getHTML(): HTMLFormElement {
@@ -189,10 +139,6 @@ class RegistrationFormView {
 
   public getInputFields(): InputFieldModel[] {
     return this.inputFields;
-  }
-
-  public getLastNameField(): InputFieldModel {
-    return this.lastNameField;
   }
 
   public getPasswordField(): InputFieldModel {

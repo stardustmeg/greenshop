@@ -3,6 +3,7 @@ import type { AddressType } from '@/shared/types/address.ts';
 import type { PersonalData, User } from '@/shared/types/user.ts';
 
 import AddressModel from '@/entities/Address/model/AddressModel.ts';
+import PersonalInfoModel from '@/entities/PersonalInfo/model/PersonalInfoModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
@@ -12,7 +13,6 @@ import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
-import formattedText from '@/shared/utils/formattedText.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
@@ -29,6 +29,8 @@ class RegisterFormModel {
 
   private inputFields: InputFieldModel[] = [];
 
+  private personalInfoWrapper = new PersonalInfoModel();
+
   private view: RegistrationFormView = new RegistrationFormView();
 
   constructor() {
@@ -36,16 +38,17 @@ class RegisterFormModel {
   }
 
   private getFormUserData(): User {
+    const { birthDate, firstName, lastName } = this.personalInfoWrapper.getFormPersonalInfo();
     const userData: User = {
       addresses: [],
       billingAddress: [],
-      birthDate: this.view.getDateOfBirthField().getView().getValue(),
+      birthDate,
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
       email: this.view.getEmailField().getView().getValue(),
-      firstName: formattedText(this.view.getFirstNameField().getView().getValue()),
+      firstName,
       id: '',
-      lastName: formattedText(this.view.getLastNameField().getView().getValue()),
+      lastName,
       locale: getStore().getState().currentLanguage,
       password: this.view.getPasswordField().getView().getValue(),
       shippingAddress: [],
@@ -57,15 +60,18 @@ class RegisterFormModel {
   }
 
   private getPersonalData(): PersonalData {
+    const { firstName, lastName } = this.personalInfoWrapper.getFormPersonalInfo();
     return {
       email: this.view.getEmailField().getView().getValue(),
-      firstName: formattedText(this.view.getFirstNameField().getView().getValue()),
-      lastName: formattedText(this.view.getLastNameField().getView().getValue()),
+      firstName,
+      lastName,
     };
   }
 
   private init(): boolean {
     this.inputFields = this.view.getInputFields();
+    this.getHTML().append(this.personalInfoWrapper.getHTML());
+    this.inputFields.push(...this.personalInfoWrapper.getView().getInputFields());
     Object.values(this.addressWrappers)
       .reverse()
       .forEach((addressWrapper) => {
