@@ -9,13 +9,17 @@
 .metaFilters {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  grid-row: 1;
 }
 
 .metaLink {
   position: relative;
   display: flex;
+  flex-grow: 1;
   align-items: center;
-  padding: var(--extra-small-offset) calc(var(--extra-small-offset) / 2);
+  justify-content: center;
+  padding: var(--tiny-offset);
   height: 100%;
   font: var(--regular-font);
   letter-spacing: 1px;
@@ -54,6 +58,10 @@
     }
   }
 
+  &:last-child {
+    border-top-right-radius: var(--medium-br);
+  }
+
   &:nth-child(1) {
     border-radius: var(--medium-br) 0 0 0;
   }
@@ -83,7 +91,7 @@
 .categoryTitle,
 .priceTitle,
 .sizesTitle {
-  padding: calc(var(--extra-small-offset));
+  padding: var(--tiny-offset);
   width: 100%;
   font: var(--medium-font);
   letter-spacing: 1px;
@@ -101,7 +109,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: calc(var(--small-offset) / 2) var(--extra-small-offset);
+  padding: var(--tiny-offset);
   width: 100%;
   font: var(--regular-font);
   letter-spacing: 1px;
@@ -169,7 +177,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--extra-small-offset);
-  padding: 0 var(--extra-small-offset);
+  padding: 0 var(--tiny-offset);
   width: 100%;
   font: var(--regular-font);
   letter-spacing: 1px;

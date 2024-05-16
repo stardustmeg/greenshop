@@ -11,6 +11,7 @@ const initialState: State = {
   currentUser: null,
   isAppThemeLight: true,
   isUserLoggedIn: false,
+  searchValue: '',
   selectedFilters: {
     category: new Set(),
     metaFilter: 'All products',

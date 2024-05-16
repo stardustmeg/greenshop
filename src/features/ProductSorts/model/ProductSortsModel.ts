@@ -8,7 +8,7 @@ import ProductSortsView from '../view/ProductSortsView.ts';
 class ProductSortsModel {
   private selectedSorting: SelectedSorting = {
     direction: 'asc',
-    field: 'Default sorting',
+    field: 'price',
   };
 
   private view = new ProductSortsView();
@@ -18,6 +18,7 @@ class ProductSortsModel {
   }
 
   private init(): void {
+    getStore().dispatch(setSelectedSorting(this.selectedSorting));
     this.setSortingLinksHandlers();
   }
 

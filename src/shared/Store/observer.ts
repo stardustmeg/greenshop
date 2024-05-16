@@ -103,4 +103,6 @@ export const selectSelectedSortingDirection = (state: State): null | string => {
   return null;
 };
 
+export const selectSearchValue = (state: State): string => state.searchValue;
+
 export default observeStore;
