@@ -1,4 +1,4 @@
-import type { SizeProductCount } from '../API/types/type.ts';
+import type { PriceRange, SizeProductCount } from '../API/types/type.ts';
 import type { MetaFiltersType } from '../constants/filters.ts';
 import type { Category, Product } from './product.ts';
 
@@ -9,10 +9,7 @@ interface ProductFiltersParams {
         count: number;
       }[]
     | null;
-  priceRange: {
-    max: number;
-    min: number;
-  } | null;
+  priceRange: PriceRange | null;
   products: Product[] | null;
   sizes: SizeProductCount[] | null;
 }

@@ -73,6 +73,7 @@
     "nouislider": "^15.7.1",
     "plop": "^4.0.1",
     "postcode-validator": "^3.8.20",
+    "sharp": "^0.33.3",
     "vite-plugin-checker": "^0.6.4",
     "vite-plugin-image-optimizer": "^1.1.7",
     "vite-plugin-svg-spriter": "^1.0.0",

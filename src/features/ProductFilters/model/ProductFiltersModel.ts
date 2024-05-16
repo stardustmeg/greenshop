@@ -62,7 +62,6 @@ class ProductFiltersModel {
         max: +max,
         min: +min,
       };
-
       getStore().dispatch(setSelectedFilters(this.selectedFilters));
     });
   }
@@ -116,7 +115,7 @@ class ProductFiltersModel {
         },
         size: null,
       };
-      this.setMetaLinksHandlers();
+      // this.setMetaLinksHandlers();
       this.view.getMetaLinks().forEach((link) => {
         this.view.switchSelectedFilter(link, false);
         if (link.getHTML().id === this.selectedFilters.metaFilter) {
