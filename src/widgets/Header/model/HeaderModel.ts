@@ -3,7 +3,7 @@ import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import { setAuthToken, setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
@@ -65,6 +65,7 @@ class HeaderModel {
   private async logoutHandler(): Promise<boolean> {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
+    getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
     try {
       getCustomerModel().logout();

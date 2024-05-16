@@ -1,12 +1,12 @@
 import type { UserCredentials } from '@/shared/types/user';
 
+import getStore from '@/shared/Store/Store.ts';
 import { type ByProjectKeyRequestBuilder, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import {
   type AnonymousAuthMiddlewareOptions,
   type AuthMiddlewareOptions,
   type Client,
   ClientBuilder,
-  type ExistingTokenMiddlewareOptions,
   type HttpMiddlewareOptions,
   type PasswordAuthMiddlewareOptions,
   type RefreshAuthMiddlewareOptions,
@@ -53,7 +53,7 @@ export class ApiClient {
     this.clientSecret = CLIENT_SECRET;
     this.scopes = SCOPES.split(' ');
 
-    if (USE_SAVE_TOKEN && getTokenCache(TokenType.AUTH).isExist()) {
+    if (USE_SAVE_TOKEN && getStore().getState().authToken) {
       this.authConnection = this.createAuthConnectionWithRefreshToken();
       this.isAuth = true;
     } else {
@@ -79,16 +79,6 @@ export class ApiClient {
       },
     };
     return authOptions;
-  }
-
-  private addExistTokenMiddleware(tokenType: TokenTypeType, client: ClientBuilder): void {
-    const { token } = getTokenCache(tokenType).get();
-    if (token) {
-      const optionsToken: ExistingTokenMiddlewareOptions = {
-        force: true,
-      };
-      client.withExistingTokenFlow(`Bearer ${token}`, optionsToken);
-    }
   }
 
   private addRefreshMiddleware(
@@ -128,9 +118,7 @@ export class ApiClient {
     };
 
     client.withAnonymousSessionFlow(anonymOptions);
-
     this.addRefreshMiddleware(TokenType.ANONYM, client, defaultOptions);
-    this.addExistTokenMiddleware(TokenType.ANONYM, client);
 
     this.anonymConnection = this.getConnection(client.build());
     return this.anonymConnection;
@@ -142,7 +130,6 @@ export class ApiClient {
       const client = this.getDefaultClient();
 
       this.addRefreshMiddleware(TokenType.AUTH, client, defaultOptions);
-      this.addExistTokenMiddleware(TokenType.AUTH, client);
 
       this.authConnection = this.getConnection(client.build());
     }
