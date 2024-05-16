@@ -1,13 +1,17 @@
-// import NameView from '../view/TemplateView.ts';
+import NameView from '../view/TemplateView.ts';
 
-// class NameModel {
-//   private view = new NameView();
+class NameModel {
+  private view = new NameView();
 
-//   constructor() {}
+  constructor() {
+    this.init();
+  }
 
-//   public getHTML(): void {
-//     return this.view.getHTML();
-//   }
-// }
+  private init(): void {}
 
-// export default NameModel;
+  public getHTML(): HTMLDivElement {
+    return this.view.getHTML();
+  }
+}
+
+export default NameModel;

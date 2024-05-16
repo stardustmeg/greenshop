@@ -61,7 +61,12 @@ class CatalogModel {
     }
 
     this.addCurrentMetaFilter(filter, metaFilter ?? META_FILTERS.en.ALL_PRODUCTS);
-    return { filter: filter.getFilter(), sort: this.getSelectedSorting() };
+    const currentSort = this.getSelectedSorting();
+    if (currentSort) {
+      return { filter: filter.getFilter(), sort: currentSort };
+    }
+
+    return { filter: filter.getFilter() };
   }
 
   private async getProductItems(options: OptionsRequest): Promise<ProductFiltersParams | null> {
@@ -71,8 +76,7 @@ class CatalogModel {
     productList.append(loader.getHTML());
 
     try {
-      const { categoryCount, products, sizeCount } = await getProductModel().getProducts(options);
-      const priceRange = await getProductModel().getPriceRange();
+      const { categoryCount, priceRange, products, sizeCount } = await getProductModel().getProducts(options);
       return { categoriesProductCount: categoryCount, priceRange, products, sizes: sizeCount };
     } catch {
       showErrorMessage();
@@ -82,17 +86,16 @@ class CatalogModel {
     return null;
   }
 
-  private getSelectedSorting(): SortOptions {
+  private getSelectedSorting(): SortOptions | null {
     const { direction, field } = getStore().getState().selectedSorting || {};
     const currentDirection = direction === SortDirection.ASC ? SortDirection.ASC : SortDirection.DESC;
-    const revertDirection = currentDirection === SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC;
     const currentField = field === SortFields.NAME ? SortFields.NAME : SortFields.PRICE;
 
     if (field === SortFields.PRICE) {
       return { direction: currentDirection, field: currentField };
     }
     if (field === SORTING_ID.DEFAULT) {
-      return { direction: revertDirection, field: SortFields.NAME, locale: getStore().getState().currentLanguage };
+      return null;
     }
     return { direction: currentDirection, field: currentField, locale: getStore().getState().currentLanguage };
   }
@@ -115,7 +118,6 @@ class CatalogModel {
         this.view.getRightTopWrapper().append(this.productFilters.getMetaFilters(), this.productSorting.getHTML());
       })
       .catch(() => showErrorMessage());
-
     this.storeObservers();
   }
 
@@ -125,6 +127,7 @@ class CatalogModel {
     productList.innerHTML = '';
     this.getProductItems(options ?? {})
       .then((data) => {
+        productList.innerHTML = '';
         if (data?.products?.length) {
           data?.products?.forEach((productData) =>
             productList.append(new ProductCardModel(productData, currentSize).getHTML()),

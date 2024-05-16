@@ -1,17 +1,25 @@
-// import styles from './templateView.module.scss';
+import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-// class NameView {
-//   private view: void;
+import styles from './templateView.module.scss';
 
-//   constructor() {
-//     this.view = this.createHTML();
-//   }
+class NameView {
+  private view: HTMLDivElement;
 
-//   private createHTML(): void {}
+  constructor() {
+    this.view = this.createHTML();
+  }
 
-//   public getHTML(): void {
-//     return this.view;
-//   }
-// }
+  private createHTML(): HTMLDivElement {
+    this.view = createBaseElement({
+      cssClasses: [styles.style],
+      tag: 'div',
+    })
+    return this.view;
+  }
 
-// export default NameView;
+  public getHTML(): HTMLDivElement {
+    return this.view;
+  }
+}
+
+export default NameView;

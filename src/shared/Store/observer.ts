@@ -1,3 +1,4 @@
+import type { PriceRange } from '../API/types/type.ts';
 import type { MetaFiltersType } from '../constants/filters.ts';
 import type { User } from '../types/user.ts';
 import type { State } from './reducer.ts';
@@ -67,7 +68,7 @@ export const selectSelectedFiltersCategory = (state: State): Set<string> | null 
   return null;
 };
 
-export const selectSelectedFiltersPrice = (state: State): { max: number; min: number } | null => {
+export const selectSelectedFiltersPrice = (state: State): PriceRange | null => {
   if (state.selectedFilters) {
     return state.selectedFilters.price;
   }

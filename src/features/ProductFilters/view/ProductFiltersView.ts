@@ -399,12 +399,12 @@ class ProductFiltersView {
       toInput?.setValue(String(max));
     });
 
-    fromInput
-      ?.getHTML()
-      .addEventListener('change', () => this.priceSlider.set([fromInput.getValue(), toInput?.getValue() ?? 0]));
-    toInput
-      ?.getHTML()
-      .addEventListener('change', () => this.priceSlider.set([fromInput?.getValue() ?? 0, toInput.getValue()]));
+    fromInput?.getHTML().addEventListener('change', () => {
+      this.priceSlider.set([fromInput.getValue(), toInput?.getValue() ?? 0]);
+    });
+    toInput?.getHTML().addEventListener('change', () => {
+      this.priceSlider.set([fromInput?.getValue() ?? 0, toInput.getValue()]);
+    });
   }
 
   public getCategoryLinks(): LinkModel[] {
