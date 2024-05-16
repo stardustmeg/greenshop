@@ -1,5 +1,6 @@
 import type { PriceRange } from '../API/types/type.ts';
 import type { MetaFiltersType } from '../constants/filters.ts';
+import type { SelectedSorting } from '../types/productSorting.ts';
 import type { User } from '../types/user.ts';
 import type { State } from './reducer.ts';
 
@@ -89,19 +90,7 @@ export const selectSelectedFiltersMetaFilter = (state: State): MetaFiltersType |
   return null;
 };
 
-export const selectSelectedSortingField = (state: State): null | string => {
-  if (state.selectedSorting) {
-    return state.selectedSorting.field;
-  }
-  return null;
-};
-
-export const selectSelectedSortingDirection = (state: State): null | string => {
-  if (state.selectedSorting) {
-    return state.selectedSorting.direction;
-  }
-  return null;
-};
+export const selectSelectedSorting = (state: State): SelectedSorting | null => state.selectedSorting;
 
 export const selectSearchValue = (state: State): string => state.searchValue;
 
