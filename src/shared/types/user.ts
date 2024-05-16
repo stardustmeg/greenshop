@@ -18,11 +18,13 @@ export interface PersonalData {
 
 export interface User extends PersonalData, UserCredentials {
   addresses: Address[];
+  billingAddress: Address[];
   birthDate: string;
   defaultBillingAddressId: Address | null;
   defaultShippingAddressId: Address | null;
   id: string;
   locale: string;
+  shippingAddress: Address[];
   version: number;
 }
 

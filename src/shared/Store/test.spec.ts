@@ -168,6 +168,7 @@ it('should check if selectSelectedFiltersMetaFilter is a function', () => {
 it('observeStore should call select and onChange when state changes', () => {
   const mockUser = {
     addresses: [],
+    billingAddress: [],
     birthDate: '1990-01-01',
     defaultBillingAddressId: null,
     defaultShippingAddressId: null,
@@ -177,6 +178,7 @@ it('observeStore should call select and onChange when state changes', () => {
     lastName: 'Test',
     locale: 'en',
     password: 'Testtest1',
+    shippingAddress: [],
     version: 0,
   };
 
@@ -275,6 +277,7 @@ describe('rootReducer', () => {
   it('should handle setCurrentUser action', () => {
     const user: User = {
       addresses: [],
+      billingAddress: [],
       birthDate: '1990-01-01',
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
@@ -284,6 +287,7 @@ describe('rootReducer', () => {
       lastName: 'Test',
       locale: 'en',
       password: 'Testtest1',
+      shippingAddress: [],
       version: 0,
     };
     const action = actions.setCurrentUser(user);
