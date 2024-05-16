@@ -7,6 +7,8 @@ import { FilterFields } from '../../types/type.ts';
 export default class FilterProduct {
   private categories: string[] = [];
 
+  private id: string[] = [];
+
   private newArrival = '';
 
   private price = '';
@@ -17,6 +19,11 @@ export default class FilterProduct {
 
   public addFilter(field: FilterFieldsType, value?: PriceRange | string): string[] {
     switch (field) {
+      case FilterFields.ID:
+        if (typeof value === 'string') {
+          this.id.push(value);
+        }
+        break;
       case FilterFields.CATEGORY:
         if (typeof value === 'string') {
           this.categories.push(value);
@@ -46,6 +53,9 @@ export default class FilterProduct {
 
   public getFilter(): string[] {
     const result = [];
+    if (this.id.length) {
+      result.push(`${FilterFields.ID}:${this.id.map((id) => `"${id}"`).join(',')}`);
+    }
     if (this.categories.length) {
       result.push(`${FilterFields.CATEGORY}:${this.categories.map((category) => `subtree("${category}")`).join(',')}`);
     }

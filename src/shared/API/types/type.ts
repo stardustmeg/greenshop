@@ -14,6 +14,7 @@ export type TokenTypeType = (typeof TokenType)[keyof typeof TokenType];
 
 export const FilterFields = {
   CATEGORY: 'categories.id',
+  ID: 'id',
   NEW_ARRIVAL: 'variants.attributes.new_arrival:true',
   PRICE: 'variants.price.centAmount',
   SALE: 'variants.prices.discounted:exists',
