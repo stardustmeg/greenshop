@@ -4,12 +4,12 @@
 
 Welcome to [Greenshop](https://mad-wizards-greenshop.netlify.app/), your digital haven for all things green! 🪴
 
-- Our Mission 🌸
-- Key Features 🗝️
-- Technical Stack 💻
-- How to Run the Project Locally ⚙️
-- Availabile Scripts 📑
-- Contact us 📩
+- [Our Mission](#our-mission-) 🌸
+- [Key Features](#key-features-of-greenshop-include-%EF%B8%8F) 🗝️
+- [Technical Stack](#technical-stack-) 💻
+- [How to Run the Project Locally](#how-to-run-the-project-locally-%EF%B8%8F) ⚙️
+- [Availabile Scripts](#availabile-scripts-) 📑
+- [Contact us](#contact-us-) 📩
 
 ### Our Mission 🌸
 
@@ -35,8 +35,9 @@ _in our project we used the following technologies:_
 
 - **Frontend**: Utilizes [HTML](https://www.w3schools.com/html/), [SASS](https://sass-lang.com/), and [Typescript](https://www.typescriptlang.org/) to craft a dynamic and engaging user interface 🎨
 - **Bundling**: Employs [Vite](https://vitejs.dev/) as the bundler, ensuring swift development server startup time and seamless module replacement 🌳
+- **CI/CD**: Integrates [GitHub Actions](https://github.com/features/actions), [Plop](https://plopjs.com/), [Netlify](https://www.netlify.com/) for countinuous integration and deployment 🚀
 - **Deployment**: Hosted on [Netlify](https://www.netlify.com/), enabling efficient and hassle-free deployment of the application 🌟
-- **Code Quality**: Ensured code quality through rigorous checks by [Husky](https://typicode.github.io/husky/), [Prettier](https://prettier.io/), [ESLint](https://eslint.org/), [Stylelint](https://stylelint.io/), [SonarLint](https://www.sonarsource.com/products/sonarlint/), and [EditorConfig](https://editorconfig.org/), maintaining consistency and best practices throughout the codebase 🐶
+- **Code Quality**: Ensured code quality through rigorous checks by [Husky](https://typicode.github.io/husky/), [Prettier](https://prettier.io/), [ESLint](https://eslint.org/), [Perfectionist](https://eslint-plugin-perfectionist.azat.io/), [Stylelint](https://stylelint.io/), [SonarLint](https://www.sonarsource.com/products/sonarlint/), and [EditorConfig](https://editorconfig.org/), maintaining consistency and best practices throughout the codebase 🐶
 - **Testing**: Thorough testing conducted with [Vitest](https://vitest.dev/), ensuring the reliability and robustness of the application's functionalities ⚡
 - **Backend**: Supported by [CommerceTools](https://commercetools.com/), a leading provider of commerce solutions, offering a robust and scalable platform for creating immersive digital commerce experiences 🌐
 
