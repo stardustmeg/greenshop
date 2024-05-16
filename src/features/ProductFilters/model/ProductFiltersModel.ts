@@ -31,6 +31,7 @@ class ProductFiltersModel {
   }
 
   private init(): void {
+    getStore().dispatch(setSelectedFilters(this.selectedFilters));
     this.initCategoryFilters();
     this.initPriceFilters();
     this.initSizeFilters();

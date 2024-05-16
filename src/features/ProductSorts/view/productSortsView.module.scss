@@ -139,6 +139,12 @@
     }
   }
 
+  &:nth-child(1) {
+    &::before {
+      content: '';
+    }
+  }
+
   &.hight {
     &::before {
       transform: rotate(0);

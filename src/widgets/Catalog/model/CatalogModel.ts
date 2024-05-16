@@ -2,6 +2,7 @@ import type ProductFiltersParams from '@/shared/types/productFilters.ts';
 
 import ProductCardModel from '@/entities/ProductCard/model/ProductCardModel.ts';
 import ProductFiltersModel from '@/features/ProductFilters/model/ProductFiltersModel.ts';
+import ProductSearchModel from '@/features/ProductSearch/model/ProductSearchModel.ts';
 import ProductSortsModel from '@/features/ProductSorts/model/ProductSortsModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import FilterProduct from '@/shared/API/product/utils/filter.ts';
@@ -27,6 +28,8 @@ import CatalogView from '../view/CatalogView.ts';
 
 class CatalogModel {
   private productFilters: ProductFiltersModel | null = null;
+
+  private productSearch: ProductSearchModel | null = null;
 
   private productSorting: ProductSortsModel | null = null;
 
@@ -101,23 +104,35 @@ class CatalogModel {
   }
 
   private init(): void {
+    const productList = this.view.getItemsList();
     getProductModel()
       .getCategories()
-      .catch(() => showErrorMessage());
-    const productList = this.view.getItemsList();
-    // TBD(SPRINT-5): create method to collect filters from the url
-    this.getProductItems({})
-      .then((data) => {
-        if (data?.products?.length) {
-          data.products.forEach((productData) => productList.append(new ProductCardModel(productData, null).getHTML()));
-        }
-        this.view.switchEmptyList(!data?.products?.length);
-        this.productFilters = new ProductFiltersModel(data);
-        this.productSorting = new ProductSortsModel();
-        this.view.getLeftWrapper().append(this.productFilters.getDefaultFilters());
-        this.view.getRightTopWrapper().append(this.productFilters.getMetaFilters(), this.productSorting.getHTML());
+      .then(() => {
+        // TBD(SPRINT-5): create method to collect filters from the url
+        this.getProductItems({})
+          .then((data) => {
+            if (data?.products?.length) {
+              data.products.forEach((productData) =>
+                productList.append(new ProductCardModel(productData, null).getHTML()),
+              );
+            }
+            this.view.switchEmptyList(!data?.products?.length);
+            this.productFilters = new ProductFiltersModel(data);
+            this.productSorting = new ProductSortsModel();
+            this.productSearch = new ProductSearchModel();
+            this.view.getLeftWrapper().append(this.productFilters.getDefaultFilters());
+            this.view
+              .getRightTopWrapper()
+              .append(
+                this.productFilters.getMetaFilters(),
+                this.productSorting.getHTML(),
+                this.productSearch.getHTML(),
+              );
+          })
+          .catch(() => showErrorMessage());
       })
       .catch(() => showErrorMessage());
+
     this.storeObservers();
   }
 
