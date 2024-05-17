@@ -126,6 +126,11 @@ export class CustomerApi {
     return data;
   }
 
+  public async getCustomer(): Promise<ClientResponse<Customer>> {
+    const data = await this.client.apiRoot().me().get().execute();
+    return data;
+  }
+
   public async getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
     const data = await this.client
       .apiRoot()
