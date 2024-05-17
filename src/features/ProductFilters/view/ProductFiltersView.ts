@@ -90,6 +90,15 @@ class ProductFiltersView {
     categoryLink.getHTML().append(span);
 
     this.categoryLinks.push(categoryLink);
+
+    observeStore(selectCurrentLanguage, () => {
+      const text = category.category.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+      const textNode = [...categoryLink.getHTML().childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
+      if (textNode) {
+        textNode.textContent = text;
+      }
+    });
+
     return categoryLink;
   }
 
@@ -115,14 +124,7 @@ class ProductFiltersView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      this.categoryCountSpan.length = 0;
-      this.categoryLinks.length = 0;
-      this.categoryList.innerHTML = '';
-      this.categoryList.append(filtersListTitle);
       filtersListTitle.textContent = TITLE[getStore().getState().currentLanguage].CATEGORY;
-      this.params?.categoriesProductCount?.forEach((category) => {
-        this.categoryList.append(this.createCategoryLink(category).getHTML());
-      });
     });
 
     return this.categoryList;
@@ -189,6 +191,12 @@ class ProductFiltersView {
     );
     allProductsLink.getHTML().classList.add(styles.activeLink);
     this.metaFilters.append(allProductsLink.getHTML(), newArrivalsLink.getHTML(), saleLink.getHTML());
+
+    observeStore(selectCurrentLanguage, () => {
+      allProductsLink.getHTML().textContent = META_FILTERS[getStore().getState().currentLanguage].ALL_PRODUCTS;
+      newArrivalsLink.getHTML().textContent = META_FILTERS[getStore().getState().currentLanguage].NEW_ARRIVALS;
+      saleLink.getHTML().textContent = META_FILTERS[getStore().getState().currentLanguage].SALE;
+    });
 
     return this.metaFilters;
   }
@@ -362,12 +370,7 @@ class ProductFiltersView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      this.sizeCountSpan.length = 0;
-      this.sizeLinks.length = 0;
-      this.sizesList.innerHTML = '';
-      this.sizesList.append(filtersListTitle);
       filtersListTitle.textContent = TITLE[getStore().getState().currentLanguage].SIZE;
-      this.params?.sizes?.forEach((size) => this.sizesList.append(this.createSizeLink(size).getHTML()));
     });
 
     return this.sizesList;

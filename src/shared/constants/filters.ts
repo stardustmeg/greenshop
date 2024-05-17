@@ -24,13 +24,13 @@ export const PRICE_RANGE_LABEL = {
 
 export const META_FILTERS = {
   en: {
-    ALL_PRODUCTS: 'All products',
-    NEW_ARRIVALS: 'New Arrivals',
+    ALL_PRODUCTS: 'All',
+    NEW_ARRIVALS: 'New',
     SALE: 'Sale',
   },
   ru: {
-    ALL_PRODUCTS: 'Все продукты',
-    NEW_ARRIVALS: 'Новые поступления',
+    ALL_PRODUCTS: 'Все',
+    NEW_ARRIVALS: 'Новинки',
     SALE: 'Скидки',
   },
 } as const;

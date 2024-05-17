@@ -40,8 +40,6 @@ class ProductFiltersModel {
 
     observeStore(selectCurrentLanguage, () => {
       this.selectedFilters = getStore().getState().selectedFilters ?? this.selectedFilters;
-      this.initSizeFilters();
-      this.initCategoryFilters();
     });
   }
 
@@ -116,7 +114,6 @@ class ProductFiltersModel {
         },
         size: null,
       };
-      // this.setMetaLinksHandlers();
       this.view.getMetaLinks().forEach((link) => {
         this.view.switchSelectedFilter(link, false);
         if (link.getHTML().id === this.selectedFilters.metaFilter) {

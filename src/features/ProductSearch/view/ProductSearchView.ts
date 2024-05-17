@@ -1,6 +1,9 @@
 import InputModel from '@/shared/Input/model/InputModel.ts';
+import getStore from '@/shared/Store/Store.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { TEXT } from '@/shared/constants/sorting.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './productSearchView.module.scss';
@@ -28,8 +31,12 @@ class ProductSearchView {
   private createSearchField(): InputModel {
     this.searchField = new InputModel({
       autocomplete: AUTOCOMPLETE_OPTION.ON,
-      placeholder: 'Search',
+      placeholder: TEXT[getStore().getState().currentLanguage].SEARCH,
       type: INPUT_TYPE.SEARCH,
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      this.searchField.getHTML().placeholder = TEXT[getStore().getState().currentLanguage].SEARCH;
     });
 
     this.searchField.getHTML().classList.add(styles.searchField);
