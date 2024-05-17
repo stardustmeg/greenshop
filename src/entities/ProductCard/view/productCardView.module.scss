@@ -7,7 +7,7 @@
   outline: var(--two) solid var(--noble-gray-300);
   border-radius: var(--medium-br);
   min-height: calc(var(--extra-small-offset) * 17.5); // 350px
-  max-width: calc(var(--extra-small-offset) * 13.5); // 270px
+  max-width: calc(var(--extra-large-offset) * 2.5); // 250px
   background-color: var(--noble-white-200);
   transition:
     outline 0.2s,
@@ -22,18 +22,116 @@
 }
 
 .productImageWrapper {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   border-radius: var(--medium-br) var(--medium-br) 0 0;
-  width: 100%;
-  height: calc(var(--extra-small-offset) * 13.5); // 270px
+  width: calc(var(--extra-large-offset) * 2.5);
+  height: calc(var(--extra-large-offset) * 2.5); // 250px
 }
 
 .productImage {
   width: 100%;
   height: auto;
+}
+
+.buttonsWrapper {
+  position: absolute;
+  bottom: 1%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+  gap: var(--tiny-offset);
+
+  @media (max-width: 768px) {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.addToCardButton,
+.switchToWishListButton,
+.goDetailsPageButton {
+  position: relative;
+  outline: 2px solid var(--noble-gray-700);
+  border-radius: var(--medium-br);
+  padding: var(--tiny-offset);
+  width: var(--small-offset);
+  height: var(--small-offset);
+  background-color: var(--noble-gray-1000);
+  transition: outline 0.2s;
+  backdrop-filter: blur(10px);
+
+  svg {
+    width: var(--extra-small-offset);
+    height: var(--extra-small-offset);
+    fill: var(--noble-gray-800);
+    transition: fill 0.2s;
+  }
+}
+
+.addToCardButton,
+.goDetailsPageButton {
+  @media (hover: hover) {
+    &:hover {
+      outline: 2px solid var(--steam-green-400);
+
+      svg {
+        fill: var(--steam-green-400);
+      }
+    }
+  }
+}
+
+.addToCardButton {
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.inWishList {
+  outline: 2px solid var(--red-power-600);
+
+  svg {
+    fill: var(--red-power-600);
+  }
+}
+
+.switchToWishListButton {
+  @media (hover: hover) {
+    &:hover {
+      outline: 2px solid var(--red-power-600);
+
+      svg {
+        fill: var(--red-power-600);
+      }
+    }
+  }
+
+  &.inWishList {
+    @media (hover: hover) {
+      &:hover {
+        outline: 2px solid var(--noble-gray-700);
+
+        svg {
+          fill: var(--noble-gray-700);
+        }
+      }
+    }
+  }
 }
 
 .bottomWrapper {
@@ -71,11 +169,6 @@
     display: block;
     white-space: unset;
   }
-}
-
-.productLink {
-  position: absolute;
-  inset: 0;
 }
 
 .moreButton {

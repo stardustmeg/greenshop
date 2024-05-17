@@ -18,6 +18,7 @@ class ProductSearchModel {
   }
 
   private init(): void {
+    getStore().dispatch(setSearchValue(''));
     this.setSearchFieldHandler();
   }
 

@@ -1,22 +1,31 @@
+import type { Variant } from '@/shared/types/product';
 import type ProductCardParams from '@/shared/types/productCard.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { MORE_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
 import styles from './productCardView.module.scss';
 
 class ProductCardView {
+  private addToCardButton: ButtonModel;
+
   private basicPrice: HTMLSpanElement;
 
   private bottomWrapper: HTMLDivElement;
+
+  private buttonsWrapper: HTMLDivElement;
+
+  private currentVariant: Variant;
+
+  private goDetailsPageButton: ButtonModel;
 
   private oldPrice: HTMLSpanElement;
 
@@ -30,22 +39,23 @@ class ProductCardView {
 
   private productImageWrapper: HTMLDivElement;
 
-  private productLink: LinkModel;
-
   private productName: HTMLHeadingElement;
 
   private productShortDescription: HTMLParagraphElement;
 
-  private size: null | string;
+  private switchToWishListButton: ButtonModel;
 
-  constructor(params: ProductCardParams, size: null | string) {
-    this.size = size;
+  constructor(params: ProductCardParams, currentVariant: Variant) {
     this.params = params;
+    this.currentVariant = currentVariant;
+    this.addToCardButton = this.createAddToCartButton();
+    this.switchToWishListButton = this.createSwitchToWishListButton();
+    this.goDetailsPageButton = this.createGoDetailsPageButton();
+    this.buttonsWrapper = this.createButtonsWrapper();
     this.productImage = this.createProductImage();
     this.productImageWrapper = this.createProductImageWrapper();
     this.productName = this.createProductName();
     this.productShortDescription = this.createProductShortDescription();
-    this.productLink = this.createProductLink();
     this.basicPrice = this.createBasicPrice();
     this.oldPrice = this.createOldPrice();
     this.priceWrapper = this.createPriceWrapper();
@@ -62,8 +72,20 @@ class ProductCardView {
     button.textContent = button.textContent === moreText.HIDE ? moreText.MORE : moreText.HIDE;
   }
 
+  private createAddToCartButton(): ButtonModel {
+    this.addToCardButton = new ButtonModel({
+      classes: [styles.addToCardButton],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.CART));
+    this.addToCardButton.getHTML().append(svg);
+
+    return this.addToCardButton;
+  }
+
   private createBasicPrice(): HTMLSpanElement {
-    const { discount, price } = this.params.variant.find(({ size }) => size === this.size) ?? this.params.variant[0];
+    const { discount, price } = this.currentVariant;
     const innerContent = discount ? `$${discount.toFixed(2)}` : `$${price?.toFixed(2)}`;
     this.basicPrice = createBaseElement({
       cssClasses: [styles.basicPrice],
@@ -96,13 +118,44 @@ class ProductCardView {
     return this.bottomWrapper;
   }
 
+  private createButtonsWrapper(): HTMLDivElement {
+    this.buttonsWrapper = createBaseElement({
+      cssClasses: [styles.buttonsWrapper],
+      tag: 'div',
+    });
+
+    this.buttonsWrapper.append(
+      this.addToCardButton.getHTML(),
+      this.switchToWishListButton.getHTML(),
+      this.goDetailsPageButton.getHTML(),
+    );
+
+    return this.buttonsWrapper;
+  }
+
+  private createGoDetailsPageButton(): ButtonModel {
+    this.goDetailsPageButton = new ButtonModel({
+      classes: [styles.goDetailsPageButton],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.GO_DETAILS));
+    this.goDetailsPageButton.getHTML().append(svg);
+
+    return this.goDetailsPageButton;
+  }
+
   private createHTML(): HTMLLIElement {
     this.productCard = createBaseElement({
       cssClasses: [styles.productCard],
       tag: 'li',
     });
 
-    this.productCard.append(this.productImageWrapper, this.bottomWrapper, this.productLink.getHTML());
+    this.productCard.addEventListener('mouseenter', () => this.buttonsWrapper.classList.add(styles.visible));
+
+    this.productCard.addEventListener('mouseleave', () => this.buttonsWrapper.classList.remove(styles.visible));
+
+    this.productCard.append(this.productImageWrapper, this.bottomWrapper);
     return this.productCard;
   }
 
@@ -116,7 +169,7 @@ class ProductCardView {
   }
 
   private createOldPrice(): HTMLSpanElement {
-    const { discount, price } = this.params.variant.find(({ size }) => size === this.size) ?? this.params.variant[0];
+    const { discount, price } = this.currentVariant;
     const innerContent = discount ? `$${price?.toFixed(2)}` : '';
     this.oldPrice = createBaseElement({
       cssClasses: [styles.oldPrice],
@@ -156,7 +209,7 @@ class ProductCardView {
     });
 
     const loader = new LoaderModel(LOADER_SIZE.MEDIUM).getHTML();
-    this.productImageWrapper.append(this.productImage, loader);
+    this.productImageWrapper.append(this.productImage, loader, this.createButtonsWrapper());
     this.productImage.classList.add(styles.hidden);
 
     this.productImage.addEventListener('load', () => {
@@ -166,26 +219,8 @@ class ProductCardView {
     return this.productImageWrapper;
   }
 
-  private createProductLink(): LinkModel {
-    this.productLink = new LinkModel({
-      attrs: {
-        href: this.params.key,
-      },
-      classes: [styles.productLink],
-    });
-
-    this.productLink.getHTML().addEventListener('click', (event) => {
-      event.preventDefault();
-      // TBD: fix href on product page
-      window.location.href = `${PAGE_ID.CATALOG_PAGE}/${this.params.key}`;
-    });
-
-    return this.productLink;
-  }
-
   private createProductName(): HTMLHeadingElement {
-    // TBD: replace on locale
-    const innerContent = this.params.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+    const innerContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
     const productName = createBaseElement({
       cssClasses: [styles.productName],
       innerContent,
@@ -193,17 +228,15 @@ class ProductCardView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      // TBD: replace on locale
-      const textContent = this.params.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+      const textContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
       productName.textContent = textContent;
     });
     return productName;
   }
 
   private createProductShortDescription(): HTMLParagraphElement {
-    // TBD: replace on locale
     const innerContent =
-      this.params.description[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+      this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
     this.productShortDescription = createBaseElement({
       cssClasses: [styles.productShortDescription],
       innerContent,
@@ -211,13 +244,24 @@ class ProductCardView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      // TBD: replace on locale
       const textContent =
-        this.params.description[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+        this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
       this.productShortDescription.textContent = textContent;
     });
 
     return this.productShortDescription;
+  }
+
+  private createSwitchToWishListButton(): ButtonModel {
+    this.switchToWishListButton = new ButtonModel({
+      classes: [styles.switchToWishListButton],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
+    this.switchToWishListButton.getHTML().append(svg);
+
+    return this.switchToWishListButton;
   }
 
   private updateMoreButtonText(moreButton: HTMLButtonElement): void {
@@ -229,8 +273,24 @@ class ProductCardView {
     button.textContent = isActive ? moreText.HIDE : moreText.MORE;
   }
 
+  public getAddToCardButton(): ButtonModel {
+    return this.addToCardButton;
+  }
+
+  public getGoDetailsPageButton(): ButtonModel {
+    return this.goDetailsPageButton;
+  }
+
   public getHTML(): HTMLLIElement {
     return this.productCard;
+  }
+
+  public getSwitchToWishListButton(): ButtonModel {
+    return this.switchToWishListButton;
+  }
+
+  public switchStateWishListButton(hasProductInWishList: boolean): void {
+    this.switchToWishListButton.getHTML().classList.toggle(styles.inWishList, hasProductInWishList);
   }
 }
 

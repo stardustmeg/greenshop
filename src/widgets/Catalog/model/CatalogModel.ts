@@ -4,8 +4,10 @@ import ProductCardModel from '@/entities/ProductCard/model/ProductCardModel.ts';
 import ProductFiltersModel from '@/features/ProductFilters/model/ProductFiltersModel.ts';
 import ProductSearchModel from '@/features/ProductSearch/model/ProductSearchModel.ts';
 import ProductSortsModel from '@/features/ProductSorts/model/ProductSortsModel.ts';
+import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import FilterProduct from '@/shared/API/product/utils/filter.ts';
+import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import { type OptionsRequest, SortDirection, SortFields, type SortOptions } from '@/shared/API/types/type.ts';
 import { FilterFields } from '@/shared/API/types/type.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
@@ -17,8 +19,7 @@ import observeStore, {
   selectSelectedFiltersMetaFilter,
   selectSelectedFiltersPrice,
   selectSelectedFiltersSize,
-  selectSelectedSortingDirection,
-  selectSelectedSortingField,
+  selectSelectedSorting,
 } from '@/shared/Store/observer.ts';
 import { META_FILTERS } from '@/shared/constants/filters.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
@@ -37,7 +38,7 @@ class CatalogModel {
   private view = new CatalogView();
 
   constructor() {
-    this.init();
+    this.init().catch(showErrorMessage);
   }
 
   private addCurrentMetaFilter(filter: FilterProduct, metaFilter: string): FilterProduct {
@@ -105,55 +106,51 @@ class CatalogModel {
     return { direction: currentDirection, field: currentField, locale: getStore().getState().currentLanguage };
   }
 
-  private init(): void {
+  private async init(): Promise<void> {
     const productList = this.view.getItemsList();
-    getProductModel()
-      .getCategories()
-      .then(() => {
-        // TBD(SPRINT-5): create method to collect filters from the url
-        this.getProductItems({})
-          .then((data) => {
-            if (data?.products?.length) {
-              data.products.forEach((productData) =>
-                productList.append(new ProductCardModel(productData, null).getHTML()),
-              );
-            }
-            this.view.switchEmptyList(!data?.products?.length);
-            this.productFilters = new ProductFiltersModel(data);
-            this.productSorting = new ProductSortsModel();
-            this.productSearch = new ProductSearchModel();
-            this.view.getLeftWrapper().append(this.productFilters.getDefaultFilters());
-            this.view
-              .getRightTopWrapper()
-              .append(
-                this.productFilters.getMetaFilters(),
-                this.productSorting.getHTML(),
-                this.productSearch.getHTML(),
-              );
-          })
-          .catch(() => showErrorMessage());
-      })
-      .catch(() => showErrorMessage());
-
-    this.storeObservers();
+    const categories = await getProductModel().getCategories();
+    if (categories) {
+      const productItems = await this.getProductItems({});
+      if (productItems?.products?.length) {
+        const shoppingList = await getShoppingListModel().getShoppingList();
+        const cart = await getCartModel().getCart();
+        productItems.products.forEach((productData) => {
+          const product = new ProductCardModel(productData, null, shoppingList, cart);
+          productList.append(product.getHTML());
+        });
+        this.initSettingComponents(productItems);
+        this.view.switchEmptyList(!productItems.products.length);
+        this.productFilters?.updateParams(productItems);
+      }
+    }
   }
 
-  private redrawProductList(options?: OptionsRequest): void {
+  private initSettingComponents(data: ProductFiltersParams | null): void {
+    this.productFilters = new ProductFiltersModel(data);
+    this.productSorting = new ProductSortsModel();
+    this.productSearch = new ProductSearchModel();
+    this.storeObservers();
+    this.view.getLeftWrapper().append(this.productFilters.getDefaultFilters());
+    this.view
+      .getRightTopWrapper()
+      .append(this.productFilters.getMetaFilters(), this.productSorting.getHTML(), this.productSearch.getHTML());
+  }
+
+  private async redrawProductList(options?: OptionsRequest): Promise<void> {
     const currentSize = getStore().getState().selectedFilters?.size ?? null;
     const productList = this.view.getItemsList();
     productList.innerHTML = '';
-    this.getProductItems(options ?? {})
-      .then((data) => {
-        productList.innerHTML = '';
-        if (data?.products?.length) {
-          data?.products?.forEach((productData) =>
-            productList.append(new ProductCardModel(productData, currentSize).getHTML()),
-          );
-        }
-        this.view.switchEmptyList(!data?.products?.length);
-        this.productFilters?.updateParams(data);
-      })
-      .catch(() => showErrorMessage());
+    const productItems = await this.getProductItems(options ?? {});
+    if (productItems?.products?.length) {
+      const shoppingList = await getShoppingListModel().getShoppingList();
+      const cart = await getCartModel().getCart();
+      productItems.products.forEach((productData) => {
+        const product = new ProductCardModel(productData, currentSize, shoppingList, cart);
+        productList.append(product.getHTML());
+      });
+      this.view.switchEmptyList(!productItems.products.length);
+      this.productFilters?.updateParams(productItems);
+    }
   }
 
   private storeObservers(): void {
@@ -161,8 +158,7 @@ class CatalogModel {
     observeStore(selectSelectedFiltersPrice, () => this.redrawProductList(this.getOptions()));
     observeStore(selectSelectedFiltersSize, () => this.redrawProductList(this.getOptions()));
     observeStore(selectSelectedFiltersMetaFilter, () => this.redrawProductList(this.getOptions()));
-    observeStore(selectSelectedSortingField, () => this.redrawProductList(this.getOptions()));
-    observeStore(selectSelectedSortingDirection, () => this.redrawProductList(this.getOptions()));
+    observeStore(selectSelectedSorting, () => this.redrawProductList(this.getOptions()));
     observeStore(selectSearchValue, () => this.redrawProductList(this.getOptions()));
   }
 

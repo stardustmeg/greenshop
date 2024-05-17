@@ -10,8 +10,8 @@
 }
 
 .noUi-horizontal .noUi-handle {
-  right: -12px;
-  top: -5px;
+  right: -0.75rem;
+  top: -0.3rem;
   width: var(--extra-small-offset);
   height: var(--extra-small-offset);
 }
@@ -63,7 +63,7 @@
 }
 
 .noUi-connect {
-  height: 8px;
+  height: 0.5rem;
   background: var(--steam-green-800);
   cursor: pointer;
 }
@@ -79,18 +79,18 @@
 .noUi-connects {
   z-index: 0;
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: 0.188rem;
 }
 
 .noUi-target {
   position: relative;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   background: var(--steam-green-400);
   cursor: pointer;
 }
 
 .noUi-horizontal {
-  height: 8px;
+  height: 0.5rem;
 }
 
 .noUi-state-tap .noUi-connect,
