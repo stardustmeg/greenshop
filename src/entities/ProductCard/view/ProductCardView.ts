@@ -1,3 +1,4 @@
+import type { Variant } from '@/shared/types/product';
 import type ProductCardParams from '@/shared/types/productCard.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
@@ -22,6 +23,8 @@ class ProductCardView {
 
   private buttonsWrapper: HTMLDivElement;
 
+  private currentVariant: Variant;
+
   private goDetailsPageButton: ButtonModel;
 
   private oldPrice: HTMLSpanElement;
@@ -40,13 +43,11 @@ class ProductCardView {
 
   private productShortDescription: HTMLParagraphElement;
 
-  private size: null | string;
-
   private switchToWishListButton: ButtonModel;
 
-  constructor(params: ProductCardParams, size: null | string) {
-    this.size = size;
+  constructor(params: ProductCardParams, currentVariant: Variant) {
     this.params = params;
+    this.currentVariant = currentVariant;
     this.addToCardButton = this.createAddToCartButton();
     this.switchToWishListButton = this.createSwitchToWishListButton();
     this.goDetailsPageButton = this.createGoDetailsPageButton();
@@ -84,7 +85,7 @@ class ProductCardView {
   }
 
   private createBasicPrice(): HTMLSpanElement {
-    const { discount, price } = this.params.variant.find(({ size }) => size === this.size) ?? this.params.variant[0];
+    const { discount, price } = this.currentVariant;
     const innerContent = discount ? `$${discount.toFixed(2)}` : `$${price?.toFixed(2)}`;
     this.basicPrice = createBaseElement({
       cssClasses: [styles.basicPrice],
@@ -168,7 +169,7 @@ class ProductCardView {
   }
 
   private createOldPrice(): HTMLSpanElement {
-    const { discount, price } = this.params.variant.find(({ size }) => size === this.size) ?? this.params.variant[0];
+    const { discount, price } = this.currentVariant;
     const innerContent = discount ? `$${price?.toFixed(2)}` : '';
     this.oldPrice = createBaseElement({
       cssClasses: [styles.oldPrice],

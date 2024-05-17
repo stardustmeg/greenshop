@@ -120,6 +120,18 @@
       }
     }
   }
+
+  &.inWishList {
+    @media (hover: hover) {
+      &:hover {
+        outline: 2px solid var(--noble-gray-700);
+
+        svg {
+          fill: var(--noble-gray-700);
+        }
+      }
+    }
+  }
 }
 
 .bottomWrapper {
