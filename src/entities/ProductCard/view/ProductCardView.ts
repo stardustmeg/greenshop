@@ -16,8 +16,6 @@ import styles from './productCardView.module.scss';
 class ProductCardView {
   private addToCardButton: ButtonModel;
 
-  private addToWishListButton: ButtonModel;
-
   private basicPrice: HTMLSpanElement;
 
   private bottomWrapper: HTMLDivElement;
@@ -44,11 +42,13 @@ class ProductCardView {
 
   private size: null | string;
 
+  private switchToWishListButton: ButtonModel;
+
   constructor(params: ProductCardParams, size: null | string) {
     this.size = size;
     this.params = params;
     this.addToCardButton = this.createAddToCartButton();
-    this.addToWishListButton = this.createAddToWishListButton();
+    this.switchToWishListButton = this.createSwitchToWishListButton();
     this.goDetailsPageButton = this.createGoDetailsPageButton();
     this.buttonsWrapper = this.createButtonsWrapper();
     this.productImage = this.createProductImage();
@@ -81,18 +81,6 @@ class ProductCardView {
     this.addToCardButton.getHTML().append(svg);
 
     return this.addToCardButton;
-  }
-
-  private createAddToWishListButton(): ButtonModel {
-    this.addToWishListButton = new ButtonModel({
-      classes: [styles.addToWishListButton],
-    });
-
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
-    this.addToWishListButton.getHTML().append(svg);
-
-    return this.addToWishListButton;
   }
 
   private createBasicPrice(): HTMLSpanElement {
@@ -137,7 +125,7 @@ class ProductCardView {
 
     this.buttonsWrapper.append(
       this.addToCardButton.getHTML(),
-      this.addToWishListButton.getHTML(),
+      this.switchToWishListButton.getHTML(),
       this.goDetailsPageButton.getHTML(),
     );
 
@@ -263,6 +251,18 @@ class ProductCardView {
     return this.productShortDescription;
   }
 
+  private createSwitchToWishListButton(): ButtonModel {
+    this.switchToWishListButton = new ButtonModel({
+      classes: [styles.switchToWishListButton],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
+    this.switchToWishListButton.getHTML().append(svg);
+
+    return this.switchToWishListButton;
+  }
+
   private updateMoreButtonText(moreButton: HTMLButtonElement): void {
     const { currentLanguage } = getStore().getState();
     const moreText = MORE_TEXT[currentLanguage];
@@ -276,16 +276,20 @@ class ProductCardView {
     return this.addToCardButton;
   }
 
-  public getAddToWishListButton(): ButtonModel {
-    return this.addToWishListButton;
-  }
-
   public getGoDetailsPageButton(): ButtonModel {
     return this.goDetailsPageButton;
   }
 
   public getHTML(): HTMLLIElement {
     return this.productCard;
+  }
+
+  public getSwitchToWishListButton(): ButtonModel {
+    return this.switchToWishListButton;
+  }
+
+  public switchStateWishListButton(hasProductInWishList: boolean): void {
+    this.switchToWishListButton.getHTML().classList.toggle(styles.inWishList, hasProductInWishList);
   }
 }
 
