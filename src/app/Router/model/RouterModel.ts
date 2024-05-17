@@ -1,7 +1,7 @@
 import type { Page } from '@/shared/types/common.ts';
 
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-import { isValidState } from '@/shared/types/validation/paths.ts';
+import { isValidPath, isValidState } from '@/shared/types/validation/paths.ts';
 
 const PROJECT_TITLE = import.meta.env.VITE_APP_PROJECT_TITLE;
 const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
@@ -23,6 +23,11 @@ class RouterModel {
 
       if (isValidState(currentPath)) {
         currentPage = currentPath.path.split(DEFAULT_SEGMENT)[PATH_SEGMENTS_TO_KEEP] || PAGE_ID.DEFAULT_PAGE;
+      }
+
+      if (!isValidState(currentPath) || !isValidPath(currentPage)) {
+        window.location.pathname = PAGE_ID.DEFAULT_PAGE;
+        return;
       }
 
       await this.handleRequest(currentPage);
