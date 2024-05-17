@@ -117,23 +117,24 @@ class CatalogModel {
                 productList.append(new ProductCardModel(productData, null).getHTML()),
               );
             }
+
+            this.initSettingComponents(data);
             this.view.switchEmptyList(!data?.products?.length);
-            this.productFilters = new ProductFiltersModel(data);
-            this.productSorting = new ProductSortsModel();
-            this.productSearch = new ProductSearchModel();
-            this.storeObservers();
-            this.view.getLeftWrapper().append(this.productFilters.getDefaultFilters());
-            this.view
-              .getRightTopWrapper()
-              .append(
-                this.productFilters.getMetaFilters(),
-                this.productSorting.getHTML(),
-                this.productSearch.getHTML(),
-              );
           })
           .catch(() => showErrorMessage());
       })
       .catch(() => showErrorMessage());
+  }
+
+  private initSettingComponents(data: ProductFiltersParams | null): void {
+    this.productFilters = new ProductFiltersModel(data);
+    this.productSorting = new ProductSortsModel();
+    this.productSearch = new ProductSearchModel();
+    this.storeObservers();
+    this.view.getLeftWrapper().append(this.productFilters.getDefaultFilters());
+    this.view
+      .getRightTopWrapper()
+      .append(this.productFilters.getMetaFilters(), this.productSorting.getHTML(), this.productSearch.getHTML());
   }
 
   private redrawProductList(options?: OptionsRequest): void {

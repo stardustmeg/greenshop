@@ -231,8 +231,7 @@ class ProductCardView {
   }
 
   private createProductName(): HTMLHeadingElement {
-    // TBD: replace on locale
-    const innerContent = this.params.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+    const innerContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
     const productName = createBaseElement({
       cssClasses: [styles.productName],
       innerContent,
@@ -240,17 +239,15 @@ class ProductCardView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      // TBD: replace on locale
-      const textContent = this.params.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+      const textContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
       productName.textContent = textContent;
     });
     return productName;
   }
 
   private createProductShortDescription(): HTMLParagraphElement {
-    // TBD: replace on locale
     const innerContent =
-      this.params.description[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+      this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
     this.productShortDescription = createBaseElement({
       cssClasses: [styles.productShortDescription],
       innerContent,
@@ -258,9 +255,8 @@ class ProductCardView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      // TBD: replace on locale
       const textContent =
-        this.params.description[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+        this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
       this.productShortDescription.textContent = textContent;
     });
 

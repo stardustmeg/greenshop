@@ -50,6 +50,11 @@
     visibility 0.2s;
   gap: var(--tiny-offset);
 
+  @media (max-width: 768px) {
+    opacity: 1;
+    visibility: visible;
+  }
+
   &.visible {
     opacity: 1;
     visibility: visible;

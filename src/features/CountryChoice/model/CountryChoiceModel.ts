@@ -5,6 +5,7 @@ import observeStore, {
   selectCurrentLanguage,
   selectShippingCountry,
 } from '@/shared/Store/observer.ts';
+import { DATA_KEYS } from '@/shared/constants/common.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
@@ -21,7 +22,7 @@ class CountryChoiceModel {
     this.setInputHandler(input);
 
     const action =
-      input.getAttribute('data-addressType') === USER_ADDRESS_TYPE.BILLING
+      input.getAttribute(DATA_KEYS.ADDRESS_TYPE) === USER_ADDRESS_TYPE.BILLING
         ? selectBillingCountry
         : selectShippingCountry;
 
@@ -52,7 +53,7 @@ class CountryChoiceModel {
       currentItem.addEventListener('click', () => {
         if (currentItem.textContent) {
           inputHTML.value = currentItem.textContent;
-          this.setCountryToStore(currentItem, inputHTML.getAttribute('data-addressType') ?? '');
+          this.setCountryToStore(currentItem, inputHTML.getAttribute(DATA_KEYS.ADDRESS_TYPE) ?? '');
           this.view.hideCountryChoice();
         }
       });
@@ -74,7 +75,7 @@ class CountryChoiceModel {
     input.addEventListener('focus', () => this.view.showCountryChoice());
     input.addEventListener('input', () => {
       this.view.switchVisibilityCountryItems(input);
-      this.setCountryToStore(input, input.getAttribute('data-addressType') ?? '');
+      this.setCountryToStore(input, input.getAttribute(DATA_KEYS.ADDRESS_TYPE) ?? '');
     });
     return true;
   }

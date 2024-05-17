@@ -1,6 +1,8 @@
 import { SortDirection } from '@/shared/API/types/type.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import { DATA_KEYS } from '@/shared/constants/common.ts';
 import { SORTING_ID, TEXT } from '@/shared/constants/sorting.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
@@ -43,6 +45,10 @@ class ProductSortsView {
       tag: 'span',
     });
 
+    observeStore(selectCurrentLanguage, () => {
+      this.currentSortingSpan.innerText = TEXT[getStore().getState().currentLanguage].DEFAULT;
+    });
+
     return this.currentSortingSpan;
   }
 
@@ -59,7 +65,7 @@ class ProductSortsView {
   private createSortingLink(href: string, text: string, id: string): LinkModel {
     const link = new LinkModel({
       attrs: {
-        'data-direction': SortDirection.ASC,
+        [DATA_KEYS.DIRECTION]: SortDirection.ASC,
         href,
         id,
       },
@@ -101,8 +107,13 @@ class ProductSortsView {
     defaultSortingLink.getHTML().classList.add(styles.activeLink);
 
     const priceLink = this.createSortingLink('', TEXT[getStore().getState().currentLanguage].PRICE, SORTING_ID.PRICE);
-
     const nameLink = this.createSortingLink('', TEXT[getStore().getState().currentLanguage].NAME, SORTING_ID.NAME);
+
+    observeStore(selectCurrentLanguage, () => {
+      defaultSortingLink.getHTML().innerText = TEXT[getStore().getState().currentLanguage].DEFAULT;
+      priceLink.getHTML().innerText = TEXT[getStore().getState().currentLanguage].PRICE;
+      nameLink.getHTML().innerText = TEXT[getStore().getState().currentLanguage].NAME;
+    });
 
     this.sortingList.append(defaultSortingLink.getHTML(), priceLink.getHTML(), nameLink.getHTML());
 
@@ -117,8 +128,12 @@ class ProductSortsView {
 
     const span = createBaseElement({
       cssClasses: [styles.sortingListTitleSpan],
-      innerContent: 'Sort by:',
+      innerContent: TEXT[getStore().getState().currentLanguage].SORT_BY,
       tag: 'span',
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      span.innerText = TEXT[getStore().getState().currentLanguage].SORT_BY;
     });
 
     this.sortingListTitle.addEventListener('click', () => {
