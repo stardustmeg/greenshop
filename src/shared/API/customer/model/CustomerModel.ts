@@ -220,6 +220,11 @@ export class CustomerModel {
     return this.anonymousId;
   }
 
+  public async getCurrentUser(): Promise<User | null> {
+    const data = await this.root.getCustomer();
+    return this.getCustomerFromData(data);
+  }
+
   public async hasEmail(email: string): Promise<User | null> {
     const data = await this.root.getCustomerByEmail(email);
     return this.getCustomerFromData(data);
