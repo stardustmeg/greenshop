@@ -62,7 +62,7 @@
 }
 
 .addToCardButton,
-.addToWishListButton,
+.switchToWishListButton,
 .goDetailsPageButton {
   position: relative;
   outline: 2px solid var(--noble-gray-700);
@@ -95,7 +95,22 @@
   }
 }
 
-.addToWishListButton {
+.addToCardButton {
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.inWishList {
+  outline: 2px solid var(--red-power-600);
+
+  svg {
+    fill: var(--red-power-600);
+  }
+}
+
+.switchToWishListButton {
   @media (hover: hover) {
     &:hover {
       outline: 2px solid var(--red-power-600);
