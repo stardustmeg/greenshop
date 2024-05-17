@@ -1,4 +1,5 @@
 import type { AddCartItem, Cart } from '@/shared/types/cart.ts';
+import type { Variant } from '@/shared/types/product.ts';
 import type ProductCardParams from '@/shared/types/productCard';
 import type { ShoppingList, ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 
@@ -9,19 +10,16 @@ import showErrorMessage from '@/shared/utils/userMessage.ts';
 import ProductCardView from '../view/ProductCardView.ts';
 
 class ProductCardModel {
+  private currentVariant: Variant;
+
   private params: ProductCardParams;
-
-  private size: null | string;
-
-  private variantID: number;
 
   private view: ProductCardView;
 
-  constructor(params: ProductCardParams, size: null | string, shoppingList: ShoppingList, cart: Cart) {
+  constructor(params: ProductCardParams, currentSize: null | string, shoppingList: ShoppingList, cart: Cart) {
     this.params = params;
-    this.size = size;
-    this.variantID = this.params.variant.find(({ size }) => size === this.size)?.id ?? this.params.variant[0].id;
-    this.view = new ProductCardView(params, size);
+    this.currentVariant = this.params.variant.find(({ size }) => size === currentSize) ?? this.params.variant[0];
+    this.view = new ProductCardView(params, this.currentVariant);
     this.init(shoppingList, cart);
   }
 
@@ -50,7 +48,7 @@ class ProductCardModel {
     return {
       productId: this.params.id,
       quantity: 1,
-      variantId: this.variantID,
+      variantId: this.currentVariant.id,
     };
   }
 

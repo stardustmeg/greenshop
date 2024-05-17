@@ -7,7 +7,7 @@
   outline: var(--two) solid var(--noble-gray-300);
   border-radius: var(--medium-br);
   min-height: calc(var(--extra-small-offset) * 17.5); // 350px
-  max-width: calc(var(--extra-small-offset) * 13.5); // 270px
+  max-width: calc(var(--extra-large-offset) * 2.5); // 250px
   background-color: var(--noble-white-200);
   transition:
     outline 0.2s,
@@ -28,8 +28,8 @@
   justify-content: center;
   overflow: hidden;
   border-radius: var(--medium-br) var(--medium-br) 0 0;
-  width: 100%;
-  height: calc(var(--extra-small-offset) * 13.5); // 270px
+  width: calc(var(--extra-large-offset) * 2.5);
+  height: calc(var(--extra-large-offset) * 2.5); // 250px
 }
 
 .productImage {
@@ -117,6 +117,18 @@
 
       svg {
         fill: var(--red-power-600);
+      }
+    }
+  }
+
+  &.inWishList {
+    @media (hover: hover) {
+      &:hover {
+        outline: 2px solid var(--noble-gray-700);
+
+        svg {
+          fill: var(--noble-gray-700);
+        }
       }
     }
   }
