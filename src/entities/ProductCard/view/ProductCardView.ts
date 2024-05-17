@@ -2,11 +2,13 @@ import type { Variant } from '@/shared/types/product';
 import type ProductCardParams from '@/shared/types/productCard.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { MORE_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -25,7 +27,7 @@ class ProductCardView {
 
   private currentVariant: Variant;
 
-  private goDetailsPageButton: ButtonModel;
+  private goDetailsPageLink: LinkModel;
 
   private oldPrice: HTMLSpanElement;
 
@@ -50,7 +52,7 @@ class ProductCardView {
     this.currentVariant = currentVariant;
     this.addToCardButton = this.createAddToCartButton();
     this.switchToWishListButton = this.createSwitchToWishListButton();
-    this.goDetailsPageButton = this.createGoDetailsPageButton();
+    this.goDetailsPageLink = this.createGoDetailsPageLink();
     this.buttonsWrapper = this.createButtonsWrapper();
     this.productImage = this.createProductImage();
     this.productImageWrapper = this.createProductImageWrapper();
@@ -127,22 +129,30 @@ class ProductCardView {
     this.buttonsWrapper.append(
       this.addToCardButton.getHTML(),
       this.switchToWishListButton.getHTML(),
-      this.goDetailsPageButton.getHTML(),
+      this.goDetailsPageLink.getHTML(),
     );
 
     return this.buttonsWrapper;
   }
 
-  private createGoDetailsPageButton(): ButtonModel {
-    this.goDetailsPageButton = new ButtonModel({
-      classes: [styles.goDetailsPageButton],
+  private createGoDetailsPageLink(): LinkModel {
+    this.goDetailsPageLink = new LinkModel({
+      attrs: {
+        href: `/${PAGE_ID.PRODUCT_PAGE}/${this.params.id}`,
+      },
+      classes: [styles.goDetailsPageLink],
     });
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.GO_DETAILS));
-    this.goDetailsPageButton.getHTML().append(svg);
+    this.goDetailsPageLink.getHTML().append(svg);
 
-    return this.goDetailsPageButton;
+    this.goDetailsPageLink.getHTML().addEventListener('click', (event) => {
+      event.preventDefault();
+      window.location.pathname = `/${PAGE_ID.PRODUCT_PAGE}/${this.params.id}`;
+    });
+
+    return this.goDetailsPageLink;
   }
 
   private createHTML(): HTMLLIElement {
@@ -277,8 +287,8 @@ class ProductCardView {
     return this.addToCardButton;
   }
 
-  public getGoDetailsPageButton(): ButtonModel {
-    return this.goDetailsPageButton;
+  public getGoDetailsPageLink(): LinkModel {
+    return this.goDetailsPageLink;
   }
 
   public getHTML(): HTMLLIElement {

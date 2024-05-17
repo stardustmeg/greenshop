@@ -63,7 +63,7 @@
 
 .addToCardButton,
 .switchToWishListButton,
-.goDetailsPageButton {
+.goDetailsPageLink {
   position: relative;
   outline: 2px solid var(--noble-gray-700);
   border-radius: var(--medium-br);
@@ -83,7 +83,7 @@
 }
 
 .addToCardButton,
-.goDetailsPageButton {
+.goDetailsPageLink {
   @media (hover: hover) {
     &:hover {
       outline: 2px solid var(--steam-green-400);

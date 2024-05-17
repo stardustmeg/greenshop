@@ -1,8 +1,8 @@
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import styles from './itemPageView.module.scss';
+import styles from './productPageView.module.scss';
 
-class ItemPageView {
+class ProductPageView {
   private page: HTMLDivElement;
 
   private parent: HTMLDivElement;
@@ -28,4 +28,4 @@ class ItemPageView {
     return this.page;
   }
 }
-export default ItemPageView;
+export default ProductPageView;
