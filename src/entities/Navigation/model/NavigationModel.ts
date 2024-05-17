@@ -18,9 +18,9 @@ class NavigationModel {
   }
 
   private checkCurrentUser(): boolean {
-    const { currentUser } = getStore().getState();
+    const { isUserLoggedIn } = getStore().getState();
     const navigationLinks = this.view.getNavigationLinks();
-    if (!currentUser) {
+    if (!isUserLoggedIn) {
       navigationLinks.get(PAGE_ID.LOGIN_PAGE)?.setEnabled();
     } else {
       navigationLinks.get(PAGE_ID.LOGIN_PAGE)?.setDisabled();

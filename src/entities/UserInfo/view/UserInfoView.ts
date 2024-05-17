@@ -4,7 +4,7 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-import { userInfoDateOfBirth, userInfoEmail, userInfoLastName, userInfoName } from '@/shared/utils/messageTemplates.ts';
+// import { userInfoDateOfBirth, userInfoEmail, userInfoLastName, userInfoName } from '@/shared/utils/messageTemplates.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './userInfoView.module.scss';
@@ -31,17 +31,17 @@ class UserInfoView {
     return this.editInfoButton;
   }
 
-  private createUserElement(
-    text: string,
-    tag: keyof HTMLElementTagNameMap = 'li',
-    classes: string[] = [styles.info],
-  ): HTMLElement {
-    return createBaseElement({
-      cssClasses: classes,
-      innerContent: text,
-      tag,
-    });
-  }
+  // private createUserElement(
+  //   text: string,
+  //   tag: keyof HTMLElementTagNameMap = 'li',
+  //   classes: string[] = [styles.info],
+  // ): HTMLElement {
+  //   return createBaseElement({
+  //     cssClasses: classes,
+  //     innerContent: text,
+  //     tag,
+  //   });
+  // }
 
   private createUserInfoWrapper(): HTMLDivElement {
     this.userInfoWrapper = createBaseElement({
@@ -51,28 +51,32 @@ class UserInfoView {
     return this.userInfoWrapper;
   }
 
+  // private getUserInfo() {
+
+  // }
+
   private showUserInfo(): boolean {
-    const { currentUser } = getStore().getState();
-    if (!currentUser) {
+    const { isUserLoggedIn } = getStore().getState(); // TBD remove it (replace with a method)
+    if (!isUserLoggedIn) {
       return false;
     }
 
-    const { birthDate, email, firstName, lastName } = currentUser;
+    // const { birthDate, email, firstName, lastName } = getStore().getState().currentUser;
 
-    const nameWrapper = document.createDocumentFragment();
-    nameWrapper.append(
-      this.createUserElement(userInfoName(firstName)),
-      this.createUserElement(userInfoLastName(lastName)),
-      this.editInfoButton.getHTML(),
-    );
+    // const nameWrapper = document.createDocumentFragment();
+    // nameWrapper.append(
+    //   this.createUserElement(userInfoName(firstName)),
+    //   this.createUserElement(userInfoLastName(lastName)),
+    //   this.editInfoButton.getHTML(),
+    // );
 
-    const userInfoWrapper = document.createDocumentFragment();
-    userInfoWrapper.append(
-      nameWrapper,
-      this.createUserElement(userInfoDateOfBirth(birthDate)),
-      this.createUserElement(userInfoEmail(email)),
-    );
-    this.userInfoWrapper.append(userInfoWrapper);
+    // const userInfoWrapper = document.createDocumentFragment();
+    // userInfoWrapper.append(
+    //   nameWrapper,
+    //   this.createUserElement(userInfoDateOfBirth(birthDate)),
+    //   this.createUserElement(userInfoEmail(email)),
+    // );
+    // this.userInfoWrapper.append(userInfoWrapper);
 
     observeStore(selectCurrentLanguage, () => {
       clearOutElement(this.userInfoWrapper);

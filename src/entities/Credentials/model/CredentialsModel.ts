@@ -6,9 +6,10 @@ import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import CredentialsView from '../view/CredentialsView.ts';
 
 class CredentialsModel {
-  private view = new CredentialsView();
+  private view: CredentialsView;
 
   constructor() {
+    this.view = new CredentialsView();
     this.init();
   }
 

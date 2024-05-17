@@ -28,6 +28,20 @@ export const PASSWORD = {
   },
 } as const;
 
+export const NEW_PASSWORD = {
+  inputParams: {
+    autocomplete: 'off',
+    placeholder: '***********',
+    type: 'password',
+  },
+  labelParams: {
+    text: {
+      en: 'New Password',
+      ru: 'Новый пароль',
+    },
+  },
+} as const;
+
 export const FIRST_NAME = {
   inputParams: {
     autocomplete: 'off',

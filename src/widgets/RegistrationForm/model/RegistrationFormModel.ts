@@ -33,7 +33,7 @@ class RegisterFormModel {
 
   private personalInfoWrapper = new PersonalInfoModel();
 
-  private view: RegistrationFormView = new RegistrationFormView();
+  private view = new RegistrationFormView();
 
   constructor() {
     this.init();
@@ -75,7 +75,12 @@ class RegisterFormModel {
   private init(): boolean {
     this.getHTML().append(this.creadentialsWrapper.getHTML());
     this.getHTML().append(this.personalInfoWrapper.getHTML());
-    this.inputFields.push(...this.personalInfoWrapper.getView().getInputFields());
+
+    this.inputFields.push(
+      ...this.personalInfoWrapper.getView().getInputFields(),
+      ...this.creadentialsWrapper.getView().getInputFields(),
+    );
+
     Object.values(this.addressWrappers)
       .reverse()
       .forEach((addressWrapper) => {

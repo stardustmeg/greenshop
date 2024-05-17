@@ -28,8 +28,8 @@ class HeaderModel {
   }
 
   private checkAuthUser(): boolean {
-    const { currentUser } = getStore().getState();
-    if (!currentUser) {
+    const { isUserLoggedIn } = getStore().getState();
+    if (!isUserLoggedIn) {
       this.router.navigateTo(PAGE_ID.LOGIN_PAGE).catch(() => showErrorMessage());
       return false;
     }
@@ -37,9 +37,9 @@ class HeaderModel {
   }
 
   private checkCurrentUser(): boolean {
-    const { currentUser } = getStore().getState();
+    const { isUserLoggedIn } = getStore().getState();
     const logoutButton = this.view.getLogoutButton();
-    if (currentUser) {
+    if (isUserLoggedIn) {
       this.view.getToProfileLink().setEnabled();
       logoutButton.setEnabled();
     } else {

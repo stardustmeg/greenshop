@@ -1,6 +1,5 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/common.ts';
-import type { User } from '@/shared/types/user.ts';
 
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
@@ -25,13 +24,13 @@ class LoginPageModel implements Page {
     this.init();
   }
 
-  private async checkAuthUser(): Promise<User | null> {
-    const { currentUser } = getStore().getState();
+  private async checkAuthUser(): Promise<boolean | null> {
+    const { isUserLoggedIn } = getStore().getState();
 
-    if (currentUser) {
+    if (isUserLoggedIn) {
       try {
         await this.router.navigateTo(PAGE_ID.MAIN_PAGE);
-        return currentUser;
+        return isUserLoggedIn;
       } catch (error) {
         showErrorMessage();
         return null;

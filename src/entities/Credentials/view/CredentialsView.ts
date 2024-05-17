@@ -29,6 +29,7 @@ class CredentialsView {
     this.title = this.createTitle();
     this.showPasswordElement = this.createShowPasswordElement();
     this.emailField = this.createEmailField();
+
     this.passwordField = this.createPasswordField();
     this.credentialsWrapper = this.createHTML();
   }
