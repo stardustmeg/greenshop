@@ -51,7 +51,27 @@ export class ProductModel {
         id: category.id || '',
         key: category.key || '',
         name: [],
+        parent: null,
       };
+
+      if (category.parent) {
+        const parentCategory = data.results.find((item) => item.id === category.parent?.id);
+        if (parentCategory) {
+          result.parent = {
+            id: parentCategory.id || '',
+            key: parentCategory.key || '',
+            name: [],
+            parent: null,
+          };
+          Object.entries(parentCategory.name).forEach(([language, value]) => {
+            result.parent?.name.push({
+              language,
+              value,
+            });
+          });
+        }
+      }
+
       Object.entries(category.name).forEach(([language, value]) => {
         result.name.push({
           language,
