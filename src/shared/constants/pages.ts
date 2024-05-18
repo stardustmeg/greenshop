@@ -92,10 +92,10 @@ export const PAGE_ID = {
   CART_PAGE: 'cart',
   CATALOG_PAGE: 'catalog',
   DEFAULT_PAGE: '/',
-  ITEM_PAGE: 'item',
   LOGIN_PAGE: 'login',
   MAIN_PAGE: 'main',
   NOT_FOUND_PAGE: '404',
+  PRODUCT_PAGE: 'product',
   REGISTRATION_PAGE: 'register',
   USER_PROFILE_PAGE: 'profile',
 } as const;

@@ -148,9 +148,9 @@ class CatalogModel {
         const product = new ProductCardModel(productData, currentSize, shoppingList, cart);
         productList.append(product.getHTML());
       });
-      this.view.switchEmptyList(!productItems.products.length);
       this.productFilters?.updateParams(productItems);
     }
+    this.view.switchEmptyList(!productItems?.products?.length);
   }
 
   private storeObservers(): void {

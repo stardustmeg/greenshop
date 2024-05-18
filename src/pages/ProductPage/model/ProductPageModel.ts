@@ -4,18 +4,18 @@ import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
-import ItemPageView from '../view/ItemPageView.ts';
+import ProductPageView from '../view/ProductPageView.ts';
 
-class ItemPageModel implements Page {
-  private view: ItemPageView;
+class ProductPageModel implements Page {
+  private view: ProductPageView;
 
   constructor(parent: HTMLDivElement) {
-    this.view = new ItemPageView(parent);
+    this.view = new ProductPageView(parent);
     this.init();
   }
 
   private init(): void {
-    getStore().dispatch(setCurrentPage(PAGE_ID.ITEM_PAGE));
+    getStore().dispatch(setCurrentPage(PAGE_ID.PRODUCT_PAGE));
   }
 
   public getHTML(): HTMLDivElement {
@@ -23,4 +23,4 @@ class ItemPageModel implements Page {
   }
 }
 
-export default ItemPageModel;
+export default ProductPageModel;

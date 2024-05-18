@@ -7,6 +7,7 @@ export interface Category {
   id: string;
   key: string;
   name: localization[];
+  parent: Category | null;
 }
 
 export const SIZE = {

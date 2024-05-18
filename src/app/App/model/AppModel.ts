@@ -42,10 +42,6 @@ class AppModel {
         const { default: MainPageModel } = await import('@/pages/MainPage/model/MainPageModel.ts');
         return new MainPageModel(this.appView.getHTML(), this.router);
       },
-      [PAGE_ID.ITEM_PAGE]: async (): Promise<Page> => {
-        const { default: ItemPageModel } = await import('@/pages/ItemPage/model/ItemPageModel.ts');
-        return new ItemPageModel(this.appView.getHTML());
-      },
       [PAGE_ID.LOGIN_PAGE]: async (): Promise<Page> => {
         const { default: LoginPageModel } = await import('@/pages/LoginPage/model/LoginPageModel.ts');
         return new LoginPageModel(this.appView.getHTML(), this.router);
@@ -57,6 +53,10 @@ class AppModel {
       [PAGE_ID.NOT_FOUND_PAGE]: async (): Promise<Page> => {
         const { default: NotFoundPageModel } = await import('@/pages/NotFoundPage/model/NotFoundPageModel.ts');
         return new NotFoundPageModel(this.appView.getHTML(), this.router);
+      },
+      [PAGE_ID.PRODUCT_PAGE]: async (): Promise<Page> => {
+        const { default: ProductPageModel } = await import('@/pages/ProductPage/model/ProductPageModel.ts');
+        return new ProductPageModel(this.appView.getHTML());
       },
       [PAGE_ID.REGISTRATION_PAGE]: async (): Promise<Page> => {
         const { default: RegistrationPageModel } = await import(
