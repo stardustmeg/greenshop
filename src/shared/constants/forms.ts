@@ -41,6 +41,8 @@ export const USER_ADDRESS_TYPE = {
   SHIPPING: 'shippingAddress',
 } as const;
 
+export type UserAddressType = (typeof USER_ADDRESS_TYPE)[keyof typeof USER_ADDRESS_TYPE];
+
 export const USER_POSTAL_CODE = {
   BILLING_POSTAL_CODE: 'billing_PostalCode',
   POSTAL_CODE: 'postalCode',

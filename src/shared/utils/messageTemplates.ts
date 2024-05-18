@@ -46,6 +46,12 @@ export const defaultBillingAddress = (address: string): string =>
 export const defaultShippingAddress = (address: string): string =>
   textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].DEFAULT_SHIPPING_ADDRESS);
 
+export const billingAddressMessage = (address: string): string =>
+  textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].BILLING);
+
+export const shippingAddressMessage = (address: string): string =>
+  textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].SHIPPING);
+
 const maxAgeEn = (maxAge: number): string => textTemplate('You must be at most', maxAge, ' years old');
 
 export const maxAgeMessage = (maxAge: number): string =>

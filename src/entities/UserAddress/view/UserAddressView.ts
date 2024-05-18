@@ -1,5 +1,10 @@
-import getStore from '@/shared/Store/Store.ts';
+import type { UserAddressType } from '@/shared/constants/forms.ts';
+import type { User } from '@/shared/types/user';
+import type { Address } from '@commercetools/platform-sdk';
+
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
+import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
+import { addressMessage } from '@/shared/utils/address.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
 import { defaultBillingAddress, defaultShippingAddress } from '@/shared/utils/messageTemplates.ts';
@@ -9,8 +14,11 @@ import styles from './userAddressView.module.scss';
 class UserAddressView {
   private addressesWrapper: HTMLDivElement;
 
-  constructor() {
-    this.addressesWrapper = this.createAddresses();
+  private currentUser: User;
+
+  constructor(currentUser: User) {
+    this.currentUser = currentUser;
+    this.addressesWrapper = this.createCurrentAddresses();
   }
 
   private createAddressElement(
@@ -25,34 +33,36 @@ class UserAddressView {
     });
   }
 
-  private createAddresses(): HTMLDivElement {
-    const { currentUser } = getStore().getState();
-    if (!currentUser) {
-      return createBaseElement({
-        cssClasses: [styles.addressesWrapper, styles.hidden],
-        tag: 'div',
-      });
-    }
-    const { addresses, defaultBillingAddressId, defaultShippingAddressId, locale } = currentUser;
+  private createAddresses(addresses: Address[], defaultAddress: Address | null, type: UserAddressType): void {
+    addresses.forEach((address) => {
+      const { locale } = this.currentUser;
+      const country = findKeyByValue(COUNTRIES_LIST[locale], address.country);
+      const standartAddressText = `${address.streetName}, ${address.city}, ${country}, ${address.postalCode}`;
+      let addressText = addressMessage(type, standartAddressText);
 
+      if (defaultAddress && defaultAddress.id === address.id) {
+        if (type === USER_ADDRESS_TYPE.BILLING) {
+          addressText = defaultBillingAddress(standartAddressText);
+        } else if (type === USER_ADDRESS_TYPE.SHIPPING) {
+          addressText = defaultShippingAddress(standartAddressText);
+        }
+      }
+
+      const addressWrapper = this.createAddressElement(addressText);
+      this.addressesWrapper.append(addressWrapper);
+    });
+  }
+
+  private createCurrentAddresses(): HTMLDivElement {
+    const { billingAddress, defaultBillingAddressId, defaultShippingAddressId, shippingAddress } = this.currentUser;
     this.addressesWrapper = createBaseElement({
       cssClasses: [styles.addressesWrapper, styles.hidden],
       tag: 'div',
     });
-    addresses.forEach((address) => {
-      const country = findKeyByValue(COUNTRIES_LIST[locale], address.country);
-      const standartAddressText = `${address.streetName}, ${address.city}, ${country}, ${address.postalCode}`;
-      let addressText = `${standartAddressText}`;
 
-      if (defaultBillingAddressId?.id === address.id) {
-        addressText = defaultBillingAddress(standartAddressText);
-      }
-      if (defaultShippingAddressId?.id === address.id) {
-        addressText = defaultShippingAddress(standartAddressText);
-      }
-      const addressWrapper = this.createAddressElement(addressText);
-      this.addressesWrapper.append(addressWrapper);
-    });
+    this.createAddresses(billingAddress, defaultBillingAddressId, USER_ADDRESS_TYPE.BILLING);
+    this.createAddresses(shippingAddress, defaultShippingAddressId, USER_ADDRESS_TYPE.SHIPPING);
+
     return this.addressesWrapper;
   }
 

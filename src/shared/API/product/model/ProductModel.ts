@@ -48,8 +48,8 @@ export class ProductModel {
   private adaptCategoryPagedQueryToClient(data: CategoryPagedQueryResponse): Category[] {
     const response = data.results.map((category) => {
       const result: Category = {
-        id: category.id || '',
-        key: category.key || '',
+        id: category.id ?? '',
+        key: category.key ?? '',
         name: [],
       };
       Object.entries(category.name).forEach(([language, value]) => {
@@ -79,7 +79,7 @@ export class ProductModel {
   private adaptDiscount(variant: ProductVariant): number {
     let minPrice = 0;
 
-    if (variant.prices && variant.prices.length && variant.prices[0].discounted) {
+    if (variant.prices?.length && variant.prices[0].discounted) {
       const priceRow = variant.prices[0];
       if (priceRow.discounted) {
         minPrice = priceRow.discounted.value.centAmount / PRICE_FRACTIONS;
@@ -98,7 +98,7 @@ export class ProductModel {
   private adaptPrice(variant: ProductVariant): number {
     let price = 0;
 
-    if (variant.prices && variant.prices.length) {
+    if (variant.prices?.length) {
       const priceRow = variant.prices[0];
       price = priceRow.value.centAmount / PRICE_FRACTIONS;
     }
@@ -117,7 +117,7 @@ export class ProductModel {
       fullDescription: [],
       id: product.id || '',
       images: [],
-      key: product.key || '',
+      key: product.key ?? '',
       name: [],
       variant: [],
     };
@@ -146,7 +146,7 @@ export class ProductModel {
     variants.forEach((variant) => {
       let size: SizeType | null = null;
 
-      if (variant.attributes && variant.attributes.length) {
+      if (variant.attributes?.length) {
         variant.attributes.forEach((attribute) => {
           if (attribute.name === Attribute.FULL_DESCRIPTION && !product.fullDescription.length) {
             product.fullDescription.push(...this.adaptFullDescription(attribute));
@@ -164,7 +164,7 @@ export class ProductModel {
         size,
       });
 
-      if (variant.images && variant.images.length) {
+      if (variant.images?.length) {
         variant.images.forEach((image) => {
           product.images.push(image.url);
         });
@@ -199,7 +199,7 @@ export class ProductModel {
             if (currentCategory) {
               category.push({
                 category: currentCategory,
-                count: term.productCount || 0,
+                count: term.productCount ?? 0,
               });
             }
           }

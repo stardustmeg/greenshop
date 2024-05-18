@@ -1,9 +1,12 @@
+import type { User } from '@/shared/types/user.ts';
+
 import UserInfoView from '../view/UserInfoView.ts';
 
 class UserInfoModel {
-  private view = new UserInfoView();
+  private view: UserInfoView;
 
-  constructor() {
+  constructor(user: User) {
+    this.view = new UserInfoView(user);
     this.view.show();
     this.setEditInfoButtonHandler();
   }
