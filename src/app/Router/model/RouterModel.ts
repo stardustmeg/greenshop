@@ -27,7 +27,7 @@ class RouterModel {
       let currentPath = '';
 
       if (isValidState(currentState)) {
-        currentPage = currentState.path.split(DEFAULT_SEGMENT)[PATH_SEGMENTS_TO_KEEP];
+        currentPage = currentState.path.split(DEFAULT_SEGMENT)[PATH_SEGMENTS_TO_KEEP] + DEFAULT_SEGMENT;
         currentPath = currentState.path;
       }
 
@@ -48,7 +48,7 @@ class RouterModel {
     const decodePath = decodeURIComponent(path);
     const id = decodePath.split(DEFAULT_SEGMENT).slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)[NEXT_SEGMENT];
     const searchParams = decodeURIComponent(decodePath).split(SEARCH_SEGMENT)[NEXT_SEGMENT];
-    const title = `${PROJECT_TITLE} | ${hasRoute ? formattedText(currentPage === PAGE_ID.DEFAULT_PAGE ? PAGE_ID.MAIN_PAGE : currentPage) : PAGE_ID.NOT_FOUND_PAGE}`;
+    const title = `${PROJECT_TITLE} | ${hasRoute ? formattedText(currentPage === PAGE_ID.DEFAULT_PAGE ? PAGE_ID.MAIN_PAGE.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT) : currentPage.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)) : PAGE_ID.NOT_FOUND_PAGE.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)}`;
     document.title = title;
 
     if (!hasRoute) {
@@ -56,7 +56,15 @@ class RouterModel {
       return null;
     }
 
-    return { hasRoute, params: { [currentPage]: { id: id ?? null, searchParams: searchParams ?? null } } };
+    return {
+      hasRoute,
+      params: {
+        [currentPage.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)]: {
+          id: id ?? null,
+          searchParams: searchParams ?? null,
+        },
+      },
+    };
   }
 
   private handleRequest(currentPage: string, path: string): void {
@@ -70,7 +78,7 @@ class RouterModel {
   }
 
   public navigateTo(path: string): void {
-    const currentPage = path.split(DEFAULT_SEGMENT)[PATH_SEGMENTS_TO_KEEP] || PAGE_ID.DEFAULT_PAGE;
+    const currentPage = path.split(DEFAULT_SEGMENT)[PATH_SEGMENTS_TO_KEEP] + DEFAULT_SEGMENT || PAGE_ID.DEFAULT_PAGE;
     this.checkPageAndParams(currentPage, path)
       .then((check) => {
         if (check) {
