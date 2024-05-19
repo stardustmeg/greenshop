@@ -1,5 +1,5 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
-import type { Page } from '@/shared/types/common.ts';
+import type { Page } from '@/shared/types/page.ts';
 
 import UserAddressModel from '@/entities/UserAddress/model/UserAddressModel.ts';
 import UserInfoModel from '@/entities/UserInfo/model/UserInfoModel.ts';
@@ -7,20 +7,19 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import UserProfilePageView from '../view/UserProfilePageView.ts';
 
 class UserProfilePageModel implements Page {
   private addresses = new UserAddressModel();
 
-  private router: RouterModel;
+  private router: RouterModel | null = null;
 
   private userInfo = new UserInfoModel();
 
   private view: UserProfilePageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel) {
+  constructor(parent: HTMLDivElement, router: RouterModel | null) {
     this.router = router;
     this.view = new UserProfilePageView(parent);
 
@@ -40,17 +39,12 @@ class UserProfilePageModel implements Page {
     getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
   }
 
-  private async logoutHandler(): Promise<boolean> {
+  private logoutHandler(): void {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
-    try {
-      getCustomerModel().logout();
-      await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
-    } catch {
-      showErrorMessage();
-    }
-    return true;
+    getCustomerModel().logout();
+    this.router?.navigateTo(PAGE_ID.LOGIN_PAGE);
   }
 
   private personalInfoLinkHandler(): void {
@@ -58,30 +52,19 @@ class UserProfilePageModel implements Page {
     this.userInfo.show();
   }
 
-  private setAccountLogoutButtonHandler(): boolean {
+  private setAccountLogoutButtonHandler(): void {
     const logoutButton = this.view.getAccountLogoutButton();
-    logoutButton.getHTML().addEventListener('click', async () => {
-      try {
-        await this.logoutHandler();
-      } catch {
-        showErrorMessage();
-      }
-    });
-    return true;
+    logoutButton.getHTML().addEventListener('click', () => this.logoutHandler());
   }
 
   private setAddressesLinkHandler(): void {
     const addressesLink = this.view.getAddressesLink();
-    addressesLink.getHTML().addEventListener('click', () => {
-      this.addressesLinkHandler();
-    });
+    addressesLink.getHTML().addEventListener('click', () => this.addressesLinkHandler());
   }
 
   private setPersonalInfoLinkHandler(): void {
     const personalInfoLink = this.view.getPersonalInfoLink();
-    personalInfoLink.getHTML().addEventListener('click', () => {
-      this.personalInfoLinkHandler();
-    });
+    personalInfoLink.getHTML().addEventListener('click', () => this.personalInfoLinkHandler());
   }
 
   public getHTML(): HTMLDivElement {

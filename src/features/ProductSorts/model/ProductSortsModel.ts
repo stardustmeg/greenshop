@@ -30,6 +30,13 @@ class ProductSortsModel {
         this.selectedSorting.field = link.getHTML().id;
         this.selectedSorting.direction = String(link.getHTML().getAttribute(DATA_KEYS.DIRECTION));
         getStore().dispatch(setSelectedSorting(this.selectedSorting));
+        const url = new URL(decodeURIComponent(window.location.href));
+        url.searchParams.delete('field');
+        url.searchParams.set('field', this.selectedSorting.field);
+        url.searchParams.delete('direction');
+        url.searchParams.set('direction', this.selectedSorting.direction);
+        const path = url.pathname + encodeURIComponent(url.search);
+        window.history.pushState({ path }, '', path);
       });
     });
   }

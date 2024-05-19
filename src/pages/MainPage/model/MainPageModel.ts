@@ -1,5 +1,5 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
-import type { Page } from '@/shared/types/common.ts';
+import type { Page } from '@/shared/types/page.ts';
 
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import PostWidgetModel from '@/pages/Blog/PostWidget/model/PostWidgetModel.ts';
@@ -16,11 +16,11 @@ class MainPageModel implements Page {
 
   private parent: HTMLDivElement;
 
-  private router: RouterModel;
+  private router: RouterModel | null = null;
 
   private view: MainPageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel) {
+  constructor(parent: HTMLDivElement, router: RouterModel | null) {
     this.router = router;
     this.parent = parent;
     this.view = new MainPageView(this.parent);

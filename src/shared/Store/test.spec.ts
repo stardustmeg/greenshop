@@ -190,7 +190,7 @@ it('observeStore should call select and onChange when state changes', () => {
     authToken: null,
     billingCountry: '',
     currentLanguage: 'en',
-    currentPage: 'main',
+    currentPage: 'main/',
     currentUser: mockUser,
     isAppThemeLight: true,
     isUserLoggedIn: false,

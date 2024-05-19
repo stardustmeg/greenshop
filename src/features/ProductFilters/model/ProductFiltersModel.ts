@@ -62,6 +62,14 @@ class ProductFiltersModel {
         min: +min,
       };
       getStore().dispatch(setSelectedFilters(this.selectedFilters));
+
+      const url = new URL(decodeURIComponent(window.location.href));
+      url.searchParams.delete('price-min');
+      url.searchParams.set('price-min', String(this.selectedFilters.price.min));
+      url.searchParams.delete('price-max');
+      url.searchParams.set('price-max', String(this.selectedFilters.price.max));
+      const path = url.pathname + encodeURIComponent(url.search);
+      window.history.pushState({ path }, '', path);
     });
   }
 
@@ -79,6 +87,7 @@ class ProductFiltersModel {
       categoryLink.getHTML().addEventListener('click', () => {
         this.view.switchSelectedFilter(categoryLink);
         const categoryID = categoryLink.getHTML().id;
+
         if (this.selectedFilters.category.has(categoryID)) {
           this.selectedFilters.category.delete(categoryID);
         } else {
@@ -124,6 +133,9 @@ class ProductFiltersModel {
       this.view.getPriceSlider().set([this.params?.priceRange?.min ?? 0, this.params?.priceRange?.max ?? 0]);
 
       getStore().dispatch(setSelectedFilters(this.selectedFilters));
+      const url = new URL(decodeURIComponent(window.location.href));
+      const path = `/${url.pathname.split('/')[1]}/`;
+      window.history.pushState({ path }, '', path);
     });
   }
 
