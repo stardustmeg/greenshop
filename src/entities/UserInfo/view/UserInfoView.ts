@@ -4,8 +4,11 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
+import SVG_DETAILS from '@/shared/constants/svg.ts';
+import TOOLTIP_TEXT from '@/shared/constants/tooltip.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import { userInfoDateOfBirth, userInfoEmail, userInfoLastName, userInfoName } from '@/shared/utils/messageTemplates.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
@@ -16,13 +19,25 @@ class UserInfoView {
 
   private editInfoButton: ButtonModel;
 
+  private editPasswordButton: ButtonModel;
+
+  private logo: HTMLDivElement;
+
   private userInfoWrapper: HTMLDivElement;
 
   constructor(currentUser: User) {
     this.currentUser = currentUser;
+    this.logo = this.createLogo();
+    this.editPasswordButton = this.createEditPasswordButton();
     this.userInfoWrapper = this.createUserInfoWrapper();
     this.editInfoButton = this.createEditInfoButton();
     this.showUserInfo();
+
+    observeStore(selectCurrentLanguage, () => {
+      clearOutElement(this.userInfoWrapper);
+      this.userInfoWrapper.append(this.createEditPasswordButton().getHTML());
+      this.showUserInfo();
+    });
   }
 
   private createEditInfoButton(): ButtonModel {
@@ -34,6 +49,24 @@ class UserInfoView {
     observeCurrentLanguage(this.editInfoButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.EDIT_INFO);
 
     return this.editInfoButton;
+  }
+
+  private createEditPasswordButton(): ButtonModel {
+    this.editPasswordButton = new ButtonModel({
+      classes: [styles.editPasswordButton],
+      title: TOOLTIP_TEXT[getStore().getState().currentLanguage].EDIT_PASSWORD,
+    });
+
+    this.editPasswordButton.getHTML().append(this.logo);
+    return this.editPasswordButton;
+  }
+
+  private createLogo(): HTMLDivElement {
+    this.logo = createBaseElement({ cssClasses: [styles.keyLogo], tag: 'div' });
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.KEY));
+    this.logo.append(svg);
+    return this.logo;
   }
 
   private createUserElement(
@@ -53,6 +86,7 @@ class UserInfoView {
       cssClasses: [styles.userInfoWrapper, styles.hidden],
       tag: 'div',
     });
+    this.userInfoWrapper.append(this.editPasswordButton.getHTML());
     return this.userInfoWrapper;
   }
 
@@ -74,16 +108,15 @@ class UserInfoView {
     );
     this.userInfoWrapper.append(userInfoWrapper);
 
-    observeStore(selectCurrentLanguage, () => {
-      clearOutElement(this.userInfoWrapper);
-      this.showUserInfo();
-    });
-
     return true;
   }
 
   public getEditInfoButton(): ButtonModel {
     return this.editInfoButton;
+  }
+
+  public getEditPasswordButton(): ButtonModel {
+    return this.editPasswordButton;
   }
 
   public getHTML(): HTMLDivElement {

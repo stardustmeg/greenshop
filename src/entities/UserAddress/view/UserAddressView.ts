@@ -4,10 +4,9 @@ import type { Address } from '@commercetools/platform-sdk';
 
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
-import { addressMessage } from '@/shared/utils/address.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
-import { defaultBillingAddress, defaultShippingAddress } from '@/shared/utils/messageTemplates.ts';
+import { addressMessage, defaultBillingAddress, defaultShippingAddress } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './userAddressView.module.scss';
 

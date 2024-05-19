@@ -28,6 +28,20 @@ export const PASSWORD = {
   },
 } as const;
 
+export const OLD_PASSWORD = {
+  inputParams: {
+    autocomplete: 'off',
+    placeholder: '***********',
+    type: 'password',
+  },
+  labelParams: {
+    text: {
+      en: 'Current Password',
+      ru: 'Текущий пароль',
+    },
+  },
+} as const;
+
 export const NEW_PASSWORD = {
   inputParams: {
     autocomplete: 'off',
