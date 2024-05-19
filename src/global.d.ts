@@ -34,5 +34,6 @@ interface ImportMeta {
     VITE_APP_NEXT_SEGMENT: number;
     VITE_APP_PATH_SEGMENTS_TO_KEEP: number;
     VITE_APP_PROJECT_TITLE: string;
+    VITE_APP_SEARCH_SEGMENT: string;
   };
 }

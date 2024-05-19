@@ -11,6 +11,7 @@ import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
+import { buildPathName } from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
@@ -24,6 +25,8 @@ class ProductCardView {
   private bottomWrapper: HTMLDivElement;
 
   private buttonsWrapper: HTMLDivElement;
+
+  private currentSize: null | string;
 
   private currentVariant: Variant;
 
@@ -47,9 +50,10 @@ class ProductCardView {
 
   private switchToWishListButton: ButtonModel;
 
-  constructor(params: ProductCardParams, currentVariant: Variant) {
+  constructor(params: ProductCardParams, currentSize: null | string, currentVariant: Variant) {
     this.params = params;
     this.currentVariant = currentVariant;
+    this.currentSize = currentSize;
     this.addToCardButton = this.createAddToCartButton();
     this.switchToWishListButton = this.createSwitchToWishListButton();
     this.goDetailsPageLink = this.createGoDetailsPageLink();
@@ -138,7 +142,7 @@ class ProductCardView {
   private createGoDetailsPageLink(): LinkModel {
     this.goDetailsPageLink = new LinkModel({
       attrs: {
-        href: `/${PAGE_ID.PRODUCT_PAGE}/${this.params.id}`,
+        href: `/${PAGE_ID.PRODUCT_PAGE}/${this.params.key}`,
       },
       classes: [styles.goDetailsPageLink],
     });
@@ -149,7 +153,12 @@ class ProductCardView {
 
     this.goDetailsPageLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      window.location.pathname = `/${PAGE_ID.PRODUCT_PAGE}/${this.params.id}`;
+      const url = buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
+        category: this.params.category.map((category) => category.parent?.key ?? ''),
+        size: [this.currentSize],
+        subcategory: this.params.category.map((category) => category.key),
+      });
+      window.location.pathname = url;
     });
 
     return this.goDetailsPageLink;

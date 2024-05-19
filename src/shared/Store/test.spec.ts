@@ -190,7 +190,7 @@ it('observeStore should call select and onChange when state changes', () => {
     authToken: null,
     billingCountry: '',
     currentLanguage: 'en',
-    currentPage: 'main',
+    currentPage: 'main/',
     currentUser: mockUser,
     isAppThemeLight: true,
     isUserLoggedIn: false,
@@ -327,7 +327,7 @@ describe('rootReducer', () => {
   });
 
   it('should handle setCurrentPage action', () => {
-    const page = 'main';
+    const page = 'main/';
     const action = actions.setCurrentPage(PAGE_ID.MAIN_PAGE);
     const newState = rootReducer(initialState, action);
     expect(newState.currentPage).toEqual(page);

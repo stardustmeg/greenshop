@@ -1,13 +1,11 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
-import type { Page } from '@/shared/types/common.ts';
-import type { User } from '@/shared/types/user.ts';
+import type { Page } from '@/shared/types/page.ts';
 
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { PAGE_ID, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/pages.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
 import LoginFormModel from '@/widgets/LoginForm/model/LoginFormModel.ts';
 
 import LoginPageView from '../view/LoginPageView.ts';
@@ -15,27 +13,22 @@ import LoginPageView from '../view/LoginPageView.ts';
 class LoginPageModel implements Page {
   private loginForm = new LoginFormModel();
 
-  private router: RouterModel;
+  private router: RouterModel | null = null;
 
   private view: LoginPageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel) {
+  constructor(parent: HTMLDivElement, router: RouterModel | null) {
     this.router = router;
     this.view = new LoginPageView(parent);
     this.init();
   }
 
-  private async checkAuthUser(): Promise<User | null> {
-    const { currentUser } = getStore().getState();
+  private checkAuthUser(): boolean | null {
+    const { isUserLoggedIn } = getStore().getState();
 
-    if (currentUser) {
-      try {
-        await this.router.navigateTo(PAGE_ID.MAIN_PAGE);
-        return currentUser;
-      } catch (error) {
-        showErrorMessage();
-        return null;
-      }
+    if (isUserLoggedIn) {
+      this.router?.navigateTo(PAGE_ID.MAIN_PAGE);
+      return isUserLoggedIn;
     }
 
     return null;
@@ -43,7 +36,7 @@ class LoginPageModel implements Page {
 
   private init(): boolean {
     getStore().dispatch(setCurrentPage(PAGE_ID.LOGIN_PAGE));
-    this.checkAuthUser().catch(() => showErrorMessage());
+    this.checkAuthUser();
     this.view.getAuthWrapper().append(this.loginForm.getHTML());
     this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
     this.setRegisterLinkHandler();
@@ -51,13 +44,9 @@ class LoginPageModel implements Page {
     return true;
   }
 
-  private async registerLinkHandler(event: Event): Promise<void> {
+  private registerLinkHandler(event: Event): void {
     event.preventDefault();
-    try {
-      await this.router.navigateTo(PAGE_ID.REGISTRATION_PAGE);
-    } catch (error) {
-      showErrorMessage();
-    }
+    this.router?.navigateTo(PAGE_ID.REGISTRATION_PAGE);
   }
 
   private setRegisterLinkHandler(): void {
