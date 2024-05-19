@@ -18,6 +18,7 @@ class RouterModel {
     this.routes = routes;
     document.addEventListener('DOMContentLoaded', () => {
       const currentPath = window.location.pathname.slice(NEXT_SEGMENT).split(DEFAULT_SEGMENT) || PAGE_ID.DEFAULT_PAGE;
+      console.log(currentPath, currentPath.join(DEFAULT_SEGMENT));
       this.navigateTo(currentPath.join(DEFAULT_SEGMENT));
     });
 
@@ -79,6 +80,7 @@ class RouterModel {
 
   public navigateTo(path: string): void {
     const currentPage = path.split(DEFAULT_SEGMENT)[PATH_SEGMENTS_TO_KEEP] + DEFAULT_SEGMENT || PAGE_ID.DEFAULT_PAGE;
+    console.log(path, currentPage);
     this.checkPageAndParams(currentPage, path)
       .then((check) => {
         if (check) {
