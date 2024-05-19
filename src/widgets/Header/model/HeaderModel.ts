@@ -94,27 +94,28 @@ class HeaderModel {
     return true;
   }
 
-  private setChangeLanguageCheckboxHandler(): boolean {
+  private setChangeLanguageCheckboxHandler(): void {
     const switchLanguageCheckbox = this.view.getSwitchLanguageCheckbox().getHTML();
-    switchLanguageCheckbox.addEventListener('click', () => {
-      const { currentLanguage } = getStore().getState();
+    switchLanguageCheckbox.addEventListener('click', async () => {
+      const { currentLanguage, isUserLoggedIn } = getStore().getState();
       const newLanguage = currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
-      getCustomerModel()
-        .getCurrentUser()
-        .then((user) => {
+
+      if (isUserLoggedIn) {
+        try {
+          const user = await getCustomerModel().getCurrentUser();
           if (user) {
-            getCustomerModel()
-              .editCustomer([CustomerModel.actionSetLocale(newLanguage)], user)
-              .catch(showErrorMessage);
+            await getCustomerModel().editCustomer([CustomerModel.actionSetLocale(newLanguage)], user);
             getStore().dispatch(setCurrentLanguage(newLanguage));
             serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
-          } else {
-            getStore().dispatch(setCurrentLanguage(newLanguage));
           }
-        })
-        .catch(showErrorMessage);
+        } catch (error) {
+          showErrorMessage();
+        }
+      } else {
+        getStore().dispatch(setCurrentLanguage(newLanguage));
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
+      }
     });
-    return true;
   }
 
   private setLogoHandler(): boolean {
