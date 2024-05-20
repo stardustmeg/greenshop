@@ -8,6 +8,7 @@ export interface Category {
   key: string;
   name: localization[];
   parent: Category | null;
+  slug: localization[];
 }
 
 export const SIZE = {
@@ -34,5 +35,6 @@ export interface Product {
   images: string[];
   key: string;
   name: localization[];
+  slug: localization[];
   variant: Variant[];
 }
