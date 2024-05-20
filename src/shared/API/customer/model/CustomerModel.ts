@@ -212,7 +212,7 @@ export class CustomerModel {
   }
 
   public async editPassword(customer: User, currentPassword: string, newPassword: string): Promise<User | null> {
-    const data = await this.root.editPassword(customer.version, currentPassword, newPassword);
+    const data = await this.root.editPassword(customer, currentPassword, newPassword);
     return this.getCustomerFromData(data);
   }
 
