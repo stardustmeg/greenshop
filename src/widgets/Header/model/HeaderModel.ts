@@ -114,18 +114,14 @@ class HeaderModel {
     const logo = this.view.getLinkLogo().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
-      this.router.navigateTo(PAGE_ID.DEFAULT_PAGE);
+      this.router.navigateTo(PAGE_ID.MAIN_PAGE);
     });
   }
 
   private setLogoutButtonHandler(): void {
     const logoutButton = this.view.getLogoutButton();
     logoutButton.getHTML().addEventListener('click', () => {
-      try {
-        this.logoutHandler();
-      } catch {
-        showErrorMessage();
-      }
+      this.logoutHandler();
       logoutButton.setDisabled();
     });
   }

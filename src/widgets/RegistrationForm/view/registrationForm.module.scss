@@ -26,18 +26,19 @@
       color 0.2s,
       background-color 0.2s;
 
-    svg {
-      stroke: var(--steam-green-800);
+    @media (max-width: 768px) {
+      grid-column: 1;
     }
-  }
 
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--noble-gray-200);
-
-      svg {
-        stroke: var(--steam-green-800);
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--steam-green-700);
       }
+    }
+
+    &:disabled {
+      background-color: var(--noble-gray-300);
+      pointer-events: none;
     }
   }
 

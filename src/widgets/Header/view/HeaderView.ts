@@ -114,7 +114,7 @@ class HeaderView {
   private createLinkLogo(): LinkModel {
     this.linkLogo = new LinkModel({
       attrs: {
-        href: PAGE_ID.DEFAULT_PAGE,
+        href: PAGE_ID.MAIN_PAGE,
       },
       classes: [styles.logo],
     });
