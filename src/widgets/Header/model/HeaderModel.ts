@@ -32,13 +32,13 @@ class HeaderModel {
   private checkAuthUser(): boolean {
     const { isUserLoggedIn } = getStore().getState();
     if (!isUserLoggedIn) {
-      this.router.navigateTo(PAGE_ID.LOGIN_PAGE).catch(() => showErrorMessage());
+      this.router.navigateTo(PAGE_ID.LOGIN_PAGE).catch(showErrorMessage);
       return false;
     }
     return true;
   }
 
-  private checkCurrentUser(): boolean {
+  private checkCurrentUser(): void {
     const { isUserLoggedIn } = getStore().getState();
     const logoutButton = this.view.getLogoutButton();
     if (isUserLoggedIn) {
@@ -48,10 +48,9 @@ class HeaderModel {
       logoutButton.setDisabled();
       this.view.getToProfileLink().setDisabled();
     }
-    return true;
   }
 
-  private init(): boolean {
+  private init(): void {
     this.view.getWrapper().append(this.navigation.getHTML());
     this.parent.insertAdjacentElement('beforebegin', this.view.getNavigationWrapper());
     this.checkCurrentUser();
@@ -61,10 +60,9 @@ class HeaderModel {
     this.setCartLinkHandler();
     this.setProfileLinkHandler();
     this.setChangeLanguageCheckboxHandler();
-    return true;
   }
 
-  private async logoutHandler(): Promise<boolean> {
+  private async logoutHandler(): Promise<void> {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
     getStore().dispatch(setAuthToken(null));
@@ -75,23 +73,20 @@ class HeaderModel {
     } catch {
       showErrorMessage();
     }
-    return true;
   }
 
-  private observeCurrentUser(): boolean {
+  private observeCurrentUser(): void {
     observeStore(selectIsUserLoggedIn, () => {
       this.checkCurrentUser();
     });
-    return true;
   }
 
-  private setCartLinkHandler(): boolean {
+  private setCartLinkHandler(): void {
     const logo = this.view.getToCartLink().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
-      this.router.navigateTo(PAGE_ID.CART_PAGE).catch(() => showErrorMessage());
+      this.router.navigateTo(PAGE_ID.CART_PAGE).catch(showErrorMessage);
     });
-    return true;
   }
 
   private setChangeLanguageCheckboxHandler(): void {
@@ -118,7 +113,7 @@ class HeaderModel {
     });
   }
 
-  private setLogoHandler(): boolean {
+  private setLogoHandler(): void {
     const logo = this.view.getLinkLogo().getHTML();
     logo.addEventListener('click', async (event) => {
       event.preventDefault();
@@ -128,10 +123,9 @@ class HeaderModel {
         showErrorMessage();
       }
     });
-    return true;
   }
 
-  private setLogoutButtonHandler(): boolean {
+  private setLogoutButtonHandler(): void {
     const logoutButton = this.view.getLogoutButton();
     logoutButton.getHTML().addEventListener('click', async () => {
       try {
@@ -141,10 +135,9 @@ class HeaderModel {
       }
       logoutButton.setDisabled();
     });
-    return true;
   }
 
-  private setProfileLinkHandler(): boolean {
+  private setProfileLinkHandler(): void {
     const logo = this.view.getToProfileLink().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
@@ -153,7 +146,6 @@ class HeaderModel {
         this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE).catch(showErrorMessage);
       }
     });
-    return true;
   }
 
   public getHTML(): HTMLElement {

@@ -31,10 +31,11 @@ class UserInfoModel {
 
   private setEditPasswordButtonHandler(): boolean {
     const editPasswordButton = this.view.getEditPasswordButton();
+    const passwordEdit = new PasswordEditModel();
     editPasswordButton.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
       modal.show();
-      modal.setContent(new PasswordEditModel().getHTML());
+      modal.setContent(passwordEdit.getHTML());
     });
     return true;
   }
