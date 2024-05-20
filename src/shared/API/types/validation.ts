@@ -1,5 +1,7 @@
 import type {
   AttributePlainEnumValue,
+  Cart,
+  CartPagedQueryResponse,
   CategoryPagedQueryResponse,
   ClientResponse,
   Customer,
@@ -13,8 +15,11 @@ import type {
   ProductPagedQueryResponse,
   ProductProjectionPagedQueryResponse,
   RangeFacetResult,
+  ShoppingList,
+  ShoppingListPagedQueryResponse,
   TermFacetResult,
 } from '@commercetools/platform-sdk';
+import type { TokenStore } from '@commercetools/sdk-client-v2';
 
 export function isClientResponse(data: unknown): data is ClientResponse {
   return Boolean(
@@ -142,6 +147,25 @@ export function isProductProjectionPagedQueryResponse(data: unknown): data is Pr
   );
 }
 
+export function isProductProjectionPagedQueryResponseWithFacet(
+  data: unknown,
+): data is ProductProjectionPagedQueryResponse {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'count' in data &&
+      typeof data.count === 'number' &&
+      'limit' in data &&
+      typeof data.limit === 'number' &&
+      'total' in data &&
+      typeof data.total === 'number' &&
+      'facets' in data &&
+      typeof data.facets === 'object' &&
+      'results' in data &&
+      Array.isArray(data.results),
+  );
+}
+
 export function isRangeFacetResult(data: unknown): data is RangeFacetResult {
   return Boolean(
     typeof data === 'object' && data && 'ranges' in data && Array.isArray(data.ranges) && data.ranges.length,
@@ -191,5 +215,74 @@ export function isErrorResponse(data: unknown): data is ErrorResponse {
       data.statusCode >= 400 &&
       'message' in data &&
       typeof data.message === 'string',
+  );
+}
+
+export function isTokenType(data: unknown): data is TokenStore {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'expirationTime' in data &&
+      typeof data.expirationTime === 'string' &&
+      'refreshToken' in data &&
+      typeof data.refreshToken === 'string' &&
+      'token' in data &&
+      typeof data.token === 'string',
+  );
+}
+
+export function isCart(data: unknown): data is Cart {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'id' in data &&
+      typeof data.id === 'string' &&
+      'cartState' in data &&
+      typeof data.cartState === 'string' &&
+      'lineItems' in data &&
+      Array.isArray(data.lineItems),
+  );
+}
+
+export function isCartPagedQueryResponse(data: unknown): data is CartPagedQueryResponse {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'count' in data &&
+      typeof data.count === 'number' &&
+      'limit' in data &&
+      typeof data.limit === 'number' &&
+      'total' in data &&
+      typeof data.total === 'number' &&
+      'results' in data &&
+      Array.isArray(data.results),
+  );
+}
+
+export function isShoppingList(data: unknown): data is ShoppingList {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'id' in data &&
+      typeof data.id === 'string' &&
+      'name' in data &&
+      typeof data.name === 'object' &&
+      'lineItems' in data &&
+      Array.isArray(data.lineItems),
+  );
+}
+
+export function isShoppingListPagedQueryResponse(data: unknown): data is ShoppingListPagedQueryResponse {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'count' in data &&
+      typeof data.count === 'number' &&
+      'limit' in data &&
+      typeof data.limit === 'number' &&
+      'total' in data &&
+      typeof data.total === 'number' &&
+      'results' in data &&
+      Array.isArray(data.results),
   );
 }

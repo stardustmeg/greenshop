@@ -16,6 +16,25 @@ body {
   scroll-behavior: smooth;
 }
 
+html {
+  font-size: clamp(12px, 1vw, 50px);
+}
+
+body {
+  &::-webkit-scrollbar {
+    width: 0.3rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--noble-white-200);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--steam-green-800);
+    cursor: pointer;
+  }
+}
+
 *::before,
 *::after {
   box-sizing: inherit;

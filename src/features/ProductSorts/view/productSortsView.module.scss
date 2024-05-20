@@ -1,0 +1,128 @@
+.sortingWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  grid-row: 3;
+  min-width: calc(var(--large-offset) * 2);
+  min-height: 2.292rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  user-select: none;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--noble-white-100);
+
+      .sortingListTitle {
+        color: var(--steam-green-400);
+      }
+    }
+  }
+}
+
+.sortingListTitle {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 calc(var(--extra-small-offset) / 2);
+  height: 100%;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--noble-gray-800);
+  transition: color 0.2s;
+}
+
+.sortingList {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  outline: 2px solid var(--noble-white-200);
+  border-radius: var(--medium-br);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  width: 100%;
+  background-color: var(--noble-white-200);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-34%);
+  transition:
+    opacity 0.2s,
+    visibility 0.2s,
+    transform 0.2s;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+}
+
+.sortingLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: var(--tiny-offset);
+  height: 100%;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--noble-gray-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+  text-wrap: nowrap;
+
+  &::before {
+    content: '↑';
+    position: absolute;
+    right: 2%;
+    transition: transform 0.3s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--steam-green-400);
+      background-color: var(--noble-white-100);
+    }
+  }
+
+  &:last-child {
+    border-bottom-right-radius: var(--medium-br);
+    border-bottom-left-radius: var(--medium-br);
+  }
+
+  &:nth-child(1) {
+    &::before {
+      content: '';
+    }
+  }
+
+  &.hight {
+    &::before {
+      transform: rotate(0);
+    }
+  }
+
+  &.pass {
+    &::before {
+      transform: rotate(180deg);
+    }
+  }
+
+  &.activeLink {
+    color: var(--steam-green-400);
+    background-color: var(--noble-white-100);
+    opacity: 1;
+  }
+}
+
+.currentSortingSpan {
+  color: var(--steam-green-400);
+}

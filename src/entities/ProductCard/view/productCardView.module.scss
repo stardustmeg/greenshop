@@ -1,0 +1,222 @@
+.productCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-self: center;
+  outline: var(--two) solid var(--noble-gray-300);
+  border-radius: var(--medium-br);
+  min-height: calc(var(--extra-small-offset) * 17.5); // 350px
+  max-width: calc(var(--extra-large-offset) * 2.5); // 250px
+  background-color: var(--noble-white-200);
+  transition:
+    outline 0.2s,
+    transform 0.2s;
+
+  @media (hover: hover) {
+    &:hover {
+      outline: var(--two) solid var(--steam-green-800);
+      transform: scale(0.98);
+    }
+  }
+}
+
+.productImageWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--medium-br) var(--medium-br) 0 0;
+  width: calc(var(--extra-large-offset) * 2.5);
+  height: calc(var(--extra-large-offset) * 2.5); // 250px
+}
+
+.productImage {
+  width: 100%;
+  height: auto;
+}
+
+.buttonsWrapper {
+  position: absolute;
+  bottom: 1%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+  gap: var(--tiny-offset);
+
+  @media (max-width: 768px) {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.addToCardButton,
+.switchToWishListButton,
+.goDetailsPageLink {
+  position: relative;
+  outline: 2px solid var(--noble-gray-700);
+  border-radius: var(--medium-br);
+  padding: var(--tiny-offset);
+  width: var(--small-offset);
+  height: var(--small-offset);
+  background-color: var(--noble-gray-1000);
+  transition: outline 0.2s;
+  backdrop-filter: blur(10px);
+
+  svg {
+    width: var(--extra-small-offset);
+    height: var(--extra-small-offset);
+    fill: var(--noble-gray-800);
+    transition: fill 0.2s;
+  }
+}
+
+.addToCardButton,
+.goDetailsPageLink {
+  @media (hover: hover) {
+    &:hover {
+      outline: 2px solid var(--steam-green-400);
+
+      svg {
+        fill: var(--steam-green-400);
+      }
+    }
+  }
+}
+
+.addToCardButton {
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.inWishList {
+  outline: 2px solid var(--red-power-600);
+
+  svg {
+    fill: var(--red-power-600);
+  }
+}
+
+.switchToWishListButton {
+  @media (hover: hover) {
+    &:hover {
+      outline: 2px solid var(--red-power-600);
+
+      svg {
+        fill: var(--red-power-600);
+      }
+    }
+  }
+
+  &.inWishList {
+    @media (hover: hover) {
+      &:hover {
+        outline: 2px solid var(--noble-gray-700);
+
+        svg {
+          fill: var(--noble-gray-700);
+        }
+      }
+    }
+  }
+}
+
+.bottomWrapper {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(var(--extra-small-offset) / 2) calc(var(--extra-small-offset) / 4);
+  width: 100%;
+  background-color: var(--noble-white-200);
+  gap: calc(var(--extra-small-offset) / 4);
+}
+
+.productName {
+  font: var(--medium-font);
+  letter-spacing: 1px;
+  text-align: center;
+  color: var(--steam-green-500);
+}
+
+.productShortDescription {
+  display: -webkit-box;
+  overflow: hidden;
+  width: 100%;
+  max-width: 90%;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  text-align: left;
+  text-overflow: ellipsis;
+  color: var(--noble-gray-400);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+
+  &.active {
+    display: block;
+    white-space: unset;
+  }
+}
+
+.moreButton {
+  position: relative;
+  z-index: 1;
+  align-self: flex-end;
+  margin-top: calc(var(--extra-small-offset) * (-0.2));
+  margin-right: var(--five);
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--steam-green-700);
+  transition: color 0.2s;
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--steam-green-400);
+    }
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.priceWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  width: 100%;
+  text-align: center;
+  gap: var(--extra-small-offset);
+}
+
+.oldPrice {
+  font: var(--regular-font);
+  font-weight: 100;
+  letter-spacing: 1px;
+  text-decoration: line-through;
+  color: var(--noble-gray-700);
+}
+
+.basicPrice {
+  font: var(--medium-font);
+  letter-spacing: 1px;
+  color: var(--steam-green-500);
+
+  &.gray {
+    color: var(--noble-gray-700);
+  }
+}

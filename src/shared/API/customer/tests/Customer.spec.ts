@@ -16,6 +16,7 @@ describe('Checking Customer Model', () => {
   beforeAll(() => {
     user = {
       addresses: [],
+      billingAddress: [],
       birthDate: '1990-01-01',
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
@@ -25,6 +26,7 @@ describe('Checking Customer Model', () => {
       lastName: 'Smith',
       locale: 'en',
       password: 'Qqq11',
+      shippingAddress: [],
       version: 0,
     };
 
@@ -51,8 +53,8 @@ describe('Checking Customer Model', () => {
   });
 
   it('should return true for valid email', async () => {
-    const result = await customerModel.hasEmail('getting-started@example.com');
-    expect(result?.email).toBe('getting-started@example.com');
+    const result = await customerModel.hasEmail('jane@doe.com');
+    expect(result?.email).toBe('jane@doe.com');
   });
 
   it('should return false for invalid email', async () => {

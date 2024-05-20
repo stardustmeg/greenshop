@@ -12,6 +12,11 @@ declare module '*.svg' {
   export default content;
 }
 
+declare module '*.png' {
+  const content: string;
+  export default content;
+}
+
 interface ImportMeta {
   env: {
     [key: string]: boolean | string | undefined;
@@ -29,5 +34,6 @@ interface ImportMeta {
     VITE_APP_NEXT_SEGMENT: number;
     VITE_APP_PATH_SEGMENTS_TO_KEEP: number;
     VITE_APP_PROJECT_TITLE: string;
+    VITE_APP_SEARCH_SEGMENT: string;
   };
 }

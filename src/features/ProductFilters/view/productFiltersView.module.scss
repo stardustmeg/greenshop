@@ -1,0 +1,210 @@
+.defaultFilters {
+  outline: var(--two) solid var(--noble-white-200);
+  border-radius: var(--medium-br);
+  padding-bottom: var(--extra-small-offset);
+  height: max-content;
+  background-color: var(--noble-white-200);
+}
+
+.metaFilters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  grid-row: 1;
+}
+
+.metaLink {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  padding: var(--tiny-offset);
+  height: 100%;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--noble-gray-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: var(--two);
+    background-color: currentcolor;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition:
+      transform 0.2s,
+      opacity 0.2s,
+      background-color 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--steam-green-400);
+      background-color: var(--noble-white-100);
+
+      &::after {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+  }
+
+  &:last-child {
+    border-top-right-radius: var(--medium-br);
+  }
+
+  &:nth-child(1) {
+    border-radius: var(--medium-br) 0 0 0;
+  }
+
+  &.activeLink {
+    color: var(--steam-green-400);
+    background-color: var(--noble-white-100);
+    opacity: 1;
+
+    &::after {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+}
+
+.categoryList,
+.sizesList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: var(--medium-br);
+  width: 100%;
+  background-color: var(--noble-white-200);
+}
+
+.categoryTitle,
+.priceTitle,
+.sizesTitle {
+  padding: var(--tiny-offset);
+  width: 100%;
+  font: var(--medium-font);
+  letter-spacing: 1px;
+  text-align: left;
+  color: var(--steam-green-500);
+}
+
+.categoryItem,
+.sizeItem {
+  width: 100%;
+}
+
+.categoryLink,
+.sizeLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--tiny-offset);
+  width: 100%;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--noble-gray-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--steam-green-400);
+      background-color: var(--noble-white-100);
+    }
+  }
+
+  &.activeLink {
+    color: var(--steam-green-400);
+    background-color: var(--noble-white-100);
+    opacity: 1;
+  }
+}
+
+.sizeLink,
+.metaLink {
+  &.activeLink {
+    cursor: default;
+  }
+}
+
+.priceWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.priceInput {
+  border: var(--two) solid var(--noble-gray-800);
+  border-radius: var(--small-br);
+  padding: calc(var(--extra-small-offset) / 2);
+  width: 100%;
+  height: var(--extra-small-offset);
+  max-width: calc(var(--extra-large-offset) * 3.5);
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--steam-green-800);
+  background-color: var(--noble-white-200);
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
+
+  &:focus {
+    border-color: var(--steam-green-400);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--steam-green-400);
+      background-color: var(--noble-white-100);
+    }
+  }
+}
+
+.priceLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--extra-small-offset);
+  padding: 0 var(--tiny-offset);
+  width: 100%;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--noble-gray-800);
+  gap: var(--extra-small-offset);
+}
+
+.resetFiltersButton {
+  display: flex;
+  margin: calc(var(--extra-small-offset) / 2) auto;
+  border-radius: var(--medium-br);
+  padding: calc(var(--small-offset) / 3) var(--small-offset);
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--white);
+  background-color: var(--steam-green-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  &:focus {
+    background-color: var(--steam-green-700);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--steam-green-700);
+    }
+  }
+}

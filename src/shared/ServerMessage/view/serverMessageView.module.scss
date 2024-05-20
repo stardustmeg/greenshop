@@ -2,12 +2,12 @@
   position: fixed;
   right: 0;
   top: 50%;
-  z-index: 1000;
-  border: 2px solid var(--steam-green-800);
-  border-top: 10px solid var(--steam-green-800);
+  z-index: 15;
+  border: var(--two) solid var(--steam-green-800);
+  border-top: var(--tiny-offset) solid var(--steam-green-800);
   border-radius: var(--medium-br);
   padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
-  max-width: 200px;
+  max-width: calc(var(--extra-large-offset) * 2);
   font: var(--regular-font);
   letter-spacing: 1px;
   word-break: break-word;

@@ -4,8 +4,7 @@
   flex-direction: column;
   justify-content: center;
   margin: 0 auto;
-  padding: 60px 0;
+  padding: var(--medium-offset) 0;
   width: 100%;
-  min-height: calc(100vh - 141px);
-  max-width: 1440px;
+  min-height: calc(100vh - calc(var(--extra-small-offset) * 7.1));
 }

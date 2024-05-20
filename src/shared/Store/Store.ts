@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
 import type { Action, State } from './reducer.ts';
 import type { Reducer, ReduxStore } from './types';
 
 import initialState from '../constants/initialState.ts';
+import { parseToLoad } from '../services/helper.ts';
 import { STORAGE_KEY, saveCurrentStateToLocalStorage } from '../services/localStorage.ts';
 import { rootReducer } from './reducer.ts';
 
@@ -19,7 +19,7 @@ export class Store<S, A> implements ReduxStore<S, A> {
     let stateToSet: S;
 
     if (storedData) {
-      stateToSet = structuredClone(JSON.parse(storedData) as S);
+      stateToSet = structuredClone(parseToLoad<S>(storedData));
     } else {
       stateToSet = initialData;
     }
@@ -27,6 +27,7 @@ export class Store<S, A> implements ReduxStore<S, A> {
     this.state = structuredClone(stateToSet);
     this.rootReducer = rootReducer;
 
+    // If you have unexpected bugs related to State of the app, or you need to clear out Local Storage to start afresh, comment out the next line, go to the browser tab, clear out the storage manually, and update the page one more time. Then come back here and uncomment it
     window.addEventListener('beforeunload', () => saveCurrentStateToLocalStorage(this.state));
   }
 

@@ -1,18 +1,18 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import type { AddressType } from '@/shared/types/address.ts';
-import type { Address, PersonalData, User } from '@/shared/types/user.ts';
+import type { PersonalData, User } from '@/shared/types/user.ts';
 
 import AddressModel from '@/entities/Address/model/AddressModel.ts';
-import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
+import CredentialsModel from '@/entities/Credentials/model/CredentialsModel.ts';
+import PersonalInfoModel from '@/entities/PersonalInfo/model/PersonalInfoModel.ts';
+import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
-import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
-import { SIZES } from '@/shared/constants/sizes.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
-import formattedText from '@/shared/utils/formattedText.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
@@ -27,59 +27,34 @@ class RegisterFormModel {
     }),
   };
 
+  private creadentialsWrapper = new CredentialsModel();
+
   private inputFields: InputFieldModel[] = [];
 
-  private view: RegistrationFormView = new RegistrationFormView();
+  private personalInfoWrapper = new PersonalInfoModel();
+
+  private view = new RegistrationFormView();
 
   constructor() {
     this.init();
   }
 
-  private async addAddress(address: Address, userData: User | null): Promise<User | null> {
-    let currentUserData = userData;
-    if (currentUserData) {
-      currentUserData = await getCustomerModel().editCustomer(
-        [CustomerModel.actionAddAddress(address)],
-        currentUserData,
-      );
-    }
-    return currentUserData;
-  }
-
-  private async editDefaultBillingAddress(addressId: string, userData: User | null): Promise<User | null> {
-    let currentUserData = userData;
-    if (currentUserData) {
-      currentUserData = await getCustomerModel().editCustomer(
-        [CustomerModel.actionEditDefaultBillingAddress(addressId)],
-        currentUserData,
-      );
-    }
-    return currentUserData;
-  }
-
-  private async editDefaultShippingAddress(addressId: string, userData: User | null): Promise<User | null> {
-    let currentUserData = userData;
-    if (currentUserData) {
-      currentUserData = await getCustomerModel().editCustomer(
-        [CustomerModel.actionEditDefaultShippingAddress(addressId)],
-        currentUserData,
-      );
-    }
-    return currentUserData;
-  }
-
   private getFormUserData(): User {
+    const { birthDate, firstName, lastName } = this.personalInfoWrapper.getFormPersonalInfo();
+    const { email, password } = this.creadentialsWrapper.getFormCredentials();
     const userData: User = {
       addresses: [],
-      birthDate: this.view.getDateOfBirthField().getView().getValue(),
+      billingAddress: [],
+      birthDate,
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
-      email: this.view.getEmailField().getView().getValue(),
-      firstName: formattedText(this.view.getFirstNameField().getView().getValue()),
+      email,
+      firstName,
       id: '',
-      lastName: formattedText(this.view.getLastNameField().getView().getValue()),
-      locale: '',
-      password: this.view.getPasswordField().getView().getValue(),
+      lastName,
+      locale: getStore().getState().currentLanguage,
+      password,
+      shippingAddress: [],
       version: 0,
     };
 
@@ -88,15 +63,24 @@ class RegisterFormModel {
   }
 
   private getPersonalData(): PersonalData {
+    const { firstName, lastName } = this.personalInfoWrapper.getFormPersonalInfo();
+    const { email } = this.creadentialsWrapper.getFormCredentials();
     return {
-      email: this.view.getEmailField().getView().getValue(),
-      firstName: formattedText(this.view.getFirstNameField().getView().getValue()),
-      lastName: formattedText(this.view.getLastNameField().getView().getValue()),
+      email,
+      firstName,
+      lastName,
     };
   }
 
   private init(): boolean {
-    this.inputFields = this.view.getInputFields();
+    this.getHTML().append(this.creadentialsWrapper.getHTML());
+    this.getHTML().append(this.personalInfoWrapper.getHTML());
+
+    this.inputFields.push(
+      ...this.personalInfoWrapper.getView().getInputFields(),
+      ...this.creadentialsWrapper.getView().getInputFields(),
+    );
+
     Object.values(this.addressWrappers)
       .reverse()
       .forEach((addressWrapper) => {
@@ -113,29 +97,29 @@ class RegisterFormModel {
     checkboxSingleAddress?.addEventListener('change', () =>
       this.singleAddressCheckBoxHandler(checkboxSingleAddress.checked),
     );
-    this.setSwitchPasswordVisibilityHandler();
+
+    this.creadentialsWrapper.getHTML().append(this.creadentialsWrapper.getView().getTitle());
+
     return true;
   }
 
   private registerUser(): void {
-    const loader = new LoaderModel(SIZES.SMALL).getHTML();
+    const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
+    const customer = this.getFormUserData();
+    this.updateUserAddresses(customer);
     getCustomerModel()
-      .registerNewCustomer(this.getFormUserData())
+      .registerNewCustomer(customer)
       .then((newUserData) => {
         if (newUserData) {
-          this.successfulUserRegistration(newUserData);
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_REGISTRATION,
-            MESSAGE_STATUS.SUCCESS,
-          );
+          getStore().dispatch(setCurrentUser(newUserData));
+          getStore().dispatch(switchIsUserLoggedIn(false));
+          getStore().dispatch(switchIsUserLoggedIn(true));
+          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_REGISTRATION, MESSAGE_STATUS.SUCCESS);
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].USER_EXISTS,
-          MESSAGE_STATUS.ERROR,
-        );
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.USER_EXISTS, MESSAGE_STATUS.ERROR);
       })
       .finally(() => loader.remove());
   }
@@ -159,16 +143,6 @@ class RegisterFormModel {
   private setSubmitFormHandler(): boolean {
     const submitButton = this.view.getSubmitFormButton().getHTML();
     submitButton.addEventListener('click', () => this.registerUser());
-    return true;
-  }
-
-  private setSwitchPasswordVisibilityHandler(): boolean {
-    this.view.getShowPasswordElement().addEventListener('click', () => {
-      const input = this.view.getPasswordField().getView().getInput().getHTML();
-      input.type = input.type === INPUT_TYPE.PASSWORD ? INPUT_TYPE.TEXT : INPUT_TYPE.PASSWORD;
-      input.placeholder = input.type === INPUT_TYPE.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
-      this.view.switchPasswordElementSVG(input.type);
-    });
     return true;
   }
 
@@ -205,20 +179,6 @@ class RegisterFormModel {
     return true;
   }
 
-  private successfulUserRegistration(newUserData: User): void {
-    const loader = new LoaderModel(SIZES.SMALL).getHTML();
-    this.view.getSubmitFormButton().getHTML().append(loader);
-    this.updateUserData(newUserData)
-      .then(() => getStore().dispatch(switchIsUserLoggedIn(true)))
-      .catch(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        );
-      })
-      .finally(() => loader.remove());
-  }
-
   private switchSubmitFormButtonAccess(): boolean {
     if (this.inputFields.every((inputField) => inputField.getIsValid())) {
       this.view.getSubmitFormButton().setEnabled();
@@ -229,67 +189,42 @@ class RegisterFormModel {
     return true;
   }
 
-  private async updatePersonalData(userData: User | null): Promise<User | null> {
-    let currentUserData = userData;
-    if (currentUserData) {
-      currentUserData = await getCustomerModel().editCustomer(
-        [
-          CustomerModel.actionEditFirstName(formattedText(this.view.getFirstNameField().getView().getValue())),
-          CustomerModel.actionEditLastName(formattedText(this.view.getLastNameField().getView().getValue())),
-          CustomerModel.actionEditDateOfBirth(this.view.getDateOfBirthField().getView().getValue()),
-        ],
-        currentUserData,
-      );
-    }
-
-    return currentUserData;
-  }
-
-  private async updateUserAddresses(userData: User | null): Promise<User | null> {
+  private updateUserAddresses(userData: User | null): User | null {
     const { billing, shipping } = this.addressWrappers;
     const personalData = this.getPersonalData();
     const checkboxSingleAddress = shipping.getView().getAddressAsBillingCheckBox()?.getHTML();
     const checkboxDefaultShippingAddress = shipping.getView().getAddressByDefaultCheckBox()?.getHTML();
     const checkboxDefaultBillingAddress = billing.getView().getAddressByDefaultCheckBox()?.getHTML();
 
-    let currentUserData = userData;
+    const currentUserData = userData;
 
-    currentUserData = await this.addAddress(shipping.getAddressData(personalData), currentUserData);
+    const shippingAddress = shipping.getAddressData(personalData);
+    currentUserData?.addresses.push(shippingAddress);
+    currentUserData?.shippingAddress.push(shippingAddress);
     if (!currentUserData) {
       return null;
     }
-    const shippingAddressID = currentUserData.addresses.at(-1)?.id ?? '';
 
     if (checkboxDefaultShippingAddress?.checked) {
-      currentUserData = await this.editDefaultShippingAddress(shippingAddressID, currentUserData);
+      currentUserData.defaultShippingAddressId = shippingAddress;
     }
 
     if (checkboxSingleAddress?.checked && checkboxDefaultShippingAddress?.checked) {
-      currentUserData = await this.editDefaultBillingAddress(shippingAddressID, currentUserData);
+      currentUserData.defaultBillingAddressId = shippingAddress;
       return currentUserData;
     }
 
-    currentUserData = await this.addAddress(billing.getAddressData(personalData), currentUserData);
+    const billingAddress = billing.getAddressData(personalData);
+    currentUserData?.billingAddress.push(billingAddress);
+    currentUserData?.addresses.push(billingAddress);
     if (!currentUserData) {
       return null;
     }
-    const billingAddressID = currentUserData.addresses.at(-1)?.id ?? '';
 
     if (checkboxDefaultBillingAddress?.checked) {
-      currentUserData = await this.editDefaultBillingAddress(billingAddressID, currentUserData);
+      currentUserData.defaultBillingAddressId = billingAddress;
     }
 
-    return currentUserData;
-  }
-
-  private async updateUserData(newUserData: User): Promise<User | null> {
-    let currentUserData: User | null = newUserData;
-
-    currentUserData = await this.updatePersonalData(currentUserData);
-
-    currentUserData = await this.updateUserAddresses(currentUserData);
-
-    getStore().dispatch(setCurrentUser(currentUserData));
     return currentUserData;
   }
 

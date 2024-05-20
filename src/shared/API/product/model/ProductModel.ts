@@ -1,4 +1,4 @@
-import type { Category, Product, Size, localization } from '@/shared/types/product.ts';
+import type { Category, Product, SizeType, localization } from '@/shared/types/product.ts';
 import type {
   Attribute as AttributeResponse,
   CategoryPagedQueryResponse,
@@ -11,17 +11,15 @@ import type {
   ProductVariant,
 } from '@commercetools/platform-sdk';
 
-import getStore from '@/shared/Store/Store.ts';
-import { setCategories, setProducts } from '@/shared/Store/actions.ts';
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 import getSize from '@/shared/utils/size.ts';
 
-import getRoot, { type RootApi } from '../../sdk/root.ts';
 import {
   Attribute,
   type CategoriesProductCount,
   type OptionsRequest,
   type PriceRange,
+  type ProductWithCount,
   type SizeProductCount,
 } from '../../types/type.ts';
 import {
@@ -36,39 +34,54 @@ import {
   isRangeFacetResult,
   isTermFacetResult,
 } from '../../types/validation.ts';
+import getProductApi, { type ProductApi } from '../ProductApi.ts';
 
 export class ProductModel {
-  private root: RootApi;
+  private categories: Category[] = [];
+
+  private root: ProductApi;
 
   constructor() {
-    this.root = getRoot();
+    this.root = getProductApi();
   }
 
   private adaptCategoryPagedQueryToClient(data: CategoryPagedQueryResponse): Category[] {
     const response = data.results.map((category) => {
       const result: Category = {
-        id: category.id || '',
-        key: category.key || '',
+        id: category.id ?? '',
+        key: category.key ?? '',
         name: [],
+        parent: null,
+        slug: [],
       };
-      Object.entries(category.name).forEach(([language, value]) => {
-        result.name.push({
-          language,
-          value,
-        });
-      });
+
+      if (category.parent) {
+        const parentCategory = data.results.find((item) => item.id === category.parent?.id);
+        if (parentCategory) {
+          result.parent = {
+            id: parentCategory.id || '',
+            key: parentCategory.key || '',
+            name: [],
+            parent: null,
+            slug: [],
+          };
+          result.parent.slug.push(...this.adaptLocalizationValue(parentCategory.slug));
+          result.parent.name.push(...this.adaptLocalizationValue(parentCategory.name));
+        }
+      }
+
+      result.slug.push(...this.adaptLocalizationValue(category.slug));
+      result.name.push(...this.adaptLocalizationValue(category.name));
 
       return result;
     });
-
     return response;
   }
 
   private adaptCategoryReference(data: CategoryReference[]): Category[] {
-    const categoryList = getStore().getState().categories;
     const response: Category[] = [];
     data.forEach((category) => {
-      const categoryEl = categoryList.find((el) => el.id === category.id);
+      const categoryEl = this.categories.find((el) => el.id === category.id);
       if (categoryEl) {
         response.push(categoryEl);
       }
@@ -79,7 +92,7 @@ export class ProductModel {
   private adaptDiscount(variant: ProductVariant): number {
     let minPrice = 0;
 
-    if (variant.prices && variant.prices.length && variant.prices[0].discounted) {
+    if (variant.prices?.length && variant.prices[0].discounted) {
       const priceRow = variant.prices[0];
       if (priceRow.discounted) {
         minPrice = priceRow.discounted.value.centAmount / PRICE_FRACTIONS;
@@ -95,21 +108,10 @@ export class ProductModel {
     return [];
   }
 
-  private adaptLocalizationValue(data: LocalizedString | undefined): localization[] {
-    const result: localization[] = [];
-    Object.entries(data || {}).forEach(([language, value]) => {
-      result.push({
-        language,
-        value,
-      });
-    });
-    return result;
-  }
-
   private adaptPrice(variant: ProductVariant): number {
     let price = 0;
 
-    if (variant.prices && variant.prices.length) {
+    if (variant.prices?.length) {
       const priceRow = variant.prices[0];
       price = priceRow.value.centAmount / PRICE_FRACTIONS;
     }
@@ -128,13 +130,15 @@ export class ProductModel {
       fullDescription: [],
       id: product.id || '',
       images: [],
-      key: product.key || '',
+      key: product.key ?? '',
       name: [],
+      slug: [],
       variant: [],
     };
     result.category.push(...this.adaptCategoryReference(product.categories));
     result.description.push(...this.adaptLocalizationValue(product.description));
     result.name.push(...this.adaptLocalizationValue(product.name));
+    result.slug.push(...this.adaptLocalizationValue(product.slug));
 
     Object.assign(result, this.adaptVariants(result, product));
 
@@ -145,7 +149,7 @@ export class ProductModel {
     return result;
   }
 
-  private adaptSize(attribute: AttributeResponse): Size | null {
+  private adaptSize(attribute: AttributeResponse): SizeType | null {
     if (Array.isArray(attribute.value) && attribute.value.length && isAttributePlainEnumValue(attribute.value[0])) {
       return getSize(attribute.value[0].key);
     }
@@ -155,9 +159,9 @@ export class ProductModel {
   private adaptVariants(product: Product, response: ProductProjection): Product {
     const variants = [...response.variants, response.masterVariant];
     variants.forEach((variant) => {
-      let size: Size | null = null;
+      let size: SizeType | null = null;
 
-      if (variant.attributes && variant.attributes.length) {
+      if (variant.attributes?.length) {
         variant.attributes.forEach((attribute) => {
           if (attribute.name === Attribute.FULL_DESCRIPTION && !product.fullDescription.length) {
             product.fullDescription.push(...this.adaptFullDescription(attribute));
@@ -170,11 +174,12 @@ export class ProductModel {
 
       product.variant.push({
         discount: this.adaptDiscount(variant) || 0,
+        id: variant.id,
         price: this.adaptPrice(variant) || 0,
         size,
       });
 
-      if (variant.images && variant.images.length) {
+      if (variant.images?.length) {
         variant.images.forEach((image) => {
           product.images.push(image.url);
         });
@@ -183,15 +188,13 @@ export class ProductModel {
     return product;
   }
 
-  private getCategoriesFromData(data: ClientResponse<CategoryPagedQueryResponse>): Category[] | null {
-    let category: Category[] | null = null;
+  private getCategoriesFromData(data: ClientResponse<CategoryPagedQueryResponse>): Category[] {
     if (isClientResponse(data)) {
       if (isCategoryPagedQueryResponse(data.body)) {
-        category = this.adaptCategoryPagedQueryToClient(data.body);
-        getStore().dispatch(setCategories(category));
+        this.categories = this.adaptCategoryPagedQueryToClient(data.body);
       }
     }
-    return category;
+    return this.categories;
   }
 
   private getCategoriesProductCountFromData(
@@ -205,14 +208,13 @@ export class ProductModel {
     ) {
       const categoriesFacet = data.body.facets['categories.id'];
       if (isTermFacetResult(categoriesFacet)) {
-        const categoryList = getStore().getState().categories;
         categoriesFacet.terms.forEach((term) => {
           if (isFacetTerm(term)) {
-            const currentCategory = categoryList.find((el) => el.id === term.term);
+            const currentCategory = this.categories.find((el) => el.id === term.term);
             if (currentCategory) {
               category.push({
                 category: currentCategory,
-                count: term.productCount || 0,
+                count: term.productCount ?? 0,
               });
             }
           }
@@ -245,8 +247,8 @@ export class ProductModel {
     return priceRange;
   }
 
-  private getProductsFromData(data: ClientResponse<ProductProjectionPagedQueryResponse>): Product[] | null {
-    let productList: Product[] | null = null;
+  private getProductsFromData(data: ClientResponse<ProductProjectionPagedSearchResponse>): Product[] {
+    let productList: Product[] = [];
     if (isClientResponse(data) && isProductProjectionPagedQueryResponse(data.body)) {
       productList = this.adaptProductProjectionPagedQueryToClient(data.body);
     }
@@ -278,14 +280,23 @@ export class ProductModel {
     return category;
   }
 
-  public async getCategories(): Promise<Category[] | null> {
-    const data = await this.root.getCategories();
-    return this.getCategoriesFromData(data);
+  public adaptLocalizationValue(data: LocalizedString | undefined): localization[] {
+    const result: localization[] = [];
+    Object.entries(data || {}).forEach(([language, value]) => {
+      result.push({
+        language,
+        value,
+      });
+    });
+    return result;
   }
 
-  public async getCategoriesProductCount(): Promise<CategoriesProductCount[]> {
-    const data = await this.root.getCategoriesProductCount();
-    return this.getCategoriesProductCountFromData(data);
+  public async getCategories(): Promise<Category[] | null> {
+    if (!this.categories.length) {
+      const data = await this.root.getCategories();
+      return this.getCategoriesFromData(data);
+    }
+    return this.categories;
   }
 
   public async getPriceRange(): Promise<PriceRange> {
@@ -293,18 +304,19 @@ export class ProductModel {
     return this.getPriceRangeFromData(data);
   }
 
-  public async getProducts(options?: OptionsRequest): Promise<Product[] | null> {
+  public async getProducts(options?: OptionsRequest): Promise<ProductWithCount> {
     const data = await this.root.getProducts(options);
     const products = this.getProductsFromData(data);
-    if (products) {
-      getStore().dispatch(setProducts(products));
-    }
-    return products;
-  }
-
-  public async getSizeProductCount(): Promise<SizeProductCount[]> {
-    const data = await this.root.getSizeProductCount();
-    return this.getSizeProductCountFromData(data);
+    const sizeCount = this.getSizeProductCountFromData(data);
+    const categoryCount = this.getCategoriesProductCountFromData(data);
+    const priceRange = this.getPriceRangeFromData(data);
+    const result: ProductWithCount = {
+      categoryCount,
+      priceRange,
+      products,
+      sizeCount,
+    };
+    return result;
   }
 }
 

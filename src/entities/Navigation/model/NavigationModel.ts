@@ -1,27 +1,25 @@
 import type RouterModel from '@/app/Router/model/RouterModel';
 
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import observeStore, { selectCurrentPage, selectCurrentUser } from '@/shared/Store/observer.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
+import observeStore, { selectCurrentPage, selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 import NavigationView from '../view/NavigationView.ts';
 
 class NavigationModel {
-  private router: RouterModel;
+  private router: RouterModel | null = null;
 
   private view = new NavigationView();
 
-  constructor(router: RouterModel) {
+  constructor(router: RouterModel | null) {
     this.router = router;
     this.init();
   }
 
   private checkCurrentUser(): boolean {
-    const { currentUser } = getStore().getState();
+    const { isUserLoggedIn } = getStore().getState();
     const navigationLinks = this.view.getNavigationLinks();
-    if (!currentUser) {
+    if (!isUserLoggedIn) {
       navigationLinks.get(PAGE_ID.LOGIN_PAGE)?.setEnabled();
     } else {
       navigationLinks.get(PAGE_ID.LOGIN_PAGE)?.setDisabled();
@@ -37,7 +35,7 @@ class NavigationModel {
   }
 
   private observeState(): boolean {
-    observeStore(selectCurrentUser, () => this.checkCurrentUser());
+    observeStore(selectIsUserLoggedIn, () => this.checkCurrentUser());
     observeStore(selectCurrentPage, () => this.switchLinksState());
     return true;
   }
@@ -45,16 +43,9 @@ class NavigationModel {
   private setNavigationLinksHandlers(): boolean {
     const navigationLinks = this.view.getNavigationLinks();
     navigationLinks.forEach((link, route) => {
-      link.getHTML().addEventListener('click', async (event) => {
+      link.getHTML().addEventListener('click', (event) => {
         event.preventDefault();
-        try {
-          await this.router.navigateTo(route);
-        } catch {
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-            MESSAGE_STATUS.ERROR,
-          );
-        }
+        this.router?.navigateTo(route);
       });
     });
 
@@ -63,7 +54,7 @@ class NavigationModel {
 
   private switchLinksState(): boolean {
     const { currentPage } = getStore().getState();
-    const currentPath = currentPage === '' ? PAGE_ID.MAIN_PAGE : currentPage;
+    const currentPath = currentPage === PAGE_ID.DEFAULT_PAGE ? PAGE_ID.MAIN_PAGE : currentPage;
     const navigationLinks = this.view.getNavigationLinks();
     const currentLink = navigationLinks.get(String(currentPath));
     navigationLinks.forEach((link) => link.setEnabled());

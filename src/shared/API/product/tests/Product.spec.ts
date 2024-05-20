@@ -1,5 +1,4 @@
-import { Size, type localization } from '@/shared/types/product.ts';
-import getSize from '@/shared/utils/size.ts';
+import { type localization } from '@/shared/types/product.ts';
 
 import getProductModel, { ProductModel } from '../model/ProductModel.ts';
 
@@ -31,10 +30,10 @@ describe('Checking Product Model', () => {
   });
 
   it('should get the products list', async () => {
-    const productsArr = await productModel.getProducts();
-    if (productsArr) {
-      expect(productsArr).toBeDefined();
-      productsArr.forEach((product) => {
+    const { products } = await productModel.getProducts();
+    if (products) {
+      expect(products).toBeDefined();
+      products.forEach((product) => {
         expect(typeof product.id).toBe('string');
         expect(typeof product.key).toBe('string');
         expect(Array.isArray(product.name)).toBe(true);
@@ -57,22 +56,5 @@ describe('Checking Product Model', () => {
         expect(Array.isArray(product.variant)).toBe(true);
       });
     }
-  });
-});
-
-describe('getSize function', () => {
-  it('should return Size.S when called with "S"', () => {
-    const result = getSize('S');
-    expect(result).toBe(Size.S);
-  });
-
-  it('should return Size.M when called with "M"', () => {
-    const result = getSize('M');
-    expect(result).toBe(Size.M);
-  });
-
-  it('should return null when called with an unknown size', () => {
-    const result = getSize('unknown size');
-    expect(result).toBeNull();
   });
 });

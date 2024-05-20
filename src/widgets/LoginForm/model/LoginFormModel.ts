@@ -1,44 +1,41 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import type { UserCredentials } from '@/shared/types/user.ts';
 
+import CredentialsModel from '@/entities/Credentials/model/CredentialsModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentUser } from '@/shared/Store/actions.ts';
-import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
-import { SIZES } from '@/shared/constants/sizes.ts';
-import { createGreetingMessage } from '@/shared/utils/messageTemplate.ts';
+import { setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import isLanguageChoiceType from '@/shared/types/validation/language.ts';
+import { createGreetingMessage } from '@/shared/utils/messageTemplates.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
+import styles from '../view/loginForm.module.scss';
 
 class LoginFormModel {
+  private credentialsWrapper = new CredentialsModel();
+
   private view: LoginFormView = new LoginFormView();
 
   constructor() {
     this.init();
   }
 
-  private getFormData(): UserCredentials {
-    const userData: UserCredentials = {
-      email: this.view.getEmailField().getView().getValue(),
-      password: this.view.getPasswordField().getView().getValue(),
-    };
-    return userData;
-  }
-
-  private init(): boolean {
-    this.view.getInputFields().forEach((inputField) => this.setInputFieldHandlers(inputField));
+  private init(): void {
+    this.credentialsWrapper.getHTML().classList.add(styles.loginCredentialsWrapper);
+    this.credentialsWrapper.getInputFields().forEach((inputField) => this.setInputFieldHandlers(inputField));
     this.setPreventDefaultToForm();
     this.setSubmitFormHandler();
-    this.setSwitchPasswordVisibilityHandler();
-    return true;
+    this.getHTML().append(this.credentialsWrapper.getHTML());
   }
 
   private loginUser(userLoginData: UserCredentials): void {
     this.view.getSubmitFormButton().setDisabled();
-    const loader = new LoaderModel(SIZES.SMALL).getHTML();
+    const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .hasEmail(userLoginData.email)
@@ -46,37 +43,34 @@ class LoginFormModel {
         if (response) {
           this.loginUserHandler(userLoginData);
         } else {
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE[getStore().getState().currentLanguage].INVALID_EMAIL,
-            MESSAGE_STATUS.ERROR,
-          );
+          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.INVALID_EMAIL, MESSAGE_STATUS.ERROR);
         }
       })
-      .catch(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].BAD_REQUEST,
-          MESSAGE_STATUS.ERROR,
-        );
-      })
+      .catch(() => showErrorMessage())
       .finally(() => loader.remove());
   }
 
   private loginUserHandler(userLoginData: UserCredentials): void {
-    const loader = new LoaderModel(SIZES.SMALL).getHTML();
+    const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
     this.view.getSubmitFormButton().getHTML().append(loader);
     getCustomerModel()
       .authCustomer(userLoginData)
       .then((data) => {
         if (data) {
           getStore().dispatch(setCurrentUser(data));
-          serverMessageModel.showServerMessage(createGreetingMessage(), MESSAGE_STATUS.SUCCESS);
+          getStore().dispatch(switchIsUserLoggedIn(true));
+          if (isLanguageChoiceType(data.locale)) {
+            getStore().dispatch(setCurrentLanguage(data.locale));
+          }
+          serverMessageModel.showServerMessage(
+            SERVER_MESSAGE_KEYS.GREETING,
+            MESSAGE_STATUS.SUCCESS,
+            createGreetingMessage(),
+          );
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE[getStore().getState().currentLanguage].INCORRECT_PASSWORD,
-          MESSAGE_STATUS.ERROR,
-        );
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.INCORRECT_PASSWORD, MESSAGE_STATUS.ERROR);
       })
       .finally(() => loader.remove());
   }
@@ -95,22 +89,12 @@ class LoginFormModel {
 
   private setSubmitFormHandler(): boolean {
     const submitButton = this.view.getSubmitFormButton().getHTML();
-    submitButton.addEventListener('click', () => this.loginUser(this.getFormData()));
-    return true;
-  }
-
-  private setSwitchPasswordVisibilityHandler(): boolean {
-    this.view.getShowPasswordElement().addEventListener('click', () => {
-      const input = this.view.getPasswordField().getView().getInput().getHTML();
-      input.type = input.type === INPUT_TYPE.PASSWORD ? INPUT_TYPE.TEXT : INPUT_TYPE.PASSWORD;
-      input.placeholder = input.type === INPUT_TYPE.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
-      this.view.switchPasswordElementSVG(input.type);
-    });
+    submitButton.addEventListener('click', () => this.loginUser(this.credentialsWrapper.getFormCredentials()));
     return true;
   }
 
   private switchSubmitFormButtonAccess(): boolean {
-    if (this.view.getInputFields().every((inputField) => inputField.getIsValid())) {
+    if (this.credentialsWrapper.getInputFields().every((inputField) => inputField.getIsValid())) {
       this.view.getSubmitFormButton().setEnabled();
     } else {
       this.view.getSubmitFormButton().setDisabled();
@@ -120,7 +104,7 @@ class LoginFormModel {
   }
 
   public getFirstInputField(): InputFieldModel {
-    return this.view.getInputFields()[0];
+    return this.credentialsWrapper.getInputFields()[0];
   }
 
   public getHTML(): HTMLFormElement {

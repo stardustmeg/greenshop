@@ -1,0 +1,96 @@
+.userInfoWrapper {
+  position: relative;
+  display: grid;
+  align-items: center;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(6, auto);
+  margin: 0 var(--small-offset);
+  padding: var(--small-offset);
+  width: 60%;
+  box-shadow: var(--mellow-shadow-100);
+  font: var(--extra-regular-font);
+  line-break: break-all;
+  letter-spacing: 1px;
+  color: var(--noble-gray-900);
+  background-color: var(--noble-gray-tr-800);
+  gap: var(--small-offset);
+}
+
+.keyLogo {
+  display: flex;
+  margin: 0 auto;
+
+  svg {
+    z-index: 1;
+    width: var(--small-offset);
+    height: var(--small-offset);
+    fill: var(--noble-gray-900);
+    transition: 0.2s;
+  }
+}
+
+.editPasswordButton {
+  z-index: 2;
+  grid-column: 2;
+  grid-row: 1;
+  margin-right: 0;
+  margin-left: auto;
+  border-radius: 50%;
+  padding: calc(var(--tiny-offset) * 1.5);
+  width: max-content;
+  height: max-content;
+  background-color: var(--noble-white-100);
+  transition: 0.2s;
+
+  &:hover {
+    background-color: var(--white-tr);
+
+    svg {
+      fill: var(--steam-green-800);
+    }
+  }
+}
+
+.info {
+  grid-column: 2 span;
+  max-width: 100%;
+  word-break: break-all;
+}
+
+.editInfoButton {
+  grid-column: 2 span;
+  grid-row: 6;
+  margin: 0 auto;
+  border-radius: var(--medium-br);
+  padding: calc(var(--small-offset) / 3) var(--small-offset);
+  height: max-content;
+  max-width: max-content;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--white);
+  background-color: var(--steam-green-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  &:focus {
+    background-color: var(--steam-green-700);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--steam-green-700);
+    }
+  }
+
+  &:disabled {
+    background-color: var(--noble-gray-300);
+    pointer-events: none;
+  }
+}
+
+.hidden {
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+}

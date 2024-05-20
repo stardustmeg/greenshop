@@ -7,19 +7,24 @@ export interface Category {
   id: string;
   key: string;
   name: localization[];
+  parent: Category | null;
+  slug: localization[];
 }
 
-export enum Size {
-  L = 'L',
-  M = 'M',
-  S = 'S',
-  XL = 'XL',
-}
+export const SIZE = {
+  L: 'L',
+  M: 'M',
+  S: 'S',
+  XL: 'XL',
+} as const;
+
+export type SizeType = (typeof SIZE)[keyof typeof SIZE];
 
 export interface Variant {
   discount: number;
+  id: number;
   price: number;
-  size: Size | null;
+  size: SizeType | null;
 }
 
 export interface Product {
@@ -30,5 +35,6 @@ export interface Product {
   images: string[];
   key: string;
   name: localization[];
+  slug: localization[];
   variant: Variant[];
 }

@@ -3,19 +3,35 @@ export interface UserCredentials {
   password: string;
 }
 
-export interface PersonalData {
-  email: string;
+export interface AuthCredentials extends UserCredentials {
+  anonymousCartId?: string;
+  anonymousCartSignInMode?: string;
+  anonymousId?: string;
+  updateProductData?: boolean;
+}
+
+interface UserName {
   firstName: string;
   lastName: string;
 }
 
+export interface PersonalData extends UserName {
+  email: string;
+}
+
+export interface PersonalInfo extends UserName {
+  birthDate: string;
+}
+
 export interface User extends PersonalData, UserCredentials {
   addresses: Address[];
+  billingAddress: Address[];
   birthDate: string;
   defaultBillingAddressId: Address | null;
   defaultShippingAddressId: Address | null;
   id: string;
   locale: string;
+  shippingAddress: Address[];
   version: number;
 }
 

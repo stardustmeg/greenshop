@@ -1,17 +1,28 @@
 /* eslint-disable max-lines-per-function */
-import type { Category, Product } from '../types/product.ts';
+import type { TokenStore } from '@commercetools/sdk-client-v2';
+
+import type { LanguageChoiceType } from '../constants/common.ts';
+import type { PageIdType } from '../constants/pages.ts';
+import type { SelectedFilters } from '../types/productFilters.ts';
+import type { SelectedSorting } from '../types/productSorting.ts';
 import type { User } from '../types/user.ts';
 import type * as actions from './actions.ts';
 import type { Reducer } from './types.ts';
 
 export interface State {
+  anonymToken: TokenStore | null;
+  anonymousCartId: null | string;
+  anonymousId: null | string;
+  authToken: TokenStore | null;
   billingCountry: string;
-  categories: Category[];
-  currentLanguage: 'en' | 'ru';
-  currentPage: string; // TBD Specify type
+  currentLanguage: LanguageChoiceType;
+  currentPage: PageIdType;
   currentUser: User | null;
+  isAppThemeLight: boolean;
   isUserLoggedIn: boolean;
-  products: Product[];
+  searchValue: string;
+  selectedFilters: SelectedFilters | null;
+  selectedSorting: SelectedSorting | null;
   shippingCountry: string;
 }
 
@@ -20,6 +31,26 @@ type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 export type Action = ReturnType<InferValueTypes<typeof actions>>;
 export const rootReducer: Reducer<State, Action> = (state: State, action: Action): State => {
   switch (action.type) {
+    case 'setAnonymToken':
+      return {
+        ...state,
+        anonymToken: action.payload,
+      };
+    case 'setAuthToken':
+      return {
+        ...state,
+        authToken: action.payload,
+      };
+    case 'setAnonymousCartId':
+      return {
+        ...state,
+        anonymousCartId: action.payload,
+      };
+    case 'setAnonymousId':
+      return {
+        ...state,
+        anonymousId: action.payload,
+      };
     case 'setCurrentUser':
       return {
         ...state,
@@ -35,22 +66,11 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
         ...state,
         billingCountry: action.payload,
       };
-    case 'setCategories':
-      return {
-        ...state,
-        categories: action.payload,
-      };
-    case 'setProducts':
-      return {
-        ...state,
-        products: action.payload,
-      };
     case 'setCurrentLanguage':
       return {
         ...state,
         currentLanguage: action.payload,
       };
-
     case 'switchIsUserLoggedIn':
       return {
         ...state,
@@ -60,6 +80,26 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         currentPage: action.payload,
+      };
+    case 'switchAppTheme':
+      return {
+        ...state,
+        isAppThemeLight: !state.isAppThemeLight,
+      };
+    case 'setSelectedFilters':
+      return {
+        ...state,
+        selectedFilters: action.payload,
+      };
+    case 'setSelectedSorting':
+      return {
+        ...state,
+        selectedSorting: action.payload,
+      };
+    case 'setSearchValue':
+      return {
+        ...state,
+        searchValue: action.payload,
       };
     default:
       return state;

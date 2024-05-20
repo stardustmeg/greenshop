@@ -1,13 +1,29 @@
 import type { State } from '../Store/reducer';
 
+import { PAGE_ID } from './pages.ts';
+
 const initialState: State = {
+  anonymToken: null,
+  anonymousCartId: null,
+  anonymousId: null,
+  authToken: null,
   billingCountry: '',
-  categories: [],
   currentLanguage: 'en',
-  currentPage: '',
+  currentPage: PAGE_ID.DEFAULT_PAGE,
   currentUser: null,
+  isAppThemeLight: true,
   isUserLoggedIn: false,
-  products: [],
+  searchValue: '',
+  selectedFilters: {
+    category: new Set(),
+    metaFilter: 'All products',
+    price: null,
+    size: null,
+  },
+  selectedSorting: {
+    direction: 'asc',
+    field: 'price',
+  },
   shippingCountry: '',
 };
 

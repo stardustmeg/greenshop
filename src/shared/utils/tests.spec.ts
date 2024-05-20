@@ -1,12 +1,58 @@
+import findAddressIndex from './address.ts';
 import { BaseComponent } from './baseComponent.ts';
 import BaseElement from './baseElement.ts';
+import clearOutElement from './clearOutElement.ts';
 import createBaseElement from './createBaseElement.ts';
 import createSVGUse from './createSVGUse.ts';
+import formattedText from './formattedText.ts';
 import getCountryIndex from './getCountryIndex.ts';
 import isKeyOfUserData from './isKeyOfUserData.ts';
 import { isNotNullable, isNullable } from './isNullable.ts';
 import observeCurrentLanguage from './observeCurrentLanguage.ts';
 import { a, div, h2, h3, iconFromCode, img, input, label, main, span } from './tags.ts';
+
+describe('Checking formattedText function', () => {
+  it('should return formatted text for basic functionality', () => {
+    expect(formattedText('test')).toBe('Test');
+  });
+
+  it('should return empty string for empty input', () => {
+    expect(formattedText('')).toBe('');
+  });
+
+  it('should trim leading and trailing spaces and return formatted text', () => {
+    expect(formattedText('  test  ')).toBe('Test');
+  });
+
+  it('should capitalize the first letter of each word and return formatted text', () => {
+    expect(formattedText('hello world')).toBe('Hello World');
+  });
+
+  it('should handle all uppercase input', () => {
+    expect(formattedText('HELLO')).toBe('Hello');
+  });
+
+  it('should handle all lowercase input', () => {
+    expect(formattedText('hello')).toBe('Hello');
+  });
+
+  it('should handle input with special characters', () => {
+    expect(formattedText('hello-world')).toBe('Hello-world');
+  });
+
+  it('should handle input with numbers', () => {
+    expect(formattedText('123 test 456')).toBe('123 Test 456');
+  });
+});
+
+describe('Checking clearOutElement function', () => {
+  it('should clear out element', () => {
+    const element = document.createElement('div');
+    element.innerHTML = 'test';
+    clearOutElement(element);
+    expect(element.innerHTML).toBe('');
+  });
+});
 
 const baseElement = new BaseElement(
   'a',
@@ -256,5 +302,41 @@ describe('Checking isKeyOfUserData function', () => {
 describe('Checking observeCurrentLanguage function', () => {
   it('should return true', () => {
     expect(observeCurrentLanguage(document.body, {}, 'test')).toBe(true);
+  });
+});
+
+describe('Checking findAddressIndex function', () => {
+  it('should return null', () => {
+    expect(
+      findAddressIndex([], {
+        city: 'test',
+        country: 'test',
+        postalCode: 'test',
+        streetName: 'test',
+        streetNumber: 'test',
+      }),
+    ).toBe(null);
+  });
+  it('should return 0', () => {
+    expect(
+      findAddressIndex(
+        [
+          {
+            city: 'test',
+            country: 'test',
+            postalCode: 'test',
+            streetName: 'test',
+            streetNumber: 'test',
+          },
+        ],
+        {
+          city: 'test',
+          country: 'test',
+          postalCode: 'test',
+          streetName: 'test',
+          streetNumber: 'test',
+        },
+      ),
+    ).toBe(0);
   });
 });
