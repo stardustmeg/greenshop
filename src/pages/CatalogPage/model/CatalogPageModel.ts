@@ -1,4 +1,4 @@
-import type { Page } from '@/shared/types/common.ts';
+import type { Page, PageParams } from '@/shared/types/page.ts';
 
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
@@ -12,9 +12,11 @@ class CatalogPageModel implements Page {
 
   private view: CatalogPageView;
 
-  constructor(parent: HTMLDivElement) {
+  constructor(parent: HTMLDivElement, params: PageParams) {
     this.view = new CatalogPageView(parent);
     this.init();
+    // eslint-disable-next-line no-console
+    console.log(params, params.catalog);
   }
 
   private init(): void {

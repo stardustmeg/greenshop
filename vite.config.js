@@ -9,7 +9,7 @@ const SRC_PATH = path.resolve(__dirname, 'src');
 const SVG_FOLDER_PATH = path.resolve(SRC_PATH, 'shared/img/svg');
 
 export default {
-  base: '',
+  base: '/',
   build: {
     rollupOptions: {
       input: {

@@ -1,6 +1,7 @@
-import type { Variant, localization } from './product';
+import type { Category, Variant, localization } from './product';
 
 interface ProductCardParams {
+  category: Category[];
   description: localization[];
   id: string;
   images: string[];

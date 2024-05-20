@@ -1,5 +1,5 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
-import type { Page } from '@/shared/types/common.ts';
+import type { Page } from '@/shared/types/page.ts';
 
 import UserAddressModel from '@/entities/UserAddress/model/UserAddressModel.ts';
 import UserInfoModel from '@/entities/UserInfo/model/UserInfoModel.ts';
@@ -14,19 +14,19 @@ import UserProfilePageView from '../view/UserProfilePageView.ts';
 class UserProfilePageModel implements Page {
   private addresses: UserAddressModel | null = null;
 
-  private router: RouterModel;
+  private router: RouterModel | null = null;
 
   private userInfo: UserInfoModel | null = null;
 
   private view: UserProfilePageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel) {
+  constructor(parent: HTMLDivElement, router: RouterModel | null) {
     this.router = router;
     this.view = new UserProfilePageView(parent);
 
     this.setAddressesLinkHandler();
     this.setPersonalInfoLinkHandler();
-    this.init();
+    this.init().catch(showErrorMessage);
   }
 
   private addressesLinkHandler(): void {
@@ -34,33 +34,29 @@ class UserProfilePageModel implements Page {
     this.addresses?.show();
   }
 
-  private init(): void {
-    getCustomerModel()
-      .getCurrentUser()
-      .then((user) => {
-        if (user) {
-          this.userInfo = new UserInfoModel(user);
-          this.addresses = new UserAddressModel(user);
-          this.view.getUserProfileWrapper().append(this.userInfo.getHTML(), this.addresses.getHTML());
-          this.setAccountLogoutButtonHandler();
-          getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
-        }
-      })
-      .catch(showErrorMessage);
+  private async init(): Promise<void> {
+    try {
+      const user = await getCustomerModel().getCurrentUser();
+
+      if (user) {
+        this.userInfo = new UserInfoModel(user);
+        this.addresses = new UserAddressModel(user);
+        this.view.getUserProfileWrapper().append(this.userInfo.getHTML(), this.addresses.getHTML());
+        this.setAccountLogoutButtonHandler();
+        getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
+      }
+    } catch (error) {
+      showErrorMessage();
+    }
   }
 
-  private async logoutHandler(): Promise<boolean> {
+  private logoutHandler(): void {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
     getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
-    try {
-      getCustomerModel().logout();
-      await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
-    } catch {
-      showErrorMessage();
-    }
-    return true;
+    getCustomerModel().logout();
+    this.router?.navigateTo(PAGE_ID.LOGIN_PAGE);
   }
 
   private personalInfoLinkHandler(): void {
@@ -68,30 +64,19 @@ class UserProfilePageModel implements Page {
     this.userInfo?.show();
   }
 
-  private setAccountLogoutButtonHandler(): boolean {
+  private setAccountLogoutButtonHandler(): void {
     const logoutButton = this.view.getAccountLogoutButton();
-    logoutButton.getHTML().addEventListener('click', async () => {
-      try {
-        await this.logoutHandler();
-      } catch {
-        showErrorMessage();
-      }
-    });
-    return true;
+    logoutButton.getHTML().addEventListener('click', () => this.logoutHandler());
   }
 
   private setAddressesLinkHandler(): void {
     const addressesLink = this.view.getAddressesLink();
-    addressesLink.getHTML().addEventListener('click', () => {
-      this.addressesLinkHandler();
-    });
+    addressesLink.getHTML().addEventListener('click', () => this.addressesLinkHandler());
   }
 
   private setPersonalInfoLinkHandler(): void {
     const personalInfoLink = this.view.getPersonalInfoLink();
-    personalInfoLink.getHTML().addEventListener('click', () => {
-      this.personalInfoLinkHandler();
-    });
+    personalInfoLink.getHTML().addEventListener('click', () => this.personalInfoLinkHandler());
   }
 
   public getHTML(): HTMLDivElement {

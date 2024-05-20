@@ -1,5 +1,5 @@
 import type { Post } from '@/shared/constants/blog.ts';
-import type { Page } from '@/shared/types/common.ts';
+import type { Page } from '@/shared/types/page.ts';
 
 import PostView from '@/pages/Blog/Post/view/PostView.ts';
 import getStore from '@/shared/Store/Store.ts';

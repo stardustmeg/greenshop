@@ -3,16 +3,15 @@ import type RouterModel from '@/app/Router/model/RouterModel';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentPage, selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import NavigationView from '../view/NavigationView.ts';
 
 class NavigationModel {
-  private router: RouterModel;
+  private router: RouterModel | null = null;
 
   private view = new NavigationView();
 
-  constructor(router: RouterModel) {
+  constructor(router: RouterModel | null) {
     this.router = router;
     this.init();
   }
@@ -44,13 +43,9 @@ class NavigationModel {
   private setNavigationLinksHandlers(): boolean {
     const navigationLinks = this.view.getNavigationLinks();
     navigationLinks.forEach((link, route) => {
-      link.getHTML().addEventListener('click', async (event) => {
+      link.getHTML().addEventListener('click', (event) => {
         event.preventDefault();
-        try {
-          await this.router.navigateTo(route);
-        } catch {
-          showErrorMessage();
-        }
+        this.router?.navigateTo(route);
       });
     });
 

@@ -1,5 +1,5 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
-import type { Page } from '@/shared/types/common.ts';
+import type { Page } from '@/shared/types/page.ts';
 
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
@@ -9,11 +9,11 @@ import { PAGE_DESCRIPTION, PAGE_ID } from '@/shared/constants/pages.ts';
 import NotFoundPageView from '../view/NotFoundPageView.ts';
 
 class NotFoundPageModel implements Page {
-  private router: RouterModel;
+  private router: RouterModel | null = null;
 
   private view: NotFoundPageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel) {
+  constructor(parent: HTMLDivElement, router: RouterModel | null) {
     this.view = new NotFoundPageView(parent);
     this.router = router;
     this.init();
@@ -45,7 +45,7 @@ class NotFoundPageModel implements Page {
 
   private toMainButtonHandler(): boolean {
     const toMainButton = this.view.getToMainButton().getHTML();
-    toMainButton.addEventListener('click', this.router.navigateTo.bind(this.router, PAGE_ID.MAIN_PAGE));
+    toMainButton.addEventListener('click', () => this.router?.navigateTo(PAGE_ID.MAIN_PAGE));
     return true;
   }
 

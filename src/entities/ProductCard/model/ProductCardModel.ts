@@ -19,7 +19,7 @@ class ProductCardModel {
   constructor(params: ProductCardParams, currentSize: null | string, shoppingList: ShoppingList, cart: Cart) {
     this.params = params;
     this.currentVariant = this.params.variant.find(({ size }) => size === currentSize) ?? this.params.variant[0];
-    this.view = new ProductCardView(params, this.currentVariant);
+    this.view = new ProductCardView(params, currentSize, this.currentVariant);
     this.init(shoppingList, cart);
   }
 

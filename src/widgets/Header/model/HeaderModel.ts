@@ -32,7 +32,7 @@ class HeaderModel {
   private checkAuthUser(): boolean {
     const { isUserLoggedIn } = getStore().getState();
     if (!isUserLoggedIn) {
-      this.router.navigateTo(PAGE_ID.LOGIN_PAGE).catch(showErrorMessage);
+      this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
       return false;
     }
     return true;
@@ -62,17 +62,14 @@ class HeaderModel {
     this.setChangeLanguageCheckboxHandler();
   }
 
-  private async logoutHandler(): Promise<void> {
+  private logoutHandler(): boolean {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
     getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
-    try {
-      getCustomerModel().logout();
-      await this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
-    } catch {
-      showErrorMessage();
-    }
+    getCustomerModel().logout();
+    this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
+    return true;
   }
 
   private observeCurrentUser(): void {
@@ -85,7 +82,7 @@ class HeaderModel {
     const logo = this.view.getToCartLink().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
-      this.router.navigateTo(PAGE_ID.CART_PAGE).catch(showErrorMessage);
+      this.router.navigateTo(PAGE_ID.CART_PAGE);
     });
   }
 
@@ -115,24 +112,16 @@ class HeaderModel {
 
   private setLogoHandler(): void {
     const logo = this.view.getLinkLogo().getHTML();
-    logo.addEventListener('click', async (event) => {
+    logo.addEventListener('click', (event) => {
       event.preventDefault();
-      try {
-        await this.router.navigateTo(PAGE_ID.DEFAULT_PAGE);
-      } catch {
-        showErrorMessage();
-      }
+      this.router.navigateTo(PAGE_ID.DEFAULT_PAGE);
     });
   }
 
   private setLogoutButtonHandler(): void {
     const logoutButton = this.view.getLogoutButton();
-    logoutButton.getHTML().addEventListener('click', async () => {
-      try {
-        await this.logoutHandler();
-      } catch {
-        showErrorMessage();
-      }
+    logoutButton.getHTML().addEventListener('click', () => {
+      this.logoutHandler();
       logoutButton.setDisabled();
     });
   }
@@ -143,7 +132,7 @@ class HeaderModel {
       event.preventDefault();
       // TBD remove unnecessary check (we don't show this logo when user is not logged in) ??
       if (this.checkAuthUser()) {
-        this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE).catch(showErrorMessage);
+        this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE);
       }
     });
   }

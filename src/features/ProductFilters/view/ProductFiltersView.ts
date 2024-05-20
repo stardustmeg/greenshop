@@ -11,14 +11,10 @@ import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { META_FILTERS, META_FILTERS_ID, PRICE_RANGE_LABEL, TITLE } from '@/shared/constants/filters.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import * as noUiSlider from 'nouislider';
 
 import styles from './productFiltersView.module.scss';
-
-const SEGMENTS_TO_KEEP = import.meta.env.VITE_APP_PATH_SEGMENTS_TO_KEEP;
-const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
 
 const BASE_PRODUCT_COUNT = '(0)';
 const SLIDER_PRICE_OFFSET = 10;
@@ -63,7 +59,7 @@ class ProductFiltersView {
   }
 
   private createCategoryLink(category: { category: Category; count: number }): LinkModel {
-    const text = category.category.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+    const text = category.category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
     const categoryLink = new LinkModel({
       attrs: {
         href: category.category.key,
@@ -92,7 +88,7 @@ class ProductFiltersView {
     this.categoryLinks.push(categoryLink);
 
     observeStore(selectCurrentLanguage, () => {
-      const text = category.category.name[getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? 0 : 1].value;
+      const text = category.category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
       const textNode = [...categoryLink.getHTML().childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -213,9 +209,11 @@ class ProductFiltersView {
 
     link.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      const path = PAGE_ID.CATALOG_PAGE;
-      const url = `${window.location.pathname.split(DEFAULT_SEGMENT)[SEGMENTS_TO_KEEP]}/${path}/${href}`;
-      history.pushState({ path }, '', url);
+      const url = new URL(decodeURIComponent(window.location.href));
+      url.searchParams.delete('meta');
+      url.searchParams.set('meta', href);
+      const path = url.pathname + encodeURIComponent(url.search);
+      window.history.pushState({ path }, '', path);
     });
 
     this.metaLinks.push(link);
@@ -330,6 +328,11 @@ class ProductFiltersView {
 
     sizeLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
+      const url = new URL(decodeURIComponent(window.location.href));
+      url.searchParams.delete('size');
+      url.searchParams.set('size', size.size);
+      const path = url.pathname + encodeURIComponent(url.search);
+      window.history.pushState({ path }, '', path);
     });
 
     const span = createBaseElement({

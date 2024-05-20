@@ -52,6 +52,7 @@ export class ProductModel {
         key: category.key ?? '',
         name: [],
         parent: null,
+        slug: [],
       };
 
       if (category.parent) {
@@ -62,26 +63,18 @@ export class ProductModel {
             key: parentCategory.key || '',
             name: [],
             parent: null,
+            slug: [],
           };
-          Object.entries(parentCategory.name).forEach(([language, value]) => {
-            result.parent?.name.push({
-              language,
-              value,
-            });
-          });
+          result.parent.slug.push(...this.adaptLocalizationValue(parentCategory.slug));
+          result.parent.name.push(...this.adaptLocalizationValue(parentCategory.name));
         }
       }
 
-      Object.entries(category.name).forEach(([language, value]) => {
-        result.name.push({
-          language,
-          value,
-        });
-      });
+      result.slug.push(...this.adaptLocalizationValue(category.slug));
+      result.name.push(...this.adaptLocalizationValue(category.name));
 
       return result;
     });
-
     return response;
   }
 
@@ -139,11 +132,13 @@ export class ProductModel {
       images: [],
       key: product.key ?? '',
       name: [],
+      slug: [],
       variant: [],
     };
     result.category.push(...this.adaptCategoryReference(product.categories));
     result.description.push(...this.adaptLocalizationValue(product.description));
     result.name.push(...this.adaptLocalizationValue(product.name));
+    result.slug.push(...this.adaptLocalizationValue(product.slug));
 
     Object.assign(result, this.adaptVariants(result, product));
 
