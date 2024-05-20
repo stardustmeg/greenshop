@@ -11,11 +11,11 @@ class NavigationView {
 
   private navigationLinks: Map<string, LinkModel> = new Map();
 
-  private toAboutLink: LinkModel;
+  // private toAboutLink: LinkModel;
 
-  private toBlogLink: LinkModel;
+  // private toBlogLink: LinkModel;
 
-  private toCatalogLink: LinkModel;
+  // private toCatalogLink: LinkModel;
 
   private toLoginLink: LinkModel;
 
@@ -27,9 +27,9 @@ class NavigationView {
     this.toMainLink = this.createToMainLink();
     this.toLoginLink = this.createToLoginLink();
     this.toRegisterLink = this.createToRegisterLink();
-    this.toCatalogLink = this.createToCatalogLink();
-    this.toAboutLink = this.createToAboutLink();
-    this.toBlogLink = this.createToBlogLink();
+    // this.toCatalogLink = this.createToCatalogLink();
+    // this.toAboutLink = this.createToAboutLink();
+    // this.toBlogLink = this.createToBlogLink();
     this.navigation = this.createHTML();
   }
 
@@ -42,57 +42,57 @@ class NavigationView {
       this.toLoginLink.getHTML(),
       this.toRegisterLink.getHTML(),
       this.toMainLink.getHTML(),
-      this.toCatalogLink.getHTML(),
-      this.toBlogLink.getHTML(),
-      this.toAboutLink.getHTML(),
+      // this.toCatalogLink.getHTML(),
+      // this.toBlogLink.getHTML(),
+      // this.toAboutLink.getHTML(),
     );
     return this.navigation;
   }
 
-  private createToAboutLink(): LinkModel {
-    this.toAboutLink = new LinkModel({
-      attrs: {
-        href: PAGE_ID.ABOUT_US_PAGE,
-      },
-      classes: [styles.link],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].ABOUT,
-    });
+  // private createToAboutLink(): LinkModel {
+  //   this.toAboutLink = new LinkModel({
+  //     attrs: {
+  //       href: PAGE_ID.ABOUT_US_PAGE,
+  //     },
+  //     classes: [styles.link],
+  //     text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].ABOUT,
+  //   });
 
-    observeCurrentLanguage(this.toAboutLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.ABOUT);
+  //   observeCurrentLanguage(this.toAboutLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.ABOUT);
 
-    this.navigationLinks.set(PAGE_ID.ABOUT_US_PAGE, this.toAboutLink);
-    return this.toAboutLink;
-  }
+  //   this.navigationLinks.set(PAGE_ID.ABOUT_US_PAGE, this.toAboutLink);
+  //   return this.toAboutLink;
+  // }
 
-  private createToBlogLink(): LinkModel {
-    this.toBlogLink = new LinkModel({
-      attrs: {
-        href: PAGE_ID.BLOG,
-      },
-      classes: [styles.link],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].BLOG,
-    });
+  // private createToBlogLink(): LinkModel {
+  //   this.toBlogLink = new LinkModel({
+  //     attrs: {
+  //       href: PAGE_ID.BLOG,
+  //     },
+  //     classes: [styles.link],
+  //     text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].BLOG,
+  //   });
 
-    observeCurrentLanguage(this.toBlogLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.BLOG);
+  //   observeCurrentLanguage(this.toBlogLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.BLOG);
 
-    this.navigationLinks.set(PAGE_ID.BLOG, this.toBlogLink);
-    return this.toBlogLink;
-  }
+  //   this.navigationLinks.set(PAGE_ID.BLOG, this.toBlogLink);
+  //   return this.toBlogLink;
+  // }
 
-  private createToCatalogLink(): LinkModel {
-    this.toCatalogLink = new LinkModel({
-      attrs: {
-        href: PAGE_ID.CATALOG_PAGE,
-      },
-      classes: [styles.link],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].CATALOG,
-    });
+  // private createToCatalogLink(): LinkModel {
+  //   this.toCatalogLink = new LinkModel({
+  //     attrs: {
+  //       href: PAGE_ID.CATALOG_PAGE,
+  //     },
+  //     classes: [styles.link],
+  //     text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].CATALOG,
+  //   });
 
-    observeCurrentLanguage(this.toCatalogLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.CATALOG);
+  //   observeCurrentLanguage(this.toCatalogLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.CATALOG);
 
-    this.navigationLinks.set(PAGE_ID.CATALOG_PAGE, this.toCatalogLink);
-    return this.toCatalogLink;
-  }
+  //   this.navigationLinks.set(PAGE_ID.CATALOG_PAGE, this.toCatalogLink);
+  //   return this.toCatalogLink;
+  // }
 
   private createToLoginLink(): LinkModel {
     this.toLoginLink = new LinkModel({

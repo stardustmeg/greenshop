@@ -1,7 +1,10 @@
 import type RouterModel from '@/app/Router/model/RouterModel';
 
 import getStore from '@/shared/Store/Store.ts';
-import observeStore, { selectCurrentPage, selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
+import observeStore, {
+  selectCurrentPage,
+  // , selectIsUserLoggedIn
+} from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
 import NavigationView from '../view/NavigationView.ts';
@@ -16,16 +19,16 @@ class NavigationModel {
     this.init();
   }
 
-  private checkCurrentUser(): boolean {
-    const { isUserLoggedIn } = getStore().getState();
-    const navigationLinks = this.view.getNavigationLinks();
-    if (!isUserLoggedIn) {
-      navigationLinks.get(PAGE_ID.LOGIN_PAGE)?.setEnabled();
-    } else {
-      navigationLinks.get(PAGE_ID.LOGIN_PAGE)?.setDisabled();
-    }
-    return true;
-  }
+  // private checkCurrentUser(): boolean {
+  //   const { isUserLoggedIn } = getStore().getState();
+  //   const navigationLinks = this.view.getNavigationLinks();
+  //   if (!isUserLoggedIn) {
+  //     navigationLinks.get(PAGE_ID.LOGIN_PAGE)?.setEnabled();
+  //   } else {
+  //     navigationLinks.get(PAGE_ID.LOGIN_PAGE)?.setDisabled();
+  //   }
+  //   return true;
+  // }
 
   private init(): boolean {
     this.setNavigationLinksHandlers();
@@ -35,7 +38,7 @@ class NavigationModel {
   }
 
   private observeState(): boolean {
-    observeStore(selectIsUserLoggedIn, () => this.checkCurrentUser());
+    // observeStore(selectIsUserLoggedIn, () => this.checkCurrentUser());
     observeStore(selectCurrentPage, () => this.switchLinksState());
     return true;
   }
@@ -58,7 +61,7 @@ class NavigationModel {
     const navigationLinks = this.view.getNavigationLinks();
     const currentLink = navigationLinks.get(String(currentPath));
     navigationLinks.forEach((link) => link.setEnabled());
-    this.checkCurrentUser();
+    // this.checkCurrentUser();
     currentLink?.setDisabled();
     this.view.switchActiveLink(String(currentPath));
 

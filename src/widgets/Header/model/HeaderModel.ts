@@ -1,15 +1,11 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
 
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
-import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
+import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setAuthToken, setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import { setAuthToken, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import HeaderView from '../view/HeaderView.ts';
 
@@ -29,24 +25,24 @@ class HeaderModel {
     this.init();
   }
 
-  private checkAuthUser(): boolean {
-    const { isUserLoggedIn } = getStore().getState();
-    if (!isUserLoggedIn) {
-      this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
-      return false;
-    }
-    return true;
-  }
+  // private checkAuthUser(): boolean {
+  //   const { isUserLoggedIn } = getStore().getState();
+  //   if (!isUserLoggedIn) {
+  //     this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
   private checkCurrentUser(): void {
     const { isUserLoggedIn } = getStore().getState();
     const logoutButton = this.view.getLogoutButton();
     if (isUserLoggedIn) {
-      this.view.getToProfileLink().setEnabled();
+      // this.view.getToProfileLink().setEnabled();
       logoutButton.setEnabled();
     } else {
       logoutButton.setDisabled();
-      this.view.getToProfileLink().setDisabled();
+      // this.view.getToProfileLink().setDisabled();
     }
   }
 
@@ -57,9 +53,9 @@ class HeaderModel {
     this.setLogoHandler();
     this.observeCurrentUser();
     this.setLogoutButtonHandler();
-    this.setCartLinkHandler();
-    this.setProfileLinkHandler();
-    this.setChangeLanguageCheckboxHandler();
+    // this.setCartLinkHandler();
+    // this.setProfileLinkHandler();
+    // this.setChangeLanguageCheckboxHandler();
   }
 
   private logoutHandler(): boolean {
@@ -78,37 +74,37 @@ class HeaderModel {
     });
   }
 
-  private setCartLinkHandler(): void {
-    const logo = this.view.getToCartLink().getHTML();
-    logo.addEventListener('click', (event) => {
-      event.preventDefault();
-      this.router.navigateTo(PAGE_ID.CART_PAGE);
-    });
-  }
+  // private setCartLinkHandler(): void {
+  //   const logo = this.view.getToCartLink().getHTML();
+  //   logo.addEventListener('click', (event) => {
+  //     event.preventDefault();
+  //     this.router.navigateTo(PAGE_ID.CART_PAGE);
+  //   });
+  // }
 
-  private setChangeLanguageCheckboxHandler(): void {
-    const switchLanguageCheckbox = this.view.getSwitchLanguageCheckbox().getHTML();
-    switchLanguageCheckbox.addEventListener('click', async () => {
-      const { currentLanguage, isUserLoggedIn } = getStore().getState();
-      const newLanguage = currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
+  // private setChangeLanguageCheckboxHandler(): void {
+  //   const switchLanguageCheckbox = this.view.getSwitchLanguageCheckbox().getHTML();
+  //   switchLanguageCheckbox.addEventListener('click', async () => {
+  //     const { currentLanguage, isUserLoggedIn } = getStore().getState();
+  //     const newLanguage = currentLanguage === LANGUAGE_CHOICE.EN ? LANGUAGE_CHOICE.RU : LANGUAGE_CHOICE.EN;
 
-      if (isUserLoggedIn) {
-        try {
-          const user = await getCustomerModel().getCurrentUser();
-          if (user) {
-            await getCustomerModel().editCustomer([CustomerModel.actionSetLocale(newLanguage)], user);
-            getStore().dispatch(setCurrentLanguage(newLanguage));
-            serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
-          }
-        } catch (error) {
-          showErrorMessage();
-        }
-      } else {
-        getStore().dispatch(setCurrentLanguage(newLanguage));
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
-      }
-    });
-  }
+  //     if (isUserLoggedIn) {
+  //       try {
+  //         const user = await getCustomerModel().getCurrentUser();
+  //         if (user) {
+  //           await getCustomerModel().editCustomer([CustomerModel.actionSetLocale(newLanguage)], user);
+  //           getStore().dispatch(setCurrentLanguage(newLanguage));
+  //           serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
+  //         }
+  //       } catch (error) {
+  //         showErrorMessage();
+  //       }
+  //     } else {
+  //       getStore().dispatch(setCurrentLanguage(newLanguage));
+  //       serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
+  //     }
+  //   });
+  // }
 
   private setLogoHandler(): void {
     const logo = this.view.getLinkLogo().getHTML();
@@ -126,16 +122,16 @@ class HeaderModel {
     });
   }
 
-  private setProfileLinkHandler(): void {
-    const logo = this.view.getToProfileLink().getHTML();
-    logo.addEventListener('click', (event) => {
-      event.preventDefault();
-      // TBD remove unnecessary check (we don't show this logo when user is not logged in) ??
-      if (this.checkAuthUser()) {
-        this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE);
-      }
-    });
-  }
+  // private setProfileLinkHandler(): void {
+  //   const logo = this.view.getToProfileLink().getHTML();
+  //   logo.addEventListener('click', (event) => {
+  //     event.preventDefault();
+  //     // TBD remove unnecessary check (we don't show this logo when user is not logged in) ??
+  //     if (this.checkAuthUser()) {
+  //       this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE);
+  //     }
+  //   });
+  // }
 
   public getHTML(): HTMLElement {
     return this.view.getHTML();
