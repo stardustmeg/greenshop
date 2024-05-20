@@ -4,6 +4,7 @@ const SVG_DETAILS = {
   DARK: 'dark',
   FILL_HEART: 'heartFill',
   GO_DETAILS: 'arrow',
+  KEY: 'key',
   LIGHT: 'light',
   LOGO: 'logo',
   OPEN_EYE: 'openEye',

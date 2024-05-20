@@ -3,16 +3,16 @@ import type { AddressType } from '@/shared/types/address.ts';
 import type { PersonalData, User } from '@/shared/types/user.ts';
 
 import AddressModel from '@/entities/Address/model/AddressModel.ts';
+import CredentialsModel from '@/entities/Credentials/model/CredentialsModel.ts';
+import PersonalInfoModel from '@/entities/PersonalInfo/model/PersonalInfoModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
-import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
-import formattedText from '@/shared/utils/formattedText.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
@@ -27,27 +27,33 @@ class RegisterFormModel {
     }),
   };
 
+  private creadentialsWrapper = new CredentialsModel();
+
   private inputFields: InputFieldModel[] = [];
 
-  private view: RegistrationFormView = new RegistrationFormView();
+  private personalInfoWrapper = new PersonalInfoModel();
+
+  private view = new RegistrationFormView();
 
   constructor() {
     this.init();
   }
 
   private getFormUserData(): User {
+    const { birthDate, firstName, lastName } = this.personalInfoWrapper.getFormPersonalInfo();
+    const { email, password } = this.creadentialsWrapper.getFormCredentials();
     const userData: User = {
       addresses: [],
       billingAddress: [],
-      birthDate: this.view.getDateOfBirthField().getView().getValue(),
+      birthDate,
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
-      email: this.view.getEmailField().getView().getValue(),
-      firstName: formattedText(this.view.getFirstNameField().getView().getValue()),
+      email,
+      firstName,
       id: '',
-      lastName: formattedText(this.view.getLastNameField().getView().getValue()),
+      lastName,
       locale: getStore().getState().currentLanguage,
-      password: this.view.getPasswordField().getView().getValue(),
+      password,
       shippingAddress: [],
       version: 0,
     };
@@ -57,15 +63,24 @@ class RegisterFormModel {
   }
 
   private getPersonalData(): PersonalData {
+    const { firstName, lastName } = this.personalInfoWrapper.getFormPersonalInfo();
+    const { email } = this.creadentialsWrapper.getFormCredentials();
     return {
-      email: this.view.getEmailField().getView().getValue(),
-      firstName: formattedText(this.view.getFirstNameField().getView().getValue()),
-      lastName: formattedText(this.view.getLastNameField().getView().getValue()),
+      email,
+      firstName,
+      lastName,
     };
   }
 
   private init(): boolean {
-    this.inputFields = this.view.getInputFields();
+    this.getHTML().append(this.creadentialsWrapper.getHTML());
+    this.getHTML().append(this.personalInfoWrapper.getHTML());
+
+    this.inputFields.push(
+      ...this.personalInfoWrapper.getView().getInputFields(),
+      ...this.creadentialsWrapper.getView().getInputFields(),
+    );
+
     Object.values(this.addressWrappers)
       .reverse()
       .forEach((addressWrapper) => {
@@ -82,7 +97,9 @@ class RegisterFormModel {
     checkboxSingleAddress?.addEventListener('change', () =>
       this.singleAddressCheckBoxHandler(checkboxSingleAddress.checked),
     );
-    this.setSwitchPasswordVisibilityHandler();
+
+    this.creadentialsWrapper.getHTML().append(this.creadentialsWrapper.getView().getTitle());
+
     return true;
   }
 
@@ -126,16 +143,6 @@ class RegisterFormModel {
   private setSubmitFormHandler(): boolean {
     const submitButton = this.view.getSubmitFormButton().getHTML();
     submitButton.addEventListener('click', () => this.registerUser());
-    return true;
-  }
-
-  private setSwitchPasswordVisibilityHandler(): boolean {
-    this.view.getShowPasswordElement().addEventListener('click', () => {
-      const input = this.view.getPasswordField().getView().getInput().getHTML();
-      input.type = input.type === INPUT_TYPE.PASSWORD ? INPUT_TYPE.TEXT : INPUT_TYPE.PASSWORD;
-      input.placeholder = input.type === INPUT_TYPE.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
-      this.view.switchPasswordElementSVG(input.type);
-    });
     return true;
   }
 

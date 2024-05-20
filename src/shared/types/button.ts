@@ -5,4 +5,5 @@ export interface ButtonAttributes {
   attrs?: Record<string, string>;
   classes?: string[];
   text?: string;
+  title?: string;
 }

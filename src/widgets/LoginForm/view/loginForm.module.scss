@@ -1,49 +1,10 @@
-.loginForm {
-  display: flex;
-  flex-direction: column;
-  grid-column: 2 span;
-  margin: 0 auto;
-  margin-bottom: calc(var(--extra-small-offset) / 2);
-  width: 100%;
-  gap: var(--extra-small-offset);
-
-  .label {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--extra-small-offset) / 2);
-  }
-
-  input {
-    border: 1px solid var(--noble-gray-200);
-    border-radius: var(--small-br);
-    padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
-    font: var(--regular-font);
-    letter-spacing: 1px;
-    color: var(--noble-gray-800);
-    transition: border 0.2s;
-
-    &::placeholder {
-      color: var(--noble-gray-600);
-    }
-
-    &:focus {
-      border: 1px solid var(--steam-green-800);
-    }
-
-    @media (hover: hover) {
-      &:hover {
-        border: 1px solid var(--steam-green-800);
-      }
-    }
-  }
-}
-
 .submitFormButton {
   display: flex;
+  place-self: center center;
   align-items: center;
-  align-self: center;
   justify-content: center;
+  grid-column: 2 span;
+  grid-row: 2;
   border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
   width: max-content;
@@ -71,41 +32,19 @@
   }
 }
 
-.showPasswordElement {
-  position: absolute;
-  right: 0.3rem;
-  top: 2.35rem;
-  border-radius: var(--small-br);
-  padding: calc(var(--extra-small-offset) / 8);
-  width: calc(var(--extra-small-offset) * 1.2); // 24px
-  height: calc(var(--extra-small-offset) * 1.2); // 24px
-  background-color: transparent;
-  transform: translate(-12%, 0);
-  transition: background-color 0.2s;
-  cursor: pointer;
+.loginForm {
+  display: grid;
+  grid-column: 2 span;
+  grid-template-rows: repeat((2, max-content));
+  margin: var(--small-offset) auto;
+  width: 100%;
+  gap: var(--extra-small-offset);
 
-  svg {
-    width: var(--extra-small-offset); // 20px
-    height: var(--extra-small-offset); // 20px
-    stroke: var(--noble-gray-600);
-    transition: stroke 0.2s;
-  }
-
-  &:focus {
-    background-color: var(--noble-gray-200);
-
-    svg {
-      stroke: var(--steam-green-800);
-    }
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--noble-gray-200);
-
-      svg {
-        stroke: var(--steam-green-800);
-      }
-    }
+  .loginCredentialsWrapper {
+    display: flex;
+    flex-direction: column;
+    grid-column: 2 span;
+    padding: 0;
+    width: 100%;
   }
 }

@@ -160,7 +160,7 @@ class HeaderView {
       type: INPUT_TYPE.CHECK_BOX,
     });
     this.switchLanguageCheckbox.getHTML().classList.add(styles.switchLanguageCheckbox);
-    this.switchLanguageCheckbox.getHTML().checked = getStore().getState().currentUser?.locale === LANGUAGE_CHOICE.EN;
+    this.switchLanguageCheckbox.getHTML().checked = getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN;
 
     return this.switchLanguageCheckbox;
   }
@@ -264,12 +264,12 @@ class HeaderView {
     svg.append(createSVGUse(SVG_DETAILS.PROFILE));
     this.toProfileLink.getHTML().append(svg);
 
-    if (!getStore().getState().currentUser) {
+    if (!getStore().getState().isUserLoggedIn) {
       this.toProfileLink.getHTML().classList.add(styles.hidden);
     }
 
     observeStore(selectIsUserLoggedIn, () =>
-      this.toProfileLink.getHTML().classList.toggle(styles.hidden, getStore().getState().currentUser === null),
+      this.toProfileLink.getHTML().classList.toggle(styles.hidden, !getStore().getState().isUserLoggedIn),
     );
 
     this.toProfileLink

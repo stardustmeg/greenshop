@@ -7,29 +7,35 @@ export const BUTTON_TYPE = {
 export const BUTTON_TEXT = {
   en: {
     BACK_TO_MAIN: 'Back to main',
+    CANCEL: 'Cancel',
     EDIT_INFO: 'Edit',
     LOG_OUT: 'Log out',
     LOGIN: 'Login',
     REGISTRATION: 'Register',
     RESET: 'Reset',
+    SAVE_CHANGES: 'Save changes',
   },
   ru: {
     BACK_TO_MAIN: 'Вернуться на главную',
+    CANCEL: 'Отмена',
     EDIT_INFO: 'Редактировать',
     LOG_OUT: 'Выйти',
     LOGIN: 'Войти',
     REGISTRATION: 'Регистрация',
     RESET: 'Сбросить',
+    SAVE_CHANGES: 'Сохранить',
   },
 } as const;
 
 export const BUTTON_TEXT_KEYS = {
   BACK_TO_MAIN: 'BACK_TO_MAIN',
+  CANCEL: 'CANCEL',
   EDIT_INFO: 'EDIT_INFO',
   LOG_OUT: 'LOG_OUT',
   LOGIN: 'LOGIN',
   REGISTRATION: 'REGISTRATION',
   RESET: 'RESET',
+  SAVE_CHANGES: 'SAVE_CHANGES',
 } as const;
 
 export type ButtonTextKeysType = (typeof BUTTON_TEXT_KEYS)[keyof typeof BUTTON_TEXT_KEYS];

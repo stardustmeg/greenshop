@@ -16,6 +16,7 @@ class ButtonView {
       cssClasses: params.classes,
       innerContent: params.text,
       tag: 'button',
+      title: params.title,
     });
 
     if (params.action) {
