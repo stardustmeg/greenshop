@@ -41,10 +41,11 @@ export class CustomerApi {
     return authData;
   }
 
-  private checkAuthConnection(authData: UserCredentials): boolean {
+  private async checkAuthConnection(authData: UserCredentials): Promise<boolean> {
     let isOk = false;
+    this.client.deleteAuthConnection();
     const client = this.client.createAuthConnection(authData);
-    const testConnect = client.get().execute();
+    const testConnect = await client.get().execute();
     if (!isErrorResponse(testConnect)) {
       this.client.approveAuth();
       getCartModel().clear();
@@ -96,7 +97,7 @@ export class CustomerApi {
     const authData = this.cerateAuthData(userLoginData);
     const data = await this.client.apiRoot().me().login().post({ body: authData }).execute();
     if (!isErrorResponse(data)) {
-      this.checkAuthConnection(authData);
+      await this.checkAuthConnection(authData);
     }
     return data;
   }
@@ -113,7 +114,7 @@ export class CustomerApi {
   }
 
   public async editPassword(
-    version: number,
+    customer: User,
     currentPassword: string,
     newPassword: string,
   ): Promise<ClientResponse<Customer>> {
@@ -121,8 +122,15 @@ export class CustomerApi {
       .apiRoot()
       .me()
       .password()
-      .post({ body: { currentPassword, newPassword, version } })
+      .post({ body: { currentPassword, newPassword, version: customer.version } })
       .execute();
+    if (!isErrorResponse(data)) {
+      const authData: UserCredentials = {
+        email: customer.email,
+        password: newPassword,
+      };
+      await this.checkAuthConnection(authData);
+    }
     return data;
   }
 
