@@ -117,5 +117,6 @@ export const checkWhitespace = (value: string, validParams: InputFieldValidatorP
   if (validParams.notWhitespace && !validParams.notWhitespace.pattern.test(value)) {
     return validParams.notWhitespace.messages[getStore().getState().currentLanguage];
   }
+
   return true;
 };

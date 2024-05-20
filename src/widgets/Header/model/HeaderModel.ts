@@ -121,7 +121,11 @@ class HeaderModel {
   private setLogoutButtonHandler(): void {
     const logoutButton = this.view.getLogoutButton();
     logoutButton.getHTML().addEventListener('click', () => {
-      this.logoutHandler();
+      try {
+        this.logoutHandler();
+      } catch {
+        showErrorMessage();
+      }
       logoutButton.setDisabled();
     });
   }

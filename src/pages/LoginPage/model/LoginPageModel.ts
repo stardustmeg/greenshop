@@ -39,6 +39,7 @@ class LoginPageModel implements Page {
     this.checkAuthUser();
     this.view.getAuthWrapper().append(this.loginForm.getHTML());
     this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
+    this.loginForm.getFirstInputField().getView().getInput().getHTML().focus();
     this.setRegisterLinkHandler();
     observeStore(selectIsUserLoggedIn, () => this.checkAuthUser());
     return true;

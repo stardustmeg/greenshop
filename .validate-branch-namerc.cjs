@@ -1,5 +1,6 @@
 module.exports = {
-  pattern: /^(feat|fix|hotfix|chore|refactor|revert|docs|style|test|)\(RSS-ECOMM-\d{1}_\d{2}\)\/[a-z]+[a-zA-Z0-9]*$/,
+  pattern:
+    /^sprint-3|^(feat|fix|hotfix|chore|refactor|revert|docs|style|test|)\(RSS-ECOMM-\d{1}_\d{2}\)\/[a-z]+[a-zA-Z0-9]*$/,
   errorMsg: 'Please use correct branch name',
 };
 

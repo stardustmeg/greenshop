@@ -10,10 +10,6 @@
 
 .link {
   position: relative;
-  display: flex;
-  align-items: center;
-  padding: 0 calc(var(--extra-small-offset) / 2);
-  height: 100%;
   font: var(--regular-font);
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -24,7 +20,7 @@
     content: '';
     position: absolute;
     left: 0;
-    bottom: -1px;
+    bottom: -4px;
     width: 100%;
     height: var(--two);
     background-color: currentcolor;
