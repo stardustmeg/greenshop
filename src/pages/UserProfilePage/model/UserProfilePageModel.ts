@@ -5,7 +5,7 @@ import UserAddressModel from '@/entities/UserAddress/model/UserAddressModel.ts';
 import UserInfoModel from '@/entities/UserInfo/model/UserInfoModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setAuthToken, setCurrentPage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import { setAuthToken, setCurrentPage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
@@ -52,7 +52,6 @@ class UserProfilePageModel implements Page {
 
   private logoutHandler(): void {
     localStorage.clear();
-    getStore().dispatch(setCurrentUser(null));
     getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
     getCustomerModel().logout();
