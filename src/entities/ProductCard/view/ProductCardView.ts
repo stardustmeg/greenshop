@@ -143,7 +143,7 @@ class ProductCardView {
   private createGoDetailsPageLink(): LinkModel {
     const href = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
       category: this.params.category.map((category) => category.parent?.key ?? ''),
-      size: [this.currentSize],
+      size: [this.currentSize ?? this.params.variant[0].size],
       subcategory: this.params.category.map((category) => category.key),
     })}`;
 
