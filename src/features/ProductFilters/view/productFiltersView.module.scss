@@ -104,6 +104,10 @@
   width: 100%;
 }
 
+.subcategoryItem {
+  padding-left: calc(var(--tiny-offset) * 2);
+}
+
 .categoryLink,
 .sizeLink {
   display: flex;

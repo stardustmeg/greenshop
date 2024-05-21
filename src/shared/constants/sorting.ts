@@ -13,7 +13,7 @@ export const TEXT = {
     SEARCH: 'Поиск...',
     SORT_BY: 'По:',
   },
-} as const;
+};
 
 export const TEXT_KEYS = {
   DEFAULT: 'DEFAULT',
@@ -22,6 +22,8 @@ export const TEXT_KEYS = {
   SEARCH: 'SEARCH',
   SORT_BY: 'SORT_BY',
 } as const;
+
+export type TextKeysType = (typeof TEXT_KEYS)[keyof typeof TEXT_KEYS];
 
 export const SORTING_ID = {
   DEFAULT: 'default',

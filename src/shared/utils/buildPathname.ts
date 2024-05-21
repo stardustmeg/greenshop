@@ -13,5 +13,5 @@ export const buildPathName = (
     .map(([key, values]) => `${key}=${values.filter(Boolean).join('_')}`)
     .join('&');
 
-  return `${endpoint ? `${endpoint}` : ''}${id}${queryString ? `/?${queryString}` : ''}`;
+  return `${endpoint ? `${endpoint}` : ''}${id}${queryString ? `/${encodeURIComponent(`?${queryString}`)}` : ''}`;
 };

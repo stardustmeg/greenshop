@@ -114,7 +114,7 @@ class HeaderModel {
     const logo = this.view.getLinkLogo().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
-      this.router.navigateTo(PAGE_ID.DEFAULT_PAGE);
+      this.router.navigateTo(PAGE_ID.MAIN_PAGE);
     });
   }
 
