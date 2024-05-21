@@ -5,7 +5,7 @@ export const buildPathName = (
   queryParams: { [key: string]: (null | string)[] } | null,
 ): string => {
   if (!queryParams) {
-    return `${endpoint ? `${endpoint}` : ''}${id}`;
+    return `${window.location.origin}/${endpoint ? `${endpoint}` : ''}${id ? `${id} ` : ''}`;
   }
 
   const queryString = Object.entries(queryParams)
@@ -13,5 +13,5 @@ export const buildPathName = (
     .map(([key, values]) => `${key}=${values.filter(Boolean).join('_')}`)
     .join('&');
 
-  return `${endpoint ? `${endpoint}` : ''}${id}${queryString ? `/?${queryString}` : ''}`;
+  return `${window.location.origin}/${endpoint ? `${endpoint}` : ''}${id ? `${id} ` : ''}${queryString ? `${encodeURIComponent(`?${queryString}`)}` : ''}`;
 };

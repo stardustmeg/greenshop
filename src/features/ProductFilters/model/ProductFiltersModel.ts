@@ -2,14 +2,22 @@ import type LinkModel from '@/shared/Link/model/LinkModel.ts';
 import type ProductFiltersParams from '@/shared/types/productFilters.ts';
 import type { SelectedFilters } from '@/shared/types/productFilters.ts';
 
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setSelectedFilters } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { META_FILTERS } from '@/shared/constants/filters.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 
 import ProductFiltersView from '../view/ProductFiltersView.ts';
 
+const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
+const NEXT_SEGMENT = import.meta.env.VITE_APP_NEXT_SEGMENT;
+
 class ProductFiltersModel {
+  private eventMediator = EventMediatorModel.getInstance();
+
   private params: ProductFiltersParams | null;
 
   private selectedFilters: SelectedFilters = {
@@ -31,7 +39,7 @@ class ProductFiltersModel {
   }
 
   private init(): void {
-    getStore().dispatch(setSelectedFilters(this.selectedFilters));
+    this.selectedFilters = getStore().getState().selectedFilters ?? this.selectedFilters;
     this.initCategoryFilters();
     this.initPriceFilters();
     this.initSizeFilters();
@@ -62,12 +70,13 @@ class ProductFiltersModel {
         min: +min,
       };
       getStore().dispatch(setSelectedFilters(this.selectedFilters));
+      this.eventMediator.notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, this.selectedFilters);
 
       const url = new URL(decodeURIComponent(window.location.href));
-      url.searchParams.delete('price-min');
-      url.searchParams.set('price-min', String(this.selectedFilters.price.min));
-      url.searchParams.delete('price-max');
-      url.searchParams.set('price-max', String(this.selectedFilters.price.max));
+      url.searchParams.delete(SEARCH_PARAMS_FIELD.MIN_PRICE);
+      url.searchParams.set(SEARCH_PARAMS_FIELD.MIN_PRICE, String(this.selectedFilters.price.min));
+      url.searchParams.delete(SEARCH_PARAMS_FIELD.MAX_PRICE);
+      url.searchParams.set(SEARCH_PARAMS_FIELD.MAX_PRICE, String(this.selectedFilters.price.max));
       const path = url.pathname + encodeURIComponent(url.search);
       window.history.pushState({ path }, '', path);
     });
@@ -95,16 +104,24 @@ class ProductFiltersModel {
         }
 
         getStore().dispatch(setSelectedFilters(this.selectedFilters));
+        this.eventMediator.notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, this.selectedFilters);
       });
     });
   }
 
   private setMetaLinksHandlers(): void {
+    const activeMetaLink = this.view
+      .getMetaLinks()
+      .find((link) => link.getHTML().id === this.selectedFilters.metaFilter);
+    if (activeMetaLink) {
+      this.switchLinkState(activeMetaLink);
+    }
     this.view.getMetaLinks().forEach((metaLink) => {
       metaLink.getHTML().addEventListener('click', () => {
         this.switchLinkState(metaLink);
         this.selectedFilters.metaFilter = metaLink.getHTML().id;
         getStore().dispatch(setSelectedFilters(this.selectedFilters));
+        this.eventMediator.notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, this.selectedFilters);
       });
     });
   }
@@ -131,10 +148,10 @@ class ProductFiltersModel {
       });
 
       this.view.getPriceSlider().set([this.params?.priceRange?.min ?? 0, this.params?.priceRange?.max ?? 0]);
-
       getStore().dispatch(setSelectedFilters(this.selectedFilters));
+      this.eventMediator.notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, this.selectedFilters);
       const url = new URL(decodeURIComponent(window.location.href));
-      const path = `/${url.pathname.split('/')[1]}/`;
+      const path = `${DEFAULT_SEGMENT}${url.pathname.split(DEFAULT_SEGMENT)[NEXT_SEGMENT]}${DEFAULT_SEGMENT}`;
       window.history.pushState({ path }, '', path);
     });
   }
@@ -148,6 +165,7 @@ class ProductFiltersModel {
         this.selectedFilters.size = sizeID;
 
         getStore().dispatch(setSelectedFilters(this.selectedFilters));
+        this.eventMediator.notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, this.selectedFilters);
       });
     });
   }

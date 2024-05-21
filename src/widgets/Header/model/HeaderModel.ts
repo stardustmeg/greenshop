@@ -4,7 +4,7 @@ import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setAuthToken, setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import { setAuthToken, setCurrentLanguage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
@@ -64,7 +64,6 @@ class HeaderModel {
 
   private logoutHandler(): boolean {
     localStorage.clear();
-    getStore().dispatch(setCurrentUser(null));
     getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
     getCustomerModel().logout();

@@ -11,13 +11,13 @@ import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { META_FILTERS, META_FILTERS_ID, PRICE_RANGE_LABEL, TITLE } from '@/shared/constants/filters.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import * as noUiSlider from 'nouislider';
 
 import styles from './productFiltersView.module.scss';
 
 const BASE_PRODUCT_COUNT = '(0)';
-const SLIDER_PRICE_OFFSET = 10;
 const INPUT_PRICE_STEP = 5;
 
 class ProductFiltersView {
@@ -58,6 +58,49 @@ class ProductFiltersView {
     this.setPriceSliderHandlers();
   }
 
+  private categoryClickHandler(parentCategory: { category: Category; count: number } | null): void {
+    const url = new URL(decodeURIComponent(window.location.href));
+    if (url.searchParams.has(SEARCH_PARAMS_FIELD.CATEGORY)) {
+      url.searchParams.delete(SEARCH_PARAMS_FIELD.CATEGORY);
+    } else {
+      url.searchParams.set(SEARCH_PARAMS_FIELD.CATEGORY, parentCategory?.category.parent?.id ?? '');
+    }
+    const path = url.pathname + encodeURIComponent(url.search);
+    window.history.pushState({ path }, '', path);
+  }
+
+  private createCategoryItems(subcategories: Map<string, { category: Category; count: number }[]>): void {
+    subcategories.forEach((subcategories, parentCategoryID) => {
+      const parentCategory = this.getParentCategory(parentCategoryID);
+
+      const parentLi = createBaseElement({
+        cssClasses: [styles.categoryItem],
+        tag: 'li',
+      });
+      if (parentCategory?.category.parent) {
+        parentLi.append(this.createCategoryLink({ category: parentCategory.category.parent, count: 0 }).getHTML());
+      }
+
+      parentLi.addEventListener('click', () => {
+        this.categoryClickHandler(parentCategory);
+      });
+
+      this.categoryList.append(parentLi);
+
+      subcategories.forEach((subcategory) => {
+        const li = createBaseElement({
+          cssClasses: [styles.categoryItem, styles.subcategoryItem],
+          tag: 'li',
+        });
+        li.append(this.createCategoryLink(subcategory).getHTML());
+        li.addEventListener('click', () => {
+          this.subcategoryClickHandler(subcategory);
+        });
+        this.categoryList.append(li);
+      });
+    });
+  }
+
   private createCategoryLink(category: { category: Category; count: number }): LinkModel {
     const text = category.category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
     const categoryLink = new LinkModel({
@@ -73,16 +116,20 @@ class ProductFiltersView {
       event.preventDefault();
     });
 
+    const innerContent = category.count ? `(${category.count})` : '';
+
     const span = createBaseElement({
       attributes: {
         id: category.category.id,
       },
       cssClasses: [styles.categoryLinkCount],
-      innerContent: `(${category.count})`,
+      innerContent,
       tag: 'span',
     });
 
-    this.categoryCountSpan.push(span);
+    if (category.count) {
+      this.categoryCountSpan.push(span);
+    }
     categoryLink.getHTML().append(span);
 
     this.categoryLinks.push(categoryLink);
@@ -109,15 +156,10 @@ class ProductFiltersView {
 
     this.categoryList = filtersList;
 
-    this.params?.categoriesProductCount?.forEach((category) => {
-      const li = createBaseElement({
-        cssClasses: [styles.categoryItem],
-        tag: 'li',
-      });
+    const parentCategories = this.getParentCategories();
+    const subcategories = this.getSubcategories(parentCategories);
 
-      li.append(this.createCategoryLink(category).getHTML());
-      this.categoryList.append(li);
-    });
+    this.createCategoryItems(subcategories);
 
     observeStore(selectCurrentLanguage, () => {
       filtersListTitle.textContent = TITLE[getStore().getState().currentLanguage].CATEGORY;
@@ -210,8 +252,8 @@ class ProductFiltersView {
     link.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
       const url = new URL(decodeURIComponent(window.location.href));
-      url.searchParams.delete('meta');
-      url.searchParams.set('meta', href);
+      url.searchParams.delete(SEARCH_PARAMS_FIELD.META);
+      url.searchParams.set(SEARCH_PARAMS_FIELD.META, id);
       const path = url.pathname + encodeURIComponent(url.search);
       window.history.pushState({ path }, '', path);
     });
@@ -239,8 +281,8 @@ class ProductFiltersView {
       tag: 'span',
     });
 
-    const minPrice = this.params?.priceRange?.min.toFixed(2) ?? '';
-    const maxPrice = this.params?.priceRange?.max.toFixed(2) ?? '';
+    const minPrice = getStore().getState().selectedFilters?.price?.min.toFixed(2) ?? '';
+    const maxPrice = getStore().getState().selectedFilters?.price?.max.toFixed(2) ?? '';
     const from = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
     const to = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO;
 
@@ -261,9 +303,9 @@ class ProductFiltersView {
   }
 
   private createPriceSlider(): noUiSlider.API {
-    const { max, min } = this.params?.priceRange ?? { max: 0, min: 0 };
-    const SLIDER_START_MIN = min + max / SLIDER_PRICE_OFFSET;
-    const SLIDER_START_MAX = max - max / SLIDER_PRICE_OFFSET;
+    const { max, min } = getStore().getState().selectedFilters?.price ?? { max: 0, min: 0 };
+    const SLIDER_START_MIN = min;
+    const SLIDER_START_MAX = max;
     const slider = createBaseElement({
       cssClasses: [styles.slider],
       tag: 'div',
@@ -329,8 +371,8 @@ class ProductFiltersView {
     sizeLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
       const url = new URL(decodeURIComponent(window.location.href));
-      url.searchParams.delete('size');
-      url.searchParams.set('size', size.size);
+      url.searchParams.delete(SEARCH_PARAMS_FIELD.SIZE);
+      url.searchParams.set(SEARCH_PARAMS_FIELD.SIZE, size.size);
       const path = url.pathname + encodeURIComponent(url.search);
       window.history.pushState({ path }, '', path);
     });
@@ -379,6 +421,42 @@ class ProductFiltersView {
     return this.sizesList;
   }
 
+  private getParentCategories(): Set<string> {
+    const parentCategories = new Set<string>();
+    this.params?.categoriesProductCount?.forEach((category) => {
+      if (category.category.parent) {
+        parentCategories.add(category.category.parent.id);
+      }
+    });
+    return parentCategories;
+  }
+
+  private getParentCategory(parentCategoryID: string): { category: Category; count: number } | null {
+    const parentCategory = this.params?.categoriesProductCount?.find(
+      (category) => category.category.parent?.id === parentCategoryID,
+    );
+    if (parentCategory) {
+      return parentCategory;
+    }
+    return null;
+  }
+
+  private getSubcategories(parentCategories: Set<string>): Map<string, { category: Category; count: number }[]> {
+    const subcategories = new Map<string, { category: Category; count: number }[]>();
+    parentCategories.forEach((parentCategoryID) => {
+      this.params?.categoriesProductCount?.forEach((category) => {
+        if (category.category.parent?.id === parentCategoryID) {
+          const existingSubcategories = subcategories.get(parentCategoryID) ?? [];
+          subcategories.set(parentCategoryID, [
+            ...existingSubcategories,
+            { category: category.category, count: category.count },
+          ]);
+        }
+      });
+    });
+    return subcategories;
+  }
+
   private redrawProductsCount(): void {
     this.params?.categoriesProductCount?.forEach((categoryCount) => {
       const currentSpan = this.categoryCountSpan.find((span) => span.id === categoryCount.category.id) ?? null;
@@ -411,6 +489,24 @@ class ProductFiltersView {
     toInput?.getHTML().addEventListener('change', () => {
       this.priceSlider.set([fromInput?.getValue() ?? 0, toInput.getValue()]);
     });
+  }
+
+  private subcategoryClickHandler(subcategory: { category: Category; count: number }): void {
+    const url = new URL(decodeURIComponent(window.location.href));
+    const currentSubcategories = url.searchParams.getAll(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+    const currentSubcategory = currentSubcategories.find((id) => id === subcategory.category.id) ?? '';
+    if (currentSubcategory) {
+      const filteredSubcategories = currentSubcategories.filter((id) => id !== currentSubcategory);
+      if (!filteredSubcategories.length) {
+        url.searchParams.delete(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+      } else {
+        url.searchParams.set(SEARCH_PARAMS_FIELD.SUBCATEGORY, filteredSubcategories.join(','));
+      }
+    } else {
+      url.searchParams.append(SEARCH_PARAMS_FIELD.SUBCATEGORY, subcategory.category.id ?? '');
+    }
+    const path = url.pathname + encodeURIComponent(url.search);
+    window.history.pushState({ path }, '', path);
   }
 
   public getCategoryLinks(): LinkModel[] {
