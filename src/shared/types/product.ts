@@ -27,14 +27,23 @@ export interface Variant {
   size: SizeType | null;
 }
 
-export interface Product {
+export interface Product extends ProductInfo {
   category: Category[];
+  id: string;
+  slug: localization[];
+}
+
+interface ProductInfo {
   description: localization[];
   fullDescription: localization[];
-  id: string;
   images: string[];
   key: string;
   name: localization[];
-  slug: localization[];
   variant: Variant[];
+}
+
+export interface ProductInfoParams extends ProductInfo {
+  category: Category | null;
+  currentSize: null | string;
+  subcategory: Category | null;
 }
