@@ -27,7 +27,7 @@ class RegisterFormModel {
     }),
   };
 
-  private creadentialsWrapper = new CredentialsModel();
+  private credentialsWrapper = new CredentialsModel();
 
   private inputFields: InputFieldModel[] = [];
 
@@ -41,7 +41,7 @@ class RegisterFormModel {
 
   private getFormUserData(): User {
     const { birthDate, firstName, lastName } = this.personalInfoWrapper.getFormPersonalInfo();
-    const { email, password } = this.creadentialsWrapper.getFormCredentials();
+    const { email, password } = this.credentialsWrapper.getFormCredentials();
     const userData: User = {
       addresses: [],
       billingAddress: [],
@@ -64,7 +64,7 @@ class RegisterFormModel {
 
   private getPersonalData(): PersonalData {
     const { firstName, lastName } = this.personalInfoWrapper.getFormPersonalInfo();
-    const { email } = this.creadentialsWrapper.getFormCredentials();
+    const { email } = this.credentialsWrapper.getFormCredentials();
     return {
       email,
       firstName,
@@ -73,12 +73,12 @@ class RegisterFormModel {
   }
 
   private init(): boolean {
-    this.getHTML().append(this.creadentialsWrapper.getHTML());
+    this.getHTML().append(this.credentialsWrapper.getHTML());
     this.getHTML().append(this.personalInfoWrapper.getHTML());
 
     this.inputFields.push(
       ...this.personalInfoWrapper.getView().getInputFields(),
-      ...this.creadentialsWrapper.getView().getInputFields(),
+      ...this.credentialsWrapper.getView().getInputFields(),
     );
 
     Object.values(this.addressWrappers)
@@ -98,7 +98,7 @@ class RegisterFormModel {
       this.singleAddressCheckBoxHandler(checkboxSingleAddress.checked),
     );
 
-    this.creadentialsWrapper.getHTML().append(this.creadentialsWrapper.getView().getTitle());
+    this.credentialsWrapper.getHTML().append(this.credentialsWrapper.getView().getTitle());
 
     return true;
   }

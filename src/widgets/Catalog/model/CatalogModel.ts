@@ -162,6 +162,7 @@ class CatalogModel {
     if (productItems?.products?.length) {
       const shoppingList = await getShoppingListModel().getShoppingList();
       const cart = await getCartModel().getCart();
+      productList.innerHTML = '';
       productItems.products.forEach((productData) => {
         const product = new ProductCardModel(productData, currentSize, shoppingList, cart);
         productList.append(product.getHTML());

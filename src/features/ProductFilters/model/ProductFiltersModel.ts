@@ -148,7 +148,6 @@ class ProductFiltersModel {
       });
 
       this.view.getPriceSlider().set([this.params?.priceRange?.min ?? 0, this.params?.priceRange?.max ?? 0]);
-
       getStore().dispatch(setSelectedFilters(this.selectedFilters));
       this.eventMediator.notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, this.selectedFilters);
       const url = new URL(decodeURIComponent(window.location.href));
