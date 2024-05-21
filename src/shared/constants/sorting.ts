@@ -13,7 +13,7 @@ export const TEXT = {
     SEARCH: 'Поиск...',
     SORT_BY: 'По:',
   },
-};
+} as const;
 
 export const TEXT_KEYS = {
   DEFAULT: 'DEFAULT',
