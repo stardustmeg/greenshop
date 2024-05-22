@@ -1,0 +1,163 @@
+.style {
+  display: block;
+}
+
+.td {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deleteCell {
+  grid-area: 2 / 6 / 4 / 7;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.deleteButton {
+  svg {
+    width: var(--extra-small-offset);
+    height: var(--extra-small-offset);
+    stroke: var(--noble-gray-800);
+    transition: fill 0.2s;
+  }
+
+  &:hover {
+    svg {
+      stroke: var(--steam-green-800);
+    }
+  }
+}
+
+.tr {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 70px 2fr 1fr 1fr 1fr 70px;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 100px 2fr 1fr;
+  }
+}
+
+.trProduct {
+  background-color: var(--noble-white-200);
+
+  @media (max-width: 768px) {
+    margin-bottom: var(--extra-small-offset);
+    border-radius: 14px;
+    box-shadow: var(--mellow-shadow-100);
+  }
+}
+
+.img {
+  max-width: 70px;
+  max-height: 70px;
+
+  @media (max-width: 768px) {
+    border-radius: 14px 0 0 14px;
+    max-width: 100px;
+    max-height: 100px;
+  }
+}
+
+.nameCell {
+  justify-content: flex-start;
+  grid-area: 2 / 2 / 3 / 3;
+  padding: 0 var(--tiny-offset);
+
+  @media (max-width: 768px) {
+    grid-area: 1 / 2 / 2 / 3;
+  }
+}
+
+.imgCell {
+  grid-area: 2 / 1 / 4 / 2;
+
+  @media (max-width: 768px) {
+    grid-area: 1 / 1 / 4 / 2;
+  }
+}
+
+.sizeCell {
+  justify-content: flex-start;
+  grid-area: 3 / 2 / 4 / 3;
+  padding: 0 var(--tiny-offset);
+
+  @media (max-width: 768px) {
+    grid-area: 2 / 2 / 3 / 3;
+  }
+}
+
+.priceCell {
+  grid-area: 2 / 3 / 4 / 4;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.quantityCell {
+  grid-area: 2 / 4 / 4 / 5;
+
+  @media (max-width: 768px) {
+    grid-area: 1 / 3 / 4 / 4;
+  }
+}
+
+.totalCell {
+  grid-area: 2 / 5 / 4 / 6;
+
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+    grid-area: 3 / 2 / 4 / 3;
+    padding: 0 var(--tiny-offset);
+  }
+}
+
+.mainText {
+  padding: var(--tiny-offset);
+  font: var(--extra-font);
+  color: var(--noble-gray-800);
+}
+
+.quantityText {
+  padding: var(--tiny-offset);
+  font: var(--regular-font);
+  color: var(--noble-gray-800);
+}
+
+.totalText {
+  padding: var(--tiny-offset);
+  font: var(--regular-font);
+  color: var(--steam-green-800);
+}
+
+.priceText {
+  padding: var(--tiny-offset) 0;
+  font: var(--regular-font);
+  color: var(--noble-gray-700);
+}
+
+.sizeText {
+  padding: var(--tiny-offset);
+  font: var(--regular-font);
+  text-align: left;
+  color: var(--noble-gray-700);
+}
+
+.quantityButton {
+  border-radius: 29px;
+  width: 22px;
+  height: 25px;
+  color: var(--noble-gray-200);
+  background-color: var(--steam-green-800);
+}
+
+.mobileHide {
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
