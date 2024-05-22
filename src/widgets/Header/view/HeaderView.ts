@@ -1,5 +1,6 @@
 import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 
+import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
@@ -15,11 +16,14 @@ import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import styles from './headerView.module.scss';
 
 class HeaderView {
   private burgerButton: ButtonModel;
+
+  private cartBadge: HTMLSpanElement;
 
   private header: HTMLElement;
 
@@ -43,6 +47,7 @@ class HeaderView {
     this.logoutButton = this.createLogoutButton();
     this.linkLogo = this.createLinkLogo();
     this.toCartLink = this.createToCartLink();
+    this.cartBadge = this.createBadge();
     this.toProfileLink = this.createToProfileLink();
     this.switchThemeCheckbox = this.createSwitchThemeCheckbox();
     this.switchLanguageCheckbox = this.createSwitchLanguageCheckbox();
@@ -64,6 +69,19 @@ class HeaderView {
         document.body.classList.toggle(styles.stopScroll);
       }
     });
+
+    this.updateCartCount().catch(showErrorMessage);
+  }
+
+  private createBadge(): HTMLSpanElement {
+    this.cartBadge = createBaseElement({
+      cssClasses: [styles.badge],
+      // innerContent: cart.products.length ? cart.products.length.toString() : '',
+      tag: 'span',
+    });
+    this.toCartLink.getHTML().append(this.cartBadge);
+
+    return this.cartBadge;
   }
 
   private createBurgerButton(): ButtonModel {
@@ -237,6 +255,7 @@ class HeaderView {
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.CART));
+
     this.toCartLink.getHTML().append(svg);
 
     this.toCartLink
@@ -337,6 +356,12 @@ class HeaderView {
 
   public showNavigationWrapper(): void {
     this.navigationWrapper.classList.remove(styles.hidden);
+  }
+
+  public async updateCartCount(): Promise<void> {
+    const cart = await getCartModel().getCart();
+    this.cartBadge.textContent = cart.products.length ? cart.products.length.toString() : '';
+    // span({ className: classes.badges, textContent: this.newMsg ? this.newMsg.toString() : '' });
   }
 }
 
