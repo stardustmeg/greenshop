@@ -314,12 +314,14 @@ export class ProductModel {
   }
 
   public async getProductByKey(key: string): Promise<Product | null> {
+    await getProductModel().getCategories();
     const data = await this.root.getProductByKey(key);
     const product = this.getProductFromData(data);
     return product;
   }
 
   public async getProducts(options?: OptionsRequest): Promise<ProductWithCount> {
+    await getProductModel().getCategories();
     const data = await this.root.getProducts(options);
     const products = this.getProductsFromData(data);
     const sizeCount = this.getSizeProductCountFromData(data);

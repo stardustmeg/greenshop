@@ -24,3 +24,14 @@ export const SEARCH_PARAMS_FIELD = {
   SIZE: 'size',
   SUBCATEGORY: 'subcategory',
 } as const;
+
+export const PRODUCT_INFO_TEXT = {
+  en: {
+    SHORT_DESCRIPTION: 'Short description:',
+    SIZE: 'Size:',
+  },
+  ru: {
+    SHORT_DESCRIPTION: 'Краткое описание:',
+    SIZE: 'Размер:',
+  },
+} as const;
