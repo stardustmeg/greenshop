@@ -1,9 +1,11 @@
 import type { ProductInfoParams } from '@/shared/types/product.ts';
 
+import ProductModalSliderModel from '@/entities/ProductModalSlider/model/ProductModalSliderModel.ts';
+import modal from '@/shared/Modal/model/ModalModel.ts';
 import Swiper from 'swiper';
 import 'swiper/css';
-import 'swiper/css/bundle';
 import 'swiper/css/autoplay';
+import 'swiper/css/bundle';
 import { Autoplay, Thumbs } from 'swiper/modules';
 
 import ProductInfoView from '../view/ProductInfoView.ts';
@@ -41,6 +43,15 @@ class ProductInfoModel {
       },
     });
     this.bigSlider.autoplay.start();
+
+    const modalSlider = new ProductModalSliderModel(params).getHTML();
+
+    this.view.getBigSliderSlides().forEach((slide) => {
+      slide.addEventListener('click', () => {
+        modal.show();
+        modal.setContent(modalSlider);
+      });
+    });
   }
 
   public getHTML(): HTMLDivElement {
