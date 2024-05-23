@@ -17,6 +17,8 @@ class ProductInfoView {
 
   private bigSlider: HTMLDivElement;
 
+  private bigSliderSlides: HTMLDivElement[] = [];
+
   private oldPrice: HTMLSpanElement;
 
   private params: ProductInfoParams;
@@ -98,6 +100,7 @@ class ProductInfoView {
         tag: 'div',
       });
       const slide = this.createBigSliderSlideContent(image, this.params.name[0].value);
+      this.bigSliderSlides.push(slide);
       slideWrapper.append(slide);
       sliderWrapper.append(slideWrapper);
     });
@@ -285,6 +288,10 @@ class ProductInfoView {
 
   public getBigSlider(): HTMLDivElement {
     return this.bigSlider;
+  }
+
+  public getBigSliderSlides(): HTMLDivElement[] {
+    return this.bigSliderSlides;
   }
 
   public getHTML(): HTMLDivElement {
