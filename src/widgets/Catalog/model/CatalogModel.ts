@@ -24,8 +24,6 @@ import showErrorMessage from '@/shared/utils/userMessage.ts';
 import CatalogView from '../view/CatalogView.ts';
 
 class CatalogModel {
-  private eventMediator = EventMediatorModel.getInstance();
-
   private productFilters: ProductFiltersModel | null = null;
 
   private productSearch: ProductSearchModel | null = null;
@@ -134,7 +132,7 @@ class CatalogModel {
     if (categories) {
       const productData = await this.getProductItems({});
       if (productData && productData?.products?.length) {
-        this.eventMediator.subscribe(MEDIATOR_EVENT.REDRAW_PRODUCTS, () => this.redrawProductList());
+        EventMediatorModel.getInstance().subscribe(MEDIATOR_EVENT.REDRAW_PRODUCTS, this.redrawProductList.bind(this));
         this.decodeSearchParams(searchParams, productData);
         this.initSettingComponents(productData);
         this.redrawProductList().catch(showErrorMessage);

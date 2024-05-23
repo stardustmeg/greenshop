@@ -3,13 +3,18 @@ import type { Variant } from '@/shared/types/product.ts';
 import type ProductCardParams from '@/shared/types/productCard';
 import type { ShoppingList, ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { buildPathName } from '@/shared/utils/buildPathname.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import ProductCardView from '../view/ProductCardView.ts';
 
 class ProductCardModel {
+  private currentSize: null | string;
+
   private currentVariant: Variant;
 
   private params: ProductCardParams;
@@ -18,6 +23,7 @@ class ProductCardModel {
 
   constructor(params: ProductCardParams, currentSize: null | string, shoppingList: ShoppingList, cart: Cart) {
     this.params = params;
+    this.currentSize = currentSize;
     this.currentVariant = this.params.variant.find(({ size }) => size === currentSize) ?? this.params.variant[0];
     this.view = new ProductCardView(params, currentSize, this.currentVariant);
     this.init(shoppingList, cart);
@@ -52,6 +58,18 @@ class ProductCardModel {
     };
   }
 
+  private goDetailsPageHandler(): void {
+    const goDetailsPageLink = this.view.getGoDetailsPageLink();
+    goDetailsPageLink.getHTML().addEventListener('click', (event) => {
+      event.preventDefault();
+      const path = buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
+        size: [this.currentSize ?? this.params.variant[0].size],
+      });
+
+      RouterModel.getInstance().navigateTo(path);
+    });
+  }
+
   private hasProductInCart(cart: Cart): void {
     const result = cart.products.find((product) => product.productId === this.params.id);
     if (result) {
@@ -68,6 +86,7 @@ class ProductCardModel {
     this.setButtonHandlers();
     this.hasProductInWishList(shoppingList);
     this.hasProductInCart(cart);
+    this.goDetailsPageHandler();
   }
 
   private setButtonHandlers(): void {
