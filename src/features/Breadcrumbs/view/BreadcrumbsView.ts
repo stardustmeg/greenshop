@@ -1,5 +1,6 @@
 import type { BreadCrumbLink } from '@/shared/types/link';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
@@ -38,6 +39,11 @@ class BreadcrumbsView {
       },
       classes: [styles.link],
       text: formattedText(linkParams.name),
+    });
+
+    link.getHTML().addEventListener('click', (event) => {
+      event.preventDefault();
+      RouterModel.getInstance().navigateTo(linkParams.link);
     });
 
     const delimiter = createBaseElement({

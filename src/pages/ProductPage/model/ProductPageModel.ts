@@ -28,18 +28,19 @@ class ProductPageModel implements Page {
     const subcategory = currentProduct.category[0];
     const links = [
       {
-        link: `${buildPathName(PAGE_ID.MAIN_PAGE, null, null)}`,
+        link: buildPathName(PAGE_ID.MAIN_PAGE, null, null),
         name: PAGE_ID.MAIN_PAGE.slice(0, -1),
       },
       {
-        link: `${buildPathName(PAGE_ID.CATALOG_PAGE, null, null)}`,
+        link: buildPathName(PAGE_ID.CATALOG_PAGE, null, null),
         name: PAGE_ID.CATALOG_PAGE.slice(0, -1),
       },
     ];
 
     if (category) {
       links.push({
-        link: `${buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [category.id] })}`,
+        link: buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [category.id] }),
+
         name: category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
       });
     }

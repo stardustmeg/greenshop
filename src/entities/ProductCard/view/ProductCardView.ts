@@ -8,7 +8,6 @@ import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { MORE_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { LINK_DETAILS } from '@/shared/constants/links.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
@@ -148,7 +147,6 @@ class ProductCardView {
     this.goDetailsPageLink = new LinkModel({
       attrs: {
         href,
-        target: LINK_DETAILS.BLANK,
       },
       classes: [styles.goDetailsPageLink],
     });

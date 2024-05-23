@@ -2,6 +2,7 @@ import type { SizeProductCount } from '@/shared/API/types/type';
 import type { Category } from '@/shared/types/product';
 import type ProductFiltersParams from '@/shared/types/productFilters';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
@@ -65,8 +66,8 @@ class ProductFiltersView {
     } else {
       url.searchParams.set(SEARCH_PARAMS_FIELD.CATEGORY, parentCategory?.category.parent?.id ?? '');
     }
-    const path = url.pathname + encodeURIComponent(url.search);
-    window.history.pushState({ path }, '', path);
+    const path = url.pathname + url.search;
+    RouterModel.getInstance().navigateTo(path.slice(1));
   }
 
   private createCategoryItems(subcategories: Map<string, { category: Category; count: number }[]>): void {
@@ -255,7 +256,7 @@ class ProductFiltersView {
       url.searchParams.delete(SEARCH_PARAMS_FIELD.META);
       url.searchParams.set(SEARCH_PARAMS_FIELD.META, id);
       const path = url.pathname + encodeURIComponent(url.search);
-      window.history.pushState({ path }, '', path);
+      RouterModel.getInstance().navigateTo(path.slice(1));
     });
 
     this.metaLinks.push(link);
@@ -374,7 +375,7 @@ class ProductFiltersView {
       url.searchParams.delete(SEARCH_PARAMS_FIELD.SIZE);
       url.searchParams.set(SEARCH_PARAMS_FIELD.SIZE, size.size);
       const path = url.pathname + encodeURIComponent(url.search);
-      window.history.pushState({ path }, '', path);
+      RouterModel.getInstance().navigateTo(path.slice(1));
     });
 
     const span = createBaseElement({
@@ -494,19 +495,21 @@ class ProductFiltersView {
   private subcategoryClickHandler(subcategory: { category: Category; count: number }): void {
     const url = new URL(decodeURIComponent(window.location.href));
     const currentSubcategories = url.searchParams.getAll(SEARCH_PARAMS_FIELD.SUBCATEGORY);
-    const currentSubcategory = currentSubcategories.find((id) => id === subcategory.category.id) ?? '';
+    const currentSubcategory = currentSubcategories.find((id) => id === subcategory.category.id);
+
     if (currentSubcategory) {
       const filteredSubcategories = currentSubcategories.filter((id) => id !== currentSubcategory);
       if (!filteredSubcategories.length) {
         url.searchParams.delete(SEARCH_PARAMS_FIELD.SUBCATEGORY);
       } else {
-        url.searchParams.set(SEARCH_PARAMS_FIELD.SUBCATEGORY, filteredSubcategories.join(','));
+        url.searchParams.delete(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+        filteredSubcategories.forEach((id) => url.searchParams.append(SEARCH_PARAMS_FIELD.SUBCATEGORY, id));
       }
     } else {
-      url.searchParams.append(SEARCH_PARAMS_FIELD.SUBCATEGORY, subcategory.category.id ?? '');
+      url.searchParams.append(SEARCH_PARAMS_FIELD.SUBCATEGORY, subcategory.category.id);
     }
     const path = url.pathname + encodeURIComponent(url.search);
-    window.history.pushState({ path }, '', path);
+    RouterModel.getInstance().navigateTo(path.slice(1));
   }
 
   public getCategoryLinks(): LinkModel[] {

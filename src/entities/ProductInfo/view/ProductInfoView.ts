@@ -138,7 +138,11 @@ class ProductInfoView {
     });
 
     shortDescriptionWrapper.append(this.shortDescription);
-    rightWrapper.append(this.title, this.priceWrapper, shortDescriptionWrapper, this.createSizesWrapper());
+    rightWrapper.append(this.title, this.priceWrapper, shortDescriptionWrapper);
+
+    if (this.params.currentSize) {
+      rightWrapper.append(this.createSizesWrapper());
+    }
 
     this.view.append(leftWrapper, rightWrapper);
     return this.view;
