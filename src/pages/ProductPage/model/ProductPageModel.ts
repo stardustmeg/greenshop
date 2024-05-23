@@ -64,7 +64,7 @@ class ProductPageModel implements Page {
       .then((productData) => {
         if (productData) {
           const productInfo = new ProductInfoModel({
-            currentSize,
+            currentSize: currentSize ?? productData.variant[0].size,
             ...productData,
           });
           this.initBreadcrumbs(productData);

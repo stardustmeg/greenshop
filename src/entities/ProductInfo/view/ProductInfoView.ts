@@ -140,7 +140,7 @@ class ProductInfoView {
     shortDescriptionWrapper.append(this.shortDescription);
     rightWrapper.append(this.title, this.priceWrapper, shortDescriptionWrapper);
 
-    if (this.params.currentSize) {
+    if (this.params.variant.some(({ size }) => size)) {
       rightWrapper.append(this.createSizesWrapper());
     }
 
@@ -207,7 +207,7 @@ class ProductInfoView {
       classes: [styles.sizeButton],
       text: size,
     });
-    if (size === this.params.currentSize) {
+    if (this.params.currentSize === size) {
       button.setDisabled();
       button.getHTML().classList.add(styles.selected);
     }
