@@ -37,8 +37,9 @@
     border-radius: 40px 40px 0 0;
     padding: var(--small-offset);
     width: 100%;
-    box-shadow: var(--mellow-shadow-100);
-    background-color: var(--noble-white-200);
+    box-shadow: var(--mellow-shadow-600);
+    background-color: var(--noble-gray-1000);
+    backdrop-filter: blur(10px);
   }
 }
 

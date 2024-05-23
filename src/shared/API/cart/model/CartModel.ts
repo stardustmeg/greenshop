@@ -18,7 +18,10 @@ import { FilterFields } from '../../types/type.ts';
 import { isCart, isCartPagedQueryResponse, isClientResponse } from '../../types/validation.ts';
 import getCartApi, { type CartApi } from '../CartApi.ts';
 
+type Callback = (cart: Cart) => boolean;
 export class CartModel {
+  private callback: Callback[] = [];
+
   private cart: Cart | null = null;
 
   private root: CartApi;
@@ -59,6 +62,10 @@ export class CartModel {
       }
     }
     return result;
+  }
+
+  private dispatchUpdate(): void {
+    this.callback.forEach((callback) => (this.cart !== null ? callback(this.cart) : null));
   }
 
   private getCartFromData(data: ClientResponse<CartPagedQueryResponse | CartResponse>): Cart {
@@ -112,6 +119,9 @@ export class CartModel {
     }
     const data = await this.root.addProduct(this.cart, addCartItem);
     this.cart = this.getCartFromData(data);
+
+    this.dispatchUpdate();
+
     return this.cart;
   }
 
@@ -123,14 +133,21 @@ export class CartModel {
   public async create(): Promise<Cart> {
     const newCart = await this.root.create();
     this.cart = this.getCartFromData(newCart);
+
+    this.dispatchUpdate();
+
     return this.cart;
   }
 
-  public async deleteProductFromCart(products: CartProduct): Promise<Cart | null> {
-    if (this.cart) {
-      const data = await this.root.deleteProduct(this.cart, products);
-      this.cart = this.getCartFromData(data);
+  public async deleteProductFromCart(products: CartProduct): Promise<Cart> {
+    if (!this.cart) {
+      this.cart = await this.getCart();
     }
+    const data = await this.root.deleteProduct(this.cart, products);
+    this.cart = this.getCartFromData(data);
+
+    this.dispatchUpdate();
+
     return this.cart;
   }
 
@@ -140,6 +157,7 @@ export class CartModel {
     }
     const data = await this.root.editProductCount(this.cart, editCartItem);
     this.cart = this.getCartFromData(data);
+    this.dispatchUpdate();
     return this.cart;
   }
 
@@ -156,7 +174,13 @@ export class CartModel {
         this.cart = this.getCartFromData(activeCart);
       }
     }
+    this.dispatchUpdate();
     return this.cart;
+  }
+
+  public observeCartChange(callback: (cart: Cart) => boolean): boolean {
+    this.callback.push(callback);
+    return true;
   }
 }
 

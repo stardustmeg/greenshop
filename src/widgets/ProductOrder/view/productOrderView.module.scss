@@ -35,6 +35,7 @@
   display: grid;
   grid-gap: 0;
   grid-template-columns: 70px 2fr 1fr 1fr 1fr 70px;
+  margin-bottom: var(--tiny-offset);
   width: 100%;
 
   @media (max-width: 768px) {

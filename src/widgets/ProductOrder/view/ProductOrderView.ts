@@ -6,18 +6,31 @@ import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
+import type { CallbackList } from '../model/ProductOrderModel';
+
 import styles from './productOrderView.module.scss';
 
 class ProductOrderView {
+  private callbackList: CallbackList;
+
+  private quantity: HTMLParagraphElement;
+
   private view: HTMLTableRowElement;
 
-  constructor(productItem: CartProduct) {
+  constructor(productItem: CartProduct, callbackList: CallbackList) {
+    this.callbackList = callbackList;
+    this.quantity = createBaseElement({
+      cssClasses: [styles.quantityCell, styles.quantityText],
+      innerContent: productItem.quantity.toString(),
+      tag: 'p',
+    });
     this.view = this.createHTML(productItem);
   }
 
   private createDeleCell(): HTMLTableCellElement {
     const tdDelete = createBaseElement({ cssClasses: [styles.td, styles.deleteCell], tag: 'td' });
     const deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], tag: 'button' });
+    deleteButton.addEventListener('click', () => this.callbackList.delete());
     tdDelete.append(deleteButton);
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.DELETE));
@@ -43,7 +56,7 @@ class ProductOrderView {
       innerContent: `$${productItem.price.toFixed(2)}`,
       tag: 'td',
     });
-    const quantityCell = this.createQuantityCell(productItem);
+    const quantityCell = this.createQuantityCell();
     const tdTotal = createBaseElement({
       cssClasses: [styles.td, styles.totalCell, styles.totalText],
       innerContent: `$${productItem.totalPrice.toFixed(2)}`,
@@ -63,15 +76,10 @@ class ProductOrderView {
     return tdImage;
   }
 
-  private createQuantityCell(productItem: CartProduct): HTMLTableCellElement {
+  private createQuantityCell(): HTMLTableCellElement {
     const tdQuantity = createBaseElement({
       cssClasses: [styles.td, styles.quantityCell, styles.quantityText],
       tag: 'td',
-    });
-    const quantity = createBaseElement({
-      cssClasses: [styles.quantityCell, styles.quantityText],
-      innerContent: productItem.quantity.toString(),
-      tag: 'p',
     });
     const plusButton = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityButton],
@@ -83,12 +91,18 @@ class ProductOrderView {
       innerContent: '-',
       tag: 'button',
     });
-    tdQuantity.append(minusButton, quantity, plusButton);
+    tdQuantity.append(minusButton, this.quantity, plusButton);
+    plusButton.addEventListener('click', () => this.callbackList.plus());
+    minusButton.addEventListener('click', () => this.callbackList.minus());
     return tdQuantity;
   }
 
   public getHTML(): HTMLDivElement {
     return this.view;
+  }
+
+  public updateQuantity(quantity: number): void {
+    this.quantity.textContent = quantity.toString();
   }
 }
 

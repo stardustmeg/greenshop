@@ -91,6 +91,7 @@
 
 .cartLink,
 .profileLink {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -440,18 +441,26 @@
   }
 }
 
-.badge {
-  align-self: start;
-  margin-left: calc(var(--tiny-offset) * -1);
+.badgeWrap {
+  position: absolute;
+  right: -5px;
+  top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 2px solid var(--noble-gray-1000);
-  border-radius: 50%;
-  padding: calc(var(--tiny-offset) / 2) var(--tiny-offset);
+  border-radius: 100%;
+  width: 16px;
+  height: 16px;
   font: var(--regular-font);
-  letter-spacing: 1px;
-  color: var(--noble-gray-200);
   background-color: var(--steam-green-800);
 }
 
-.badge:empty {
+.badge {
+  display: block;
+  color: var(--noble-gray-200);
+}
+
+.hide {
   display: none;
 }
