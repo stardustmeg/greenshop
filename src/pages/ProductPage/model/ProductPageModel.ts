@@ -1,11 +1,13 @@
 import type { BreadCrumbLink } from '@/shared/types/link.ts';
 import type { Page, PageParams } from '@/shared/types/page.ts';
+import type { Product } from '@/shared/types/product.ts';
 
 import ProductInfoModel from '@/entities/ProductInfo/model/ProductInfoModel.ts';
 import BreadcrumbsModel from '@/features/Breadcrumbs/model/BreadcrumbsModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { buildPathName } from '@/shared/utils/buildPathname.ts';
@@ -14,16 +16,16 @@ import showErrorMessage from '@/shared/utils/userMessage.ts';
 import ProductPageView from '../view/ProductPageView.ts';
 
 class ProductPageModel implements Page {
-  private breadcrumbs: BreadcrumbsModel | null = null;
-
   private view: ProductPageView;
 
   constructor(parent: HTMLDivElement, params: PageParams) {
     this.view = new ProductPageView(parent);
-    this.init(params).catch(showErrorMessage);
+    this.init(params);
   }
 
-  private createNavigationLinks(currentCategory: string, subcategory: string, categoryName: string): BreadCrumbLink[] {
+  private createNavigationLinks(currentProduct: Product): BreadCrumbLink[] {
+    const category = currentProduct.category[0].parent;
+    const subcategory = currentProduct.category[0];
     const links = [
       {
         link: `${buildPathName(PAGE_ID.MAIN_PAGE, null, null)}`,
@@ -35,51 +37,47 @@ class ProductPageModel implements Page {
       },
     ];
 
-    if (currentCategory) {
+    if (category) {
       links.push({
-        link: `${buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [currentCategory] })}`,
-        name: categoryName,
+        link: `${buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [category.id] })}`,
+        name: category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
       });
     }
 
     if (subcategory) {
       links.push({
         link: '',
-        name: subcategory,
+        name: subcategory.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
       });
     }
 
     return links;
   }
 
-  private async init(params: PageParams): Promise<void> {
-    const searchParams = new URLSearchParams(params.product?.searchParams ?? '');
-    const category = searchParams.get(SEARCH_PARAMS_FIELD.CATEGORY) ?? '';
-    const subcategory = searchParams.get(SEARCH_PARAMS_FIELD.SUBCATEGORY) ?? '';
-    const currentSize = searchParams.get(SEARCH_PARAMS_FIELD.SIZE) ?? '';
-    const categories = await getProductModel().getCategories();
-    const currentCategory = categories?.find((item) => item.parent?.key === category)?.parent;
-    const currentSubcategory = categories?.find((item) => item.key === subcategory);
-    const links = this.createNavigationLinks(currentCategory?.id ?? '', subcategory, category);
-    this.breadcrumbs = new BreadcrumbsModel(links);
-    this.getHTML().append(this.breadcrumbs.getHTML());
+  private init(params: PageParams): void {
+    const searchParams = new URLSearchParams(params.product?.searchParams);
+    const currentSize = searchParams.get(SEARCH_PARAMS_FIELD.SIZE);
 
-    const products = await getProductModel().getProducts({ limit: 150 });
-    const currentProduct = products.products.find((product) => product.key === params.product?.id);
-    const productInfo = new ProductInfoModel({
-      category: currentCategory ?? null,
-      currentSize,
-      description: currentProduct?.description ?? [],
-      fullDescription: currentProduct?.fullDescription ?? [],
-      images: currentProduct?.images ?? [],
-      key: params.product?.id ?? '',
-      name: currentProduct?.name ?? [],
-      subcategory: currentSubcategory ?? null,
-      variant: currentProduct?.variant ?? [],
-    });
+    getProductModel()
+      .getProductByKey(params.product?.id ?? '')
+      .then((productData) => {
+        if (productData) {
+          const productInfo = new ProductInfoModel({
+            currentSize,
+            ...productData,
+          });
+          this.initBreadcrumbs(productData);
+          this.getHTML().append(productInfo.getHTML());
+        }
+      })
+      .catch(showErrorMessage);
 
-    this.getHTML().append(productInfo.getHTML());
     getStore().dispatch(setCurrentPage(PAGE_ID.PRODUCT_PAGE));
+  }
+
+  private initBreadcrumbs(currentProduct: Product): void {
+    const links = this.createNavigationLinks(currentProduct);
+    this.getHTML().append(new BreadcrumbsModel(links).getHTML());
   }
 
   public getHTML(): HTMLDivElement {
