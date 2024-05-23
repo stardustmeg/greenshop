@@ -7,7 +7,7 @@ import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
-import styles from './personalInfoView.module.scss';
+import './personalInfoView.scss';
 
 class PersonalInfoView {
   private dateOfBirthField: InputFieldModel;
@@ -47,11 +47,11 @@ class PersonalInfoView {
 
   private createPersonalDataWrapper(): HTMLDivElement {
     this.personalDataWrapper = createBaseElement({
-      cssClasses: [styles.personalDataWrapper],
+      cssClasses: ['personalDataWrapper'],
       tag: 'div',
     });
     const titleElement = createBaseElement({
-      cssClasses: [styles.title],
+      cssClasses: ['title'],
       innerContent: FORM_CONSTANT.TITLE_TEXT[getStore().getState().currentLanguage].PERSONAL,
       tag: 'h3',
     });
@@ -61,8 +61,8 @@ class PersonalInfoView {
       const inputFieldElement = inputField.getView().getHTML();
       const inputHTML = inputField.getView().getInput().getHTML();
       if (inputFieldElement instanceof HTMLLabelElement) {
-        inputFieldElement.classList.add(styles.label);
-        inputHTML.classList.add(styles.input);
+        inputFieldElement.classList.add('label');
+        inputHTML.classList.add('input');
         this.personalDataWrapper.append(inputFieldElement);
       } else if (inputFieldElement instanceof InputModel) {
         this.personalDataWrapper.append(inputFieldElement.getHTML());
