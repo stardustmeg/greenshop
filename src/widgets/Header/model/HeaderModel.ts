@@ -1,6 +1,8 @@
 import type RouterModel from '@/app/Router/model/RouterModel.ts';
+import type { Cart } from '@/shared/types/cart.ts';
 
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
+import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
@@ -14,6 +16,11 @@ import showErrorMessage from '@/shared/utils/userMessage.ts';
 import HeaderView from '../view/HeaderView.ts';
 
 class HeaderModel {
+  private cartChangeHandler = (cart: Cart): boolean => {
+    this.view.updateCartCount(cart.products.length);
+    return true;
+  };
+
   private navigation: NavigationModel;
 
   private parent: HTMLDivElement;
@@ -58,23 +65,38 @@ class HeaderModel {
     this.observeCurrentUser();
     this.setLogoutButtonHandler();
     this.setCartLinkHandler();
+    this.observeCartChange();
+    this.setCartCount().catch(showErrorMessage);
     this.setProfileLinkHandler();
     this.setChangeLanguageCheckboxHandler();
   }
 
-  private logoutHandler(): boolean {
+  private async logoutHandler(): Promise<boolean> {
     localStorage.clear();
     getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
-    getCustomerModel().logout();
+
+    await getCustomerModel().logout();
+    // getCustomerModel().logout();
+
     this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
     return true;
+  }
+
+  private observeCartChange(): boolean {
+    return getCartModel().observeCartChange(this.cartChangeHandler);
   }
 
   private observeCurrentUser(): void {
     observeStore(selectIsUserLoggedIn, () => {
       this.checkCurrentUser();
     });
+  }
+
+  private async setCartCount(): Promise<boolean> {
+    const cart = await getCartModel().getCart();
+    this.view.updateCartCount(cart.products.length);
+    return true;
   }
 
   private setCartLinkHandler(): void {
@@ -119,8 +141,8 @@ class HeaderModel {
 
   private setLogoutButtonHandler(): void {
     const logoutButton = this.view.getLogoutButton();
-    logoutButton.getHTML().addEventListener('click', () => {
-      this.logoutHandler();
+    logoutButton.getHTML().addEventListener('click', async () => {
+      await this.logoutHandler();
       logoutButton.setDisabled();
     });
   }

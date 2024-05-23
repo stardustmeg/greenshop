@@ -150,13 +150,6 @@ export class ProductModel {
     return result;
   }
 
-  private adaptSize(attribute: AttributeResponse): SizeType | null {
-    if (Array.isArray(attribute.value) && attribute.value.length && isAttributePlainEnumValue(attribute.value[0])) {
-      return getSize(attribute.value[0].key);
-    }
-    return null;
-  }
-
   private adaptVariants(product: Product, response: ProductProjection): Product {
     const variants = [...response.variants, response.masterVariant];
     variants.forEach((variant) => {
@@ -298,6 +291,13 @@ export class ProductModel {
       });
     });
     return result;
+  }
+
+  public adaptSize(attribute: AttributeResponse): SizeType | null {
+    if (Array.isArray(attribute.value) && attribute.value.length && isAttributePlainEnumValue(attribute.value[0])) {
+      return getSize(attribute.value[0].key);
+    }
+    return null;
   }
 
   public async getCategories(): Promise<Category[] | null> {

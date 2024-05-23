@@ -8,6 +8,7 @@ import type {
 
 import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousId } from '@/shared/Store/actions.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import { isClientResponse, isShoppingList, isShoppingListPagedQueryResponse } from '../../types/validation.ts';
 import getShoppingListApi, { type ShoppingListApi } from '../ShoppingListApi.ts';
@@ -19,6 +20,7 @@ export class ShoppingListModel {
 
   constructor() {
     this.root = getShoppingListApi();
+    this.getShoppingList().catch(showErrorMessage);
   }
 
   private adaptLineItem(product: ShoppingListLineItem): ShoppingListProduct {

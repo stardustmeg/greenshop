@@ -2,6 +2,7 @@ const SVG_DETAILS = {
   CART: 'cart',
   CLOSE_EYE: 'closeEye',
   DARK: 'dark',
+  DELETE: 'delete',
   FILL_HEART: 'heartFill',
   GO_DETAILS: 'arrow',
   KEY: 'key',

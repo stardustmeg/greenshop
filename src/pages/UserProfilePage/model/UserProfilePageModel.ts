@@ -54,7 +54,7 @@ class UserProfilePageModel implements Page {
     localStorage.clear();
     getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
-    getCustomerModel().logout();
+    getCustomerModel().logout().catch(showErrorMessage);
     this.router?.navigateTo(PAGE_ID.LOGIN_PAGE);
   }
 

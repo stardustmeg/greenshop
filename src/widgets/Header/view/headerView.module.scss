@@ -91,6 +91,7 @@
 
 .cartLink,
 .profileLink {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -438,4 +439,28 @@
     display: block;
     opacity: 1;
   }
+}
+
+.badgeWrap {
+  position: absolute;
+  right: -5px;
+  top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--noble-gray-1000);
+  border-radius: 100%;
+  width: 16px;
+  height: 16px;
+  font: var(--regular-font);
+  background-color: var(--steam-green-800);
+}
+
+.badge {
+  display: block;
+  color: var(--noble-gray-200);
+}
+
+.hide {
+  display: none;
 }

@@ -3,9 +3,9 @@ import type {
   CartResourceIdentifier,
   ClientResponse,
   Customer,
-  CustomerDraft,
   CustomerPagedQueryResponse,
   CustomerSignInResult,
+  MyCustomerDraft,
   MyCustomerUpdateAction,
 } from '@commercetools/platform-sdk';
 
@@ -17,6 +17,11 @@ import getCartModel from '../cart/model/CartModel.ts';
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
 import getShoppingListModel from '../shopping-list/model/ShoppingListModel.ts';
 import { isErrorResponse } from '../types/validation.ts';
+
+interface ExtendedCustomerDraft extends MyCustomerDraft {
+  billingAddresses?: number[];
+  shippingAddresses?: number[];
+}
 
 export class CustomerApi {
   private client: ApiClient;
@@ -56,7 +61,7 @@ export class CustomerApi {
     return isOk;
   }
 
-  private makeCustomerDraft(userData: User): CustomerDraft {
+  private makeCustomerDraft(userData: User): ExtendedCustomerDraft {
     const defaultBillingAddress = userData.defaultBillingAddressId
       ? findAddressIndex(userData.addresses, userData.defaultBillingAddressId)
       : null;
@@ -88,6 +93,8 @@ export class CustomerApi {
       password: userData.password,
       ...(anonymCart && { anonymousCart: anonymCart }),
       ...(anonymousId && { anonymousId }),
+      ...(anonymCart && { anonymousCartSignInMode: 'MergeWithExistingCustomerCart' }),
+      ...(anonymCart && { updateProductData: true }),
       billingAddresses: billingAddress !== null ? [billingAddress] : undefined,
       shippingAddresses: shippingAddress !== null ? [shippingAddress] : undefined,
     };
@@ -98,13 +105,15 @@ export class CustomerApi {
     const data = await this.client.apiRoot().me().login().post({ body: authData }).execute();
     if (!isErrorResponse(data)) {
       await this.checkAuthConnection(authData);
+      getCartModel().clear();
+      await getCartModel().getCart();
     }
     return data;
   }
 
   public async deleteCustomer(ID: string, version: number): Promise<ClientResponse<Customer>> {
     const data = await this.client.adminRoot().customers().withId({ ID }).delete({ queryArgs: { version } }).execute();
-    this.logoutUser();
+    await this.logoutUser();
     return data;
   }
 
@@ -148,24 +157,25 @@ export class CustomerApi {
     return data;
   }
 
-  public logoutUser(): boolean {
+  public async logoutUser(): Promise<boolean> {
     const client = this.client.deleteAuthConnection();
     const testConnect = this.client.apiRoot().get().execute();
+    getCartModel().clear();
+    await getCartModel().getCart();
     return client && !isErrorResponse(testConnect);
   }
 
   public async registrationUser(userData: User): Promise<ClientResponse<CustomerSignInResult>> {
     const data = await this.client
       .apiRoot()
-      .customers()
+      .me()
+      .signup()
       .post({ body: this.makeCustomerDraft(userData) })
       .execute();
     if (!isErrorResponse(data)) {
-      const auth = this.checkAuthConnection(userData);
-      if (!isErrorResponse(auth)) {
-        await getCartModel().create();
-        await getShoppingListModel().create();
-      }
+      await this.checkAuthConnection(userData);
+      await getCartModel().getCart();
+      await getShoppingListModel().getShoppingList();
     }
     return data;
   }
