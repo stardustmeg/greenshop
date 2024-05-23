@@ -135,7 +135,6 @@ class RegisterFormModel {
     this.getHTML().addEventListener('submit', (event) => {
       event.preventDefault();
     });
-
     return true;
   }
 
@@ -184,7 +183,6 @@ class RegisterFormModel {
     } else {
       this.view.getSubmitFormButton().setDisabled();
     }
-
     return true;
   }
 

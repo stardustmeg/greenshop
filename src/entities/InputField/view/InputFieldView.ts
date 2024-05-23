@@ -55,7 +55,7 @@ class InputFieldView {
 
     this.label = createBaseElement({
       attributes: {
-        for: htmlFor || '',
+        for: htmlFor ?? '',
       },
       tag: 'label',
     });

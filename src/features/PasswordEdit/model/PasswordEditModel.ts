@@ -1,8 +1,10 @@
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
+import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import PasswordEditView from '../view/PasswordEditView.ts';
@@ -36,6 +38,8 @@ class PasswordEditModel {
       .getSaveChangesButton()
       .getHTML()
       .addEventListener('click', async () => {
+        const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
+        this.view.getSaveChangesButton().getHTML().append(loader);
         try {
           await getCustomerModel()
             .getCurrentUser()
@@ -56,6 +60,8 @@ class PasswordEditModel {
             });
         } catch {
           showErrorMessage();
+        } finally {
+          loader.remove();
         }
       });
     return true;

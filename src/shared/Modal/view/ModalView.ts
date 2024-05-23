@@ -13,6 +13,12 @@ class ModalView {
     this.modalContent = this.createModalContent();
     this.modalOverlay = this.createModalOverlay();
     this.modal = this.createHTML();
+
+    document.addEventListener('click', ({ target }) => {
+      if (target instanceof HTMLDivElement && !this.modalContent.contains(target)) {
+        this.hide();
+      }
+    });
   }
 
   private createHTML(): HTMLDivElement {
@@ -64,7 +70,7 @@ class ModalView {
     document.body.classList.remove('stop-scroll');
   }
 
-  public setContent(content: HTMLDivElement): void {
+  public setContent(content: HTMLElement): void {
     this.modalContent.innerHTML = '';
     this.modalContent.append(content);
   }

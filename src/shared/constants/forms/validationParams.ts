@@ -9,7 +9,8 @@ export const EMAIL_VALIDATE = {
       en: 'Enter correct email (user@example.com)',
       ru: 'Введите правильный адрес электронной почты (user@example.com)',
     },
-    pattern: /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/,
+    pattern:
+      /^(?!.*[_.-]{2})(?!^[_.-])(?!.*[_\\-]$)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\.[a-zA-Z]{2,6}$/,
   },
 } as const;
 
