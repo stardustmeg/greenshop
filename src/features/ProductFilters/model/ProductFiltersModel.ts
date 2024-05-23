@@ -2,16 +2,19 @@ import type LinkModel from '@/shared/Link/model/LinkModel.ts';
 import type ProductFiltersParams from '@/shared/types/productFilters.ts';
 import type { SelectedFilters } from '@/shared/types/productFilters.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setSelectedFilters } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { META_FILTERS } from '@/shared/constants/filters.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 
 import ProductFiltersView from '../view/ProductFiltersView.ts';
 
-class ProductFiltersModel {
-  private params: ProductFiltersParams | null;
+const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
+const NEXT_SEGMENT = import.meta.env.VITE_APP_NEXT_SEGMENT;
 
+class ProductFiltersModel {
   private selectedFilters: SelectedFilters = {
     category: new Set(),
     metaFilter: META_FILTERS.en.ALL_PRODUCTS,
@@ -25,13 +28,12 @@ class ProductFiltersModel {
   private view: ProductFiltersView;
 
   constructor(params: ProductFiltersParams | null) {
-    this.params = params;
     this.view = new ProductFiltersView(params);
     this.init();
   }
 
   private init(): void {
-    getStore().dispatch(setSelectedFilters(this.selectedFilters));
+    this.selectedFilters = getStore().getState().selectedFilters ?? this.selectedFilters;
     this.initCategoryFilters();
     this.initPriceFilters();
     this.initSizeFilters();
@@ -61,15 +63,13 @@ class ProductFiltersModel {
         max: +max,
         min: +min,
       };
-      getStore().dispatch(setSelectedFilters(this.selectedFilters));
-
       const url = new URL(decodeURIComponent(window.location.href));
-      url.searchParams.delete('price-min');
-      url.searchParams.set('price-min', String(this.selectedFilters.price.min));
-      url.searchParams.delete('price-max');
-      url.searchParams.set('price-max', String(this.selectedFilters.price.max));
+      url.searchParams.delete(SEARCH_PARAMS_FIELD.MIN_PRICE);
+      url.searchParams.set(SEARCH_PARAMS_FIELD.MIN_PRICE, String(this.selectedFilters.price.min));
+      url.searchParams.delete(SEARCH_PARAMS_FIELD.MAX_PRICE);
+      url.searchParams.set(SEARCH_PARAMS_FIELD.MAX_PRICE, String(this.selectedFilters.price.max));
       const path = url.pathname + encodeURIComponent(url.search);
-      window.history.pushState({ path }, '', path);
+      RouterModel.getInstance().navigateTo(path.slice(1));
     });
   }
 
@@ -86,20 +86,17 @@ class ProductFiltersModel {
     this.view.getCategoryLinks().forEach((categoryLink) => {
       categoryLink.getHTML().addEventListener('click', () => {
         this.view.switchSelectedFilter(categoryLink);
-        const categoryID = categoryLink.getHTML().id;
-
-        if (this.selectedFilters.category.has(categoryID)) {
-          this.selectedFilters.category.delete(categoryID);
-        } else {
-          this.selectedFilters.category.add(categoryID);
-        }
-
-        getStore().dispatch(setSelectedFilters(this.selectedFilters));
       });
     });
   }
 
   private setMetaLinksHandlers(): void {
+    const activeMetaLink = this.view
+      .getMetaLinks()
+      .find((link) => link.getHTML().id === this.selectedFilters.metaFilter);
+    if (activeMetaLink) {
+      this.switchLinkState(activeMetaLink);
+    }
     this.view.getMetaLinks().forEach((metaLink) => {
       metaLink.getHTML().addEventListener('click', () => {
         this.switchLinkState(metaLink);
@@ -112,30 +109,9 @@ class ProductFiltersModel {
   private setResetFiltersButtonHandler(): void {
     const filtersResetButton = this.view.getFiltersResetButton();
     filtersResetButton.getHTML().addEventListener('click', () => {
-      this.view.getCategoryLinks().forEach((link) => this.view.switchSelectedFilter(link, false));
-      this.view.getSizeLinks().forEach((link) => this.view.switchSelectedFilter(link, false));
-      this.selectedFilters = {
-        category: new Set(),
-        metaFilter: META_FILTERS.en.ALL_PRODUCTS,
-        price: {
-          max: this.params?.priceRange?.max ?? 0,
-          min: this.params?.priceRange?.min ?? 0,
-        },
-        size: null,
-      };
-      this.view.getMetaLinks().forEach((link) => {
-        this.view.switchSelectedFilter(link, false);
-        if (link.getHTML().id === this.selectedFilters.metaFilter) {
-          this.view.switchSelectedFilter(link, true);
-        }
-      });
-
-      this.view.getPriceSlider().set([this.params?.priceRange?.min ?? 0, this.params?.priceRange?.max ?? 0]);
-
-      getStore().dispatch(setSelectedFilters(this.selectedFilters));
       const url = new URL(decodeURIComponent(window.location.href));
-      const path = `/${url.pathname.split('/')[1]}/`;
-      window.history.pushState({ path }, '', path);
+      const path = `${DEFAULT_SEGMENT}${url.pathname.split(DEFAULT_SEGMENT)[NEXT_SEGMENT]}${DEFAULT_SEGMENT}`;
+      RouterModel.getInstance().navigateTo(path.slice(1));
     });
   }
 
@@ -144,10 +120,6 @@ class ProductFiltersModel {
       sizeLink.getHTML().addEventListener('click', () => {
         this.view.getSizeLinks().forEach((link) => this.view.switchSelectedFilter(link, false));
         this.view.switchSelectedFilter(sizeLink, true);
-        const sizeID = sizeLink.getHTML().id;
-        this.selectedFilters.size = sizeID;
-
-        getStore().dispatch(setSelectedFilters(this.selectedFilters));
       });
     });
   }

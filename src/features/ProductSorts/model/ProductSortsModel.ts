@@ -1,15 +1,16 @@
 import type { SelectedSorting } from '@/shared/types/productSorting.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setSelectedSorting } from '@/shared/Store/actions.ts';
 import { DATA_KEYS } from '@/shared/constants/common.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 
 import ProductSortsView from '../view/ProductSortsView.ts';
 
 class ProductSortsModel {
   private selectedSorting: SelectedSorting = {
-    direction: 'asc',
-    field: 'price',
+    direction: '',
+    field: '',
   };
 
   private view = new ProductSortsView();
@@ -19,7 +20,7 @@ class ProductSortsModel {
   }
 
   private init(): void {
-    getStore().dispatch(setSelectedSorting(this.selectedSorting));
+    this.selectedSorting = getStore().getState().selectedSorting ?? this.selectedSorting;
     this.setSortingLinksHandlers();
   }
 
@@ -29,14 +30,13 @@ class ProductSortsModel {
       link.getHTML().addEventListener('click', () => {
         this.selectedSorting.field = link.getHTML().id;
         this.selectedSorting.direction = String(link.getHTML().getAttribute(DATA_KEYS.DIRECTION));
-        getStore().dispatch(setSelectedSorting(this.selectedSorting));
         const url = new URL(decodeURIComponent(window.location.href));
-        url.searchParams.delete('field');
-        url.searchParams.set('field', this.selectedSorting.field);
-        url.searchParams.delete('direction');
-        url.searchParams.set('direction', this.selectedSorting.direction);
+        url.searchParams.delete(SEARCH_PARAMS_FIELD.FIELD);
+        url.searchParams.set(SEARCH_PARAMS_FIELD.FIELD, this.selectedSorting.field);
+        url.searchParams.delete(SEARCH_PARAMS_FIELD.DIRECTION);
+        url.searchParams.set(SEARCH_PARAMS_FIELD.DIRECTION, this.selectedSorting.direction);
         const path = url.pathname + encodeURIComponent(url.search);
-        window.history.pushState({ path }, '', path);
+        RouterModel.getInstance().navigateTo(path.slice(1));
       });
     });
   }

@@ -1,7 +1,7 @@
 import type {
   CategoryPagedQueryResponse,
   ClientResponse,
-  Product,
+  ProductProjection,
   ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
 
@@ -38,8 +38,8 @@ export class ProductApi {
     return data;
   }
 
-  public async getProductByID(ID: string): Promise<ClientResponse<Product>> {
-    const data = await this.client.apiRoot().products().withId({ ID }).get().execute();
+  public async getProductByKey(key: string): Promise<ClientResponse<ProductProjection>> {
+    const data = await this.client.apiRoot().productProjections().withKey({ key }).get().execute();
     return data;
   }
 

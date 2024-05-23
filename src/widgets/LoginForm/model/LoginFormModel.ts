@@ -6,7 +6,7 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import { setCurrentLanguage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import isLanguageChoiceType from '@/shared/types/validation/language.ts';
@@ -57,7 +57,6 @@ class LoginFormModel {
       .authCustomer(userLoginData)
       .then((data) => {
         if (data) {
-          getStore().dispatch(setCurrentUser(data));
           getStore().dispatch(switchIsUserLoggedIn(true));
           if (isLanguageChoiceType(data.locale)) {
             getStore().dispatch(setCurrentLanguage(data.locale));

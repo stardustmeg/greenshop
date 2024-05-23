@@ -5,6 +5,7 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { DATA_KEYS } from '@/shared/constants/common.ts';
 import { SORTING_ID, TEXT } from '@/shared/constants/sorting.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import { isKeyOfSortField } from '@/shared/utils/isKeyOf.ts';
 
 import styles from './productSortsView.module.scss';
 
@@ -39,14 +40,22 @@ class ProductSortsView {
   }
 
   private createCurrentSortingSpan(): HTMLSpanElement {
-    this.currentSortingSpan = createBaseElement({
-      cssClasses: [styles.currentSortingSpan],
-      innerContent: TEXT[getStore().getState().currentLanguage].DEFAULT,
-      tag: 'span',
-    });
+    const { currentLanguage, selectedSorting } = getStore().getState();
+    const upperText = selectedSorting?.field.toUpperCase() ?? TEXT[currentLanguage].DEFAULT;
+    if (isKeyOfSortField(upperText)) {
+      this.currentSortingSpan = createBaseElement({
+        cssClasses: [styles.currentSortingSpan],
+        innerContent: TEXT[currentLanguage][upperText],
+        tag: 'span',
+      });
+    }
 
     observeStore(selectCurrentLanguage, () => {
-      this.currentSortingSpan.innerText = TEXT[getStore().getState().currentLanguage].DEFAULT;
+      const { currentLanguage, selectedSorting } = getStore().getState();
+      const upperText = selectedSorting?.field.toUpperCase() ?? TEXT[currentLanguage].DEFAULT;
+      if (isKeyOfSortField(upperText)) {
+        this.currentSortingSpan.innerText = TEXT[currentLanguage][upperText];
+      }
     });
 
     return this.currentSortingSpan;
@@ -104,10 +113,23 @@ class ProductSortsView {
       SORTING_ID.DEFAULT,
     );
 
-    defaultSortingLink.getHTML().classList.add(styles.activeLink);
-
     const priceLink = this.createSortingLink('', TEXT[getStore().getState().currentLanguage].PRICE, SORTING_ID.PRICE);
     const nameLink = this.createSortingLink('', TEXT[getStore().getState().currentLanguage].NAME, SORTING_ID.NAME);
+
+    const currentLink = this.sortingListLinks.find(
+      (link) => link.getHTML().id === getStore().getState().selectedSorting?.field,
+    );
+    currentLink?.getHTML().classList.add(styles.activeLink);
+
+    currentLink
+      ?.getHTML()
+      .classList.toggle(styles.pass, getStore().getState().selectedSorting?.direction === SortDirection.DESC);
+    currentLink
+      ?.getHTML()
+      .classList.toggle(styles.hight, getStore().getState().selectedSorting?.direction === SortDirection.DESC);
+    if (currentLink) {
+      currentLink.getHTML().dataset.direction = getStore().getState().selectedSorting?.direction;
+    }
 
     observeStore(selectCurrentLanguage, () => {
       defaultSortingLink.getHTML().innerText = TEXT[getStore().getState().currentLanguage].DEFAULT;

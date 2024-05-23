@@ -5,7 +5,6 @@ import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
 import type { SelectedFilters } from '../types/productFilters.ts';
 import type { SelectedSorting } from '../types/productSorting.ts';
-import type { User } from '../types/user.ts';
 import type * as actions from './actions.ts';
 import type { Reducer } from './types.ts';
 
@@ -17,7 +16,6 @@ export interface State {
   billingCountry: string;
   currentLanguage: LanguageChoiceType;
   currentPage: PageIdType;
-  currentUser: User | null;
   isAppThemeLight: boolean;
   isUserLoggedIn: boolean;
   searchValue: string;
@@ -50,11 +48,6 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         anonymousId: action.payload,
-      };
-    case 'setCurrentUser':
-      return {
-        ...state,
-        currentUser: action.payload,
       };
     case 'setShippingCountry':
       return {

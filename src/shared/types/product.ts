@@ -38,3 +38,7 @@ export interface Product {
   slug: localization[];
   variant: Variant[];
 }
+
+export interface ProductInfoParams extends Product {
+  currentSize: null | string;
+}

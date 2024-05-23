@@ -29,6 +29,7 @@ import {
   isFacetRange,
   isFacetTerm,
   isLocalizationObj,
+  isProductProjection,
   isProductProjectionPagedQueryResponse,
   isProductProjectionPagedSearchResponse,
   isRangeFacetResult,
@@ -247,6 +248,14 @@ export class ProductModel {
     return priceRange;
   }
 
+  private getProductFromData(data: ClientResponse<ProductProjection>): Product | null {
+    let product: Product | null = null;
+    if (isClientResponse(data) && isProductProjection(data.body)) {
+      product = this.adaptProductProjectionToClient(data.body);
+    }
+    return product;
+  }
+
   private getProductsFromData(data: ClientResponse<ProductProjectionPagedSearchResponse>): Product[] {
     let productList: Product[] = [];
     if (isClientResponse(data) && isProductProjectionPagedQueryResponse(data.body)) {
@@ -304,7 +313,15 @@ export class ProductModel {
     return this.getPriceRangeFromData(data);
   }
 
+  public async getProductByKey(key: string): Promise<Product | null> {
+    await getProductModel().getCategories();
+    const data = await this.root.getProductByKey(key);
+    const product = this.getProductFromData(data);
+    return product;
+  }
+
   public async getProducts(options?: OptionsRequest): Promise<ProductWithCount> {
+    await getProductModel().getCategories();
     const data = await this.root.getProducts(options);
     const products = this.getProductsFromData(data);
     const sizeCount = this.getSizeProductCountFromData(data);

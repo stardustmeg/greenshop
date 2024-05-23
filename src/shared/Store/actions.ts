@@ -4,7 +4,6 @@ import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
 import type { SelectedFilters } from '../types/productFilters';
 import type { SelectedSorting } from '../types/productSorting.ts';
-import type { User } from '../types/user';
 
 const ACTION = {
   SET_ANONYM_TOKEN: 'setAnonymToken',
@@ -14,7 +13,6 @@ const ACTION = {
   SET_BILLING_COUNTRY: 'setBillingCountry',
   SET_CURRENT_LANGUAGE: 'setCurrentLanguage',
   SET_CURRENT_PAGE: 'setCurrentPage',
-  SET_CURRENT_USER: 'setCurrentUser',
   SET_SEARCH_VALUE: 'setSearchValue',
   SET_SELECTED_FILTERS: 'setSelectedFilters',
   SET_SELECTED_SORTING: 'setSelectedSorting',
@@ -60,11 +58,6 @@ export const setAnonymousId = (
 ): ActionWithPayload<null | string, typeof ACTION.SET_ANONYMOUS_ID> => ({
   payload: value,
   type: ACTION.SET_ANONYMOUS_ID,
-});
-
-export const setCurrentUser = (value: User | null): ActionWithPayload<User | null, typeof ACTION.SET_CURRENT_USER> => ({
-  payload: value,
-  type: ACTION.SET_CURRENT_USER,
 });
 
 export const setBillingCountry = (value: string): ActionWithPayload<string, typeof ACTION.SET_BILLING_COUNTRY> => ({

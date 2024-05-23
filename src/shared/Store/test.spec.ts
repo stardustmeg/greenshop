@@ -1,5 +1,4 @@
 import type { SelectedFilters } from '../types/productFilters.ts';
-import type { User } from '../types/user.ts';
 import type { State } from './reducer.ts';
 
 import { META_FILTERS } from '../constants/filters.ts';
@@ -30,23 +29,12 @@ describe('Actions', () => {
   });
 });
 
-it('should check if setCurrentUser is a function', () => {
-  expect(actions.setCurrentUser).toBeInstanceOf(Function);
-});
-
 it('should check if setShippingCountry is a function', () => {
   expect(actions.setShippingCountry).toBeInstanceOf(Function);
 });
 
 it('should check if setBillingCountry is a function', () => {
   expect(actions.setBillingCountry).toBeInstanceOf(Function);
-});
-
-it('setCurrentUser should create a correct action', () => {
-  const value: User | null = null;
-  const action = actions.setCurrentUser(value);
-  expect(action.type).toBe('setCurrentUser');
-  expect(action.payload).toBe(value);
 });
 
 it('setShippingCountry should create a correct action', () => {
@@ -75,7 +63,6 @@ vi.mock('./Store.ts', async (importOriginal) => {
       billingCountry: '',
       currentLanguage: 'en',
       currentPage: '/',
-      currentUser: null,
       isAppThemeLight: true,
       isUserLoggedIn: false,
       searchValue: '',
@@ -120,16 +107,6 @@ describe('observeSetInStore', () => {
   });
 });
 
-describe('selectCurrentUser', () => {
-  it('should check if selectCurrentUser is a function', () => {
-    expect(observer.selectCurrentUser).toBeInstanceOf(Function);
-  });
-});
-
-it('should check if selectCurrentUser is a function', () => {
-  expect(observer.selectCurrentUser).toBeInstanceOf(Function);
-});
-
 it('should check if selectBillingCountry is a function', () => {
   expect(observer.selectBillingCountry).toBeInstanceOf(Function);
 });
@@ -148,69 +125,6 @@ it('should check if selectIsUserLoggedIn is a function', () => {
 
 it('should check if selectCurrentPage is a function', () => {
   expect(observer.selectCurrentPage).toBeInstanceOf(Function);
-});
-
-it('should check if selectSelectedFiltersCategory is a function', () => {
-  expect(observer.selectSelectedFiltersCategory).toBeInstanceOf(Function);
-});
-
-it('should check if selectSelectedFiltersPrice is a function', () => {
-  expect(observer.selectSelectedFiltersPrice).toBeInstanceOf(Function);
-});
-
-it('should check if selectSelectedFiltersSize is a function', () => {
-  expect(observer.selectSelectedFiltersSize).toBeInstanceOf(Function);
-});
-
-it('should check if selectSelectedFiltersMetaFilter is a function', () => {
-  expect(observer.selectSelectedFiltersMetaFilter).toBeInstanceOf(Function);
-});
-
-it('observeStore should call select and onChange when state changes', () => {
-  const mockUser = {
-    addresses: [],
-    billingAddress: [],
-    birthDate: '1990-01-01',
-    defaultBillingAddressId: null,
-    defaultShippingAddressId: null,
-    email: 'test@test.test',
-    firstName: 'Test',
-    id: 'test',
-    lastName: 'Test',
-    locale: 'en',
-    password: 'Testtest1',
-    shippingAddress: [],
-    version: 0,
-  };
-
-  const mockState: State = {
-    anonymToken: null,
-    anonymousCartId: null,
-    anonymousId: null,
-    authToken: null,
-    billingCountry: '',
-    currentLanguage: 'en',
-    currentPage: 'main/',
-    currentUser: mockUser,
-    isAppThemeLight: true,
-    isUserLoggedIn: false,
-    searchValue: '',
-    selectedFilters: null,
-    selectedSorting: null,
-    shippingCountry: '',
-  };
-
-  const mockOnChange = vitest.fn();
-  const selectCurrentUserSpy = vitest.spyOn(actions, 'setCurrentUser');
-  const mockSelect = vitest.fn(() => observer.selectCurrentUser(mockState));
-  const unsubscribe = observer.default(mockSelect, mockOnChange);
-
-  expect(observer.selectCurrentUser(mockState)).toBe(mockUser);
-  actions.setCurrentUser(mockUser);
-
-  expect(selectCurrentUserSpy).toHaveBeenCalledWith(mockUser);
-
-  unsubscribe();
 });
 
 describe('isSet', () => {
@@ -267,7 +181,6 @@ describe('rootReducer', () => {
       billingCountry: '',
       currentLanguage: 'en',
       currentPage: '/',
-      currentUser: null,
       isAppThemeLight: true,
       isUserLoggedIn: false,
       searchValue: '',
@@ -275,27 +188,6 @@ describe('rootReducer', () => {
       selectedSorting: null,
       shippingCountry: '',
     };
-  });
-
-  it('should handle setCurrentUser action', () => {
-    const user: User = {
-      addresses: [],
-      billingAddress: [],
-      birthDate: '1990-01-01',
-      defaultBillingAddressId: null,
-      defaultShippingAddressId: null,
-      email: 'test@test.test',
-      firstName: 'Test',
-      id: 'test',
-      lastName: 'Test',
-      locale: 'en',
-      password: 'Testtest1',
-      shippingAddress: [],
-      version: 0,
-    };
-    const action = actions.setCurrentUser(user);
-    const newState = rootReducer(initialState, action);
-    expect(newState.currentUser).toEqual(user);
   });
 
   it('should handle setShippingCountry action', () => {
@@ -349,11 +241,5 @@ describe('rootReducer', () => {
     const action = actions.setSelectedFilters(filters);
     const newState = rootReducer(initialState, action);
     expect(newState.selectedFilters).toEqual(filters);
-  });
-
-  it('should return the same state for unknown action types', () => {
-    const action = actions.setCurrentUser(null);
-    const newState = rootReducer(initialState, action);
-    expect(newState).toEqual(initialState);
   });
 });

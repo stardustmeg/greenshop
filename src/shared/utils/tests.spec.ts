@@ -6,7 +6,7 @@ import createBaseElement from './createBaseElement.ts';
 import createSVGUse from './createSVGUse.ts';
 import formattedText from './formattedText.ts';
 import getCountryIndex from './getCountryIndex.ts';
-import isKeyOfUserData from './isKeyOfUserData.ts';
+import { isKeyOfUserData } from './isKeyOf.ts';
 import { isNotNullable, isNullable } from './isNullable.ts';
 import observeCurrentLanguage from './observeCurrentLanguage.ts';
 import { a, div, h2, h3, iconFromCode, img, input, label, main, span } from './tags.ts';
