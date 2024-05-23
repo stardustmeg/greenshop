@@ -230,8 +230,9 @@ export class CustomerModel {
     return this.getCustomerFromData(data);
   }
 
-  public logout(): boolean {
-    return this.root.logoutUser();
+  public async logout(): Promise<boolean> {
+    const result = await this.root.logoutUser();
+    return result;
   }
 
   public async registerNewCustomer(userData: User): Promise<User | null> {

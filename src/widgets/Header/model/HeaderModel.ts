@@ -65,18 +65,19 @@ class HeaderModel {
     this.setLogoutButtonHandler();
     this.setCartLinkHandler();
     this.observeCartChange();
+    this.setCartCount().catch(showErrorMessage);
     this.setProfileLinkHandler();
     this.setChangeLanguageCheckboxHandler();
     return true;
   }
 
-  private logoutHandler(): boolean {
+  private async logoutHandler(): Promise<boolean> {
     localStorage.clear();
     getStore().dispatch(setCurrentUser(null));
     getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
 
-    getCustomerModel().logout();
+    await getCustomerModel().logout();
     this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
 
     return true;
@@ -90,6 +91,12 @@ class HeaderModel {
     observeStore(selectIsUserLoggedIn, () => {
       this.checkCurrentUser();
     });
+    return true;
+  }
+
+  private async setCartCount(): Promise<boolean> {
+    const cart = await getCartModel().getCart();
+    this.view.updateCartCount(cart.products.length);
     return true;
   }
 
@@ -142,8 +149,8 @@ class HeaderModel {
 
   private setLogoutButtonHandler(): boolean {
     const logoutButton = this.view.getLogoutButton();
-    logoutButton.getHTML().addEventListener('click', () => {
-      this.logoutHandler();
+    logoutButton.getHTML().addEventListener('click', async () => {
+      await this.logoutHandler();
       logoutButton.setDisabled();
     });
     return true;
