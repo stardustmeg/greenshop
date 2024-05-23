@@ -3,6 +3,7 @@ interface CreateBaseElement<T> {
   cssClasses?: string[];
   innerContent?: string;
   tag: T;
+  title?: string;
 }
 
 const createBaseElement = <T extends keyof HTMLElementTagNameMap>({
@@ -10,6 +11,7 @@ const createBaseElement = <T extends keyof HTMLElementTagNameMap>({
   cssClasses = [],
   innerContent = '',
   tag,
+  title = '',
 }: CreateBaseElement<T>): HTMLElementTagNameMap[T] => {
   const elem = document.createElement(tag);
 
@@ -20,6 +22,10 @@ const createBaseElement = <T extends keyof HTMLElementTagNameMap>({
       elem.setAttribute(attrName, attrValue);
     }
   });
+
+  if (title) {
+    elem.title = title;
+  }
 
   elem.innerHTML = innerContent;
 

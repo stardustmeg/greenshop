@@ -8,15 +8,14 @@ import CatalogModel from '@/widgets/Catalog/model/CatalogModel.ts';
 import CatalogPageView from '../view/CatalogPageView.ts';
 
 class CatalogPageModel implements Page {
-  private catalog = new CatalogModel();
+  private catalog: CatalogModel;
 
   private view: CatalogPageView;
 
   constructor(parent: HTMLDivElement, params: PageParams) {
     this.view = new CatalogPageView(parent);
+    this.catalog = new CatalogModel(params.catalog?.searchParams || '');
     this.init();
-    // eslint-disable-next-line no-console
-    console.log(params, params.catalog);
   }
 
   private init(): void {

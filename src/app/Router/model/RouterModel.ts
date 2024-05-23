@@ -12,9 +12,15 @@ const PATH_SEGMENTS_TO_KEEP = import.meta.env.VITE_APP_PATH_SEGMENTS_TO_KEEP;
 const SEARCH_SEGMENT = import.meta.env.VITE_APP_SEARCH_SEGMENT;
 
 class RouterModel {
+  private static router: RouterModel;
+
   private routes: PagesType = new Map();
 
   constructor(routes: PagesType) {
+    if (!RouterModel.router) {
+      RouterModel.router = this;
+    }
+
     this.routes = routes;
     document.addEventListener('DOMContentLoaded', () => {
       const currentPath = window.location.pathname.slice(NEXT_SEGMENT).split(DEFAULT_SEGMENT) || PAGE_ID.DEFAULT_PAGE;
@@ -38,6 +44,10 @@ class RouterModel {
 
       this.handleRequest(currentPage, currentPath);
     });
+  }
+
+  public static getInstance(): RouterModel {
+    return RouterModel.router;
   }
 
   private async checkPageAndParams(

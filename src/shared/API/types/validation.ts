@@ -13,6 +13,7 @@ import type {
   LocalizedString,
   Product,
   ProductPagedQueryResponse,
+  ProductProjection,
   ProductProjectionPagedQueryResponse,
   RangeFacetResult,
   ShoppingList,
@@ -144,6 +145,17 @@ export function isProductProjectionPagedQueryResponse(data: unknown): data is Pr
       typeof data.total === 'number' &&
       'results' in data &&
       Array.isArray(data.results),
+  );
+}
+
+export function isProductProjection(data: unknown): data is ProductProjection {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'categories' in data &&
+      'description' in data &&
+      'name' in data &&
+      'key' in data,
   );
 }
 

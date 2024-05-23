@@ -10,10 +10,17 @@ export interface AuthCredentials extends UserCredentials {
   updateProductData?: boolean;
 }
 
-export interface PersonalData {
-  email: string;
+interface UserName {
   firstName: string;
   lastName: string;
+}
+
+export interface PersonalData extends UserName {
+  email: string;
+}
+
+export interface PersonalInfo extends UserName {
+  birthDate: string;
 }
 
 export interface User extends PersonalData, UserCredentials {

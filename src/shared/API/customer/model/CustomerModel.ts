@@ -76,16 +76,16 @@ export class CustomerModel {
 
   private adaptAddress(address: AddressResponse[]): Address[] {
     return address.map((addressItem) => ({
-      city: addressItem?.city || '',
-      country: addressItem?.country || '',
-      email: addressItem?.email || '',
-      firstName: addressItem?.firstName || '',
-      id: addressItem?.id || '',
-      lastName: addressItem?.lastName || '',
-      postalCode: addressItem?.postalCode || '',
-      state: addressItem?.state || '',
-      streetName: addressItem?.streetName || '',
-      streetNumber: addressItem?.streetNumber || '',
+      city: addressItem?.city ?? '',
+      country: addressItem?.country ?? '',
+      email: addressItem?.email ?? '',
+      firstName: addressItem?.firstName ?? '',
+      id: addressItem?.id ?? '',
+      lastName: addressItem?.lastName ?? '',
+      postalCode: addressItem?.postalCode ?? '',
+      state: addressItem?.state ?? '',
+      streetName: addressItem?.streetName ?? '',
+      streetNumber: addressItem?.streetNumber ?? '',
     }));
   }
 
@@ -109,15 +109,15 @@ export class CustomerModel {
     return {
       addresses: this.adaptAddress(data.addresses),
       billingAddress: [],
-      birthDate: data.dateOfBirth || '',
+      birthDate: data.dateOfBirth ?? '',
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
       email: data.email || '',
-      firstName: data.firstName || '',
+      firstName: data.firstName ?? '',
       id: data.id || '',
-      lastName: data.lastName || '',
-      locale: data.locale || 'en',
-      password: data.password || '',
+      lastName: data.lastName ?? '',
+      locale: data.locale ?? 'en',
+      password: data.password ?? '',
       shippingAddress: [],
       version: data.version || 0,
     };

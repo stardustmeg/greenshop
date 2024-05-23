@@ -3,3 +3,8 @@ export interface LinkAttributes {
   classes?: string[];
   text?: string;
 }
+
+export interface BreadCrumbLink {
+  link: string;
+  name: string;
+}

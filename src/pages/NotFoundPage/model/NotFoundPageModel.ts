@@ -20,11 +20,8 @@ class NotFoundPageModel implements Page {
   }
 
   private createPageDescription(): string {
-    const { currentLanguage, currentUser } = getStore().getState();
-    const { GREETING } = PAGE_DESCRIPTION[currentLanguage];
-    const textDescription = currentUser
-      ? `${GREETING}${currentUser.firstName}. ${PAGE_DESCRIPTION[currentLanguage][404]}`
-      : PAGE_DESCRIPTION[currentLanguage][404];
+    const { currentLanguage } = getStore().getState();
+    const textDescription = PAGE_DESCRIPTION[currentLanguage][404];
     return textDescription;
   }
 

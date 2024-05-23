@@ -23,6 +23,8 @@ export const TEXT_KEYS = {
   SORT_BY: 'SORT_BY',
 } as const;
 
+export type TextKeysType = (typeof TEXT_KEYS)[keyof typeof TEXT_KEYS];
+
 export const SORTING_ID = {
   DEFAULT: 'default',
   NAME: 'name',

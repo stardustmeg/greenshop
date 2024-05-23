@@ -1,0 +1,149 @@
+.wrapper {
+  display: flex;
+  gap: var(--small-offset);
+}
+
+.leftWrapper {
+  display: flex;
+  width: max-content;
+  max-width: 50%;
+}
+
+.rightWrapper {
+  width: 40%;
+}
+
+.title {
+  margin-bottom: var(--extra-small-offset);
+  font: var(--medium-font);
+  letter-spacing: 0.1rem;
+  color: var(--steam-green-500);
+}
+
+.priceWrapper {
+  display: flex;
+  align-items: center;
+  margin-top: auto;
+  margin-bottom: var(--extra-small-offset);
+  width: 100%;
+  text-align: center;
+  gap: var(--extra-small-offset);
+}
+
+.oldPrice {
+  font: var(--regular-font);
+  font-weight: 100;
+  letter-spacing: 0.1rem;
+  text-decoration: line-through;
+  color: var(--noble-gray-700);
+}
+
+.basicPrice {
+  font: var(--medium-font);
+  letter-spacing: 0.1rem;
+  color: var(--steam-green-500);
+
+  &.gray {
+    color: var(--noble-gray-700);
+  }
+}
+
+.smallSlider {
+  margin: 0;
+  margin-right: var(--tiny-offset);
+  width: 30%;
+}
+
+.smallSliderImage {
+  width: 100%;
+  max-height: 12rem;
+}
+
+.smallSliderSlide {
+  /* stylelint-disable-next-line declaration-no-important */
+  height: auto !important;
+  max-height: 12rem;
+  transition: opacity 0.2s;
+  cursor: pointer;
+
+  &:not(:last-child) {
+    margin-bottom: var(--tiny-offset);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.bigSlider {
+  margin: 0;
+  width: 70%;
+}
+
+.bigSliderWrapper {
+  height: 12rem;
+}
+
+.bigSliderImage {
+  height: 100%;
+}
+
+.bigSliderSlide {
+  cursor: zoom-in;
+}
+
+.shortDescriptionWrapper {
+  font: var(--regular-font);
+  letter-spacing: 0.1rem;
+  color: var(--steam-green-400);
+}
+
+.shortDescription {
+  margin-bottom: var(--extra-small-offset);
+  color: var(--noble-gray-800);
+}
+
+.sizesWrapper {
+  display: grid;
+  grid-template-columns: max-content;
+  width: max-content;
+  font: var(--regular-font);
+  letter-spacing: 0.1rem;
+  color: var(--steam-green-400);
+  gap: var(--tiny-offset);
+}
+
+.sizeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  grid-row: 2;
+  border: 0.1rem solid var(--noble-gray-800);
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  font: var(--regular-font);
+  letter-spacing: 0.1rem;
+  text-align: center;
+  color: var(--noble-gray-800);
+  transition:
+    border 0.2s,
+    color 0.2s;
+  cursor: pointer;
+
+  @media (hover: hover) {
+    &:hover {
+      border: 0.1rem solid var(--steam-green-400);
+      color: var(--steam-green-400);
+    }
+  }
+}
+
+.selected {
+  border: 0.1rem solid var(--steam-green-400);
+  color: var(--steam-green-400);
+  pointer-events: none;
+}

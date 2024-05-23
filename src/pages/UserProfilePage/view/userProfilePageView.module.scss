@@ -38,8 +38,9 @@
 .accountMenu {
   display: flex;
   flex-flow: column wrap;
+  justify-content: center;
   padding: var(--small-offset);
-  width: 20%;
+  width: 25%;
   height: fit-content;
   background-color: var(--white-tr);
   gap: var(--extra-small-offset);
@@ -48,6 +49,7 @@
 .accountMenuItem {
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: fit-content;
 }
@@ -85,6 +87,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  align-self: center;
   width: 100%;
   height: 2.5rem;
   font: var(--regular-font);

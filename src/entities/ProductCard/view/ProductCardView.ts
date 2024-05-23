@@ -140,9 +140,13 @@ class ProductCardView {
   }
 
   private createGoDetailsPageLink(): LinkModel {
+    const href = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
+      size: [this.currentSize ?? this.params.variant[0].size],
+    })}`;
+
     this.goDetailsPageLink = new LinkModel({
       attrs: {
-        href: `/${PAGE_ID.PRODUCT_PAGE}/${this.params.key}`,
+        href,
       },
       classes: [styles.goDetailsPageLink],
     });
@@ -150,16 +154,6 @@ class ProductCardView {
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.GO_DETAILS));
     this.goDetailsPageLink.getHTML().append(svg);
-
-    this.goDetailsPageLink.getHTML().addEventListener('click', (event) => {
-      event.preventDefault();
-      const url = buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
-        category: this.params.category.map((category) => category.parent?.key ?? ''),
-        size: [this.currentSize],
-        subcategory: this.params.category.map((category) => category.key),
-      });
-      window.location.pathname = url;
-    });
 
     return this.goDetailsPageLink;
   }

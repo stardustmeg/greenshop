@@ -2,6 +2,7 @@ import getStore from '../Store/Store.ts';
 import { LANGUAGE_CHOICE } from '../constants/common.ts';
 import { SERVER_MESSAGE } from '../constants/messages.ts';
 import { PAGE_DESCRIPTION, USER_INFO_TEXT } from '../constants/pages.ts';
+import { ADDRESS_TYPE } from '../types/address.ts';
 
 const textTemplate = (beginning: string, variable: number | string, end?: string): string => {
   const start = beginning ? `${beginning} ` : '';
@@ -25,7 +26,7 @@ export const greeting = (name: string): string =>
   textTemplate(PAGE_DESCRIPTION[getStore().getState().currentLanguage].GREETING, name, '!');
 
 export const createGreetingMessage = (): string =>
-  `${greeting(getStore().getState().currentUser?.firstName ?? '')} ${SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_LOGIN}`;
+  `${SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_LOGIN}`;
 
 const maxLengthMessageRu = (maxLength: number): string =>
   textTemplate('Максимальная длина не должна превышать', maxLength, ' символов');
@@ -45,6 +46,12 @@ export const defaultBillingAddress = (address: string): string =>
 
 export const defaultShippingAddress = (address: string): string =>
   textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].DEFAULT_SHIPPING_ADDRESS);
+
+export const billingAddressMessage = (address: string): string =>
+  textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].BILLING);
+
+export const shippingAddressMessage = (address: string): string =>
+  textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].SHIPPING);
 
 const maxAgeEn = (maxAge: number): string => textTemplate('You must be at most', maxAge, ' years old');
 
@@ -68,3 +75,14 @@ export const minLengthMessage = (minLength: number): string =>
   getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN
     ? minLengthMessageEn(minLength)
     : minLengthMessageRu(minLength);
+
+export function addressMessage(type: string, text: string): string {
+  switch (type) {
+    case ADDRESS_TYPE.BILLING:
+      return billingAddressMessage(text);
+    case ADDRESS_TYPE.SHIPPING:
+      return shippingAddressMessage(text);
+    default:
+      return '';
+  }
+}

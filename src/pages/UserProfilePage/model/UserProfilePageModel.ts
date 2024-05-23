@@ -5,17 +5,18 @@ import UserAddressModel from '@/entities/UserAddress/model/UserAddressModel.ts';
 import UserInfoModel from '@/entities/UserInfo/model/UserInfoModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setCurrentPage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import { setAuthToken, setCurrentPage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import UserProfilePageView from '../view/UserProfilePageView.ts';
 
 class UserProfilePageModel implements Page {
-  private addresses = new UserAddressModel();
+  private addresses: UserAddressModel | null = null;
 
   private router: RouterModel | null = null;
 
-  private userInfo = new UserInfoModel();
+  private userInfo: UserInfoModel | null = null;
 
   private view: UserProfilePageView;
 
@@ -25,31 +26,41 @@ class UserProfilePageModel implements Page {
 
     this.setAddressesLinkHandler();
     this.setPersonalInfoLinkHandler();
-    this.init();
+    this.init().catch(showErrorMessage);
   }
 
   private addressesLinkHandler(): void {
-    this.userInfo.hide();
-    this.addresses.show();
+    this.userInfo?.hide();
+    this.addresses?.show();
   }
 
-  private init(): void {
-    this.view.getUserProfileWrapper().append(this.userInfo.getHTML(), this.addresses.getHTML());
-    this.setAccountLogoutButtonHandler();
-    getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
+  private async init(): Promise<void> {
+    try {
+      const user = await getCustomerModel().getCurrentUser();
+
+      if (user) {
+        this.userInfo = new UserInfoModel(user);
+        this.addresses = new UserAddressModel(user);
+        this.view.getUserProfileWrapper().append(this.userInfo.getHTML(), this.addresses.getHTML());
+        this.setAccountLogoutButtonHandler();
+        getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
+      }
+    } catch (error) {
+      showErrorMessage();
+    }
   }
 
   private logoutHandler(): void {
     localStorage.clear();
-    getStore().dispatch(setCurrentUser(null));
+    getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
-    getCustomerModel().logout();
+    getCustomerModel().logout().catch(showErrorMessage);
     this.router?.navigateTo(PAGE_ID.LOGIN_PAGE);
   }
 
   private personalInfoLinkHandler(): void {
-    this.addresses.hide();
-    this.userInfo.show();
+    this.addresses?.hide();
+    this.userInfo?.show();
   }
 
   private setAccountLogoutButtonHandler(): void {
