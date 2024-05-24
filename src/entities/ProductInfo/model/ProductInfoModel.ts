@@ -1,6 +1,7 @@
 import type { ProductInfoParams } from '@/shared/types/product.ts';
 
 import ProductModalSliderModel from '@/entities/ProductModalSlider/model/ProductModalSliderModel.ts';
+import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import Swiper from 'swiper';
 import 'swiper/css';
@@ -16,12 +17,16 @@ const SLIDER_PER_VIEW = 1;
 class ProductInfoModel {
   private bigSlider: Swiper | null = null;
 
+  private price: ProductPriceModel;
+
   private smallSlider: Swiper | null = null;
 
   private view: ProductInfoView;
 
   constructor(params: ProductInfoParams) {
     this.view = new ProductInfoView(params);
+    const currentVariant = params.variant.find(({ size }) => size === params.currentSize) ?? params.variant[0];
+    this.price = new ProductPriceModel(currentVariant);
     this.init(params);
   }
 
@@ -52,6 +57,8 @@ class ProductInfoModel {
         modal.setContent(modalSlider);
       });
     });
+
+    this.view.getRightWrapper().append(this.price.getHTML());
   }
 
   public getHTML(): HTMLDivElement {

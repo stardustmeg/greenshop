@@ -9,21 +9,21 @@ import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './productInfoView.module.scss';
 
-const SLIDER_WIDTH = 12;
+const SLIDER_WIDTH = 8;
 const SLIDER_WIDTH_PART = 2;
 
 class ProductInfoView {
-  private basicPrice: HTMLSpanElement;
+  private SCUSpan: HTMLSpanElement;
 
   private bigSlider: HTMLDivElement;
 
   private bigSliderSlides: HTMLDivElement[] = [];
 
-  private oldPrice: HTMLSpanElement;
+  private categoriesSpan: HTMLSpanElement;
 
   private params: ProductInfoParams;
 
-  private priceWrapper: HTMLDivElement;
+  private rightWrapper: HTMLDivElement;
 
   private shortDescription: HTMLParagraphElement;
 
@@ -36,31 +36,13 @@ class ProductInfoView {
   constructor(params: ProductInfoParams) {
     this.params = params;
     this.title = this.createProductTitle();
-    this.basicPrice = this.createBasicPrice();
-    this.oldPrice = this.createOldPrice();
-    this.priceWrapper = this.createPriceWrapper();
     this.shortDescription = this.createShortDescription();
     this.smallSlider = this.createSmallSlider();
     this.bigSlider = this.createBigSlider();
+    this.SCUSpan = this.createSCUSpan();
+    this.categoriesSpan = this.createCategoriesSpan();
+    this.rightWrapper = this.createRightWrapper();
     this.view = this.createHTML();
-  }
-
-  private createBasicPrice(): HTMLSpanElement {
-    const currentVariant =
-      this.params.variant.find(({ size }) => size === this.params.currentSize) ?? this.params.variant[0];
-    const { discount, price } = currentVariant;
-    const innerContent = discount ? `$${discount.toFixed(2)}` : `$${price?.toFixed(2)}`;
-    this.basicPrice = createBaseElement({
-      cssClasses: [styles.basicPrice],
-      innerContent,
-      tag: 'span',
-    });
-
-    if (!discount) {
-      this.basicPrice.classList.add(styles.gray);
-    }
-
-    return this.basicPrice;
   }
 
   private createBigSlider(): HTMLDivElement {
@@ -108,6 +90,39 @@ class ProductInfoView {
     return sliderWrapper;
   }
 
+  private createCategoriesSpan(): HTMLSpanElement {
+    this.categoriesSpan = createBaseElement({
+      cssClasses: [styles.categoriesSpan],
+      innerContent: 'Categories: ',
+      tag: 'span',
+    });
+
+    const category =
+      this.params.category[0].parent?.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const subcategory =
+      this.params.category[0].name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const currentCategoriesText = `${category ? `${category} > ` : ''}${subcategory}`;
+
+    const currentCategories = createBaseElement({
+      cssClasses: [styles.currentCategories],
+      innerContent: currentCategoriesText,
+      tag: 'span',
+    });
+    this.categoriesSpan.append(currentCategories);
+
+    observeStore(selectCurrentLanguage, () => {
+      const category =
+        this.params.category[0].parent?.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)]
+          .value;
+      const subcategory =
+        this.params.category[0].name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const currentCategoriesText = `${category ? `${category} > ` : ''}${subcategory}`;
+
+      currentCategories.textContent = currentCategoriesText;
+    });
+    return this.categoriesSpan;
+  }
+
   private createHTML(): HTMLDivElement {
     this.view = createBaseElement({
       cssClasses: [styles.wrapper],
@@ -121,8 +136,28 @@ class ProductInfoView {
 
     leftWrapper.append(this.smallSlider, this.bigSlider);
 
-    const rightWrapper = createBaseElement({
-      cssClasses: [styles.rightWrapper],
+    this.view.append(leftWrapper, this.rightWrapper);
+    return this.view;
+  }
+
+  private createProductTitle(): HTMLHeadingElement {
+    this.title = createBaseElement({
+      cssClasses: [styles.title],
+      innerContent: this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      tag: 'h3',
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      const textContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      this.title.textContent = textContent;
+    });
+
+    return this.title;
+  }
+
+  private createRightWrapper(): HTMLDivElement {
+    this.rightWrapper = createBaseElement({
+      cssClasses: [styles.rightWrapper, 'productDetailsPriceWrapper'],
       tag: 'div',
     });
 
@@ -141,53 +176,31 @@ class ProductInfoView {
     });
 
     shortDescriptionWrapper.append(this.shortDescription);
-    rightWrapper.append(this.title, this.priceWrapper, shortDescriptionWrapper);
+    this.rightWrapper.append(this.title, shortDescriptionWrapper);
 
     if (this.params.variant.some(({ size }) => size)) {
-      rightWrapper.append(this.createSizesWrapper());
+      this.rightWrapper.append(this.createSizesWrapper());
     }
 
-    this.view.append(leftWrapper, rightWrapper);
-    return this.view;
+    this.rightWrapper.append(this.SCUSpan, this.categoriesSpan);
+    return this.rightWrapper;
   }
 
-  private createOldPrice(): HTMLSpanElement {
-    const currentVariant =
-      this.params.variant.find(({ size }) => size === this.params.currentSize) ?? this.params.variant[0];
-    const { discount, price } = currentVariant;
-    const innerContent = discount ? `$${price?.toFixed(2)}` : '';
-    this.oldPrice = createBaseElement({
-      cssClasses: [styles.oldPrice],
-      innerContent,
+  private createSCUSpan(): HTMLSpanElement {
+    this.SCUSpan = createBaseElement({
+      cssClasses: [styles.SCUSpan],
+      innerContent: 'SCU: ',
       tag: 'span',
     });
 
-    return this.oldPrice;
-  }
-
-  private createPriceWrapper(): HTMLDivElement {
-    this.priceWrapper = createBaseElement({
-      cssClasses: [styles.priceWrapper],
-      tag: 'div',
+    const currentSCU = createBaseElement({
+      cssClasses: [styles.currentSCU],
+      innerContent: this.params.key,
+      tag: 'span',
     });
 
-    this.priceWrapper.append(this.basicPrice, this.oldPrice);
-    return this.priceWrapper;
-  }
-
-  private createProductTitle(): HTMLHeadingElement {
-    this.title = createBaseElement({
-      cssClasses: [styles.title],
-      innerContent: this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-      tag: 'h3',
-    });
-
-    observeStore(selectCurrentLanguage, () => {
-      const textContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
-      this.title.textContent = textContent;
-    });
-
-    return this.title;
+    this.SCUSpan.append(currentSCU);
+    return this.SCUSpan;
   }
 
   private createShortDescription(): HTMLParagraphElement {
@@ -247,9 +260,6 @@ class ProductInfoView {
       tag: 'div',
     });
 
-    const maxHeight = this.params.images.length * SLIDER_WIDTH;
-    slider.style.maxHeight = `${maxHeight}rem`;
-
     slider.append(this.createSmallSliderWrapper());
     return slider;
   }
@@ -296,6 +306,10 @@ class ProductInfoView {
 
   public getHTML(): HTMLDivElement {
     return this.view;
+  }
+
+  public getRightWrapper(): HTMLDivElement {
+    return this.rightWrapper;
   }
 
   public getSmallSlider(): HTMLDivElement {
