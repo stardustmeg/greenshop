@@ -3,7 +3,6 @@ import type BlogPostView from '@/pages/Blog/Post/view/PostView';
 import getStore from '@/shared/Store/Store.ts';
 import { BLOG_DESCRIPTION } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-import { img } from '@/shared/utils/tags.ts';
 
 import styles from './postListView.module.scss';
 
@@ -41,8 +40,7 @@ export default class PostListView {
       cssClasses: [styles.wrap],
       tag: 'div',
     });
-    const imgLogo = img({ alt: 'blog logo', className: styles.blogLogo, src: 'img/webp/blog-logo.webp' });
-    wrap.append(imgLogo.getNode(), this.title, this.description);
+    wrap.append(this.title, this.description);
     this.page.append(wrap, this.postList);
     this.parent.append(this.page);
 
