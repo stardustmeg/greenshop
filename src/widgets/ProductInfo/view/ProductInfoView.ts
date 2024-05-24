@@ -1,23 +1,38 @@
 import type { ProductInfoParams } from '@/shared/types/product';
 
+import getCartModel from '@/shared/API/cart/model/CartModel.ts';
+import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import InputModel from '@/shared/Input/model/InputModel.ts';
+import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
+import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
+import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PRODUCT_INFO_TEXT } from '@/shared/constants/product.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
-import styles from './productInfoView.module.scss';
+import './productInfoView.scss';
 
 const SLIDER_WIDTH = 8;
 const SLIDER_WIDTH_PART = 2;
+const DELIMITER = '>';
 
 class ProductInfoView {
-  private SCUSpan: HTMLSpanElement;
+  private SKUSpan: HTMLSpanElement;
 
   private bigSlider: HTMLDivElement;
 
   private bigSliderSlides: HTMLDivElement[] = [];
+
+  private buttonsWrapper: HTMLDivElement;
 
   private categoriesSpan: HTMLSpanElement;
 
@@ -29,6 +44,10 @@ class ProductInfoView {
 
   private smallSlider: HTMLDivElement;
 
+  private switchToCartButton: ButtonModel;
+
+  private switchToWishListButton: ButtonModel;
+
   private title: HTMLHeadingElement;
 
   private view: HTMLDivElement;
@@ -39,15 +58,18 @@ class ProductInfoView {
     this.shortDescription = this.createShortDescription();
     this.smallSlider = this.createSmallSlider();
     this.bigSlider = this.createBigSlider();
-    this.SCUSpan = this.createSCUSpan();
+    this.SKUSpan = this.createSKUSpan();
     this.categoriesSpan = this.createCategoriesSpan();
+    this.switchToCartButton = this.createSwitchToCartButton();
+    this.switchToWishListButton = this.createSwitchToWishListButton();
+    this.buttonsWrapper = this.createButtonsWrapper();
     this.rightWrapper = this.createRightWrapper();
     this.view = this.createHTML();
   }
 
   private createBigSlider(): HTMLDivElement {
     const slider = createBaseElement({
-      cssClasses: ['swiper', styles.bigSlider],
+      cssClasses: ['swiper', 'bigSlider'],
       tag: 'div',
     });
 
@@ -63,7 +85,7 @@ class ProductInfoView {
         alt,
         src,
       },
-      cssClasses: [styles.bigSliderImage],
+      cssClasses: ['bigSliderImage'],
       tag: 'img',
     });
 
@@ -72,16 +94,24 @@ class ProductInfoView {
 
   private createBigSliderWrapper(): HTMLDivElement {
     const sliderWrapper = createBaseElement({
-      cssClasses: ['swiper-wrapper', styles.bigSliderWrapper],
+      cssClasses: ['swiper-wrapper', 'bigSliderWrapper'],
       tag: 'div',
     });
 
     this.params.images.forEach((image) => {
       const slideWrapper = createBaseElement({
-        cssClasses: ['swiper-slide', styles.bigSliderSlide],
+        cssClasses: ['swiper-slide', 'bigSliderSlide'],
         tag: 'div',
       });
       const slide = this.createBigSliderSlideContent(image, this.params.name[0].value);
+      const loader = new LoaderModel(LOADER_SIZE.MEDIUM);
+      loader.setAbsolutePosition();
+      slideWrapper.append(slide, loader.getHTML());
+      slide.classList.add('hidden');
+      slide.addEventListener('load', () => {
+        slide.classList.remove('hidden');
+        loader.getHTML().remove();
+      });
       this.bigSliderSlides.push(slide);
       slideWrapper.append(slide);
       sliderWrapper.append(slideWrapper);
@@ -90,9 +120,20 @@ class ProductInfoView {
     return sliderWrapper;
   }
 
+  private createButtonsWrapper(): HTMLDivElement {
+    this.buttonsWrapper = createBaseElement({
+      cssClasses: ['buttonsWrapper'],
+      tag: 'div',
+    });
+
+    this.buttonsWrapper.append(this.switchToCartButton.getHTML(), this.switchToWishListButton.getHTML());
+
+    return this.buttonsWrapper;
+  }
+
   private createCategoriesSpan(): HTMLSpanElement {
     this.categoriesSpan = createBaseElement({
-      cssClasses: [styles.categoriesSpan],
+      cssClasses: ['categoriesSpan'],
       innerContent: 'Categories: ',
       tag: 'span',
     });
@@ -101,10 +142,10 @@ class ProductInfoView {
       this.params.category[0].parent?.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
     const subcategory =
       this.params.category[0].name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
-    const currentCategoriesText = `${category ? `${category} > ` : ''}${subcategory}`;
+    const currentCategoriesText = `${category ? `${category} ${DELIMITER} ` : ''}${subcategory}`;
 
     const currentCategories = createBaseElement({
-      cssClasses: [styles.currentCategories],
+      cssClasses: ['currentCategories'],
       innerContent: currentCategoriesText,
       tag: 'span',
     });
@@ -116,7 +157,7 @@ class ProductInfoView {
           .value;
       const subcategory =
         this.params.category[0].name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
-      const currentCategoriesText = `${category ? `${category} > ` : ''}${subcategory}`;
+      const currentCategoriesText = `${category ? `${category} ${DELIMITER} ` : ''}${subcategory}`;
 
       currentCategories.textContent = currentCategoriesText;
     });
@@ -125,12 +166,12 @@ class ProductInfoView {
 
   private createHTML(): HTMLDivElement {
     this.view = createBaseElement({
-      cssClasses: [styles.wrapper],
+      cssClasses: ['wrapper'],
       tag: 'div',
     });
 
     const leftWrapper = createBaseElement({
-      cssClasses: [styles.leftWrapper],
+      cssClasses: ['leftWrapper'],
       tag: 'div',
     });
 
@@ -142,7 +183,7 @@ class ProductInfoView {
 
   private createProductTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
-      cssClasses: [styles.title],
+      cssClasses: ['title'],
       innerContent: this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
       tag: 'h3',
     });
@@ -157,12 +198,12 @@ class ProductInfoView {
 
   private createRightWrapper(): HTMLDivElement {
     this.rightWrapper = createBaseElement({
-      cssClasses: [styles.rightWrapper, 'productDetailsPriceWrapper'],
+      cssClasses: ['rightWrapper', 'productDetailsPriceWrapper'],
       tag: 'div',
     });
 
     const shortDescriptionWrapper = createBaseElement({
-      cssClasses: [styles.shortDescriptionWrapper],
+      cssClasses: ['shortDescriptionWrapper'],
       innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].SHORT_DESCRIPTION,
       tag: 'div',
     });
@@ -182,30 +223,43 @@ class ProductInfoView {
       this.rightWrapper.append(this.createSizesWrapper());
     }
 
-    this.rightWrapper.append(this.SCUSpan, this.categoriesSpan);
+    this.rightWrapper.append(this.SKUSpan, this.categoriesSpan, this.buttonsWrapper);
     return this.rightWrapper;
   }
 
-  private createSCUSpan(): HTMLSpanElement {
-    this.SCUSpan = createBaseElement({
-      cssClasses: [styles.SCUSpan],
-      innerContent: 'SCU: ',
+  private createSKUSpan(): HTMLSpanElement {
+    this.SKUSpan = createBaseElement({
+      cssClasses: ['SKUSpan'],
+      innerContent: 'SKU: ',
       tag: 'span',
     });
 
-    const currentSCU = createBaseElement({
-      cssClasses: [styles.currentSCU],
-      innerContent: this.params.key,
-      tag: 'span',
+    const currentSKU = new InputModel({
+      autocomplete: AUTOCOMPLETE_OPTION.ON,
+      id: 'currentSKU',
+      placeholder: '',
+      type: INPUT_TYPE.TEXT,
+      value: this.params.key,
     });
 
-    this.SCUSpan.append(currentSCU);
-    return this.SCUSpan;
+    currentSKU.getHTML().classList.add('currentSKU');
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.COPY));
+
+    svg.addEventListener('click', () => {
+      currentSKU.getHTML().select();
+      document.execCommand('copy');
+      serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.COPY_TO_CLIPBOARD, MESSAGE_STATUS.SUCCESS);
+    });
+
+    this.SKUSpan.append(currentSKU.getHTML(), svg);
+    return this.SKUSpan;
   }
 
   private createShortDescription(): HTMLParagraphElement {
     this.shortDescription = createBaseElement({
-      cssClasses: [styles.shortDescription],
+      cssClasses: ['shortDescription'],
       innerContent: this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
       tag: 'p',
     });
@@ -220,19 +274,19 @@ class ProductInfoView {
 
   private createSizeButton(size: string): ButtonModel {
     const button = new ButtonModel({
-      classes: [styles.sizeButton],
+      classes: ['sizeButton'],
       text: size,
     });
     if (this.params.currentSize === size) {
       button.setDisabled();
-      button.getHTML().classList.add(styles.selected);
+      button.getHTML().classList.add('selected');
     }
     return button;
   }
 
   private createSizesWrapper(): HTMLDivElement {
     const sizesWrapper = createBaseElement({
-      cssClasses: [styles.sizesWrapper],
+      cssClasses: ['sizesWrapper'],
       innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].SIZE,
       tag: 'div',
     });
@@ -256,7 +310,7 @@ class ProductInfoView {
 
   private createSmallSlider(): HTMLDivElement {
     const slider = createBaseElement({
-      cssClasses: ['swiper', styles.smallSlider],
+      cssClasses: ['swiper', 'smallSlider'],
       tag: 'div',
     });
 
@@ -270,7 +324,7 @@ class ProductInfoView {
         alt,
         src,
       },
-      cssClasses: [styles.smallSliderImage],
+      cssClasses: ['smallSliderImage'],
       tag: 'img',
     });
     return slide;
@@ -278,22 +332,80 @@ class ProductInfoView {
 
   private createSmallSliderWrapper(): HTMLDivElement {
     const sliderWrapper = createBaseElement({
-      cssClasses: ['swiper-wrapper', styles.smallSliderWrapper],
+      cssClasses: ['swiper-wrapper', 'smallSliderWrapper'],
       tag: 'div',
     });
 
     this.params.images.forEach((image) => {
       const slideWrapper = createBaseElement({
-        cssClasses: ['swiper-slide', styles.smallSliderSlide],
+        cssClasses: ['swiper-slide', 'smallSliderSlide'],
         tag: 'div',
       });
 
       const slide = this.createSmallSliderSlideContent(image, this.params.name[0].value);
+      const loader = new LoaderModel(LOADER_SIZE.SMALL);
+      loader.setAbsolutePosition();
+      slideWrapper.append(slide, loader.getHTML());
+      slide.classList.add('hidden');
+      slide.addEventListener('load', () => {
+        slide.classList.remove('hidden');
+        loader.getHTML().remove();
+      });
       slideWrapper.append(slide);
       sliderWrapper.append(slideWrapper);
     });
 
     return sliderWrapper;
+  }
+
+  private createSwitchToCartButton(): ButtonModel {
+    this.switchToCartButton = new ButtonModel({
+      classes: ['switchToCartButton'],
+    });
+
+    this.hasProductInToCart();
+    observeStore(selectCurrentLanguage, () => this.hasProductInToCart());
+
+    return this.switchToCartButton;
+  }
+
+  private createSwitchToWishListButton(): ButtonModel {
+    this.switchToWishListButton = new ButtonModel({
+      classes: ['switchToWishListButton'],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
+    this.switchToWishListButton.getHTML().append(svg);
+
+    this.hasProductInWishList();
+
+    return this.switchToWishListButton;
+  }
+
+  private hasProductInToCart(): void {
+    getCartModel()
+      .getCart()
+      .then((cart) => {
+        if (cart.products.every((product) => product.key !== this.params.key)) {
+          this.switchToCartButton.getHTML().textContent =
+            BUTTON_TEXT[getStore().getState().currentLanguage].ADD_PRODUCT;
+        } else {
+          this.switchToCartButton.getHTML().textContent =
+            BUTTON_TEXT[getStore().getState().currentLanguage].DELETE_PRODUCT;
+        }
+      })
+      .catch(showErrorMessage);
+  }
+
+  private hasProductInWishList(): void {
+    getShoppingListModel()
+      .getShoppingList()
+      .then((shoppingList) => {
+        const result = shoppingList.products.find((product) => product.productId === this.params.id);
+        this.switchStateWishListButton(Boolean(result));
+      })
+      .catch(showErrorMessage);
   }
 
   public getBigSlider(): HTMLDivElement {
@@ -314,6 +426,26 @@ class ProductInfoView {
 
   public getSmallSlider(): HTMLDivElement {
     return this.smallSlider;
+  }
+
+  public getSwitchToCartButton(): ButtonModel {
+    return this.switchToCartButton;
+  }
+
+  public getSwitchToWishListButton(): ButtonModel {
+    return this.switchToWishListButton;
+  }
+
+  public switchStateWishListButton(hasProductInWishList: boolean): void {
+    this.switchToWishListButton.getHTML().classList.toggle('inWishList', hasProductInWishList);
+  }
+
+  public switchToCartButtonText(hasCart: boolean): void {
+    if (hasCart) {
+      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].DELETE_PRODUCT;
+    } else {
+      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].ADD_PRODUCT;
+    }
   }
 }
 

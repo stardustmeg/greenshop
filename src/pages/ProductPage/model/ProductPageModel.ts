@@ -2,7 +2,6 @@ import type { BreadCrumbLink } from '@/shared/types/link.ts';
 import type { Page, PageParams } from '@/shared/types/page.ts';
 import type { Product, localization } from '@/shared/types/product.ts';
 
-import ProductInfoModel from '@/entities/ProductInfo/model/ProductInfoModel.ts';
 import BreadcrumbsModel from '@/features/Breadcrumbs/model/BreadcrumbsModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import getStore from '@/shared/Store/Store.ts';
@@ -13,6 +12,7 @@ import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { buildPathName } from '@/shared/utils/buildPathname.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
+import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
 import ProductPageView from '../view/ProductPageView.ts';
 

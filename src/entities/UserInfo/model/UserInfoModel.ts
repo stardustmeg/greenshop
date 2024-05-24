@@ -53,8 +53,9 @@ class UserInfoModel {
         const user = await getCustomerModel().getCurrentUser();
 
         if (user) {
+          const personalInfo = new PersonalInfoEditModel(user);
           modal.show();
-          modal.setContent(new PersonalInfoEditModel(user).getHTML());
+          modal.setContent(personalInfo.getHTML());
         }
       } catch (error) {
         showErrorMessage();
@@ -69,6 +70,7 @@ class UserInfoModel {
     editPasswordButton.getHTML().addEventListener('click', () => {
       modal.show();
       modal.setContent(passwordEdit.getHTML());
+      passwordEdit.getView().getOldPasswordField().getView().getInput().getHTML().focus();
     });
     return true;
   }
