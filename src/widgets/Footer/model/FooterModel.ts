@@ -1,5 +1,3 @@
-import type RouterModel from '@/app/Router/model/RouterModel.ts';
-
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 
 import FooterView from '../view/FooterView.ts';
@@ -9,8 +7,8 @@ class FooterModel {
 
   private view = new FooterView();
 
-  constructor(router: RouterModel) {
-    this.navigation = new NavigationModel(router);
+  constructor() {
+    this.navigation = new NavigationModel();
     this.init();
   }
 

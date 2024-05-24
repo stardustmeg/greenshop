@@ -6,14 +6,14 @@
   padding: var(--tiny-offset);
   width: 100%;
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--steam-green-400);
   background-color: transparent;
   transition: background-color 0.2s;
 
   &::placeholder {
     font: var(--regular-font);
-    letter-spacing: 1px;
+    letter-spacing: var(--one);
     text-transform: uppercase;
     color: var(--noble-gray-800);
     transition: color 0.2s;

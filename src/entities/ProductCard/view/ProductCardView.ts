@@ -1,4 +1,3 @@
-import type { Variant } from '@/shared/types/product';
 import type ProductCardParams from '@/shared/types/productCard.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
@@ -20,23 +19,15 @@ import styles from './productCardView.module.scss';
 class ProductCardView {
   private addToCardButton: ButtonModel;
 
-  private basicPrice: HTMLSpanElement;
-
   private bottomWrapper: HTMLDivElement;
 
   private buttonsWrapper: HTMLDivElement;
 
   private currentSize: null | string;
 
-  private currentVariant: Variant;
-
   private goDetailsPageLink: LinkModel;
 
-  private oldPrice: HTMLSpanElement;
-
   private params: ProductCardParams;
-
-  private priceWrapper: HTMLDivElement;
 
   private productCard: HTMLLIElement;
 
@@ -50,9 +41,8 @@ class ProductCardView {
 
   private switchToWishListButton: ButtonModel;
 
-  constructor(params: ProductCardParams, currentSize: null | string, currentVariant: Variant) {
+  constructor(params: ProductCardParams, currentSize: null | string) {
     this.params = params;
-    this.currentVariant = currentVariant;
     this.currentSize = currentSize;
     this.addToCardButton = this.createAddToCartButton();
     this.switchToWishListButton = this.createSwitchToWishListButton();
@@ -62,9 +52,6 @@ class ProductCardView {
     this.productImageWrapper = this.createProductImageWrapper();
     this.productName = this.createProductName();
     this.productShortDescription = this.createProductShortDescription();
-    this.basicPrice = this.createBasicPrice();
-    this.oldPrice = this.createOldPrice();
-    this.priceWrapper = this.createPriceWrapper();
     this.bottomWrapper = this.createBottomWrapper();
     this.productCard = this.createHTML();
   }
@@ -90,25 +77,9 @@ class ProductCardView {
     return this.addToCardButton;
   }
 
-  private createBasicPrice(): HTMLSpanElement {
-    const { discount, price } = this.currentVariant;
-    const innerContent = discount ? `$${discount.toFixed(2)}` : `$${price?.toFixed(2)}`;
-    this.basicPrice = createBaseElement({
-      cssClasses: [styles.basicPrice],
-      innerContent,
-      tag: 'span',
-    });
-
-    if (!discount) {
-      this.basicPrice.classList.add(styles.gray);
-    }
-
-    return this.basicPrice;
-  }
-
   private createBottomWrapper(): HTMLDivElement {
     this.bottomWrapper = createBaseElement({
-      cssClasses: [styles.bottomWrapper],
+      cssClasses: [styles.bottomWrapper, 'productCardPriceWrapper'],
       tag: 'div',
     });
 
@@ -120,7 +91,7 @@ class ProductCardView {
 
     moreButton.addEventListener('click', () => this.changeButtonText(this.productShortDescription, moreButton));
 
-    this.bottomWrapper.append(this.productName, this.priceWrapper, this.productShortDescription, moreButton);
+    this.bottomWrapper.append(this.productName, this.productShortDescription, moreButton);
     return this.bottomWrapper;
   }
 
@@ -179,28 +150,6 @@ class ProductCardView {
     });
 
     return moreButton.getHTML();
-  }
-
-  private createOldPrice(): HTMLSpanElement {
-    const { discount, price } = this.currentVariant;
-    const innerContent = discount ? `$${price?.toFixed(2)}` : '';
-    this.oldPrice = createBaseElement({
-      cssClasses: [styles.oldPrice],
-      innerContent,
-      tag: 'span',
-    });
-
-    return this.oldPrice;
-  }
-
-  private createPriceWrapper(): HTMLDivElement {
-    this.priceWrapper = createBaseElement({
-      cssClasses: [styles.priceWrapper],
-      tag: 'div',
-    });
-
-    this.priceWrapper.append(this.basicPrice, this.oldPrice);
-    return this.priceWrapper;
   }
 
   private createProductImage(): HTMLImageElement {
@@ -288,6 +237,10 @@ class ProductCardView {
 
   public getAddToCardButton(): ButtonModel {
     return this.addToCardButton;
+  }
+
+  public getBottomWrapper(): HTMLDivElement {
+    return this.bottomWrapper;
   }
 
   public getGoDetailsPageLink(): LinkModel {

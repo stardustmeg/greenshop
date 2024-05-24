@@ -4,6 +4,7 @@ import type ProductCardParams from '@/shared/types/productCard';
 import type { ShoppingList, ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
+import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
@@ -19,13 +20,16 @@ class ProductCardModel {
 
   private params: ProductCardParams;
 
+  private price: ProductPriceModel;
+
   private view: ProductCardView;
 
   constructor(params: ProductCardParams, currentSize: null | string, shoppingList: ShoppingList, cart: Cart) {
     this.params = params;
     this.currentSize = currentSize;
     this.currentVariant = this.params.variant.find(({ size }) => size === currentSize) ?? this.params.variant[0];
-    this.view = new ProductCardView(params, currentSize, this.currentVariant);
+    this.view = new ProductCardView(params, currentSize);
+    this.price = new ProductPriceModel(this.currentVariant);
     this.init(shoppingList, cart);
   }
 
@@ -87,6 +91,7 @@ class ProductCardModel {
     this.hasProductInWishList(shoppingList);
     this.hasProductInCart(cart);
     this.goDetailsPageHandler();
+    this.view.getBottomWrapper().append(this.price.getHTML());
   }
 
   private setButtonHandlers(): void {

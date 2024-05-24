@@ -1,6 +1,6 @@
-import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Cart } from '@/shared/types/cart.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
@@ -25,21 +25,18 @@ class HeaderModel {
 
   private parent: HTMLDivElement;
 
-  private router: RouterModel;
-
   private view = new HeaderView();
 
-  constructor(router: RouterModel, parent: HTMLDivElement) {
+  constructor(parent: HTMLDivElement) {
     this.parent = parent;
-    this.router = router;
-    this.navigation = new NavigationModel(this.router);
+    this.navigation = new NavigationModel();
     this.init();
   }
 
   private checkAuthUser(): boolean {
     const { isUserLoggedIn } = getStore().getState();
     if (!isUserLoggedIn) {
-      this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
+      RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
       return false;
     }
     return true;
@@ -79,7 +76,7 @@ class HeaderModel {
     await getCustomerModel().logout();
     // getCustomerModel().logout();
 
-    this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
+    RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
     return true;
   }
 
@@ -103,7 +100,7 @@ class HeaderModel {
     const logo = this.view.getToCartLink().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
-      this.router.navigateTo(PAGE_ID.CART_PAGE);
+      RouterModel.getInstance().navigateTo(PAGE_ID.CART_PAGE);
     });
   }
 
@@ -135,7 +132,7 @@ class HeaderModel {
     const logo = this.view.getLinkLogo().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
-      this.router.navigateTo(PAGE_ID.MAIN_PAGE);
+      RouterModel.getInstance().navigateTo(PAGE_ID.MAIN_PAGE);
     });
   }
 
@@ -153,7 +150,7 @@ class HeaderModel {
       event.preventDefault();
       // TBD remove unnecessary check (we don't show this logo when user is not logged in) ??
       if (this.checkAuthUser()) {
-        this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE);
+        RouterModel.getInstance().navigateTo(PAGE_ID.USER_PROFILE_PAGE);
       }
     });
   }
