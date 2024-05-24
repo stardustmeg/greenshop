@@ -37,6 +37,9 @@ class LoaderView {
       case LOADER_SIZE.EXTRA_LARGE:
         this.setExtraLargeStyle();
         break;
+      case LOADER_SIZE.EXTRA_SMALL:
+        this.setExtraSmallStyle();
+        break;
       default:
         this.setSmallStyle();
         break;
@@ -45,6 +48,10 @@ class LoaderView {
 
   private setExtraLargeStyle(): void {
     this.loader.classList.add(styles.extraLarge);
+  }
+
+  private setExtraSmallStyle(): void {
+    this.loader.classList.add(styles.extraSmall);
   }
 
   private setLargeStyle(): void {
