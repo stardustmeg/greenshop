@@ -19,6 +19,12 @@ class ModalView {
         this.hide();
       }
     });
+
+    document.addEventListener('keydown', ({ key }) => {
+      if (!this.modalContent.classList.contains(styles.modalContent_hidden) && key === 'Escape') {
+        this.hide();
+      }
+    });
   }
 
   private createHTML(): HTMLDivElement {
@@ -35,7 +41,7 @@ class ModalView {
 
   private createModalContent(): HTMLDivElement {
     this.modalContent = createBaseElement({
-      cssClasses: [styles.modalContent, styles.modalContent_hidden],
+      cssClasses: [styles.modalContent, styles.modalContent_hidden, 'modalProductInfoWrapper'],
       tag: 'div',
     });
 
