@@ -31,7 +31,7 @@
   margin: 0 var(--extra-small-offset);
   max-width: 75%;
   font: var(--extra-regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--black);
 }
 
@@ -42,7 +42,7 @@
 .shortDescription {
   margin: 0 var(--extra-small-offset);
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-700);
 }
 
@@ -96,26 +96,26 @@
 .list {
   margin: var(--extra-small-offset);
   font: var(--extra-regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-800);
 }
 
 .item {
   margin: var(--small-offset);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-700);
 }
 
 .paragraph {
   margin: var(--small-offset);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-700);
 }
 
 .headText {
   margin: var(--extra-small-offset);
   font: var(--extra-regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-800);
 }
 

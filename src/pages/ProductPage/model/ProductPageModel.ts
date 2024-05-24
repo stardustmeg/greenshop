@@ -1,12 +1,13 @@
 import type { BreadCrumbLink } from '@/shared/types/link.ts';
 import type { Page, PageParams } from '@/shared/types/page.ts';
-import type { Product } from '@/shared/types/product.ts';
+import type { Product, localization } from '@/shared/types/product.ts';
 
 import ProductInfoModel from '@/entities/ProductInfo/model/ProductInfoModel.ts';
 import BreadcrumbsModel from '@/features/Breadcrumbs/model/BreadcrumbsModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
@@ -41,14 +42,14 @@ class ProductPageModel implements Page {
       links.push({
         link: buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [category.id] }),
 
-        name: category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+        name: category.name[0].value,
       });
     }
 
     if (subcategory) {
       links.push({
         link: '',
-        name: subcategory.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+        name: subcategory.name[0].value,
       });
     }
 
@@ -68,7 +69,11 @@ class ProductPageModel implements Page {
             ...productData,
           });
           this.initBreadcrumbs(productData);
-          this.getHTML().append(productInfo.getHTML());
+          this.getHTML().append(productInfo.getHTML(), this.view.getFullDescriptionWrapper());
+          this.view.setFullDescription(
+            productData.fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+          );
+          this.observeLanguage(productData.fullDescription);
         }
       })
       .catch(showErrorMessage);
@@ -79,6 +84,14 @@ class ProductPageModel implements Page {
   private initBreadcrumbs(currentProduct: Product): void {
     const links = this.createNavigationLinks(currentProduct);
     this.getHTML().append(new BreadcrumbsModel(links).getHTML());
+  }
+
+  private observeLanguage(fullDescription: localization[]): void {
+    observeStore(selectCurrentLanguage, () => {
+      this.view.setFullDescription(
+        fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      );
+    });
   }
 
   public getHTML(): HTMLDivElement {
