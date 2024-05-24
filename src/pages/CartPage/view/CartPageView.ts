@@ -109,6 +109,7 @@ class CartPageView {
       placeholder: 'Enter coupon here...',
       type: INPUT_TYPE.TEXT,
     });
+    couponInput.getHTML().classList.add('couponInput');
     const couponButton = createBaseElement({ cssClasses: [styles.button], innerContent: 'Apply', tag: 'button' });
     couponWrap.append(couponInput.getHTML(), couponButton);
     return couponWrap;

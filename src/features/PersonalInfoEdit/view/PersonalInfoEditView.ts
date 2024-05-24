@@ -8,7 +8,6 @@ import { EMAIL_VALIDATE } from '@/shared/constants/forms/validationParams.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './personalInfoEditView.module.scss';
-import './personalInfoEditView.scss';
 
 class PersonalInfoEditView {
   private cancelButton: ButtonModel;
