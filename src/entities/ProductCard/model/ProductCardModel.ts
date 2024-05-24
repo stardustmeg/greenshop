@@ -117,9 +117,9 @@ class ProductCardModel {
   }
 
   private setButtonHandlers(): void {
-    const addToCardButton = this.view.getAddToCartButton();
+    const addToCartButton = this.view.getAddToCartButton();
     const switchToWishListButton = this.view.getSwitchToWishListButton();
-    addToCardButton.getHTML().addEventListener('click', () => this.addProductToCartHandler());
+    addToCartButton.getHTML().addEventListener('click', () => this.addProductToCartHandler());
     switchToWishListButton.getHTML().addEventListener('click', async () => {
       const shoppingList = await getShoppingListModel().getShoppingList();
       const productInWishList = shoppingList.products.find((product) => product.productId === this.params.id);

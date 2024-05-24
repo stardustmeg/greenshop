@@ -70,8 +70,6 @@ class UserInfoModel {
     editPasswordButton.getHTML().addEventListener('click', () => {
       modal.show();
       modal.setContent(passwordEdit.getHTML());
-      passwordEdit.getView().getOldPasswordField().getView().getInput().getHTML().focus();
-    });
     return true;
   }
 
