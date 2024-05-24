@@ -74,7 +74,6 @@ class HeaderModel {
     getStore().dispatch(switchIsUserLoggedIn(false));
 
     await getCustomerModel().logout();
-    // getCustomerModel().logout();
 
     RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
     return true;
