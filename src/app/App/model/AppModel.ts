@@ -83,7 +83,7 @@ class AppModel {
     this.appView
       .getHTML()
       .insertAdjacentElement('beforebegin', new HeaderModel(this.router, this.appView.getHTML()).getHTML());
-    this.appView.getHTML().insertAdjacentElement('afterend', new FooterModel(this.router).getHTML());
+    this.appView.getHTML().insertAdjacentElement('afterend', new FooterModel().getHTML());
     this.appView.getHTML().insertAdjacentElement('afterend', modal.getHTML());
   }
 
