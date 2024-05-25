@@ -1,9 +1,11 @@
 const SVG_DETAILS = {
+  BIN: 'bin',
   CART: 'cart',
   CLOSE_EYE: 'closeEye',
   COPY: 'copy',
   DARK: 'dark',
   DELETE: 'delete',
+  EDIT: 'edit',
   FILL_HEART: 'heartFill',
   GO_DETAILS: 'arrow',
   KEY: 'key',

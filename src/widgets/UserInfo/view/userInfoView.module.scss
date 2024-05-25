@@ -42,11 +42,13 @@
   background-color: var(--noble-white-100);
   transition: 0.2s;
 
-  &:hover {
-    background-color: var(--white-tr);
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--white-tr);
 
-    svg {
-      fill: var(--steam-green-800);
+      svg {
+        fill: var(--steam-green-800);
+      }
     }
   }
 }

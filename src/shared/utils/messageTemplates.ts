@@ -10,6 +10,9 @@ const textTemplate = (beginning: string, variable: number | string, end?: string
   return `${start}${variable}${ending}`;
 };
 
+export const addressTemplate = (streetName = '', city = '', country: null | string = null, postalCode = ''): string =>
+  `${streetName}, ${city}, ${country}, ${postalCode}`;
+
 export const userInfoName = (name: string): string =>
   textTemplate(USER_INFO_TEXT[getStore().getState().currentLanguage].NAME, name);
 

@@ -1,29 +1,55 @@
-.addressesWrapper {
-  position: relative;
-  display: grid;
-  align-items: center;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(auto);
-  margin: 0 var(--small-offset);
-  padding: var(--small-offset);
-  width: 60%;
-  height: max-content;
-  box-shadow: var(--mellow-shadow-100);
-  font: var(--extra-regular-font);
-  letter-spacing: var(--one);
-  color: var(--noble-gray-900);
-  background-color: var(--noble-gray-tr-800);
-  gap: var(--small-offset);
-}
-
 .info {
   grid-column: 2 span;
   max-width: 100%;
   word-break: break-all;
 }
 
-.hidden {
-  display: none;
-  opacity: 0;
-  visibility: hidden;
+.deleteLogo,
+.editLogo {
+  display: flex;
+  margin: 0 auto;
+
+  svg {
+    z-index: 1;
+    width: var(--extra-small-offset);
+    height: var(--extra-small-offset);
+    fill: var(--noble-gray-900);
+    transition: 0.2s;
+  }
+}
+
+.deleteButton,
+.editButton {
+  display: flex;
+  margin: var(--tiny-offset);
+  border-radius: var(--medium-br);
+  padding: var(--tiny-offset);
+  height: max-content;
+  max-width: max-content;
+  font: var(--regular-font);
+  letter-spacing: 1px;
+  color: var(--white);
+  background-color: var(--steam-green-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  &:focus {
+    background-color: var(--steam-green-700);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--steam-green-700);
+
+      svg {
+        fill: var(--noble-gray-1000);
+      }
+    }
+  }
+
+  &:disabled {
+    background-color: var(--noble-gray-300);
+    pointer-events: none;
+  }
 }
