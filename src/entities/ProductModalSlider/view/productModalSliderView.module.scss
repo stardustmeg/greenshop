@@ -23,25 +23,32 @@
 
 .modalCloseButton {
   position: absolute;
-  right: 3rem;
-  top: 2rem;
+  right: 1rem;
+  top: 0.3rem;
   z-index: 1;
   font: var(--extra-bold-font);
   font-weight: 400;
   color: var(--steam-green-800);
-  transition: color 0.2s;
+  transition:
+    color 0.2s,
+    transform 0.2s;
 
   @media (hover: hover) {
     &:hover {
       color: var(--steam-green-700);
     }
   }
+
+  /* stylelint-disable-next-line order/order */
+  &:active {
+    transform: scale(0.9);
+  }
 }
 
 .navigationWrapper {
   position: absolute;
-  left: -1.5rem;
-  right: -1.5rem;
+  left: -3.5rem;
+  right: -3.5rem;
   top: 50%;
   z-index: 1;
   display: flex;
@@ -62,13 +69,19 @@
   background-color: var(--noble-gray-1000);
   transition:
     color 0.2s,
-    border-color 0.2s;
+    border-color 0.2s,
+    transform 0.2s;
 
   @media (hover: hover) {
     &:hover {
       border-color: var(--steam-green-400);
       color: var(--steam-green-700);
     }
+  }
+
+  /* stylelint-disable-next-line order/order */
+  &:active {
+    transform: scale(0.9);
   }
 }
 

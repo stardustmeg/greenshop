@@ -1,0 +1,26 @@
+.modalForm {
+  .personalDataWrapper {
+    grid-row: 1;
+    padding: 0;
+    width: 100%;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(1, 1fr);
+      grid-template-rows: repeat(2, auto);
+    }
+  }
+
+  .label:last-child {
+    grid-column: 2 span;
+    width: 100%;
+
+    @media (max-width: 768px) {
+      grid-column: 1;
+      grid-row: 4;
+    }
+  }
+
+  .input {
+    padding-right: 0;
+  }
+}

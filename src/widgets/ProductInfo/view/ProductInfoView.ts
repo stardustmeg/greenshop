@@ -236,7 +236,7 @@ class ProductInfoView {
 
     const currentSKU = new InputModel({
       autocomplete: AUTOCOMPLETE_OPTION.ON,
-      id: 'currentSKU',
+      id: '',
       placeholder: '',
       type: INPUT_TYPE.TEXT,
       value: this.params.key,
@@ -248,9 +248,15 @@ class ProductInfoView {
     svg.append(createSVGUse(SVG_DETAILS.COPY));
 
     svg.addEventListener('click', () => {
-      currentSKU.getHTML().select();
-      document.execCommand('copy');
-      serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.COPY_TO_CLIPBOARD, MESSAGE_STATUS.SUCCESS);
+      window.navigator.clipboard
+        .writeText(currentSKU.getValue())
+        .then(() =>
+          serverMessageModel.showServerMessage(
+            SERVER_MESSAGE_KEYS.SUCCESSFUL_COPY_TO_CLIPBOARD,
+            MESSAGE_STATUS.SUCCESS,
+          ),
+        )
+        .catch(() => serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.BAD_REQUEST, MESSAGE_STATUS.ERROR));
     });
 
     this.SKUSpan.append(currentSKU.getHTML(), svg);
