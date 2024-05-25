@@ -15,7 +15,6 @@ export type MessageStatusKeysType = (typeof MESSAGE_STATUS_KEYS)[keyof typeof ME
 export const SERVER_MESSAGE = {
   en: {
     BAD_REQUEST: 'Sorry, something went wrong. Try again later.',
-    COPY_TO_CLIPBOARD: 'SKU copied to clipboard',
     GREETING: 'Hi! Welcome to our store. Enjoy shopping!',
     INCORRECT_PASSWORD: 'Please, enter a correct password',
     INVALID_EMAIL: "User with this email doesn't exist. Please, register first",
@@ -25,6 +24,7 @@ export const SERVER_MESSAGE = {
     PERSONAL_INFO_CHANGED: 'Personal information has been changed successfully',
     SUCCESSFUL_ADD_PRODUCT_TO_CART: 'Product has been added successfully to your cart',
     SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST: 'Product has been added successfully to your wishlist',
+    SUCCESSFUL_COPY_TO_CLIPBOARD: 'SKU has been copied to clipboard',
     SUCCESSFUL_DELETE_PRODUCT_FROM_CART: 'Product has been deleted successfully from your cart',
     SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST: 'Product has been deleted successfully from your wishlist',
     SUCCESSFUL_LOGIN: 'Welcome to our store. Enjoy shopping!',
@@ -33,7 +33,6 @@ export const SERVER_MESSAGE = {
   },
   ru: {
     BAD_REQUEST: 'Извините, что-то пошло не так. Попробуйте позже.',
-    COPY_TO_CLIPBOARD: 'SKU скопирован в буфер обмена',
     GREETING: 'Здравствуйте! Добро пожаловать в наш магазин. Приятных покупок!',
     INCORRECT_PASSWORD: 'Пожалуйста, введите правильный пароль',
     INVALID_EMAIL: 'Пользователь с таким адресом не существует. Пожалуйста, сначала зарегистрируйтесь',
@@ -43,6 +42,7 @@ export const SERVER_MESSAGE = {
     PERSONAL_INFO_CHANGED: 'Персональные данные были успешно изменены',
     SUCCESSFUL_ADD_PRODUCT_TO_CART: 'Товар был успешно добавлен в корзину',
     SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST: 'Товар был успешно добавлен в избранное',
+    SUCCESSFUL_COPY_TO_CLIPBOARD: 'SKU успешно скопирован в буфер обмена',
     SUCCESSFUL_DELETE_PRODUCT_FROM_CART: 'Товар был успешно удален из корзины',
     SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST: 'Товар был успешно удален из избранного',
     SUCCESSFUL_LOGIN: 'Добро пожаловать в наш магазин. Приятных покупок!',
@@ -53,7 +53,6 @@ export const SERVER_MESSAGE = {
 
 export const SERVER_MESSAGE_KEYS = {
   BAD_REQUEST: 'BAD_REQUEST',
-  COPY_TO_CLIPBOARD: 'COPY_TO_CLIPBOARD',
   GREETING: 'GREETING',
   INCORRECT_PASSWORD: 'INCORRECT_PASSWORD',
   INVALID_EMAIL: 'INVALID_EMAIL',
@@ -63,6 +62,7 @@ export const SERVER_MESSAGE_KEYS = {
   PERSONAL_INFO_CHANGED: 'PERSONAL_INFO_CHANGED',
   SUCCESSFUL_ADD_PRODUCT_TO_CART: 'SUCCESSFUL_ADD_PRODUCT_TO_CART',
   SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST: 'SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST',
+  SUCCESSFUL_COPY_TO_CLIPBOARD: 'SUCCESSFUL_COPY_TO_CLIPBOARD',
   SUCCESSFUL_DELETE_PRODUCT_FROM_CART: 'SUCCESSFUL_DELETE_PRODUCT_FROM_CART',
   SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST: 'SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST',
   SUCCESSFUL_LOGIN: 'SUCCESSFUL_LOGIN',

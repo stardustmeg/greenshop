@@ -31,6 +31,7 @@ class RegistrationFormView {
       attrs: {
         type: BUTTON_TYPE.SUBMIT,
       },
+      classes: [styles.submitFormButton],
       text: BUTTON_TEXT[getStore().getState().currentLanguage].REGISTRATION,
     });
     observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.REGISTRATION);

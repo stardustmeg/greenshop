@@ -1,3 +1,5 @@
+@import 'src/app/styles/mixins';
+
 .wrapper {
   display: flex;
   align-items: center;
@@ -178,28 +180,9 @@
 }
 
 .switchToCartButton {
-  display: flex;
-  align-items: center;
-  border-radius: var(--medium-br);
+  @include green-btn;
+
   padding: calc(var(--small-offset) / 3) calc(var(--small-offset) / 2);
-  max-width: max-content;
-  font: var(--regular-font);
-  letter-spacing: var(--one);
-  color: var(--white);
-  background-color: var(--steam-green-800);
-  transition:
-    color 0.2s,
-    background-color 0.2s;
-
-  &:focus {
-    background-color: var(--steam-green-700);
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--steam-green-700);
-    }
-  }
 }
 
 .buttonsWrapper {
@@ -217,7 +200,9 @@
   width: var(--small-offset);
   height: var(--small-offset);
   background-color: var(--noble-gray-1000);
-  transition: outline 0.2s;
+  transition:
+    transform 0.2s,
+    outline 0.2s;
   backdrop-filter: blur(10px);
 
   svg {
@@ -225,6 +210,10 @@
     height: var(--extra-small-offset);
     fill: var(--noble-gray-800);
     transition: fill 0.2s;
+  }
+
+  &:active {
+    transform: scale(0.9);
   }
 
   @media (hover: hover) {
