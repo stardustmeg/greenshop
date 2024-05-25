@@ -1,34 +1,7 @@
-export const EVENT_NAME = {
-  ANIMATIONEND: 'animationend',
-  ANIMATIONITERATION: 'animationiteration',
-  ANIMATIONSTART: 'animationstart',
-  BEFOREUNLOAD: 'beforeunload',
-  BLUR: 'blur',
-  CHANGE: 'change',
-  CLICK: 'click',
-  CLOSE: 'close',
-  CONTEXTMENU: 'contextmenu',
-  DOM_CONTENT_LOADED: 'DOMContentLoaded',
-  ERROR: 'error',
-  FOCUS: 'focus',
-  HASHCHANGE: 'hashchange',
-  INPUT: 'input',
-  KEYDOWN: 'keydown',
-  KEYUP: 'keyup',
-  LOAD: 'load',
-  MESSAGE: 'message',
-  MOUSEENTER: 'mouseenter',
-  MOUSELEAVE: 'mouseleave',
-  MOUSEWHEEL: 'mousewheel',
-  OPEN: 'open',
-  POPSTATE: 'popstate',
-  RESIZE: 'resize',
-  SCROLL: 'scroll',
-  SUBMIT: 'submit',
-  TRANSITIONEND: 'transitionend',
+const MEDIATOR_EVENT = {
+  REDRAW_PRODUCTS: 'REDRAW_PRODUCTS',
+  REDRAW_USER_ADDRESS: 'REDRAW_USER_ADDRESS',
+  REDRAW_USER_INFO: 'REDRAW_USER_INFO',
 } as const;
 
-export const MEDIATOR_EVENT = {
-  CHANGE_PAGE: 'changePage',
-  USER_LOGIN: 'userLogin',
-} as const;
+export default MEDIATOR_EVENT;

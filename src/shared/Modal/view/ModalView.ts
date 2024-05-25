@@ -13,6 +13,18 @@ class ModalView {
     this.modalContent = this.createModalContent();
     this.modalOverlay = this.createModalOverlay();
     this.modal = this.createHTML();
+
+    document.addEventListener('click', ({ target }) => {
+      if (target instanceof HTMLDivElement && !this.modalContent.contains(target)) {
+        this.hide();
+      }
+    });
+
+    document.addEventListener('keydown', ({ key }) => {
+      if (!this.modalContent.classList.contains(styles.modalContent_hidden) && key === 'Escape') {
+        this.hide();
+      }
+    });
   }
 
   private createHTML(): HTMLDivElement {
@@ -29,7 +41,7 @@ class ModalView {
 
   private createModalContent(): HTMLDivElement {
     this.modalContent = createBaseElement({
-      cssClasses: [styles.modalContent, styles.modalContent_hidden],
+      cssClasses: [styles.modalContent, styles.modalContent_hidden, 'modalProductInfoWrapper'],
       tag: 'div',
     });
 
@@ -64,7 +76,7 @@ class ModalView {
     document.body.classList.remove('stop-scroll');
   }
 
-  public setContent(content: HTMLDivElement): void {
+  public setContent(content: HTMLElement): void {
     this.modalContent.innerHTML = '';
     this.modalContent.append(content);
   }

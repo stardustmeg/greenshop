@@ -1,27 +1,24 @@
-import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/page.ts';
 
-import UserAddressModel from '@/entities/UserAddress/model/UserAddressModel.ts';
-import UserInfoModel from '@/entities/UserInfo/model/UserInfoModel.ts';
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setAuthToken, setCurrentPage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import { setAuthToken, setCurrentPage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
+import UserAddressesModel from '@/widgets/UserAddresses/model/UserAddressesModel.ts';
+import UserInfoModel from '@/widgets/UserInfo/model/UserInfoModel.ts';
 
 import UserProfilePageView from '../view/UserProfilePageView.ts';
 
 class UserProfilePageModel implements Page {
-  private addresses: UserAddressModel | null = null;
-
-  private router: RouterModel | null = null;
+  private addresses: UserAddressesModel | null = null;
 
   private userInfo: UserInfoModel | null = null;
 
   private view: UserProfilePageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel | null) {
-    this.router = router;
+  constructor(parent: HTMLDivElement) {
     this.view = new UserProfilePageView(parent);
 
     this.setAddressesLinkHandler();
@@ -40,7 +37,7 @@ class UserProfilePageModel implements Page {
 
       if (user) {
         this.userInfo = new UserInfoModel(user);
-        this.addresses = new UserAddressModel(user);
+        this.addresses = new UserAddressesModel(user);
         this.view.getUserProfileWrapper().append(this.userInfo.getHTML(), this.addresses.getHTML());
         this.setAccountLogoutButtonHandler();
         getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
@@ -52,11 +49,10 @@ class UserProfilePageModel implements Page {
 
   private logoutHandler(): void {
     localStorage.clear();
-    getStore().dispatch(setCurrentUser(null));
     getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
-    getCustomerModel().logout();
-    this.router?.navigateTo(PAGE_ID.LOGIN_PAGE);
+    getCustomerModel().logout().catch(showErrorMessage);
+    RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
   }
 
   private personalInfoLinkHandler(): void {

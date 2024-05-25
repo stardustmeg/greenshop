@@ -6,3 +6,7 @@ export const USER_PROFILE_MENU_LINK = {
   SUPPORT: '#support',
   WISHLIST: '#wishlist',
 } as const;
+
+export const LINK_DETAILS = {
+  BLANK: '_blank',
+} as const;

@@ -19,7 +19,7 @@
     width: max-content;
     max-height: var(--small-offset); // 40px
     font: var(--bold-font);
-    letter-spacing: 1px;
+    letter-spacing: var(--one);
     color: var(--white);
     background-color: var(--steam-green-800);
     transition:

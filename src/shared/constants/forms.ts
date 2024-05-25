@@ -32,13 +32,13 @@ export const FORM_TEXT_KEYS = {
 export type FormTextKeysType = (typeof FORM_TEXT_KEYS)[keyof typeof FORM_TEXT_KEYS];
 
 export const USER_COUNTRY_ADDRESS = {
-  BILLING: 'billingCountry',
-  SHIPPING: 'shippingCountry',
+  BILLING: 'billing',
+  SHIPPING: 'shipping',
 } as const;
 
 export const USER_ADDRESS_TYPE = {
-  BILLING: 'billingAddress',
-  SHIPPING: 'shippingAddress',
+  BILLING: 'billing',
+  SHIPPING: 'shipping',
 } as const;
 
 export type UserAddressType = (typeof USER_ADDRESS_TYPE)[keyof typeof USER_ADDRESS_TYPE];

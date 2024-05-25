@@ -23,7 +23,9 @@ const createBaseElement = <T extends keyof HTMLElementTagNameMap>({
     }
   });
 
-  elem.title = title;
+  if (title) {
+    elem.title = title;
+  }
 
   elem.innerHTML = innerContent;
 

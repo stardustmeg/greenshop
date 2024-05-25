@@ -1,4 +1,4 @@
-import type { localization } from './product.ts';
+import type { SizeType, localization } from './product.ts';
 
 export interface Cart {
   id: string;
@@ -14,6 +14,7 @@ export interface CartProduct {
   price: number;
   productId: string;
   quantity: number;
+  size: SizeType | null;
   totalPrice: number;
 }
 

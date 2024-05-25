@@ -29,6 +29,7 @@ import {
   isFacetRange,
   isFacetTerm,
   isLocalizationObj,
+  isProductProjection,
   isProductProjectionPagedQueryResponse,
   isProductProjectionPagedSearchResponse,
   isRangeFacetResult,
@@ -149,13 +150,6 @@ export class ProductModel {
     return result;
   }
 
-  private adaptSize(attribute: AttributeResponse): SizeType | null {
-    if (Array.isArray(attribute.value) && attribute.value.length && isAttributePlainEnumValue(attribute.value[0])) {
-      return getSize(attribute.value[0].key);
-    }
-    return null;
-  }
-
   private adaptVariants(product: Product, response: ProductProjection): Product {
     const variants = [...response.variants, response.masterVariant];
     variants.forEach((variant) => {
@@ -247,6 +241,14 @@ export class ProductModel {
     return priceRange;
   }
 
+  private getProductFromData(data: ClientResponse<ProductProjection>): Product | null {
+    let product: Product | null = null;
+    if (isClientResponse(data) && isProductProjection(data.body)) {
+      product = this.adaptProductProjectionToClient(data.body);
+    }
+    return product;
+  }
+
   private getProductsFromData(data: ClientResponse<ProductProjectionPagedSearchResponse>): Product[] {
     let productList: Product[] = [];
     if (isClientResponse(data) && isProductProjectionPagedQueryResponse(data.body)) {
@@ -291,6 +293,13 @@ export class ProductModel {
     return result;
   }
 
+  public adaptSize(attribute: AttributeResponse): SizeType | null {
+    if (Array.isArray(attribute.value) && attribute.value.length && isAttributePlainEnumValue(attribute.value[0])) {
+      return getSize(attribute.value[0].key);
+    }
+    return null;
+  }
+
   public async getCategories(): Promise<Category[] | null> {
     if (!this.categories.length) {
       const data = await this.root.getCategories();
@@ -304,7 +313,15 @@ export class ProductModel {
     return this.getPriceRangeFromData(data);
   }
 
+  public async getProductByKey(key: string): Promise<Product | null> {
+    await getProductModel().getCategories();
+    const data = await this.root.getProductByKey(key);
+    const product = this.getProductFromData(data);
+    return product;
+  }
+
   public async getProducts(options?: OptionsRequest): Promise<ProductWithCount> {
+    await getProductModel().getCategories();
     const data = await this.root.getProducts(options);
     const products = this.getProductsFromData(data);
     const sizeCount = this.getSizeProductCountFromData(data);

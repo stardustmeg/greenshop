@@ -12,7 +12,7 @@
     grid-column: 2 span;
     width: max-content;
     font: var(--medium-font);
-    letter-spacing: 1px;
+    letter-spacing: var(--one);
     text-align: center;
     color: var(--noble-gray-500);
 
@@ -20,7 +20,7 @@
       content: '';
       position: absolute;
       left: 50%;
-      bottom: -10px;
+      bottom: calc(var(--tiny-offset) * -1);
       border-radius: var(--medium-br);
       width: 100%;
       height: var(--two);
@@ -44,7 +44,7 @@
   display: flex;
   flex-direction: column;
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-800);
   gap: calc(var(--extra-small-offset) / 2);
 }
@@ -55,7 +55,7 @@
   padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
   padding-right: calc(var(--small-offset) * 1.5);
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-800);
   transition: border 0.2s;
   cursor: text;
@@ -98,5 +98,32 @@
     border-radius: var(--small-br);
     color: var(--steam-green-800);
     background-color: var(--noble-gray-200);
+  }
+}
+
+.modalForm {
+  .personalDataWrapper {
+    grid-row: 1;
+    padding: 0;
+    width: 100%;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(1, 1fr);
+      grid-template-rows: repeat(2, auto);
+    }
+  }
+
+  .label:last-child {
+    grid-column: 2 span;
+    width: 100%;
+
+    @media (max-width: 768px) {
+      grid-column: 1;
+      grid-row: 4;
+    }
+  }
+
+  .input {
+    padding-right: 0;
   }
 }

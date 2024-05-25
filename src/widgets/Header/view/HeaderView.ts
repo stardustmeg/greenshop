@@ -21,6 +21,10 @@ import styles from './headerView.module.scss';
 class HeaderView {
   private burgerButton: ButtonModel;
 
+  private cartBadge: HTMLSpanElement;
+
+  private cartBadgeWrap: HTMLDivElement;
+
   private header: HTMLElement;
 
   private linkLogo: LinkModel;
@@ -43,6 +47,9 @@ class HeaderView {
     this.logoutButton = this.createLogoutButton();
     this.linkLogo = this.createLinkLogo();
     this.toCartLink = this.createToCartLink();
+    this.cartBadgeWrap = this.createBadgeWrap();
+    this.cartBadge = this.createBadge();
+
     this.toProfileLink = this.createToProfileLink();
     this.switchThemeCheckbox = this.createSwitchThemeCheckbox();
     this.switchLanguageCheckbox = this.createSwitchLanguageCheckbox();
@@ -64,6 +71,27 @@ class HeaderView {
         document.body.classList.toggle(styles.stopScroll);
       }
     });
+  }
+
+  private createBadge(): HTMLSpanElement {
+    this.cartBadge = createBaseElement({
+      cssClasses: [styles.badge],
+      tag: 'span',
+    });
+    this.cartBadgeWrap.append(this.cartBadge);
+
+    return this.cartBadge;
+  }
+
+  private createBadgeWrap(): HTMLDivElement {
+    this.cartBadgeWrap = createBaseElement({
+      cssClasses: [styles.badgeWrap],
+      tag: 'div',
+    });
+
+    this.toCartLink.getHTML().append(this.cartBadgeWrap);
+
+    return this.cartBadgeWrap;
   }
 
   private createBurgerButton(): ButtonModel {
@@ -237,6 +265,7 @@ class HeaderView {
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.CART));
+
     this.toCartLink.getHTML().append(svg);
 
     this.toCartLink
@@ -337,6 +366,16 @@ class HeaderView {
 
   public showNavigationWrapper(): void {
     this.navigationWrapper.classList.remove(styles.hidden);
+  }
+
+  public updateCartCount(count?: number): void {
+    if (!count) {
+      this.cartBadgeWrap.classList.add(styles.hide);
+    } else {
+      this.cartBadgeWrap.classList.remove(styles.hide);
+    }
+
+    this.cartBadge.textContent = count ? count.toString() : '';
   }
 }
 

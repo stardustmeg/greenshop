@@ -1,3 +1,114 @@
-.style {
-  display: block;
+.wrapper {
+  display: grid;
+  place-items: center center;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  border-bottom: var(--tiny-offset) solid var(--steam-green-800);
+  padding: var(--small-offset);
+  height: max-content;
+  max-width: max-content;
+  background-color: var(--noble-white-100);
+  gap: calc(var(--extra-small-offset) * 1.5) var(--extra-small-offset);
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(4, auto);
+    padding: var(--medium-offset);
+  }
+}
+
+.labelEmail {
+  grid-column: 2 span;
+  grid-row: 2;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+  }
+}
+
+.saveChangesButton,
+.cancelButton {
+  margin: 0 auto;
+  border-radius: var(--medium-br);
+  padding: calc(var(--small-offset) / 3) var(--small-offset);
+  width: 100%;
+  height: max-content;
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  color: var(--white);
+  background-color: var(--steam-green-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  &:focus {
+    background-color: var(--steam-green-700);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--steam-green-700);
+    }
+  }
+
+  &:disabled {
+    background-color: var(--noble-gray-300);
+    pointer-events: none;
+  }
+}
+
+.saveChangesButton {
+  display: flex;
+  grid-column: 2;
+  grid-row: 3;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+  }
+}
+
+.cancelButton {
+  grid-column: 1;
+  grid-row: 3;
+
+  @media (max-width: 768px) {
+    grid-row: 4;
+  }
+}
+
+.label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  color: var(--noble-gray-800);
+  gap: calc(var(--extra-small-offset) / 2);
+}
+
+.input {
+  border: 1px solid var(--noble-gray-200);
+  border-radius: var(--small-br);
+  padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
+  padding-right: calc(var(--small-offset) * 1.5);
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  color: var(--noble-gray-800);
+  transition: border 0.2s;
+  cursor: text;
+
+  &::placeholder {
+    color: var(--noble-gray-600);
+  }
+
+  &:focus {
+    border: 1px solid var(--steam-green-800);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      border: 1px solid var(--steam-green-800);
+    }
+  }
 }

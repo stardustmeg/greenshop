@@ -1,8 +1,9 @@
 .cartPage {
-  position: relative;
-  display: block;
+  display: flex;
+  flex-grow: 1;
   padding: 0 var(--small-offset);
   animation: show 0.2s ease-out forwards;
+  gap: 2%;
 }
 
 @keyframes show {
@@ -11,7 +12,142 @@
   }
 
   100% {
-    display: block;
     opacity: 1;
+  }
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.products {
+  flex-grow: 1;
+}
+
+.total {
+  flex-shrink: 1;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    margin-bottom: var(--tiny-offset);
+    border-radius: var(--small-offset) var(--small-offset) 0 0;
+    padding: var(--small-offset);
+    width: 100%;
+    box-shadow: var(--mellow-shadow-600);
+    background-color: var(--noble-gray-1000);
+    backdrop-filter: blur(10px);
+  }
+}
+
+.table {
+  width: 100%;
+}
+
+.thead {
+  width: 100%;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.mainText {
+  padding: 0;
+  font: var(--extra-font);
+  color: var(--noble-gray-800);
+}
+
+.th {
+  padding: var(--tiny-offset) 0;
+  font: var(--bold-font);
+  color: var(--noble-gray-400);
+}
+
+.tr {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: calc(var(--tiny-offset) * 7) 2fr 1fr 1fr 1fr calc(var(--tiny-offset) * 7);
+  width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: var(--extra-large-offset) 2fr 1fr;
+  }
+}
+
+.td {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.head {
+  grid-area: 2 / 1 / 4 / 7;
+  border-bottom: var(--one) solid var(--steam-green-800);
+}
+
+.totalTitle {
+  padding: var(--tiny-offset) 0;
+  font: var(--bold-font);
+  color: var(--noble-gray-800);
+}
+
+.border {
+  border-bottom: var(--one) solid var(--steam-green-800);
+}
+
+.title {
+  padding: var(--tiny-offset) 0;
+  font: var(--regular-font);
+  color: var(--noble-gray-800);
+}
+
+.totalWrap {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  max-width: calc(var(--extra-large-offset) * 3.8); // 380px
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.totalPrice {
+  padding: var(--tiny-offset) 0;
+  font: var(--bold-font);
+  color: var(--steam-green-800);
+}
+
+.couponInput {
+  flex-grow: 1;
+  border: 1px solid var(--steam-green-800);
+  border-radius: 3px 0 0 3px;
+  padding: var(--tiny-offset) 0;
+  font: var(--regular-font);
+  color: var(--noble-gray-800);
+}
+
+.button {
+  padding: var(--tiny-offset);
+  font: var(--bold-font);
+  color: var(--noble-gray-200);
+  background-color: var(--steam-green-800);
+}
+
+.continue {
+  align-self: center;
+  padding: var(--tiny-offset) 0;
+  font: var(--regular-font);
+  color: var(--steam-green-800);
+}
+
+.mobileHide {
+  @media (max-width: 768px) {
+    display: none;
   }
 }

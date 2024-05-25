@@ -21,6 +21,7 @@
   --small-br: calc(var(--large-br) / 4); // 5px
 
   // shadows
+  --mellow-shadow-050: 0 0 20px rgb(0 0 0 / 6%);
   --mellow-shadow-100: rgb(0 0 0 / 19%) 0 10px 20px, rgb(0 0 0 / 23%) 0 6px 6px;
   --mellow-shadow-200: rgb(255 255 255 / 10%) 0 1px 1px 0 inset, rgb(50 50 93 / 25%) 0 50px 100px -20px,
     rgb(0 0 0 / 30%) 0 30px 60px -30px;
@@ -31,11 +32,13 @@
   --mellow-shadow-600: 0 1px 5px #353535;
 
   // fonts
+  --small-font: 400 0.625rem 'Cerapro', sans-serif; // 10px
   --regular-font: 400 0.8125rem 'Cerapro', sans-serif; // 13px
   --extra-regular-font: 400 1.5rem 'Cerapro', sans-serif; // 24px
   --medium-font: 500 1.25rem 'Cerapro', sans-serif; // 20px
   --extra-medium-font: 500 1.875rem 'Cerapro', sans-serif; // 30px
   --bold-font: 700 1rem 'Cerapro', sans-serif; // 16px
+  --medium-bold-font: 700 1.125rem 'Cerapro', sans-serif; // 18px
   --extra-bold-font: 700 2.1875rem 'Cerapro', sans-serif; // 35px
   --black-font: 900 2.1875rem 'Cerapro', sans-serif; // 35px
   --extra-black-font: 900 2.5rem 'Cerapro', sans-serif; // 40px
@@ -60,10 +63,12 @@
     --noble-gray-1000: #1a1a1ab5;
     --red-power-600: #d0302f;
     --steam-green-300: #46a35880;
+    --steam-green-350: #46a35937;
     --steam-green-400: #c8f4b4;
     --steam-green-500: #b6f09c;
     --steam-green-700: #70d27a;
     --steam-green-800: #46a358;
+    --steam-green-900: #46a3581a;
     --steam-green-gr-800: #8c998f2b;
   }
 
@@ -71,6 +76,7 @@
     // colors
     --black: #fff;
     --white: #1a1a1a;
+    --white-tr: #1a1a1ab0;
     --noble-white-100: #2b2b2b;
     --noble-white-200: #4a4a4a;
     --noble-gray-200: #f6f6f6;
@@ -83,6 +89,7 @@
     --noble-gray-1000: #1a1a1ab5;
     --red-power-600: #d0302f;
     --steam-green-300: #46a35880;
+    --steam-green-350: #46a35937;
     --steam-green-400: #c8f4b4;
     --steam-green-500: #b6f09c;
     --steam-green-700: #70d27a;

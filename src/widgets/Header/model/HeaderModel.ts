@@ -1,10 +1,12 @@
-import type RouterModel from '@/app/Router/model/RouterModel.ts';
+import type { Cart } from '@/shared/types/cart.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
+import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setAuthToken, setCurrentLanguage, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import { setAuthToken, setCurrentLanguage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
@@ -14,25 +16,27 @@ import showErrorMessage from '@/shared/utils/userMessage.ts';
 import HeaderView from '../view/HeaderView.ts';
 
 class HeaderModel {
+  private cartChangeHandler = (cart: Cart): boolean => {
+    this.view.updateCartCount(cart.products.length);
+    return true;
+  };
+
   private navigation: NavigationModel;
 
   private parent: HTMLDivElement;
 
-  private router: RouterModel;
-
   private view = new HeaderView();
 
-  constructor(router: RouterModel, parent: HTMLDivElement) {
+  constructor(parent: HTMLDivElement) {
     this.parent = parent;
-    this.router = router;
-    this.navigation = new NavigationModel(this.router);
+    this.navigation = new NavigationModel();
     this.init();
   }
 
   private checkAuthUser(): boolean {
     const { isUserLoggedIn } = getStore().getState();
     if (!isUserLoggedIn) {
-      this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
+      RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
       return false;
     }
     return true;
@@ -58,18 +62,25 @@ class HeaderModel {
     this.observeCurrentUser();
     this.setLogoutButtonHandler();
     this.setCartLinkHandler();
+    this.observeCartChange();
+    this.setCartCount().catch(showErrorMessage);
     this.setProfileLinkHandler();
     this.setChangeLanguageCheckboxHandler();
   }
 
-  private logoutHandler(): boolean {
+  private async logoutHandler(): Promise<boolean> {
     localStorage.clear();
-    getStore().dispatch(setCurrentUser(null));
     getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
-    getCustomerModel().logout();
-    this.router.navigateTo(PAGE_ID.LOGIN_PAGE);
+
+    await getCustomerModel().logout();
+
+    RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
     return true;
+  }
+
+  private observeCartChange(): boolean {
+    return getCartModel().observeCartChange(this.cartChangeHandler);
   }
 
   private observeCurrentUser(): void {
@@ -78,11 +89,17 @@ class HeaderModel {
     });
   }
 
+  private async setCartCount(): Promise<boolean> {
+    const cart = await getCartModel().getCart();
+    this.view.updateCartCount(cart.products.length);
+    return true;
+  }
+
   private setCartLinkHandler(): void {
     const logo = this.view.getToCartLink().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
-      this.router.navigateTo(PAGE_ID.CART_PAGE);
+      RouterModel.getInstance().navigateTo(PAGE_ID.CART_PAGE);
     });
   }
 
@@ -114,14 +131,14 @@ class HeaderModel {
     const logo = this.view.getLinkLogo().getHTML();
     logo.addEventListener('click', (event) => {
       event.preventDefault();
-      this.router.navigateTo(PAGE_ID.MAIN_PAGE);
+      RouterModel.getInstance().navigateTo(PAGE_ID.MAIN_PAGE);
     });
   }
 
   private setLogoutButtonHandler(): void {
     const logoutButton = this.view.getLogoutButton();
-    logoutButton.getHTML().addEventListener('click', () => {
-      this.logoutHandler();
+    logoutButton.getHTML().addEventListener('click', async () => {
+      await this.logoutHandler();
       logoutButton.setDisabled();
     });
   }
@@ -132,7 +149,7 @@ class HeaderModel {
       event.preventDefault();
       // TBD remove unnecessary check (we don't show this logo when user is not logged in) ??
       if (this.checkAuthUser()) {
-        this.router.navigateTo(PAGE_ID.USER_PROFILE_PAGE);
+        RouterModel.getInstance().navigateTo(PAGE_ID.USER_PROFILE_PAGE);
       }
     });
   }

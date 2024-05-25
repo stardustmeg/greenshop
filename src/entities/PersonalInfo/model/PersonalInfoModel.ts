@@ -7,12 +7,6 @@ import PersonalInfoView from '../view/PersonalInfoView.ts';
 class PersonalInfoModel {
   private view = new PersonalInfoView();
 
-  constructor() {
-    this.init();
-  }
-
-  private init(): void {}
-
   public getFormPersonalInfo(): PersonalInfo {
     const userData: PersonalInfo = {
       birthDate: this.view.getDateOfBirthField().getView().getValue(),

@@ -9,7 +9,7 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { setBillingCountry, setCurrentUser, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
+import { setBillingCountry, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
@@ -27,7 +27,7 @@ class RegisterFormModel {
     }),
   };
 
-  private creadentialsWrapper = new CredentialsModel();
+  private credentialsWrapper = new CredentialsModel();
 
   private inputFields: InputFieldModel[] = [];
 
@@ -41,7 +41,7 @@ class RegisterFormModel {
 
   private getFormUserData(): User {
     const { birthDate, firstName, lastName } = this.personalInfoWrapper.getFormPersonalInfo();
-    const { email, password } = this.creadentialsWrapper.getFormCredentials();
+    const { email, password } = this.credentialsWrapper.getFormCredentials();
     const userData: User = {
       addresses: [],
       billingAddress: [],
@@ -64,7 +64,7 @@ class RegisterFormModel {
 
   private getPersonalData(): PersonalData {
     const { firstName, lastName } = this.personalInfoWrapper.getFormPersonalInfo();
-    const { email } = this.creadentialsWrapper.getFormCredentials();
+    const { email } = this.credentialsWrapper.getFormCredentials();
     return {
       email,
       firstName,
@@ -73,12 +73,12 @@ class RegisterFormModel {
   }
 
   private init(): boolean {
-    this.getHTML().append(this.creadentialsWrapper.getHTML());
+    this.getHTML().append(this.credentialsWrapper.getHTML());
     this.getHTML().append(this.personalInfoWrapper.getHTML());
 
     this.inputFields.push(
       ...this.personalInfoWrapper.getView().getInputFields(),
-      ...this.creadentialsWrapper.getView().getInputFields(),
+      ...this.credentialsWrapper.getView().getInputFields(),
     );
 
     Object.values(this.addressWrappers)
@@ -98,7 +98,7 @@ class RegisterFormModel {
       this.singleAddressCheckBoxHandler(checkboxSingleAddress.checked),
     );
 
-    this.creadentialsWrapper.getHTML().append(this.creadentialsWrapper.getView().getTitle());
+    this.credentialsWrapper.getHTML().append(this.credentialsWrapper.getView().getTitle());
 
     return true;
   }
@@ -112,7 +112,6 @@ class RegisterFormModel {
       .registerNewCustomer(customer)
       .then((newUserData) => {
         if (newUserData) {
-          getStore().dispatch(setCurrentUser(newUserData));
           getStore().dispatch(switchIsUserLoggedIn(false));
           getStore().dispatch(switchIsUserLoggedIn(true));
           serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_REGISTRATION, MESSAGE_STATUS.SUCCESS);
@@ -136,7 +135,6 @@ class RegisterFormModel {
     this.getHTML().addEventListener('submit', (event) => {
       event.preventDefault();
     });
-
     return true;
   }
 
@@ -185,7 +183,6 @@ class RegisterFormModel {
     } else {
       this.view.getSubmitFormButton().setDisabled();
     }
-
     return true;
   }
 

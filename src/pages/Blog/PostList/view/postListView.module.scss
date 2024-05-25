@@ -7,7 +7,7 @@
   margin: var(--extra-small-offset);
   max-width: 25rem;
   font: var(--extra-regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--black);
 }
 
@@ -25,13 +25,19 @@
 
 .wrap {
   position: relative;
+  z-index: -1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin: 0;
   margin-bottom: var(--extra-small-offset);
   padding: var(--medium-offset);
-  background-color: rgba($color: #46a358, $alpha: 10%);
+  background-image: url('/img/webp/blog-logo.webp');
+  background-position: right top;
+  background-position-y: calc(-1 * var(--extra-large-offset));
+  background-size: calc(var(--extra-large-offset) * 2.5);
+  background-repeat: no-repeat;
+  background-color: var(--steam-green-900);
   gap: 0.5rem;
 }
 
@@ -39,7 +45,7 @@
   margin: 0 var(--extra-small-offset);
   max-width: 25rem;
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-700);
 }
 

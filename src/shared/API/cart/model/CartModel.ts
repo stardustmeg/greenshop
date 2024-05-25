@@ -8,12 +8,20 @@ import type {
 
 import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousCartId, setAnonymousId } from '@/shared/Store/actions.ts';
+import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
+
+import type { OptionsRequest } from '../../types/type.ts';
 
 import getProductModel from '../../product/model/ProductModel.ts';
+import FilterProduct from '../../product/utils/filter.ts';
+import { FilterFields } from '../../types/type.ts';
 import { isCart, isCartPagedQueryResponse, isClientResponse } from '../../types/validation.ts';
 import getCartApi, { type CartApi } from '../CartApi.ts';
 
+type Callback = (cart: Cart) => boolean;
 export class CartModel {
+  private callback: Callback[] = [];
+
   private cart: Cart | null = null;
 
   private root: CartApi;
@@ -40,14 +48,24 @@ export class CartModel {
       key: product.productKey || '',
       lineItemId: product.id,
       name: [],
-      price: product.price.value.centAmount || 0,
+      price: product.price.value.centAmount / PRICE_FRACTIONS || 0,
       productId: product.productId || '',
       quantity: product.quantity || 0,
-
-      totalPrice: product.totalPrice.centAmount || 0,
+      size: null,
+      totalPrice: product.totalPrice.centAmount / PRICE_FRACTIONS || 0,
     };
     result.name.push(...getProductModel().adaptLocalizationValue(product.name));
+    if (product.variant.attributes) {
+      const size = product.variant.attributes.find((attr) => attr.name === 'size');
+      if (size) {
+        result.size = getProductModel().adaptSize(size);
+      }
+    }
     return result;
+  }
+
+  private dispatchUpdate(): void {
+    this.callback.forEach((callback) => (this.cart !== null ? callback(this.cart) : null));
   }
 
   private getCartFromData(data: ClientResponse<CartPagedQueryResponse | CartResponse>): Cart {
@@ -64,12 +82,46 @@ export class CartModel {
     return cart;
   }
 
+  public async addProductInfo(): Promise<Cart> {
+    if (!this.cart) {
+      this.cart = await this.getCart();
+    }
+
+    const filter = new FilterProduct();
+    this.cart.products.forEach((product) => {
+      filter.addFilter(FilterFields.ID, product.productId);
+    });
+    const opt: OptionsRequest = {
+      filter: filter.getFilter(),
+    };
+
+    const products = await getProductModel().getProducts(opt);
+
+    if (products.products.length) {
+      this.cart.products = this.cart.products.map((product) => {
+        const productInfo = products.products.find(({ id }) => id === product.productId);
+        if (productInfo) {
+          if (!product.images) {
+            return { ...product, images: productInfo.images[0] };
+          }
+        }
+
+        return product;
+      });
+    }
+
+    return this.cart;
+  }
+
   public async addProductToCart(addCartItem: AddCartItem): Promise<Cart> {
     if (!this.cart) {
       this.cart = await this.getCart();
     }
     const data = await this.root.addProduct(this.cart, addCartItem);
     this.cart = this.getCartFromData(data);
+
+    this.dispatchUpdate();
+
     return this.cart;
   }
 
@@ -81,14 +133,21 @@ export class CartModel {
   public async create(): Promise<Cart> {
     const newCart = await this.root.create();
     this.cart = this.getCartFromData(newCart);
+
+    this.dispatchUpdate();
+
     return this.cart;
   }
 
-  public async deleteProductFromCart(products: CartProduct): Promise<Cart | null> {
-    if (this.cart) {
-      const data = await this.root.deleteProduct(this.cart, products);
-      this.cart = this.getCartFromData(data);
+  public async deleteProductFromCart(products: CartProduct): Promise<Cart> {
+    if (!this.cart) {
+      this.cart = await this.getCart();
     }
+    const data = await this.root.deleteProduct(this.cart, products);
+    this.cart = this.getCartFromData(data);
+
+    this.dispatchUpdate();
+
     return this.cart;
   }
 
@@ -98,6 +157,7 @@ export class CartModel {
     }
     const data = await this.root.editProductCount(this.cart, editCartItem);
     this.cart = this.getCartFromData(data);
+    this.dispatchUpdate();
     return this.cart;
   }
 
@@ -114,7 +174,13 @@ export class CartModel {
         this.cart = this.getCartFromData(activeCart);
       }
     }
+    this.dispatchUpdate();
     return this.cart;
+  }
+
+  public observeCartChange(callback: (cart: Cart) => boolean): boolean {
+    this.callback.push(callback);
+    return true;
   }
 }
 

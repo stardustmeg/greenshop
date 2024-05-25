@@ -1,5 +1,4 @@
-import type RouterModel from '@/app/Router/model/RouterModel';
-
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentPage, selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
@@ -7,12 +6,9 @@ import { PAGE_ID } from '@/shared/constants/pages.ts';
 import NavigationView from '../view/NavigationView.ts';
 
 class NavigationModel {
-  private router: RouterModel | null = null;
-
   private view = new NavigationView();
 
-  constructor(router: RouterModel | null) {
-    this.router = router;
+  constructor() {
     this.init();
   }
 
@@ -45,7 +41,7 @@ class NavigationModel {
     navigationLinks.forEach((link, route) => {
       link.getHTML().addEventListener('click', (event) => {
         event.preventDefault();
-        this.router?.navigateTo(route);
+        RouterModel.getInstance().navigateTo(route);
       });
     });
 
