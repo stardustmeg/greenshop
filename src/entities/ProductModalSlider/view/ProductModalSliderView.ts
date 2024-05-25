@@ -1,7 +1,9 @@
 import type { ProductInfoParams } from '@/shared/types/product';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './productModalSliderView.module.scss';
@@ -93,9 +95,16 @@ class ProductModalSliderView {
         cssClasses: ['swiper-slide', styles.modalSliderSlide],
         tag: 'div',
       });
-
       const slide = this.createModalSliderSlideContent(image, this.params.name[0].value);
-      slideWrapper.append(slide);
+      const loader = new LoaderModel(LOADER_SIZE.LARGE);
+      loader.setAbsolutePosition();
+      slideWrapper.append(slide, loader.getHTML());
+      slide.classList.add(styles.hidden);
+      slide.addEventListener('load', () => {
+        slide.classList.remove(styles.hidden);
+        loader.getHTML().remove();
+      });
+
       sliderWrapper.append(slideWrapper);
     });
 

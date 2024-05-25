@@ -1,6 +1,6 @@
-import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/page.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
@@ -13,12 +13,9 @@ import LoginPageView from '../view/LoginPageView.ts';
 class LoginPageModel implements Page {
   private loginForm = new LoginFormModel();
 
-  private router: RouterModel | null = null;
-
   private view: LoginPageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel | null) {
-    this.router = router;
+  constructor(parent: HTMLDivElement) {
     this.view = new LoginPageView(parent);
     this.init();
   }
@@ -27,7 +24,7 @@ class LoginPageModel implements Page {
     const { isUserLoggedIn } = getStore().getState();
 
     if (isUserLoggedIn) {
-      this.router?.navigateTo(PAGE_ID.MAIN_PAGE);
+      RouterModel.getInstance().navigateTo(PAGE_ID.MAIN_PAGE);
       return isUserLoggedIn;
     }
 
@@ -47,7 +44,7 @@ class LoginPageModel implements Page {
 
   private registerLinkHandler(event: Event): void {
     event.preventDefault();
-    this.router?.navigateTo(PAGE_ID.REGISTRATION_PAGE);
+    RouterModel.getInstance().navigateTo(PAGE_ID.REGISTRATION_PAGE);
   }
 
   private setRegisterLinkHandler(): void {

@@ -35,7 +35,7 @@
   width: 100%;
   height: max-content;
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--white);
   background-color: var(--steam-green-800);
   transition:
@@ -82,7 +82,7 @@
   display: flex;
   flex-direction: column;
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-800);
   gap: calc(var(--extra-small-offset) / 2);
 }
@@ -93,7 +93,7 @@
   padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
   padding-right: calc(var(--small-offset) * 1.5);
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-800);
   transition: border 0.2s;
   cursor: text;

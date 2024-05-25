@@ -6,6 +6,13 @@
   animation: spin 1s linear infinite;
 }
 
+.extraSmall {
+  border: var(--two) solid var(--noble-gray-200);
+  border-top: var(--two) solid var(--steam-green-800);
+  width: calc(var(--tiny-offset) * 1.5);
+  height: calc(var(--tiny-offset) * 1.5);
+}
+
 .small {
   border: calc(var(--two) * 2) solid var(--noble-gray-200);
   border-top: calc(var(--two) * 2) solid var(--steam-green-800);

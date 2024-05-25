@@ -43,3 +43,7 @@ body {
 img {
   max-width: 100%;
 }
+
+.stop-scroll {
+  overflow-y: hidden;
+}

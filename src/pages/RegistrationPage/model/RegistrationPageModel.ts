@@ -1,6 +1,6 @@
-import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/page.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
@@ -13,13 +13,10 @@ import RegistrationPageView from '../view/RegistrationPageView.ts';
 class RegistrationPageModel implements Page {
   private registerForm = new RegisterFormModel();
 
-  private router: RouterModel | null = null;
-
   private view: RegistrationPageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel | null) {
+  constructor(parent: HTMLDivElement) {
     this.view = new RegistrationPageView(parent);
-    this.router = router;
     this.init();
   }
 
@@ -27,13 +24,13 @@ class RegistrationPageModel implements Page {
     getStore().dispatch(setCurrentPage(PAGE_ID.REGISTRATION_PAGE));
     this.view.getAuthWrapper().append(this.registerForm.getHTML());
     this.registerForm.getFirstInputField().getView().getInput().getHTML().focus();
-    observeStore(selectIsUserLoggedIn, () => this.router?.navigateTo(PAGE_ID.MAIN_PAGE));
+    observeStore(selectIsUserLoggedIn, () => RouterModel.getInstance().navigateTo(PAGE_ID.MAIN_PAGE));
     this.setLoginLinkHandler();
   }
 
   private loginLinkHandler(event: Event): void {
     event.preventDefault();
-    this.router?.navigateTo(PAGE_ID.LOGIN_PAGE);
+    RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
   }
 
   private setLoginLinkHandler(): void {

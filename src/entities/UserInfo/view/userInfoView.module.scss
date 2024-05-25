@@ -10,7 +10,7 @@
   box-shadow: var(--mellow-shadow-100);
   font: var(--extra-regular-font);
   line-break: break-all;
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--noble-gray-900);
   background-color: var(--noble-gray-tr-800);
   gap: var(--small-offset);
@@ -66,7 +66,7 @@
   height: max-content;
   max-width: max-content;
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--white);
   background-color: var(--steam-green-800);
   transition:

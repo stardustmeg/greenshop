@@ -12,8 +12,6 @@ import AppView from '../view/AppView.ts';
 class AppModel {
   private appView: AppView = new AppView();
 
-  private router: RouterModel | null = null;
-
   constructor() {
     this.initialize().catch(() => {
       throw new Error('AppModel initialization error');
@@ -40,19 +38,19 @@ class AppModel {
       },
       [PAGE_ID.DEFAULT_PAGE]: async (): Promise<Page> => {
         const { default: MainPageModel } = await import('@/pages/MainPage/model/MainPageModel.ts');
-        return new MainPageModel(this.appView.getHTML(), this.router);
+        return new MainPageModel(this.appView.getHTML());
       },
       [PAGE_ID.LOGIN_PAGE]: async (): Promise<Page> => {
         const { default: LoginPageModel } = await import('@/pages/LoginPage/model/LoginPageModel.ts');
-        return new LoginPageModel(this.appView.getHTML(), this.router);
+        return new LoginPageModel(this.appView.getHTML());
       },
       [PAGE_ID.MAIN_PAGE]: async (): Promise<Page> => {
         const { default: MainPageModel } = await import('@/pages/MainPage/model/MainPageModel.ts');
-        return new MainPageModel(this.appView.getHTML(), this.router);
+        return new MainPageModel(this.appView.getHTML());
       },
       [PAGE_ID.NOT_FOUND_PAGE]: async (): Promise<Page> => {
         const { default: NotFoundPageModel } = await import('@/pages/NotFoundPage/model/NotFoundPageModel.ts');
-        return new NotFoundPageModel(this.appView.getHTML(), this.router);
+        return new NotFoundPageModel(this.appView.getHTML());
       },
       [PAGE_ID.PRODUCT_PAGE]: async (params: PageParams): Promise<Page> => {
         const { default: ProductPageModel } = await import('@/pages/ProductPage/model/ProductPageModel.ts');
@@ -62,11 +60,11 @@ class AppModel {
         const { default: RegistrationPageModel } = await import(
           '@/pages/RegistrationPage/model/RegistrationPageModel.ts'
         );
-        return new RegistrationPageModel(this.appView.getHTML(), this.router);
+        return new RegistrationPageModel(this.appView.getHTML());
       },
       [PAGE_ID.USER_PROFILE_PAGE]: async (): Promise<Page> => {
         const { default: UserProfilePageModel } = await import('@/pages/UserProfilePage/model/UserProfilePageModel.ts');
-        return new UserProfilePageModel(this.appView.getHTML(), this.router);
+        return new UserProfilePageModel(this.appView.getHTML());
       },
     };
 
@@ -76,15 +74,14 @@ class AppModel {
     return Promise.resolve(routes);
   }
 
-  private async initialize(): Promise<void> {
+  private async initialize(): Promise<RouterModel> {
     const routes = await this.createRoutes();
-    this.router = new RouterModel(routes);
+    const router = new RouterModel(routes);
     document.body.append(this.appView.getHTML());
-    this.appView
-      .getHTML()
-      .insertAdjacentElement('beforebegin', new HeaderModel(this.router, this.appView.getHTML()).getHTML());
+    this.appView.getHTML().insertAdjacentElement('beforebegin', new HeaderModel(this.appView.getHTML()).getHTML());
     this.appView.getHTML().insertAdjacentElement('afterend', new FooterModel().getHTML());
     this.appView.getHTML().insertAdjacentElement('afterend', modal.getHTML());
+    return router;
   }
 
   public start(): boolean {

@@ -1,7 +1,5 @@
-import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/page.ts';
 
-import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import PostWidgetModel from '@/pages/Blog/PostWidget/model/PostWidgetModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
@@ -12,25 +10,19 @@ import MainPageView from '../view/MainPageView.ts';
 class MainPageModel implements Page {
   private blogWidget: PostWidgetModel;
 
-  private navigation: NavigationModel;
-
   private parent: HTMLDivElement;
-
-  private router: RouterModel | null = null;
 
   private view: MainPageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel | null) {
-    this.router = router;
+  constructor(parent: HTMLDivElement) {
     this.parent = parent;
     this.view = new MainPageView(this.parent);
-    this.navigation = new NavigationModel(this.router);
     this.blogWidget = new PostWidgetModel(this.view.getHTML());
     this.init();
   }
 
   private init(): void {
-    this.getHTML().append(this.navigation.getHTML(), this.blogWidget.getHTML());
+    this.getHTML().append(this.blogWidget.getHTML());
     getStore().dispatch(setCurrentPage(PAGE_ID.MAIN_PAGE));
   }
 

@@ -17,7 +17,20 @@ class ProductOrderModel {
 
   private view: ProductOrderView;
 
-  public deleteClickHandler = async (): Promise<void> => {
+  constructor(productItem: CartProduct) {
+    this.productItem = productItem;
+    const callbackList: CallbackList = {
+      delete: this.deleteClickHandler.bind(this),
+      minus: this.minusClickHandler.bind(this),
+      plus: this.plusClickHandler.bind(this),
+    };
+    this.view = new ProductOrderView(this.productItem, callbackList);
+    this.init();
+  }
+
+  private init(): void {}
+
+  public async deleteClickHandler(): Promise<void> {
     const cart = await getCartModel().deleteProductFromCart(this.productItem);
     const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
     if (updateItem) {
@@ -26,9 +39,17 @@ class ProductOrderModel {
     } else {
       this.getHTML().remove();
     }
-  };
+  }
 
-  public minusClickHandler = async (): Promise<void> => {
+  public getHTML(): HTMLDivElement {
+    return this.view.getHTML();
+  }
+
+  public getProduct(): CartProduct {
+    return this.productItem;
+  }
+
+  public async minusClickHandler(): Promise<void> {
     const active: EditCartItem = {
       lineId: this.productItem.lineItemId,
       quantity: this.productItem.quantity - 1,
@@ -41,9 +62,9 @@ class ProductOrderModel {
     } else {
       this.getHTML().remove();
     }
-  };
+  }
 
-  public plusClickHandler = async (): Promise<void> => {
+  public async plusClickHandler(): Promise<void> {
     const active: EditCartItem = {
       lineId: this.productItem.lineItemId,
       quantity: this.productItem.quantity + 1,
@@ -54,27 +75,6 @@ class ProductOrderModel {
       this.productItem = updateItem;
       this.view.updateQuantity(this.productItem.quantity);
     }
-  };
-
-  constructor(productItem: CartProduct) {
-    this.productItem = productItem;
-    const callbackList: CallbackList = {
-      delete: this.deleteClickHandler,
-      minus: this.minusClickHandler,
-      plus: this.plusClickHandler,
-    };
-    this.view = new ProductOrderView(this.productItem, callbackList);
-    this.init();
-  }
-
-  private init(): void {}
-
-  public getHTML(): HTMLDivElement {
-    return this.view.getHTML();
-  }
-
-  public getProduct(): CartProduct {
-    return this.productItem;
   }
 }
 

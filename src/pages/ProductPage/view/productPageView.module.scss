@@ -1,6 +1,7 @@
 .itemPage {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
   padding: 0 var(--small-offset);
   animation: show 0.2s ease-out forwards;
 }
@@ -11,7 +12,18 @@
   }
 
   100% {
-    display: block;
+    display: flex;
     opacity: 1;
   }
+}
+
+.fullDescriptionWrapper {
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  color: var(--steam-green-400);
+}
+
+.fullDescription {
+  font: var(--regular-font);
+  color: var(--noble-gray-800);
 }
