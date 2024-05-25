@@ -1,6 +1,6 @@
-import type RouterModel from '@/app/Router/model/RouterModel.ts';
 import type { Page } from '@/shared/types/page.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setAuthToken, setCurrentPage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
@@ -14,14 +14,11 @@ import UserProfilePageView from '../view/UserProfilePageView.ts';
 class UserProfilePageModel implements Page {
   private addresses: UserAddressesModel | null = null;
 
-  private router: RouterModel | null = null;
-
   private userInfo: UserInfoModel | null = null;
 
   private view: UserProfilePageView;
 
-  constructor(parent: HTMLDivElement, router: RouterModel | null) {
-    this.router = router;
+  constructor(parent: HTMLDivElement) {
     this.view = new UserProfilePageView(parent);
 
     this.setAddressesLinkHandler();
@@ -55,7 +52,7 @@ class UserProfilePageModel implements Page {
     getStore().dispatch(setAuthToken(null));
     getStore().dispatch(switchIsUserLoggedIn(false));
     getCustomerModel().logout().catch(showErrorMessage);
-    this.router?.navigateTo(PAGE_ID.LOGIN_PAGE);
+    RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
   }
 
   private personalInfoLinkHandler(): void {

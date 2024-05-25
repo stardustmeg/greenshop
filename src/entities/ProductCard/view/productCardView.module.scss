@@ -12,6 +12,7 @@
   transition:
     outline 0.2s,
     transform 0.2s;
+  cursor: pointer;
 
   @media (hover: hover) {
     &:hover {
@@ -61,11 +62,11 @@
   }
 }
 
-.addToCardButton,
+.addToCartButton,
 .switchToWishListButton,
 .goDetailsPageLink {
   position: relative;
-  outline: 2px solid var(--noble-gray-700);
+  outline: var(--two) solid var(--noble-gray-700);
   border-radius: var(--medium-br);
   padding: var(--tiny-offset);
   width: var(--small-offset);
@@ -82,11 +83,11 @@
   }
 }
 
-.addToCardButton,
+.addToCartButton,
 .goDetailsPageLink {
   @media (hover: hover) {
     &:hover {
-      outline: 2px solid var(--steam-green-400);
+      outline: var(--two) solid var(--steam-green-400);
 
       svg {
         fill: var(--steam-green-400);
@@ -95,7 +96,7 @@
   }
 }
 
-.addToCardButton {
+.addToCartButton {
   &:disabled {
     opacity: 0.5;
     pointer-events: none;
@@ -103,7 +104,7 @@
 }
 
 .inWishList {
-  outline: 2px solid var(--red-power-600);
+  outline: var(--two) solid var(--red-power-600);
 
   svg {
     fill: var(--red-power-600);
@@ -113,7 +114,7 @@
 .switchToWishListButton {
   @media (hover: hover) {
     &:hover {
-      outline: 2px solid var(--red-power-600);
+      outline: var(--two) solid var(--red-power-600);
 
       svg {
         fill: var(--red-power-600);
@@ -124,7 +125,7 @@
   &.inWishList {
     @media (hover: hover) {
       &:hover {
-        outline: 2px solid var(--noble-gray-700);
+        outline: var(--two) solid var(--noble-gray-700);
 
         svg {
           fill: var(--noble-gray-700);
@@ -146,19 +147,21 @@
 }
 
 .productName {
+  order: 1;
   font: var(--medium-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   text-align: center;
   color: var(--steam-green-500);
 }
 
 .productShortDescription {
   display: -webkit-box;
+  order: 3;
   overflow: hidden;
   width: 100%;
   max-width: 90%;
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   text-align: left;
   text-overflow: ellipsis;
   color: var(--noble-gray-400);
@@ -175,10 +178,11 @@
   position: relative;
   z-index: 1;
   align-self: flex-end;
+  order: 4;
   margin-top: calc(var(--extra-small-offset) * (-0.2));
   margin-right: var(--five);
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--steam-green-700);
   transition: color 0.2s;
 
@@ -191,32 +195,4 @@
 
 .hidden {
   display: none;
-}
-
-.priceWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: auto;
-  width: 100%;
-  text-align: center;
-  gap: var(--extra-small-offset);
-}
-
-.oldPrice {
-  font: var(--regular-font);
-  font-weight: 100;
-  letter-spacing: 1px;
-  text-decoration: line-through;
-  color: var(--noble-gray-700);
-}
-
-.basicPrice {
-  font: var(--medium-font);
-  letter-spacing: 1px;
-  color: var(--steam-green-500);
-
-  &.gray {
-    color: var(--noble-gray-700);
-  }
 }

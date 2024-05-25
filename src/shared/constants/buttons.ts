@@ -6,8 +6,10 @@ export const BUTTON_TYPE = {
 
 export const BUTTON_TEXT = {
   en: {
+    ADD_PRODUCT: 'Add to cart',
     BACK_TO_MAIN: 'Back to main',
     CANCEL: 'Cancel',
+    DELETE_PRODUCT: 'Remove from cart',
     EDIT_INFO: 'Edit',
     LOG_OUT: 'Log out',
     LOGIN: 'Login',
@@ -17,8 +19,10 @@ export const BUTTON_TEXT = {
     SAVE_CHANGES: 'Save changes',
   },
   ru: {
+    ADD_PRODUCT: 'Добавить в корзину',
     BACK_TO_MAIN: 'Вернуться на главную',
     CANCEL: 'Отмена',
+    DELETE_PRODUCT: 'Удалить из корзины',
     EDIT_INFO: 'Редактировать',
     LOG_OUT: 'Выйти',
     LOGIN: 'Войти',
@@ -30,8 +34,10 @@ export const BUTTON_TEXT = {
 } as const;
 
 export const BUTTON_TEXT_KEYS = {
+  ADD_PRODUCT: 'ADD_PRODUCT',
   BACK_TO_MAIN: 'BACK_TO_MAIN',
   CANCEL: 'CANCEL',
+  DELETE_PRODUCT: 'DELETE_PRODUCT',
   EDIT_INFO: 'EDIT_INFO',
   LOG_OUT: 'LOG_OUT',
   LOGIN: 'LOGIN',

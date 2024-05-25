@@ -40,13 +40,13 @@
   display: flex;
   margin: 0 auto;
   font: var(--extra-medium-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--steam-green-800);
 }
 
 .pageDescription {
   font: var(--regular-font) '*' 1.5;
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   text-align: center;
   color: var(--noble-gray-700);
 }
@@ -57,7 +57,7 @@
   padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
   width: max-content;
   font: var(--bold-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   color: var(--white);
   background-color: var(--steam-green-800);
   transition:

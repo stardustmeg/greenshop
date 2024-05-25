@@ -55,7 +55,7 @@
 .loginLink,
 .registerSpan {
   font: var(--medium-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
 }
 
 .registerSpan {
@@ -100,7 +100,7 @@
   grid-row: 2;
   margin-bottom: var(--extra-small-offset);
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   text-align: center;
 }
 
@@ -110,7 +110,7 @@
   grid-column: 2 span;
   grid-row: 4;
   font: var(--regular-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--one);
   text-align: center;
   color: var(--steam-green-800);
   gap: calc(var(--extra-small-offset) / 4);

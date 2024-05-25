@@ -1,4 +1,3 @@
-import type { Variant } from '@/shared/types/product';
 import type ProductCardParams from '@/shared/types/productCard.ts';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
@@ -18,9 +17,7 @@ import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import styles from './productCardView.module.scss';
 
 class ProductCardView {
-  private addToCardButton: ButtonModel;
-
-  private basicPrice: HTMLSpanElement;
+  private addToCartButton: ButtonModel;
 
   private bottomWrapper: HTMLDivElement;
 
@@ -28,15 +25,11 @@ class ProductCardView {
 
   private currentSize: null | string;
 
-  private currentVariant: Variant;
-
   private goDetailsPageLink: LinkModel;
 
-  private oldPrice: HTMLSpanElement;
+  private moreButton: ButtonModel;
 
   private params: ProductCardParams;
-
-  private priceWrapper: HTMLDivElement;
 
   private productCard: HTMLLIElement;
 
@@ -50,11 +43,10 @@ class ProductCardView {
 
   private switchToWishListButton: ButtonModel;
 
-  constructor(params: ProductCardParams, currentSize: null | string, currentVariant: Variant) {
+  constructor(params: ProductCardParams, currentSize: null | string) {
     this.params = params;
-    this.currentVariant = currentVariant;
     this.currentSize = currentSize;
-    this.addToCardButton = this.createAddToCartButton();
+    this.addToCartButton = this.createAddToCartButton();
     this.switchToWishListButton = this.createSwitchToWishListButton();
     this.goDetailsPageLink = this.createGoDetailsPageLink();
     this.buttonsWrapper = this.createButtonsWrapper();
@@ -62,9 +54,7 @@ class ProductCardView {
     this.productImageWrapper = this.createProductImageWrapper();
     this.productName = this.createProductName();
     this.productShortDescription = this.createProductShortDescription();
-    this.basicPrice = this.createBasicPrice();
-    this.oldPrice = this.createOldPrice();
-    this.priceWrapper = this.createPriceWrapper();
+    this.moreButton = this.createMoreButton();
     this.bottomWrapper = this.createBottomWrapper();
     this.productCard = this.createHTML();
   }
@@ -79,48 +69,32 @@ class ProductCardView {
   }
 
   private createAddToCartButton(): ButtonModel {
-    this.addToCardButton = new ButtonModel({
-      classes: [styles.addToCardButton],
+    this.addToCartButton = new ButtonModel({
+      classes: [styles.addToCartButton],
     });
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.CART));
-    this.addToCardButton.getHTML().append(svg);
+    this.addToCartButton.getHTML().append(svg);
 
-    return this.addToCardButton;
-  }
-
-  private createBasicPrice(): HTMLSpanElement {
-    const { discount, price } = this.currentVariant;
-    const innerContent = discount ? `$${discount.toFixed(2)}` : `$${price?.toFixed(2)}`;
-    this.basicPrice = createBaseElement({
-      cssClasses: [styles.basicPrice],
-      innerContent,
-      tag: 'span',
-    });
-
-    if (!discount) {
-      this.basicPrice.classList.add(styles.gray);
-    }
-
-    return this.basicPrice;
+    return this.addToCartButton;
   }
 
   private createBottomWrapper(): HTMLDivElement {
     this.bottomWrapper = createBaseElement({
-      cssClasses: [styles.bottomWrapper],
+      cssClasses: [styles.bottomWrapper, 'productCardPriceWrapper'],
       tag: 'div',
     });
 
-    const moreButton = this.createMoreButton();
-
     observeStore(selectCurrentLanguage, () => {
-      this.updateMoreButtonText(moreButton);
+      this.updateMoreButtonText(this.moreButton.getHTML());
     });
 
-    moreButton.addEventListener('click', () => this.changeButtonText(this.productShortDescription, moreButton));
+    this.moreButton
+      .getHTML()
+      .addEventListener('click', () => this.changeButtonText(this.productShortDescription, this.moreButton.getHTML()));
 
-    this.bottomWrapper.append(this.productName, this.priceWrapper, this.productShortDescription, moreButton);
+    this.bottomWrapper.append(this.productName, this.productShortDescription, this.moreButton.getHTML());
     return this.bottomWrapper;
   }
 
@@ -131,7 +105,7 @@ class ProductCardView {
     });
 
     this.buttonsWrapper.append(
-      this.addToCardButton.getHTML(),
+      this.addToCartButton.getHTML(),
       this.switchToWishListButton.getHTML(),
       this.goDetailsPageLink.getHTML(),
     );
@@ -172,35 +146,13 @@ class ProductCardView {
     return this.productCard;
   }
 
-  private createMoreButton(): HTMLButtonElement {
-    const moreButton = new ButtonModel({
+  private createMoreButton(): ButtonModel {
+    this.moreButton = new ButtonModel({
       classes: [styles.moreButton],
       text: MORE_TEXT[getStore().getState().currentLanguage].MORE,
     });
 
-    return moreButton.getHTML();
-  }
-
-  private createOldPrice(): HTMLSpanElement {
-    const { discount, price } = this.currentVariant;
-    const innerContent = discount ? `$${price?.toFixed(2)}` : '';
-    this.oldPrice = createBaseElement({
-      cssClasses: [styles.oldPrice],
-      innerContent,
-      tag: 'span',
-    });
-
-    return this.oldPrice;
-  }
-
-  private createPriceWrapper(): HTMLDivElement {
-    this.priceWrapper = createBaseElement({
-      cssClasses: [styles.priceWrapper],
-      tag: 'div',
-    });
-
-    this.priceWrapper.append(this.basicPrice, this.oldPrice);
-    return this.priceWrapper;
+    return this.moreButton;
   }
 
   private createProductImage(): HTMLImageElement {
@@ -286,8 +238,16 @@ class ProductCardView {
     button.textContent = isActive ? moreText.HIDE : moreText.MORE;
   }
 
-  public getAddToCardButton(): ButtonModel {
-    return this.addToCardButton;
+  public getAddToCartButton(): ButtonModel {
+    return this.addToCartButton;
+  }
+
+  public getBottomWrapper(): HTMLDivElement {
+    return this.bottomWrapper;
+  }
+
+  public getButtonsWrapper(): HTMLDivElement {
+    return this.buttonsWrapper;
   }
 
   public getGoDetailsPageLink(): LinkModel {
@@ -296,6 +256,10 @@ class ProductCardView {
 
   public getHTML(): HTMLLIElement {
     return this.productCard;
+  }
+
+  public getMoreButton(): ButtonModel {
+    return this.moreButton;
   }
 
   public getSwitchToWishListButton(): ButtonModel {
