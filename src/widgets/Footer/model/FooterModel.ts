@@ -3,17 +3,16 @@ import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import FooterView from '../view/FooterView.ts';
 
 class FooterModel {
-  private navigation: NavigationModel;
+  private navigation = new NavigationModel();
 
   private view = new FooterView();
 
   constructor() {
-    this.navigation = new NavigationModel();
     this.init();
   }
 
   private init(): boolean {
-    this.view.getWrapper().append(this.navigation.getHTML());
+    this.getHTML().append(this.navigation.getHTML());
     return true;
   }
 

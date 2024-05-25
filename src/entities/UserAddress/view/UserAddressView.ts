@@ -1,80 +1,131 @@
-import type { UserAddressType } from '@/shared/constants/forms.ts';
-import type { User } from '@/shared/types/user';
-import type { Address } from '@commercetools/platform-sdk';
+import type { Address, User } from '@/shared/types/user';
 
+import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import getStore from '@/shared/Store/Store.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
+import { USER_ADDRESS_TYPE, type UserAddressType } from '@/shared/constants/forms.ts';
+import SVG_DETAILS from '@/shared/constants/svg.ts';
+import TOOLTIP_TEXT from '@/shared/constants/tooltip.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
-import { addressMessage, defaultBillingAddress, defaultShippingAddress } from '@/shared/utils/messageTemplates.ts';
+import {
+  addressMessage,
+  addressTemplate,
+  defaultBillingAddress,
+  defaultShippingAddress,
+} from '@/shared/utils/messageTemplates.ts';
 
 import styles from './userAddressView.module.scss';
 
 class UserAddressView {
-  private addressesWrapper: HTMLDivElement;
+  private deleteButton: ButtonModel;
 
-  private currentUser: User;
+  private deleteLogo: HTMLDivElement;
 
-  constructor(currentUser: User) {
-    this.currentUser = currentUser;
-    this.addressesWrapper = this.createCurrentAddresses();
+  private editButton: ButtonModel;
+
+  private editLogo: HTMLDivElement;
+
+  private view: HTMLLIElement;
+
+  constructor(user: User, address: Address, type: UserAddressType, defaultAddressId: string) {
+    this.deleteLogo = this.createDeleteLogo();
+    this.editLogo = this.createEditLogo();
+    this.deleteButton = this.createDeleteButton();
+    this.editButton = this.createEditButton();
+    this.view = this.createHTML(user, address, type, defaultAddressId);
   }
 
-  private createAddressElement(
-    text: string,
-    tag: keyof HTMLElementTagNameMap = 'li',
-    classes: string[] = [styles.info],
-  ): HTMLElement {
-    return createBaseElement({
-      cssClasses: classes,
-      innerContent: text,
-      tag,
-    });
-  }
+  private createAddress(user: User, address: Address, type: UserAddressType, defaultAddressId: string): string {
+    const { locale } = user;
 
-  private createAddresses(addresses: Address[], defaultAddress: Address | null, type: UserAddressType): void {
-    addresses.forEach((address) => {
-      const { locale } = this.currentUser;
-      const country = findKeyByValue(COUNTRIES_LIST[locale], address.country);
-      const standartAddressText = `${address.streetName}, ${address.city}, ${country}, ${address.postalCode}`;
-      let addressText = addressMessage(type, standartAddressText);
+    const country = findKeyByValue(COUNTRIES_LIST[locale], address.country);
+    const standartAddressText = addressTemplate(address.streetName, address.city, country, address.postalCode);
+    let addressText = addressMessage(type, standartAddressText);
 
-      if (defaultAddress && defaultAddress.id === address.id) {
-        if (type === USER_ADDRESS_TYPE.BILLING) {
-          addressText = defaultBillingAddress(standartAddressText);
-        } else if (type === USER_ADDRESS_TYPE.SHIPPING) {
-          addressText = defaultShippingAddress(standartAddressText);
-        }
+    if (defaultAddressId === address.id) {
+      if (type === USER_ADDRESS_TYPE.BILLING) {
+        addressText = defaultBillingAddress(standartAddressText);
+      } else if (type === USER_ADDRESS_TYPE.SHIPPING) {
+        addressText = defaultShippingAddress(standartAddressText);
       }
-
-      const addressWrapper = this.createAddressElement(addressText);
-      this.addressesWrapper.append(addressWrapper);
-    });
+    }
+    return addressText;
   }
 
-  private createCurrentAddresses(): HTMLDivElement {
-    const { billingAddress, defaultBillingAddressId, defaultShippingAddressId, shippingAddress } = this.currentUser;
-    this.addressesWrapper = createBaseElement({
-      cssClasses: [styles.addressesWrapper, styles.hidden],
+  private createDeleteButton(): ButtonModel {
+    this.deleteButton = new ButtonModel({
+      classes: [styles.deleteButton],
+      title: TOOLTIP_TEXT[getStore().getState().currentLanguage].DELETE_ADDRESS,
+    });
+
+    this.deleteButton.getHTML().append(this.deleteLogo);
+
+    observeStore(selectCurrentLanguage, () => {
+      this.deleteButton.getHTML().title = TOOLTIP_TEXT[getStore().getState().currentLanguage].DELETE_ADDRESS;
+    });
+
+    return this.deleteButton;
+  }
+
+  private createDeleteLogo(): HTMLDivElement {
+    this.deleteLogo = createBaseElement({ cssClasses: [styles.deleteLogo], tag: 'div' });
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.BIN));
+    this.deleteLogo.append(svg);
+    return this.deleteLogo;
+  }
+
+  private createEditButton(): ButtonModel {
+    this.editButton = new ButtonModel({
+      classes: [styles.editButton],
+      title: TOOLTIP_TEXT[getStore().getState().currentLanguage].EDIT_ADDRESS,
+    });
+
+    this.editButton.getHTML().append(this.editLogo);
+
+    observeStore(selectCurrentLanguage, () => {
+      this.editButton.getHTML().title = TOOLTIP_TEXT[getStore().getState().currentLanguage].EDIT_ADDRESS;
+    });
+
+    return this.editButton;
+  }
+
+  private createEditLogo(): HTMLDivElement {
+    this.editLogo = createBaseElement({ cssClasses: [styles.editLogo], tag: 'div' });
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.EDIT));
+    this.editLogo.append(svg);
+    return this.editLogo;
+  }
+
+  private createHTML(user: User, address: Address, type: UserAddressType, defaultAddressId: string): HTMLLIElement {
+    this.view = createBaseElement({
+      cssClasses: [styles.info],
+      tag: 'li',
+    });
+    const addressText = createBaseElement({
+      cssClasses: [styles.addressText],
+      innerContent: this.createAddress(user, address, type, defaultAddressId),
       tag: 'div',
     });
 
-    this.createAddresses(billingAddress, defaultBillingAddressId, USER_ADDRESS_TYPE.BILLING);
-    this.createAddresses(shippingAddress, defaultShippingAddressId, USER_ADDRESS_TYPE.SHIPPING);
-
-    return this.addressesWrapper;
+    this.view.append(addressText, this.editButton.getHTML(), this.deleteButton.getHTML());
+    return this.view;
   }
 
-  public getHTML(): HTMLDivElement {
-    return this.addressesWrapper;
+  public getDeleteButton(): ButtonModel {
+    return this.deleteButton;
   }
 
-  public hide(): void {
-    this.addressesWrapper.classList.add(styles.hidden);
+  public getEditButton(): ButtonModel {
+    return this.editButton;
   }
 
-  public show(): void {
-    this.addressesWrapper.classList.remove(styles.hidden);
+  public getHTML(): HTMLLIElement {
+    return this.view;
   }
 }
 

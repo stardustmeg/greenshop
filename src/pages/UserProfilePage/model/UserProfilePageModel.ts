@@ -1,18 +1,18 @@
 import type { Page } from '@/shared/types/page.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
-import UserAddressModel from '@/entities/UserAddress/model/UserAddressModel.ts';
-import UserInfoModel from '@/entities/UserInfo/model/UserInfoModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setAuthToken, setCurrentPage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
+import UserAddressesModel from '@/widgets/UserAddresses/model/UserAddressesModel.ts';
+import UserInfoModel from '@/widgets/UserInfo/model/UserInfoModel.ts';
 
 import UserProfilePageView from '../view/UserProfilePageView.ts';
 
 class UserProfilePageModel implements Page {
-  private addresses: UserAddressModel | null = null;
+  private addresses: UserAddressesModel | null = null;
 
   private userInfo: UserInfoModel | null = null;
 
@@ -37,7 +37,7 @@ class UserProfilePageModel implements Page {
 
       if (user) {
         this.userInfo = new UserInfoModel(user);
-        this.addresses = new UserAddressModel(user);
+        this.addresses = new UserAddressesModel(user);
         this.view.getUserProfileWrapper().append(this.userInfo.getHTML(), this.addresses.getHTML());
         this.setAccountLogoutButtonHandler();
         getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
