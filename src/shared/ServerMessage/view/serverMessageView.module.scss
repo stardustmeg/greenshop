@@ -16,12 +16,29 @@
   transform: translate(110%, -50%);
 }
 
+.progressBar {
+  margin-top: var(--tiny-offset);
+  margin-bottom: calc(var(--tiny-offset) / 2);
+  border-radius: var(--medium-br);
+  height: 0.1rem;
+  background-color: var(--steam-green-800);
+  transform: scaleX(0);
+}
+
 .error {
   border-color: var(--red-power-600);
   color: var(--red-power-600);
+
+  .progressBar {
+    background-color: var(--red-power-600);
+  }
 }
 
 .success {
   border-color: var(--steam-green-800);
   color: var(--steam-green-800);
+
+  .progressBar {
+    background-color: var(--steam-green-800);
+  }
 }
