@@ -30,6 +30,7 @@ class NotFoundPageView {
     this.description = this.createPageDescription();
     this.toMainButton = this.createToMainButton();
     this.page = this.createHTML();
+    window.scrollTo(0, 0);
   }
 
   private createHTML(): HTMLDivElement {

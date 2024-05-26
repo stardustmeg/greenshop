@@ -48,6 +48,7 @@ class UserProfilePageView {
     this.setLinksHandlers();
     this.userProfileWrapper = this.createUserProfileWrapper();
     this.page = this.createHTML();
+    window.scrollTo(0, 0);
   }
 
   private createAccountMenu(): HTMLUListElement {

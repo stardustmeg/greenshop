@@ -23,6 +23,7 @@ export default class PostView {
 
     this.card.addEventListener('click', () => this.onPostClick());
     observeStore(selectCurrentLanguage, () => this.updateLanguage());
+    window.scrollTo(0, 0);
   }
 
   private createCardHTML(): HTMLLIElement {

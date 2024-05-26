@@ -29,6 +29,7 @@ class CartPageView {
     this.productWrap.classList.add(styles.products);
     this.totalWrap = this.createWrapHTML();
     this.totalWrap.classList.add(styles.total);
+    window.scrollTo(0, 0);
   }
 
   private addTableHeader(): void {

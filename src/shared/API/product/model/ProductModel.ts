@@ -1,4 +1,4 @@
-import type { Category, Product, SizeType, localization } from '@/shared/types/product.ts';
+import type { Category, LevelType, Product, SizeType, localization } from '@/shared/types/product.ts';
 import type {
   Attribute as AttributeResponse,
   CategoryPagedQueryResponse,
@@ -12,7 +12,7 @@ import type {
 } from '@commercetools/platform-sdk';
 
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
-import getSize from '@/shared/utils/size.ts';
+import { getLevel, getSize } from '@/shared/utils/size.ts';
 
 import {
   Attribute,
@@ -109,6 +109,13 @@ export class ProductModel {
     return [];
   }
 
+  private adaptLevel(attribute: AttributeResponse): LevelType | null {
+    if (Array.isArray(attribute.value) && attribute.value.length && isAttributePlainEnumValue(attribute.value[0])) {
+      return getLevel(attribute.value[0].key);
+    }
+    return null;
+  }
+
   private adaptPrice(variant: ProductVariant): number {
     let price = 0;
 
@@ -132,6 +139,7 @@ export class ProductModel {
       id: product.id || '',
       images: [],
       key: product.key ?? '',
+      level: null,
       name: [],
       slug: [],
       variant: [],
@@ -154,6 +162,7 @@ export class ProductModel {
     const variants = [...response.variants, response.masterVariant];
     variants.forEach((variant) => {
       let size: SizeType | null = null;
+      let level: LevelType | null = null;
 
       if (variant.attributes?.length) {
         variant.attributes.forEach((attribute) => {
@@ -162,6 +171,11 @@ export class ProductModel {
           }
           if (attribute.name === Attribute.SIZE) {
             size = this.adaptSize(attribute);
+          }
+          if (attribute.name === Attribute.LEVEL) {
+            level = this.adaptLevel(attribute);
+            const productEl = product;
+            productEl.level = level;
           }
         });
       }
@@ -300,7 +314,7 @@ export class ProductModel {
     return null;
   }
 
-  public async getCategories(): Promise<Category[] | null> {
+  public async getCategories(): Promise<Category[]> {
     if (!this.categories.length) {
       const data = await this.root.getCategories();
       return this.getCategoriesFromData(data);

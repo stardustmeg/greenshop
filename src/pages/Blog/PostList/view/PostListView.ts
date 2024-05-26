@@ -28,6 +28,7 @@ export default class PostListView {
     this.description = this.createPageDescription();
 
     this.page = this.createHTML();
+    window.scrollTo(0, 0);
   }
 
   private createHTML(): HTMLDivElement {
@@ -81,6 +82,7 @@ export default class PostListView {
   public openPost(post: BlogPostView): void {
     this.parent.innerHTML = '';
     this.parent.append(post.getPostHTML());
+    window.scrollTo(0, 0);
   }
 
   public updateLanguage(): boolean {

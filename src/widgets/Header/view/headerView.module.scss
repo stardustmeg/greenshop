@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   top: 0;
-  z-index: 10;
+  z-index: 1;
   border-bottom: 1px solid var(--steam-green-300);
   width: 100%;
   background-color: var(--noble-gray-1000);
@@ -17,6 +17,11 @@
   align-items: center;
   margin: 0 auto;
   padding: 0 var(--small-offset);
+
+  @media (max-width: 768px) {
+    display: grid;
+    padding: 0;
+  }
 }
 
 .navigationWrapper {
@@ -37,8 +42,18 @@
   backdrop-filter: blur(10px);
   gap: var(--medium-offset);
 
+  @media (max-width: 768px) {
+    top: calc(var(--extra-small-offset) * 6.1);
+    grid-row: 2;
+    width: 45%;
+  }
+
   &.open {
     transform: translateX(-500%);
+
+    @media (max-width: 768px) {
+      transform: translateX(-220%);
+    }
   }
 }
 
@@ -60,6 +75,12 @@
         fill: var(--steam-green-700);
       }
     }
+  }
+
+  @media (max-width: 768px) {
+    grid-row: 1;
+    margin-top: calc(var(--tiny-offset) * 1.5);
+    margin-left: calc(var(--extra-small-offset) * 1.5);
   }
 }
 
@@ -135,11 +156,16 @@
 
 .burgerButton {
   position: absolute;
-  right: calc(var(--tiny-offset) * 1.5);
+  right: calc(var(--extra-small-offset) * 1.5);
   z-index: 10;
   order: 4;
   width: calc(var(--tiny-offset) * 2.5);
   height: var(--extra-small-offset);
+
+  @media (max-width: 768px) {
+    top: calc(var(--extra-small-offset) * 1.5);
+    grid-row: 1;
+  }
 }
 
 .burgerLine {
@@ -212,8 +238,8 @@
 }
 
 .burgerButton.open .burgerLine:nth-child(1) {
-  left: var(--five); // 5px
-  top: calc(var(--tiny-offset) * 1.5); // 15px
+  left: calc(var(--five) + 0.04rem);
+  top: calc(var(--tiny-offset) * 1.1);
   width: var(--extra-small-offset); // 20px
   transform: rotate(90deg);
   transition-delay: 150ms;

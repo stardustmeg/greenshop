@@ -14,6 +14,13 @@
   top: -0.3rem;
   width: var(--extra-small-offset);
   height: var(--extra-small-offset);
+
+  @media (max-width: 768px) {
+    right: -0.5rem;
+    top: -0.2rem;
+    width: calc(var(--extra-small-offset) / 1.5);
+    height: calc(var(--extra-small-offset) / 1.5);
+  }
 }
 
 .noUi-handle {
@@ -21,7 +28,7 @@
   border: var(--two) solid var(--noble-white-100);
   border-radius: 50%;
   box-shadow: none;
-  background-color: var(--steam-green-800);
+  background-color: var(--steam-green-700);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transition: background-color 0.3;
@@ -64,8 +71,12 @@
 
 .noUi-connect {
   height: 0.5rem;
-  background: var(--steam-green-800);
+  background: var(--steam-green-700);
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    height: 0.4rem;
+  }
 }
 
 .noUi-base,
@@ -91,6 +102,10 @@
 
 .noUi-horizontal {
   height: 0.5rem;
+
+  @media (max-width: 768px) {
+    height: 0.4rem;
+  }
 }
 
 .noUi-state-tap .noUi-connect,
