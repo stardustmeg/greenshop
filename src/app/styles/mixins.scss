@@ -1,0 +1,33 @@
+@mixin green-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  border-radius: var(--medium-br);
+  padding: calc(var(--small-offset) / 3) var(--small-offset);
+  width: max-content;
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  color: var(--white);
+  background-color: var(--steam-green-800);
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    transform 0.2s;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--steam-green-700);
+    }
+  }
+
+  /* stylelint-disable-next-line order/order */
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &:disabled {
+    background-color: var(--noble-gray-300);
+    pointer-events: none;
+  }
+}

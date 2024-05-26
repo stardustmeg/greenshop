@@ -1,3 +1,5 @@
+@import 'src/app/styles/mixins';
+
 .header {
   position: sticky;
   left: 0;
@@ -62,31 +64,9 @@
 }
 
 .logoutButton {
+  @include green-btn;
+
   order: 4;
-  border-radius: var(--medium-br);
-  padding: calc(var(--small-offset) / 3) var(--small-offset);
-  font: var(--regular-font);
-  letter-spacing: var(--one);
-  color: var(--white);
-  background-color: var(--steam-green-800);
-  transition:
-    color 0.2s,
-    background-color 0.2s;
-
-  &:focus {
-    background-color: var(--steam-green-700);
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--steam-green-700);
-    }
-  }
-
-  &:disabled {
-    background-color: var(--noble-gray-300);
-    pointer-events: none;
-  }
 }
 
 .cartLink,

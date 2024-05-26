@@ -1,35 +1,13 @@
+@import 'src/app/styles/mixins';
+
 .submitFormButton {
-  display: flex;
+  @include green-btn;
+
   place-self: center center;
-  align-items: center;
-  justify-content: center;
   grid-column: 2 span;
   grid-row: 2;
-  border-radius: var(--small-br);
   padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
-  width: max-content;
   font: var(--bold-font);
-  letter-spacing: var(--one);
-  color: var(--white);
-  background-color: var(--steam-green-800);
-  transition:
-    color 0.2s,
-    background-color 0.2s;
-
-  &:focus {
-    background-color: var(--steam-green-700);
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--steam-green-700);
-    }
-  }
-
-  &:disabled {
-    background-color: var(--noble-gray-300);
-    pointer-events: none;
-  }
 }
 
 .loginForm {
