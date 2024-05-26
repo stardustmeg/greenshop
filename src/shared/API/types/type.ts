@@ -2,6 +2,7 @@ import type { Category, Product, SizeType } from '@/shared/types/product.ts';
 
 export const Attribute = {
   FULL_DESCRIPTION: 'full_description',
+  LEVEL: 'level',
   SIZE: 'size',
 } as const;
 
