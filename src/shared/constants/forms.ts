@@ -29,6 +29,10 @@ export const FORM_TEXT_KEYS = {
   SINGLE_ADDRESS: 'SINGLE_ADDRESS',
 } as const;
 
+export const DEFAULT_ADDRESS = {
+  setDefault: true,
+};
+
 export type FormTextKeysType = (typeof FORM_TEXT_KEYS)[keyof typeof FORM_TEXT_KEYS];
 
 export const USER_COUNTRY_ADDRESS = {

@@ -1,6 +1,7 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import type { AddressType } from '@/shared/types/address.ts';
 import type { Address, User } from '@/shared/types/user.ts';
+import type { MyCustomerUpdateAction } from '@commercetools/platform-sdk';
 
 import AddressModel from '@/entities/Address/model/AddressModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
@@ -34,21 +35,22 @@ class AddressAddModel {
   }
 
   private async addAddressType(): Promise<void> {
-    const updatedUser = await getCustomerModel().getCurrentUser();
-    if (updatedUser) {
-      const newAddress = updatedUser.addresses[updatedUser.addresses.length - 1];
-      if (newAddress && newAddress.id) {
-        const action =
-          this.addressType === ADDRESS_TYPE.BILLING
-            ? CustomerModel.actionAddBillingAddress(newAddress.id)
-            : CustomerModel.actionAddShippingAddress(newAddress.id);
+    try {
+      const updatedUser = await getCustomerModel().getCurrentUser();
+      if (updatedUser) {
+        const newAddress = this.getNewAddress(updatedUser);
+        if (newAddress && newAddress.id) {
+          const actions = this.getAddressActions(newAddress.id);
+          if (this.shouldSetDefaultAddress()) {
+            actions.push(this.getDefaultAddressAction(newAddress.id));
+          }
 
-        await getCustomerModel().editCustomer([action], updatedUser);
-
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_ADDED, MESSAGE_STATUS.SUCCESS);
-        modal.hide();
-        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_ADDRESSES, '');
+          await getCustomerModel().editCustomer(actions, updatedUser);
+          this.handleSuccess();
+        }
       }
+    } catch (error) {
+      showErrorMessage();
     }
   }
 
@@ -88,6 +90,21 @@ class AddressAddModel {
     }
   }
 
+  private getAddressActions(addressId: string): MyCustomerUpdateAction[] {
+    const addAddressAction =
+      this.addressType === ADDRESS_TYPE.BILLING
+        ? CustomerModel.actionAddBillingAddress(addressId)
+        : CustomerModel.actionAddShippingAddress(addressId);
+
+    return [addAddressAction];
+  }
+
+  private getDefaultAddressAction(addressId: string): MyCustomerUpdateAction {
+    return this.addressType === ADDRESS_TYPE.BILLING
+      ? CustomerModel.actionEditDefaultBillingAddress(addressId)
+      : CustomerModel.actionEditDefaultShippingAddress(addressId);
+  }
+
   private getFormAddressData(): Record<string, string> {
     return {
       city: formattedText(this.newAddress.getView().getCityField().getView().getInput().getValue()),
@@ -95,6 +112,16 @@ class AddressAddModel {
       postalCode: this.newAddress.getView().getPostalCodeField().getView().getInput().getValue(),
       streetName: formattedText(this.newAddress.getView().getStreetField().getView().getInput().getValue()),
     };
+  }
+
+  private getNewAddress(user: User): Address | null {
+    return user.addresses[user.addresses.length - 1] || null;
+  }
+
+  private handleSuccess(): void {
+    serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_ADDED, MESSAGE_STATUS.SUCCESS);
+    EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_ADDRESSES, '');
+    modal.hide();
   }
 
   private init(): void {
@@ -146,6 +173,10 @@ class AddressAddModel {
     const submitButton = this.view.getSaveChangesButton().getHTML();
     submitButton.addEventListener('click', () => this.createNewAddress());
     return true;
+  }
+
+  private shouldSetDefaultAddress(): boolean {
+    return this.newAddress.getView().getAddressByDefaultCheckBox()?.getHTML().checked || false;
   }
 
   private switchSubmitFormButtonAccess(): boolean {

@@ -79,13 +79,13 @@ export const minLengthMessage = (minLength: number): string =>
     ? minLengthMessageEn(minLength)
     : minLengthMessageRu(minLength);
 
-export function addressMessage(type: string, text: string): string {
+export function addressMessage(text: string, type?: string): string {
   switch (type) {
     case ADDRESS_TYPE.BILLING:
       return billingAddressMessage(text);
     case ADDRESS_TYPE.SHIPPING:
       return shippingAddressMessage(text);
     default:
-      return '';
+      return text;
   }
 }

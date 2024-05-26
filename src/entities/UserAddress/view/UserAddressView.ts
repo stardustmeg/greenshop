@@ -1,10 +1,11 @@
+import type { UserAddressType } from '@/shared/constants/forms.ts';
 import type { Address, User } from '@/shared/types/user';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { USER_ADDRESS_TYPE, type UserAddressType } from '@/shared/constants/forms.ts';
+import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import TOOLTIP_TEXT from '@/shared/constants/tooltip.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -43,7 +44,7 @@ class UserAddressView {
 
     const country = findKeyByValue(COUNTRIES_LIST[locale], address.country);
     const standartAddressText = addressTemplate(address.streetName, address.city, country, address.postalCode);
-    let addressText = addressMessage(type, standartAddressText);
+    let addressText = addressMessage(standartAddressText, type);
 
     if (defaultAddressId === address.id) {
       if (type === USER_ADDRESS_TYPE.BILLING) {
@@ -103,13 +104,14 @@ class UserAddressView {
 
   private createHTML(user: User, address: Address, type: UserAddressType, defaultAddressId: string): HTMLLIElement {
     this.view = createBaseElement({
+      attributes: { 'data-type': type },
       cssClasses: [styles.info],
       tag: 'li',
     });
     const addressText = createBaseElement({
       cssClasses: [styles.addressText],
       innerContent: this.createAddress(user, address, type, defaultAddressId),
-      tag: 'div',
+      tag: 'span',
     });
 
     this.view.append(addressText, this.editButton.getHTML(), this.deleteButton.getHTML());
