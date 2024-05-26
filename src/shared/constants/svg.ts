@@ -13,11 +13,14 @@ const SVG_DETAILS = {
   LOGO: 'logo',
   OPEN_EYE: 'openEye',
   PROFILE: 'userCircle',
+  RECEIT: 'receit',
   SVG_URL: 'http://www.w3.org/2000/svg',
   SWITCH_LANGUAGE: {
     en: 'en',
     ru: 'ru',
   },
+  TRUCK: 'truck',
+  WALLET: 'wallet',
 } as const;
 
 export default SVG_DETAILS;

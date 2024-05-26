@@ -14,6 +14,7 @@ export type MessageStatusKeysType = (typeof MESSAGE_STATUS_KEYS)[keyof typeof ME
 
 export const SERVER_MESSAGE = {
   en: {
+    ADDRESS_ADDED: 'Address has been added successfully',
     ADDRESS_CHANGED: 'Address has been changed successfully',
     ADDRESS_DELETED: 'Address has been deleted successfully',
     BAD_REQUEST: 'Sorry, something went wrong. Try again later.',
@@ -35,6 +36,7 @@ export const SERVER_MESSAGE = {
     USER_EXISTS: 'User with this email already exists, please check your email',
   },
   ru: {
+    ADDRESS_ADDED: 'Адрес был успешно добавлен',
     ADDRESS_CHANGED: 'Адрес был успешно изменен',
     ADDRESS_DELETED: 'Адрес был успешно удален',
     BAD_REQUEST: 'Извините, что-то пошло не так. Попробуйте позже.',
@@ -58,6 +60,7 @@ export const SERVER_MESSAGE = {
 } as const;
 
 export const SERVER_MESSAGE_KEYS = {
+  ADDRESS_ADDED: 'ADDRESS_ADDED',
   ADDRESS_CHANGED: 'ADDRESS_CHANGED',
   ADDRESS_DELETED: 'ADDRESS_DELETED',
   BAD_REQUEST: 'BAD_REQUEST',

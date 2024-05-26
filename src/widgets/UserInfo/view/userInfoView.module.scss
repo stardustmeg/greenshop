@@ -1,3 +1,5 @@
+@import 'src/app/styles/mixins';
+
 .userInfoWrapper {
   position: relative;
   display: grid;
@@ -60,35 +62,10 @@
 }
 
 .editInfoButton {
+  @include green-btn;
+
   grid-column: 2 span;
   grid-row: 6;
-  margin: 0 auto;
-  border-radius: var(--medium-br);
-  padding: calc(var(--small-offset) / 3) var(--small-offset);
-  height: max-content;
-  max-width: max-content;
-  font: var(--regular-font);
-  letter-spacing: var(--one);
-  color: var(--white);
-  background-color: var(--steam-green-800);
-  transition:
-    color 0.2s,
-    background-color 0.2s;
-
-  &:focus {
-    background-color: var(--steam-green-700);
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--steam-green-700);
-    }
-  }
-
-  &:disabled {
-    background-color: var(--noble-gray-300);
-    pointer-events: none;
-  }
 }
 
 .hidden {

@@ -1,0 +1,14 @@
+@import 'src/app/styles/mixins';
+
+.wrapper {
+  border-bottom: var(--tiny-offset) solid var(--steam-green-800);
+  padding: var(--small-offset);
+  width: 500px;
+  height: max-content;
+  background-color: var(--noble-white-100);
+}
+
+.saveChangesButton,
+.cancelButton {
+  @include green-btn;
+}

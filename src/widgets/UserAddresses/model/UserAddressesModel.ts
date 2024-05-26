@@ -2,8 +2,10 @@ import type { UserAddressType } from '@/shared/constants/forms.ts';
 import type { Address, User } from '@/shared/types/user.ts';
 
 import UserAddressModel from '@/entities/UserAddress/model/UserAddressModel.ts';
+import AddressAddModel from '@/features/AddressAdd/model/AddressAddModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
+import { ADDRESS_TYPE } from '@/shared/types/address.ts';
 
 import UserAddressesView from '../view/UserAddressesView.ts';
 
@@ -37,7 +39,9 @@ class UserAddressesModel {
       .getCreateBillingAddressButton()
       .getHTML()
       .addEventListener('click', () => {
-        modal.show(); // TBD Add new address feature
+        const newAddressForm = new AddressAddModel(ADDRESS_TYPE.BILLING, { setDefault: true }).getHTML();
+        modal.show();
+        modal.setContent(newAddressForm);
       });
   }
 
@@ -46,7 +50,9 @@ class UserAddressesModel {
       .getCreateShippingAddressButton()
       .getHTML()
       .addEventListener('click', () => {
-        modal.show(); // TBD Add new address feature
+        const newAddressForm = new AddressAddModel(ADDRESS_TYPE.SHIPPING, { setDefault: true }).getHTML();
+        modal.show();
+        modal.setContent(newAddressForm);
       });
   }
 
