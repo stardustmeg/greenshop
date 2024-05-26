@@ -164,6 +164,14 @@ const FOOTER_PAGE = {
     en: 'Help & Guide',
     ru: 'FAQ',
   },
+  PAY: {
+    en: 'We accept',
+    ru: 'Мы принимаем',
+  },
+  SOCIAL: {
+    en: 'Social Media',
+    ru: 'Соцсети',
+  },
   SUB_BTN: {
     en: 'Join',
     ru: 'С нами',
@@ -346,7 +354,7 @@ class FooterView {
     });
     const title = createBaseElement({
       cssClasses: [styles.subTitle],
-      innerContent: 'Social Media',
+      innerContent: FOOTER_PAGE.SOCIAL[this.language],
       tag: 'p',
     });
     const buttonWrap = createBaseElement({
@@ -370,6 +378,7 @@ class FooterView {
       buttonWrap.append(link);
     });
     wrap.append(title, buttonWrap);
+    this.textElements.push({ element: title, textItem: FOOTER_PAGE.SOCIAL });
     return wrap;
   }
 
@@ -421,7 +430,7 @@ class FooterView {
     });
     const title = createBaseElement({
       cssClasses: [styles.payTitle],
-      innerContent: 'We accept',
+      innerContent: FOOTER_PAGE.PAY[this.language],
       tag: 'p',
     });
     const buttonWrap = createBaseElement({
@@ -441,6 +450,7 @@ class FooterView {
       ),
     );
     wrap.append(title, buttonWrap);
+    this.textElements.push({ element: title, textItem: FOOTER_PAGE.PAY });
     return wrap;
   }
 
