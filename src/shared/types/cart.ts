@@ -28,3 +28,9 @@ export interface EditCartItem {
   lineId: string;
   quantity: number;
 }
+
+export enum CartActive {
+  DELETE = 'delete',
+  MINUS = 'minus',
+  PLUS = 'plus',
+}

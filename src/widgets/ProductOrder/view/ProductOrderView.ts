@@ -3,26 +3,41 @@ import type { CartProduct } from '@/shared/types/cart';
 import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
+import { CartActive } from '@/shared/types/cart.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
-import type { CallbackList } from '../model/ProductOrderModel';
-
 import styles from './productOrderView.module.scss';
 
+type CallbackActive = (active: CartActive) => Promise<void>;
+
 class ProductOrderView {
-  private callbackList: CallbackList;
+  private callback: CallbackActive;
+
+  private price: HTMLTableCellElement;
 
   private quantity: HTMLParagraphElement;
 
+  private total: HTMLTableCellElement;
+
   private view: HTMLTableRowElement;
 
-  constructor(productItem: CartProduct, callbackList: CallbackList) {
-    this.callbackList = callbackList;
+  constructor(productItem: CartProduct, callback: CallbackActive) {
+    this.callback = callback;
     this.quantity = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityText],
       innerContent: productItem.quantity.toString(),
       tag: 'p',
+    });
+    this.price = createBaseElement({
+      cssClasses: [styles.td, styles.priceCell, styles.priceText],
+      innerContent: `$${productItem.price.toFixed(2)}`,
+      tag: 'td',
+    });
+    this.total = createBaseElement({
+      cssClasses: [styles.td, styles.totalCell, styles.totalText],
+      innerContent: `$${productItem.totalPrice.toFixed(2)}`,
+      tag: 'td',
     });
     this.view = this.createHTML(productItem);
   }
@@ -30,7 +45,7 @@ class ProductOrderView {
   private createDeleCell(): HTMLTableCellElement {
     const tdDelete = createBaseElement({ cssClasses: [styles.td, styles.deleteCell], tag: 'td' });
     const deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], tag: 'button' });
-    deleteButton.addEventListener('click', () => this.callbackList.delete());
+    deleteButton.addEventListener('click', () => this.callback(CartActive.DELETE));
     tdDelete.append(deleteButton);
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.DELETE));
@@ -51,19 +66,9 @@ class ProductOrderView {
       innerContent: productItem.size ? `Size: ${productItem.size}` : '',
       tag: 'td',
     });
-    const tdPrice = createBaseElement({
-      cssClasses: [styles.td, styles.priceCell, styles.priceText],
-      innerContent: `$${productItem.price.toFixed(2)}`,
-      tag: 'td',
-    });
     const quantityCell = this.createQuantityCell();
-    const tdTotal = createBaseElement({
-      cssClasses: [styles.td, styles.totalCell, styles.totalText],
-      innerContent: `$${productItem.totalPrice.toFixed(2)}`,
-      tag: 'td',
-    });
     const deleteCell = this.createDeleCell();
-    this.view.append(imgCell, tdProduct, tdSize, tdPrice, quantityCell, tdTotal, deleteCell);
+    this.view.append(imgCell, tdProduct, tdSize, this.price, quantityCell, this.total, deleteCell);
     return this.view;
   }
 
@@ -92,8 +97,8 @@ class ProductOrderView {
       tag: 'button',
     });
     tdQuantity.append(minusButton, this.quantity, plusButton);
-    plusButton.addEventListener('click', () => this.callbackList.plus());
-    minusButton.addEventListener('click', () => this.callbackList.minus());
+    plusButton.addEventListener('click', () => this.callback(CartActive.PLUS));
+    minusButton.addEventListener('click', () => this.callback(CartActive.MINUS));
     return tdQuantity;
   }
 
@@ -101,8 +106,10 @@ class ProductOrderView {
     return this.view;
   }
 
-  public updateQuantity(quantity: number): void {
-    this.quantity.textContent = quantity.toString();
+  public updateInfo(productItem: CartProduct): void {
+    this.quantity.textContent = productItem.quantity.toString();
+    this.price.textContent = `$${productItem.price.toFixed(2)}`;
+    this.total.textContent = `$${productItem.totalPrice.toFixed(2)}`;
   }
 }
 
