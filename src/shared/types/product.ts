@@ -18,7 +18,14 @@ export const SIZE = {
   XL: 'XL',
 } as const;
 
+export const LEVEL = {
+  1: '1',
+  2: '2',
+  3: '3',
+} as const;
+
 export type SizeType = (typeof SIZE)[keyof typeof SIZE];
+export type LevelType = (typeof LEVEL)[keyof typeof LEVEL];
 
 export interface Variant {
   discount: number;
@@ -34,6 +41,7 @@ export interface Product {
   id: string;
   images: string[];
   key: string;
+  level: LevelType | null;
   name: localization[];
   slug: localization[];
   variant: Variant[];
