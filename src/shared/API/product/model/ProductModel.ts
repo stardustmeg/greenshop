@@ -300,7 +300,7 @@ export class ProductModel {
     return null;
   }
 
-  public async getCategories(): Promise<Category[] | null> {
+  public async getCategories(): Promise<Category[]> {
     if (!this.categories.length) {
       const data = await this.root.getCategories();
       return this.getCategoriesFromData(data);
