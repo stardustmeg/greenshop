@@ -1,6 +1,9 @@
 @import 'src/app/styles/mixins';
 
 .wrapper {
+  display: grid;
+  place-items: center center;
+  grid-template-rows: repeat(auto, auto);
   border-bottom: var(--tiny-offset) solid var(--steam-green-800);
   padding: var(--small-offset);
   height: max-content;
@@ -10,4 +13,23 @@
 .saveChangesButton,
 .cancelButton {
   @include green-btn;
+
+  grid-row: 5;
+  margin-top: var(--tiny-offset);
+}
+
+.cancelButton {
+  grid-column: 1;
+
+  @media (max-width: 768px) {
+    grid-row: 6;
+  }
+}
+
+.saveChangesButton {
+  grid-column: 2;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+  }
 }
