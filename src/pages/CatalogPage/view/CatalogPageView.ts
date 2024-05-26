@@ -11,6 +11,7 @@ class CatalogPageView {
     this.parent = parent;
     this.parent.innerHTML = '';
     this.page = this.createHTML();
+    window.scrollTo(0, 0);
   }
 
   private createHTML(): HTMLDivElement {

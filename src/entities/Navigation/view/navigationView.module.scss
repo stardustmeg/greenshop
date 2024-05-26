@@ -6,6 +6,12 @@
   order: 2;
   margin: 0 auto;
   height: calc(var(--extra-small-offset) * 3.5); // 70px
+
+  @media (max-width: 768px) {
+    align-self: auto;
+    justify-content: space-between;
+    margin: 0;
+  }
 }
 
 .link {

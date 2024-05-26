@@ -3,6 +3,10 @@
   align-items: center;
   margin-bottom: var(--medium-offset);
   gap: var(--tiny-offset);
+
+  @media (max-width: 768px) {
+    margin-bottom: var(--small-offset);
+  }
 }
 
 .link {

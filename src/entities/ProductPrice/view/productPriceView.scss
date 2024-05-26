@@ -37,6 +37,10 @@
     justify-content: start;
     order: 2;
     margin-top: 0;
-    margin-bottom: var(--extra-small-offset);
+
+    @media (max-width: 768px) {
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
