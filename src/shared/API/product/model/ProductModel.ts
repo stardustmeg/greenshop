@@ -296,6 +296,14 @@ export class ProductModel {
     return category;
   }
 
+  private getTotalFromData(data: ClientResponse<ProductProjectionPagedSearchResponse>): number {
+    let total = 0;
+    if (isClientResponse(data) && isProductProjectionPagedQueryResponse(data.body)) {
+      total = data.body.total || 0;
+    }
+    return total;
+  }
+
   public adaptLocalizationValue(data: LocalizedString | undefined): localization[] {
     const result: localization[] = [];
     Object.entries(data || {}).forEach(([language, value]) => {
@@ -341,11 +349,13 @@ export class ProductModel {
     const sizeCount = this.getSizeProductCountFromData(data);
     const categoryCount = this.getCategoriesProductCountFromData(data);
     const priceRange = this.getPriceRangeFromData(data);
+    const total = this.getTotalFromData(data);
     const result: ProductWithCount = {
       categoryCount,
       priceRange,
       products,
       sizeCount,
+      total,
     };
     return result;
   }
