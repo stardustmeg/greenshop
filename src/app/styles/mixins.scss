@@ -31,3 +31,51 @@
     pointer-events: none;
   }
 }
+
+@mixin round-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  border-radius: 50%;
+  padding: calc(var(--tiny-offset) * 1.5);
+  width: max-content;
+  background-color: var(--noble-white-100);
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    transform 0.2s;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--white-tr);
+
+      svg {
+        fill: var(--steam-green-800);
+      }
+    }
+    /* stylelint-disable-next-line order/order */
+    &:active {
+      transform: scale(1.1);
+    }
+
+    &:disabled {
+      background-color: var(--noble-gray-300);
+      pointer-events: none;
+    }
+  }
+}
+
+@mixin logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+
+  svg {
+    width: var(--small-offset);
+    height: var(--small-offset);
+    fill: var(--noble-gray-900);
+    transition: fill 0.2s;
+  }
+}

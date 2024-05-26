@@ -14,22 +14,13 @@
   font: var(--extra-regular-font);
   letter-spacing: 1px;
   color: var(--noble-gray-900);
-  background-color: var(--noble-gray-tr-800);
+  background-color: var(--steam-green-900);
   gap: var(--small-offset);
 }
 
 .shippingLogo,
 .billingLogo {
-  display: flex;
-  margin: 0 auto;
-
-  svg {
-    z-index: 1;
-    width: var(--small-offset);
-    height: var(--small-offset);
-    fill: var(--noble-gray-900);
-    transition: 0.2s;
-  }
+  @include logo;
 }
 
 .hidden {
@@ -39,16 +30,5 @@
 }
 
 .createAddressButton {
-  @include green-btn;
-
-  // border-radius: 50%; // ??
-  padding: var(--extra-small-offset);
-
-  @media (hover: hover) {
-    &:hover {
-      svg {
-        fill: var(--noble-gray-1000);
-      }
-    }
-  }
+  @include round-btn;
 }
