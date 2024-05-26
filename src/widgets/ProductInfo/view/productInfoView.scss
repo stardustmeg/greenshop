@@ -6,25 +6,42 @@
   justify-content: center;
   margin-bottom: var(--small-offset);
   gap: var(--small-offset);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 .leftWrapper {
   display: flex;
   max-width: 50%;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 }
 
 .rightWrapper {
   display: flex;
   flex-direction: column;
   width: 40%;
+  gap: var(--extra-small-offset);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    gap: var(--tiny-offset);
+  }
 }
 
 .title {
   order: 1;
-  margin-bottom: var(--extra-small-offset);
   font: var(--medium-font);
   letter-spacing: var(--one);
   color: var(--steam-green-500);
+
+  @media (max-width: 768px) {
+    text-align: center;
+  }
 }
 
 .smallSlider {
@@ -77,25 +94,38 @@
   font: var(--regular-font);
   letter-spacing: var(--one);
   color: var(--steam-green-400);
+
+  @media (max-width: 768px) {
+    text-align: center;
+  }
 }
 
 .shortDescription,
 .fullDescription {
-  margin-bottom: var(--extra-small-offset);
   font: var(--regular-font);
   color: var(--noble-gray-800);
+
+  @media (max-width: 768px) {
+    text-align: center;
+  }
 }
 
 .sizesWrapper {
   display: grid;
   order: 4;
   grid-template-columns: max-content;
-  margin-bottom: var(--extra-small-offset);
   width: max-content;
   font: var(--regular-font);
   letter-spacing: var(--one);
   color: var(--steam-green-400);
   gap: var(--tiny-offset);
+
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+  }
 }
 
 .sizeButton {
@@ -123,6 +153,10 @@
       color: var(--steam-green-400);
     }
   }
+
+  @media (max-width: 768px) {
+    grid-row: none;
+  }
 }
 
 .selected {
@@ -134,10 +168,13 @@
 /* stylelint-disable-next-line selector-class-pattern */
 .SKUSpan,
 .categoriesSpan {
-  margin-bottom: var(--extra-small-offset);
   font: var(--regular-font);
   letter-spacing: var(--one);
   color: var(--noble-gray-800);
+
+  @media (max-width: 768px) {
+    align-self: center;
+  }
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
@@ -183,14 +220,19 @@
   @include green-btn;
 
   padding: calc(var(--small-offset) / 3) calc(var(--small-offset) / 2);
+  width: 100%;
+  max-width: 12rem;
 }
 
 .buttonsWrapper {
   display: flex;
   align-items: center;
   order: 5;
-  margin-bottom: var(--extra-small-offset);
   gap: var(--tiny-offset);
+
+  @media (max-width: 768px) {
+    align-self: center;
+  }
 }
 
 .switchToWishListButton {
