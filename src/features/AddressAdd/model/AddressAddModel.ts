@@ -1,6 +1,6 @@
 import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import type { AddressType } from '@/shared/types/address.ts';
-import type { Address } from '@/shared/types/user.ts';
+import type { Address, User } from '@/shared/types/user.ts';
 
 import AddressModel from '@/entities/Address/model/AddressModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
@@ -33,6 +33,43 @@ class AddressAddModel {
     this.init();
   }
 
+  private async addAddressType(): Promise<void> {
+    const updatedUser = await getCustomerModel().getCurrentUser();
+    if (updatedUser) {
+      const newAddress = updatedUser.addresses[updatedUser.addresses.length - 1];
+      if (newAddress && newAddress.id) {
+        const action =
+          this.addressType === ADDRESS_TYPE.BILLING
+            ? CustomerModel.actionAddBillingAddress(newAddress.id)
+            : CustomerModel.actionAddShippingAddress(newAddress.id);
+
+        await getCustomerModel().editCustomer([action], updatedUser);
+
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_ADDED, MESSAGE_STATUS.SUCCESS);
+        modal.hide();
+        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_ADDRESSES, '');
+      }
+    }
+  }
+
+  private createAddress(user: User): Address {
+    const store = getStore().getState();
+    const { email, firstName, lastName } = user;
+    const { city, postalCode, streetName } = this.getFormAddressData();
+    return {
+      city,
+      country: this.addressType === ADDRESS_TYPE.BILLING ? store.billingCountry : store.shippingCountry,
+      email,
+      firstName,
+      id: '',
+      lastName,
+      postalCode,
+      state: '',
+      streetName,
+      streetNumber: '',
+    };
+  }
+
   private async createNewAddress(): Promise<void> {
     const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
     this.view.getSaveChangesButton().getHTML().append(loader);
@@ -40,32 +77,9 @@ class AddressAddModel {
     try {
       const user = await getCustomerModel().getCurrentUser();
       if (user) {
-        const store = getStore().getState();
-        const { email, firstName, lastName } = user;
-        const { city, postalCode, streetName } = this.getFormAddressData();
-        const address: Address = {
-          city,
-          country: this.addressType === ADDRESS_TYPE.BILLING ? store.billingCountry : store.shippingCountry,
-          email,
-          firstName,
-          id: '',
-          lastName,
-          postalCode,
-          state: '',
-          streetName,
-          streetNumber: '',
-        };
-
-        if (this.addressType === ADDRESS_TYPE.BILLING) {
-          user.billingAddress.push(address);
-        } else {
-          user.shippingAddress.push(address);
-        }
-
-        await getCustomerModel().editCustomer([CustomerModel.actionAddAddress(address)], user);
-        modal.hide();
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_ADDED, MESSAGE_STATUS.SUCCESS);
-        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_ADDRESSES, '');
+        const address = this.createAddress(user);
+        await this.saveAddress(user, address);
+        await this.addAddressType();
       }
     } catch (error) {
       showErrorMessage();
@@ -97,6 +111,10 @@ class AddressAddModel {
     this.setSubmitFormHandler();
     this.setCancelButtonHandler();
     this.view.getHTML().append(this.newAddress.getHTML());
+  }
+
+  private async saveAddress(user: User, address: Address): Promise<void> {
+    await getCustomerModel().editCustomer([CustomerModel.actionAddAddress(address)], user);
   }
 
   private setCancelButtonHandler(): boolean {
