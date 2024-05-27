@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import type { TooltipTextKeysType } from '@/shared/constants/tooltip.ts';
 import type { Address } from '@/shared/types/user';
 
@@ -25,6 +26,8 @@ class UserAddressView {
   private editButton: ButtonModel;
 
   private editLogo: HTMLDivElement;
+
+  private labels: Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }> = new Map();
 
   private view: HTMLLIElement;
 
@@ -165,6 +168,14 @@ class UserAddressView {
       default:
         break;
     }
+
+    if (addressType) {
+      this.labels.set(addressType, {
+        inactive,
+        type: ActiveType,
+      });
+    }
+
     if (inactive) {
       addressType?.classList.add(styles.inactive);
     }
@@ -184,6 +195,10 @@ class UserAddressView {
 
   public getHTML(): HTMLLIElement {
     return this.view;
+  }
+
+  public getLabels(): Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }> {
+    return this.labels;
   }
 }
 
