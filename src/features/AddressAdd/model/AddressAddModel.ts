@@ -39,7 +39,7 @@ class AddressAddModel {
       const updatedUser = await getCustomerModel().getCurrentUser();
       if (updatedUser) {
         const newAddress = this.getNewAddress(updatedUser);
-        if (newAddress && newAddress.id) {
+        if (newAddress?.id) {
           const actions = this.getAddressActions(newAddress.id);
           if (this.shouldSetDefaultAddress()) {
             actions.push(this.getDefaultAddressAction(newAddress.id));
@@ -153,7 +153,7 @@ class AddressAddModel {
   }
 
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
-    if (inputField && inputField.getView && typeof inputField.getView === 'function') {
+    if (inputField?.getView && typeof inputField.getView === 'function') {
       const inputHTML = inputField.getView().getInput().getHTML();
       inputHTML.addEventListener('input', () => {
         this.switchSubmitFormButtonAccess();

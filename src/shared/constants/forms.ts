@@ -47,6 +47,32 @@ export const USER_ADDRESS_TYPE = {
 
 export type UserAddressType = (typeof USER_ADDRESS_TYPE)[keyof typeof USER_ADDRESS_TYPE];
 
+export const ADDRESS_TYPE = {
+  BILLING: 'billing',
+  DEFAULT_BILLING: 'default billing',
+  DEFAULT_SHIPPING: 'default shipping',
+  SHIPPING: 'shipping',
+} as const;
+
+export type AddressTypeType = (typeof ADDRESS_TYPE)[keyof typeof ADDRESS_TYPE];
+
+export const LABEL_TYPE = {
+  en: {
+    BILLING: 'billing',
+    DEFAULT_BILLING: 'default billing',
+    DEFAULT_SHIPPING: 'default shipping',
+    SHIPPING: 'shipping',
+  },
+  ru: {
+    BILLING: 'Выставление счетов',
+    DEFAULT_BILLING: 'По умолчанию для выставления счетов',
+    DEFAULT_SHIPPING: 'По умолчанию для доставки',
+    SHIPPING: 'Доставка',
+  },
+} as const;
+
+export type LabelTypeType = (typeof LABEL_TYPE)[keyof typeof LABEL_TYPE];
+
 export const USER_POSTAL_CODE = {
   BILLING_POSTAL_CODE: 'billing_PostalCode',
   POSTAL_CODE: 'postalCode',

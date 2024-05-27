@@ -31,4 +31,10 @@
 
 .createAddressButton {
   @include round-btn;
+
+  padding: var(--extra-small-offset);
+}
+
+.addressesListWrapper {
+  grid-column: 2 span;
 }

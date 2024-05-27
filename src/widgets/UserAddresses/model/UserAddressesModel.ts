@@ -1,11 +1,12 @@
-import type { UserAddressType } from '@/shared/constants/forms.ts';
+/* eslint-disable max-lines-per-function */
+import type { AddressTypeType } from '@/shared/constants/forms.ts';
 import type { Address, User } from '@/shared/types/user.ts';
 
 import UserAddressModel from '@/entities/UserAddress/model/UserAddressModel.ts';
 import AddressAddModel from '@/features/AddressAdd/model/AddressAddModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import { DEFAULT_ADDRESS, USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
-import { ADDRESS_TYPE } from '@/shared/types/address.ts';
+import { ADDRESS_TYPE, DEFAULT_ADDRESS } from '@/shared/constants/forms.ts';
+import { arrayContainsObjectWithValue, objectHasPropertyValue } from '@/shared/utils/hasValue.ts';
 
 import UserAddressesView from '../view/UserAddressesView.ts';
 
@@ -22,16 +23,83 @@ class UserAddressesModel {
     this.setCreateShippingAddressHandler();
   }
 
-  private createAddresses(addresses: Address[], type: UserAddressType, defaultAddressId = ''): void {
-    addresses.forEach((address) => {
-      this.getHTML().append(new UserAddressModel(this.currentUser, address, type, defaultAddressId).getHTML());
-    });
-  }
-
   private createCurrentAddresses(): void {
-    const { billingAddress, defaultBillingAddressId, defaultShippingAddressId, shippingAddress } = this.currentUser;
-    this.createAddresses(billingAddress, USER_ADDRESS_TYPE.BILLING, defaultBillingAddressId?.id);
-    this.createAddresses(shippingAddress, USER_ADDRESS_TYPE.SHIPPING, defaultShippingAddressId?.id);
+    const { addresses, billingAddress, defaultBillingAddressId, defaultShippingAddressId, shippingAddress } =
+      this.currentUser;
+
+    addresses.forEach((address) => {
+      const adressesContainsID = (array: Address[]): boolean => arrayContainsObjectWithValue(array, 'id', address.id);
+      const defaultContainsID = (defaultAddress: Address | null): boolean => {
+        if (!defaultAddress) {
+          return false;
+        }
+        return objectHasPropertyValue(defaultAddress, 'id', address.id);
+      };
+
+      const createAddress = (activeTypes: AddressTypeType[], inactiveTypes?: AddressTypeType[]): UserAddressModel =>
+        new UserAddressModel(this.currentUser, address, activeTypes, inactiveTypes);
+
+      let newAddress;
+
+      switch (true) {
+        case defaultContainsID(defaultBillingAddressId) && defaultContainsID(defaultShippingAddressId):
+          newAddress = new UserAddressModel(this.currentUser, address, [
+            ADDRESS_TYPE.BILLING,
+            ADDRESS_TYPE.SHIPPING,
+            ADDRESS_TYPE.DEFAULT_BILLING,
+            ADDRESS_TYPE.DEFAULT_SHIPPING,
+          ]);
+          break;
+        case adressesContainsID(shippingAddress) && defaultContainsID(defaultBillingAddressId):
+          newAddress = createAddress(
+            [ADDRESS_TYPE.BILLING, ADDRESS_TYPE.SHIPPING, ADDRESS_TYPE.DEFAULT_BILLING],
+            [ADDRESS_TYPE.DEFAULT_SHIPPING],
+          );
+          break;
+        case adressesContainsID(billingAddress) && defaultContainsID(defaultShippingAddressId):
+          newAddress = createAddress(
+            [ADDRESS_TYPE.BILLING, ADDRESS_TYPE.SHIPPING, ADDRESS_TYPE.DEFAULT_SHIPPING],
+            [ADDRESS_TYPE.DEFAULT_BILLING],
+          );
+          break;
+        case adressesContainsID(billingAddress) && adressesContainsID(shippingAddress):
+          newAddress = createAddress(
+            [ADDRESS_TYPE.BILLING, ADDRESS_TYPE.SHIPPING],
+            [ADDRESS_TYPE.DEFAULT_BILLING, ADDRESS_TYPE.DEFAULT_SHIPPING],
+          );
+          break;
+        case defaultContainsID(defaultBillingAddressId):
+          newAddress = createAddress(
+            [ADDRESS_TYPE.BILLING, ADDRESS_TYPE.DEFAULT_BILLING],
+            [ADDRESS_TYPE.DEFAULT_SHIPPING, ADDRESS_TYPE.SHIPPING],
+          );
+          break;
+        case defaultContainsID(defaultShippingAddressId):
+          newAddress = createAddress(
+            [ADDRESS_TYPE.SHIPPING, ADDRESS_TYPE.DEFAULT_SHIPPING],
+            [ADDRESS_TYPE.DEFAULT_BILLING, ADDRESS_TYPE.BILLING],
+          );
+          break;
+        case adressesContainsID(billingAddress):
+          newAddress = createAddress(
+            [ADDRESS_TYPE.BILLING],
+            [ADDRESS_TYPE.DEFAULT_BILLING, ADDRESS_TYPE.DEFAULT_SHIPPING, ADDRESS_TYPE.SHIPPING],
+          );
+          break;
+        case adressesContainsID(shippingAddress):
+          newAddress = createAddress(
+            [ADDRESS_TYPE.SHIPPING],
+            [ADDRESS_TYPE.DEFAULT_BILLING, ADDRESS_TYPE.DEFAULT_SHIPPING, ADDRESS_TYPE.BILLING],
+          );
+          break;
+        default:
+          break;
+      }
+
+      if (newAddress) {
+        this.view.getAddressesListWrapper().append(newAddress.getHTML());
+      }
+    });
   }
 
   private setCreateBillingAddressHandler(): void {
