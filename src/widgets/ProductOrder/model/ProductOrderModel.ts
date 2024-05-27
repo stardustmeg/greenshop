@@ -1,16 +1,21 @@
-import type { CartProduct, EditCartItem } from '@/shared/types/cart.ts';
+import type { Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import { CartActive } from '@/shared/types/cart.ts';
 
 import ProductOrderView from '../view/ProductOrderView.ts';
 
+type Callback = (cart: Cart) => void;
+
 class ProductOrderModel {
+  private callback: Callback;
+
   private productItem: CartProduct;
 
   private view: ProductOrderView;
 
-  constructor(productItem: CartProduct) {
+  constructor(productItem: CartProduct, callback: Callback) {
+    this.callback = callback;
     this.productItem = productItem;
     this.view = new ProductOrderView(this.productItem, this.updateProductHandler.bind(this));
     this.init();
@@ -28,9 +33,10 @@ class ProductOrderModel {
 
   public async updateProductHandler(active: CartActive): Promise<void> {
     let updateItem: CartProduct | undefined;
+    let cart: Cart | null = null;
     switch (active) {
       case CartActive.DELETE: {
-        const cart = await getCartModel().deleteProductFromCart(this.productItem);
+        cart = await getCartModel().deleteProductFromCart(this.productItem);
         updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
         break;
       }
@@ -40,7 +46,7 @@ class ProductOrderModel {
           lineId: this.productItem.lineItemId,
           quantity: this.productItem.quantity - 1,
         };
-        const cart = await getCartModel().editProductCount(active);
+        cart = await getCartModel().editProductCount(active);
         updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
         break;
       }
@@ -49,7 +55,7 @@ class ProductOrderModel {
           lineId: this.productItem.lineItemId,
           quantity: this.productItem.quantity + 1,
         };
-        const cart = await getCartModel().editProductCount(active);
+        cart = await getCartModel().editProductCount(active);
         updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
         break;
       }
@@ -63,6 +69,10 @@ class ProductOrderModel {
       this.view.updateInfo(this.productItem);
     } else {
       this.getHTML().remove();
+    }
+
+    if (cart) {
+      this.callback(cart);
     }
   }
 }

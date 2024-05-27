@@ -4,6 +4,7 @@ import type {
   Cart as CartResponse,
   ClientResponse,
   LineItem,
+  MyCartUpdateAction,
 } from '@commercetools/platform-sdk';
 
 import getStore from '@/shared/Store/Store.ts';
@@ -128,6 +129,19 @@ export class CartModel {
   public clear(): boolean {
     this.cart = null;
     return true;
+  }
+
+  public async clearCart(): Promise<Cart> {
+    if (!this.cart) {
+      this.cart = await this.getCart();
+    }
+    const actions: MyCartUpdateAction[] = this.cart?.products.map((lineItem) => ({
+      action: 'removeLineItem',
+      lineItemId: lineItem.lineItemId,
+    }));
+    const data = await this.root.clearCart(this.cart, actions);
+    this.cart = this.getCartFromData(data);
+    return this.cart;
   }
 
   public async create(): Promise<Cart> {

@@ -1,12 +1,24 @@
+import type { Cart } from '@/shared/types/cart';
 import type ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
+import LinkModel from '@/shared/Link/model/LinkModel.ts';
+// import getStore from '@/shared/Store/Store.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
+// import SVG_DETAILS from '@/shared/constants/svg.ts';
+// import { buildPathName } from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+// import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
 import styles from './cartPageView.module.scss';
 
+type ClearCallback = () => void;
+
 class CartPageView {
+  private clearCallback: ClearCallback;
+
   private page: HTMLDivElement;
 
   private parent: HTMLDivElement;
@@ -15,18 +27,33 @@ class CartPageView {
 
   private productWrap: HTMLDivElement;
 
+  private subTotal: HTMLParagraphElement;
+
   private table: HTMLTableElement | null = null;
 
   private tableBody: HTMLTableSectionElement | null = null;
 
+  private total: HTMLParagraphElement;
+
   private totalWrap: HTMLDivElement;
 
-  constructor(parent: HTMLDivElement) {
+  constructor(parent: HTMLDivElement, clearCallback: ClearCallback) {
     this.parent = parent;
     this.parent.innerHTML = '';
+    this.clearCallback = clearCallback;
     this.page = this.createPageHTML();
     this.productWrap = this.createWrapHTML();
     this.productWrap.classList.add(styles.products);
+    this.subTotal = createBaseElement({
+      cssClasses: [styles.totalTitle],
+      // innerContent: `$ ${totalPriceSum.toFixed(2)}`,
+      tag: 'p',
+    });
+    this.total = createBaseElement({
+      cssClasses: [styles.totalPrice],
+      // innerContent: `$ ${totalPriceSum.toFixed(2)}`,
+      tag: 'p',
+    });
     this.totalWrap = this.createWrapHTML();
     this.totalWrap.classList.add(styles.total);
     window.scrollTo(0, 0);
@@ -57,7 +84,8 @@ class CartPageView {
       innerContent: 'Total',
       tag: 'th',
     });
-    const thDelete = createBaseElement({ cssClasses: [styles.th, styles.deleteCell, styles.mainText], tag: 'th' });
+    const thDelete = this.createDeleCell();
+    // createBaseElement({ cssClasses: [styles.th, styles.deleteCell, styles.mainText], tag: 'th' });
     this.tableBody = createBaseElement({ cssClasses: [styles.tbody], tag: 'tbody' });
     this.table.append(thead, this.tableBody);
     thead.append(tr);
@@ -65,7 +93,7 @@ class CartPageView {
     this.productWrap.append(this.table);
   }
 
-  private addTotalInfo(totalPriceSum: number): void {
+  private addTotalInfo(): void {
     const title = createBaseElement({
       cssClasses: [styles.totalTitle, styles.border, styles.mobileHide],
       innerContent: 'Cart Totals',
@@ -77,19 +105,15 @@ class CartPageView {
       tag: 'p',
     });
     const couponWrap = this.createCouponHTML();
-    const subtotalWrap = this.createSubtotalHTML(totalPriceSum);
+    const subtotalWrap = this.createSubtotalHTML();
     const discountWrap = this.createDiscountHTML();
-    const totalWrap = this.createTotalHTML(totalPriceSum);
+    const totalWrap = this.createTotalHTML();
     const finalButton = createBaseElement({
-      cssClasses: [styles.button],
+      cssClasses: [styles.button, styles.checkoutBtn],
       innerContent: 'Proceed To Checkout',
       tag: 'button',
     });
-    const continueLink = createBaseElement({
-      cssClasses: [styles.continue, styles.mobileHide],
-      innerContent: 'Continue Shopping',
-      tag: 'a',
-    });
+    const continueLink = this.createCatalogLinkHTML();
     this.totalWrap.append(
       title,
       couponTitle,
@@ -98,8 +122,24 @@ class CartPageView {
       discountWrap,
       totalWrap,
       finalButton,
-      continueLink,
+      continueLink.getHTML(),
     );
+  }
+
+  private createCatalogLinkHTML(): LinkModel {
+    const link = new LinkModel({
+      attrs: {
+        href: PAGE_ID.CATALOG_PAGE,
+      },
+      classes: [styles.continue, styles.mobileHide],
+      text: 'Continue Shopping',
+    });
+
+    link.getHTML().addEventListener('click', (event) => {
+      event.preventDefault();
+      RouterModel.getInstance().navigateTo(PAGE_ID.CATALOG_PAGE);
+    });
+    return link;
   }
 
   private createCouponHTML(): HTMLDivElement {
@@ -110,10 +150,37 @@ class CartPageView {
       placeholder: 'Enter coupon here...',
       type: INPUT_TYPE.TEXT,
     });
-    couponInput.getHTML().classList.add('couponInput');
-    const couponButton = createBaseElement({ cssClasses: [styles.button], innerContent: 'Apply', tag: 'button' });
+    couponInput.getHTML().classList.add(styles.couponInput);
+    const couponButton = createBaseElement({
+      cssClasses: [styles.button, styles.applyBtn],
+      innerContent: 'Apply',
+      tag: 'button',
+    });
     couponWrap.append(couponInput.getHTML(), couponButton);
     return couponWrap;
+  }
+
+  private createDeleCell(): HTMLTableCellElement {
+    const tdDelete = createBaseElement({ cssClasses: [styles.th, styles.deleteCell, styles.mainText], tag: 'th' });
+    const clear = new LinkModel({
+      // attrs: {
+      //   href: PAGE_ID.CATALOG_PAGE,
+      // },
+      classes: [styles.continue, styles.clear],
+      text: 'Clear all',
+    });
+
+    clear.getHTML().addEventListener('click', (event) => {
+      event.preventDefault();
+      this.clearCallback();
+    });
+    // const deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], innerContent: 'Clear', tag: 'button' });
+    // deleteButton.addEventListener('click', () => {});
+    tdDelete.append(clear.getHTML());
+    // const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    // svg.append(createSVGUse(SVG_DETAILS.DELETE));
+    // deleteButton.append(svg);
+    return tdDelete;
   }
 
   private createDiscountHTML(): HTMLDivElement {
@@ -135,27 +202,28 @@ class CartPageView {
     return this.page;
   }
 
-  private createSubtotalHTML(totalPriceSum: number): HTMLDivElement {
+  private createSubtotalHTML(): HTMLDivElement {
     const subtotalWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
     const subtotalTitle = createBaseElement({ cssClasses: [styles.title], innerContent: 'Subtotal', tag: 'p' });
-    const subtotalValue = createBaseElement({
-      cssClasses: [styles.totalTitle],
-      innerContent: `$ ${totalPriceSum.toFixed(2)}`,
-      tag: 'p',
-    });
-    subtotalWrap.append(subtotalTitle, subtotalValue);
+
+    // const subtotalValue = createBaseElement({
+    //   cssClasses: [styles.totalTitle],
+    //   innerContent: `$ ${totalPriceSum.toFixed(2)}`,
+    //   tag: 'p',
+    // });
+    subtotalWrap.append(subtotalTitle, this.subTotal);
     return subtotalWrap;
   }
 
-  private createTotalHTML(totalPriceSum: number): HTMLDivElement {
+  private createTotalHTML(): HTMLDivElement {
     const totalWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
     const totalTitle = createBaseElement({ cssClasses: [styles.totalTitle], innerContent: 'Total', tag: 'p' });
-    const totalValue = createBaseElement({
-      cssClasses: [styles.totalPrice],
-      innerContent: `$ ${totalPriceSum.toFixed(2)}`,
-      tag: 'p',
-    });
-    totalWrap.append(totalTitle, totalValue);
+    // const totalValue = createBaseElement({
+    //   cssClasses: [styles.totalPrice],
+    //   innerContent: `$ ${totalPriceSum.toFixed(2)}`,
+    //   tag: 'p',
+    // });
+    totalWrap.append(totalTitle, this.total);
     return totalWrap;
   }
 
@@ -181,8 +249,14 @@ class CartPageView {
     this.productRow = [];
     this.addTableHeader();
     productsItem.forEach((productEl) => this.tableBody?.append(productEl.getHTML()));
-    const totalPriceSum = productsItem.reduce((sum, product) => sum + product.getProduct().totalPrice, 0);
-    this.addTotalInfo(totalPriceSum);
+    // const totalPriceSum = productsItem.reduce((sum, product) => sum + product.getProduct().totalPrice, 0);
+    this.addTotalInfo();
+  }
+
+  public updateTotal(cart: Cart): void {
+    const total = cart.products.reduce((sum, product) => sum + product.totalPrice, 0);
+    this.subTotal.innerHTML = `$ ${total.toFixed(2)}`;
+    this.total.innerHTML = `$ ${total.toFixed(2)}`;
   }
 }
 export default CartPageView;

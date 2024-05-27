@@ -4,6 +4,7 @@ import type {
   Cart as CartResponse,
   ClientResponse,
   MyCartDraft,
+  MyCartUpdateAction,
 } from '@commercetools/platform-sdk';
 
 import { CURRENCY } from '@/shared/constants/product.ts';
@@ -33,6 +34,22 @@ export class CartApi {
               variantId: addCartItem.variantId,
             },
           ],
+          version: cart.version,
+        },
+      })
+      .execute();
+    return data;
+  }
+
+  public async clearCart(cart: Cart, actions: MyCartUpdateAction[]): Promise<ClientResponse<CartResponse>> {
+    const data = await this.client
+      .apiRoot()
+      .me()
+      .carts()
+      .withId({ ID: cart.id })
+      .post({
+        body: {
+          actions,
           version: cart.version,
         },
       })
