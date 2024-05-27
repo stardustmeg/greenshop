@@ -68,30 +68,6 @@ const determineNewAddress = (
         [ADDRESS_TYPE.DEFAULT_BILLING, ADDRESS_TYPE.DEFAULT_SHIPPING],
       );
 
-    case defaultContainsID(defaultBillingAddressId): // defaultBilling
-      return createAddress(
-        [ADDRESS_TYPE.DEFAULT_BILLING],
-        [ADDRESS_TYPE.SHIPPING, ADDRESS_TYPE.BILLING, ADDRESS_TYPE.DEFAULT_SHIPPING],
-      );
-
-    case defaultContainsID(defaultShippingAddressId): // defaultShipping
-      return createAddress(
-        [ADDRESS_TYPE.DEFAULT_SHIPPING],
-        [ADDRESS_TYPE.SHIPPING, ADDRESS_TYPE.BILLING, ADDRESS_TYPE.DEFAULT_BILLING],
-      );
-
-    case addressesContainsID(billingAddress): // billing
-      return createAddress(
-        [ADDRESS_TYPE.BILLING],
-        [ADDRESS_TYPE.DEFAULT_SHIPPING, ADDRESS_TYPE.SHIPPING, ADDRESS_TYPE.DEFAULT_BILLING],
-      );
-
-    case addressesContainsID(shippingAddress): // shipping
-      return createAddress(
-        [ADDRESS_TYPE.SHIPPING],
-        [ADDRESS_TYPE.DEFAULT_SHIPPING, ADDRESS_TYPE.BILLING, ADDRESS_TYPE.DEFAULT_BILLING],
-      );
-
     case addressesContainsID(billingAddress) && defaultContainsID(defaultBillingAddressId): // billing, defaultBilling
       return createAddress(
         [ADDRESS_TYPE.BILLING, ADDRESS_TYPE.DEFAULT_BILLING],
@@ -114,6 +90,30 @@ const determineNewAddress = (
       return createAddress(
         [ADDRESS_TYPE.SHIPPING, ADDRESS_TYPE.DEFAULT_SHIPPING],
         [ADDRESS_TYPE.BILLING, ADDRESS_TYPE.DEFAULT_BILLING],
+      );
+
+    case addressesContainsID(billingAddress): // billing
+      return createAddress(
+        [ADDRESS_TYPE.BILLING],
+        [ADDRESS_TYPE.DEFAULT_SHIPPING, ADDRESS_TYPE.SHIPPING, ADDRESS_TYPE.DEFAULT_BILLING],
+      );
+
+    case addressesContainsID(shippingAddress): // shipping
+      return createAddress(
+        [ADDRESS_TYPE.SHIPPING],
+        [ADDRESS_TYPE.DEFAULT_SHIPPING, ADDRESS_TYPE.BILLING, ADDRESS_TYPE.DEFAULT_BILLING],
+      );
+
+    case defaultContainsID(defaultBillingAddressId): // defaultBilling
+      return createAddress(
+        [ADDRESS_TYPE.DEFAULT_BILLING],
+        [ADDRESS_TYPE.SHIPPING, ADDRESS_TYPE.BILLING, ADDRESS_TYPE.DEFAULT_SHIPPING],
+      );
+
+    case defaultContainsID(defaultShippingAddressId): // defaultShipping
+      return createAddress(
+        [ADDRESS_TYPE.DEFAULT_SHIPPING],
+        [ADDRESS_TYPE.SHIPPING, ADDRESS_TYPE.BILLING, ADDRESS_TYPE.DEFAULT_BILLING],
       );
 
     default: // None
