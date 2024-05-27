@@ -1,29 +1,33 @@
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
-import getStore from '@/shared/Store/Store.ts';
-import { setSearchValue } from '@/shared/Store/actions.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import debounce from '@/shared/utils/debounce.ts';
 
 import ProductSearchView from '../view/ProductSearchView.ts';
 
-const SEARCH_DELAY = 800;
+const SEARCH_DELAY = 300;
 
 class ProductSearchModel {
-  private eventMediator = EventMediatorModel.getInstance();
+  private callback: () => void;
 
   private view = new ProductSearchView();
 
-  constructor() {
+  constructor(callback: () => void) {
+    this.callback = callback;
     this.init();
   }
 
   private handleSearchInput(): void {
-    getStore().dispatch(setSearchValue(this.view.getSearchField().getValue()));
-    this.eventMediator.notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, this.view.getSearchField().getValue());
+    RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
+    RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SEARCH, this.view.getSearchField().getValue());
+    this.callback();
   }
 
   private init(): void {
-    getStore().dispatch(setSearchValue(''));
+    EventMediatorModel.getInstance().subscribe(MEDIATOR_EVENT.CLEAR_CATALOG_SEARCH, () =>
+      this.view.getSearchField().setValue(''),
+    );
     this.setSearchFieldHandler();
   }
 

@@ -21,17 +21,21 @@ export const SEARCH_PARAMS_FIELD = {
   MAX_PRICE: 'price-max',
   META: 'meta',
   MIN_PRICE: 'price-min',
+  PAGE: 'page',
+  SEARCH: 'search',
   SIZE: 'size',
   SUBCATEGORY: 'subcategory',
 } as const;
 
 export const PRODUCT_INFO_TEXT = {
   en: {
+    DIFFICULTY: 'Difficulty: ',
     FULL_DESCRIPTION: 'Full description:',
     SHORT_DESCRIPTION: 'Short description:',
     SIZE: 'Size:',
   },
   ru: {
+    DIFFICULTY: 'Сложность: ',
     FULL_DESCRIPTION: 'Полное описание:',
     SHORT_DESCRIPTION: 'Краткое описание:',
     SIZE: 'Размер:',

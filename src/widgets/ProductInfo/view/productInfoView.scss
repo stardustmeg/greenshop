@@ -301,3 +301,28 @@
 .hidden {
   display: none;
 }
+
+.difficultySpan {
+  display: flex;
+  align-items: center;
+  order: 3;
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  color: var(--steam-green-400);
+  gap: var(--one);
+
+  @media (max-width: 768px) {
+    align-self: center;
+  }
+}
+
+.difficultyPoint {
+  width: var(--extra-small-offset);
+  height: var(--extra-small-offset);
+
+  svg {
+    width: var(--extra-small-offset);
+    height: var(--extra-small-offset);
+    fill: var(--steam-green-400);
+  }
+}

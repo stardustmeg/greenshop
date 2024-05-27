@@ -42,6 +42,8 @@ class ProductInfoView {
 
   private shortDescription: HTMLParagraphElement;
 
+  private sizeButtons: ButtonModel[] = [];
+
   private smallSlider: HTMLDivElement;
 
   private switchToCartButton: ButtonModel;
@@ -164,6 +166,23 @@ class ProductInfoView {
     return this.categoriesSpan;
   }
 
+  private createDifficultyPoints(): HTMLSpanElement[] {
+    const difficultyPoints: HTMLSpanElement[] = [];
+    for (let index = 0; index < Number(this.params.level); index += 1) {
+      const difficultyPoint = createBaseElement({
+        cssClasses: ['difficultyPoint'],
+        tag: 'span',
+      });
+
+      const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+      svg.append(createSVGUse(SVG_DETAILS.LEAVES));
+      difficultyPoint.append(svg);
+
+      difficultyPoints.push(difficultyPoint);
+    }
+    return difficultyPoints;
+  }
+
   private createHTML(): HTMLDivElement {
     this.view = createBaseElement({
       cssClasses: ['wrapper'],
@@ -215,6 +234,17 @@ class ProductInfoView {
         textNode.textContent = text;
       }
     });
+
+    if (this.params.level) {
+      const difficultySpan = createBaseElement({
+        cssClasses: ['difficultySpan'],
+        innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].DIFFICULTY,
+        tag: 'span',
+      });
+
+      difficultySpan.append(...this.createDifficultyPoints());
+      this.rightWrapper.append(difficultySpan);
+    }
 
     shortDescriptionWrapper.append(this.shortDescription);
     this.rightWrapper.append(this.title, shortDescriptionWrapper);
@@ -287,6 +317,7 @@ class ProductInfoView {
       button.setDisabled();
       button.getHTML().classList.add('selected');
     }
+    this.sizeButtons.push(button);
     return button;
   }
 
@@ -393,12 +424,14 @@ class ProductInfoView {
     getCartModel()
       .getCart()
       .then((cart) => {
-        if (cart.products.every((product) => product.key !== this.params.key)) {
-          this.switchToCartButton.getHTML().textContent =
-            BUTTON_TEXT[getStore().getState().currentLanguage].ADD_PRODUCT;
-        } else {
+        if (
+          cart.products.find((product) => product.key === this.params.key && product.size === this.params.currentSize)
+        ) {
           this.switchToCartButton.getHTML().textContent =
             BUTTON_TEXT[getStore().getState().currentLanguage].DELETE_PRODUCT;
+        } else {
+          this.switchToCartButton.getHTML().textContent =
+            BUTTON_TEXT[getStore().getState().currentLanguage].ADD_PRODUCT;
         }
       })
       .catch(showErrorMessage);
@@ -428,6 +461,10 @@ class ProductInfoView {
 
   public getRightWrapper(): HTMLDivElement {
     return this.rightWrapper;
+  }
+
+  public getSizeButtons(): ButtonModel[] {
+    return this.sizeButtons;
   }
 
   public getSmallSlider(): HTMLDivElement {

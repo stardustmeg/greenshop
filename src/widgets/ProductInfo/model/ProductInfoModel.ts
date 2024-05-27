@@ -2,6 +2,7 @@ import type { Cart } from '@/shared/types/cart.ts';
 import type { ProductInfoParams, Variant } from '@/shared/types/product.ts';
 import type { ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ProductModalSliderModel from '@/entities/ProductModalSlider/model/ProductModalSliderModel.ts';
 import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
@@ -12,7 +13,9 @@ import modal from '@/shared/Modal/model/ModalModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import { buildPathName } from '@/shared/utils/buildPathname.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 import Swiper from 'swiper';
 import 'swiper/css';
@@ -131,18 +134,35 @@ class ProductInfoModel {
     });
     this.bigSlider.autoplay.start();
 
-    const modalSlider = new ProductModalSliderModel(this.params).getHTML();
-
-    this.view.getBigSliderSlides().forEach((slide) => {
+    this.view.getBigSliderSlides().forEach((slide, index) => {
       slide.addEventListener('click', () => {
+        const modalSlider = new ProductModalSliderModel(this.params);
         modal.show();
-        modal.setContent(modalSlider);
+        modalSlider.getModalSlider()?.slideTo(index);
+        modal.setContent(modalSlider.getHTML());
       });
     });
 
     this.view.getRightWrapper().append(this.price.getHTML());
     this.switchToCartButtonHandler();
     this.switchToWishListButtonHandler();
+    this.setSizeButtonHandler();
+  }
+
+  private setSizeButtonHandler(): void {
+    this.view.getSizeButtons().forEach((sizeButton) => {
+      sizeButton.getHTML().addEventListener('click', () => {
+        const currentVariant = this.params.variant.find(({ size }) => size === sizeButton.getHTML().textContent);
+
+        if (currentVariant) {
+          const path = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
+            size: [currentVariant.size ?? this.params.variant[0].size],
+          })}`;
+          RouterModel.getInstance().navigateTo(path);
+          modal.hide();
+        }
+      });
+    });
   }
 
   private switchToCartButtonHandler(): void {
@@ -152,10 +172,12 @@ class ProductInfoModel {
       getCartModel()
         .getCart()
         .then((cart) => {
-          if (cart.products.every((product) => product.key !== this.params.key)) {
-            this.addProductToCart();
-          } else {
+          if (
+            cart.products.find((product) => product.key === this.params.key && product.size === this.params.currentSize)
+          ) {
             this.deleteProductFromCart(cart);
+          } else {
+            this.addProductToCart();
           }
         })
         .catch(showErrorMessage);
