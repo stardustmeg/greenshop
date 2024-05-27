@@ -29,11 +29,13 @@ export const SEARCH_PARAMS_FIELD = {
 
 export const PRODUCT_INFO_TEXT = {
   en: {
+    DIFFICULTY: 'Difficulty: ',
     FULL_DESCRIPTION: 'Full description:',
     SHORT_DESCRIPTION: 'Short description:',
     SIZE: 'Size:',
   },
   ru: {
+    DIFFICULTY: 'Сложность: ',
     FULL_DESCRIPTION: 'Полное описание:',
     SHORT_DESCRIPTION: 'Краткое описание:',
     SIZE: 'Размер:',
