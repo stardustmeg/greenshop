@@ -1,8 +1,10 @@
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import { SortDirection } from '@/shared/API/types/type.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { DATA_KEYS } from '@/shared/constants/common.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { SORTING_ID, TEXT } from '@/shared/constants/sorting.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import { isKeyOfSortField } from '@/shared/utils/isKeyOf.ts';
@@ -10,6 +12,8 @@ import { isKeyOfSortField } from '@/shared/utils/isKeyOf.ts';
 import styles from './productSortsView.module.scss';
 
 class ProductSortsView {
+  private callback: () => void;
+
   private currentSortingSpan: HTMLSpanElement;
 
   private sortingList: HTMLUListElement;
@@ -20,7 +24,8 @@ class ProductSortsView {
 
   private sortingWrapper: HTMLDivElement;
 
-  constructor() {
+  constructor(callback: () => void) {
+    this.callback = callback;
     this.currentSortingSpan = this.createCurrentSortingSpan();
     this.sortingListTitle = this.createSortingListTitle();
     this.sortingList = this.createSortingList();
@@ -40,21 +45,27 @@ class ProductSortsView {
   }
 
   private createCurrentSortingSpan(): HTMLSpanElement {
-    const { currentLanguage, selectedSorting } = getStore().getState();
-    const upperText = selectedSorting?.field.toUpperCase() ?? TEXT[currentLanguage].DEFAULT;
+    const selectedSorting = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.FIELD);
+
+    const upperText = selectedSorting
+      ? selectedSorting.toUpperCase()
+      : TEXT[getStore().getState().currentLanguage].DEFAULT.toUpperCase();
     if (isKeyOfSortField(upperText)) {
       this.currentSortingSpan = createBaseElement({
         cssClasses: [styles.currentSortingSpan],
-        innerContent: TEXT[currentLanguage][upperText],
+        innerContent: TEXT[getStore().getState().currentLanguage][upperText],
         tag: 'span',
       });
     }
 
     observeStore(selectCurrentLanguage, () => {
-      const { currentLanguage, selectedSorting } = getStore().getState();
-      const upperText = selectedSorting?.field.toUpperCase() ?? TEXT[currentLanguage].DEFAULT;
+      const selectedSorting = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.FIELD);
+      const upperText = selectedSorting
+        ? selectedSorting.toUpperCase()
+        : TEXT[getStore().getState().currentLanguage].DEFAULT.toUpperCase();
+
       if (isKeyOfSortField(upperText)) {
-        this.currentSortingSpan.innerText = TEXT[currentLanguage][upperText];
+        this.currentSortingSpan.innerText = TEXT[getStore().getState().currentLanguage][upperText];
       }
     });
 
@@ -93,7 +104,15 @@ class ProductSortsView {
       }
       this.sortingListLinks.forEach((link) => link.getHTML().classList.remove(styles.activeLink));
       link.getHTML().classList.add(styles.activeLink);
+
       this.currentSortingSpan.innerText = text;
+
+      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.FIELD, link.getHTML().id);
+      RouterModel.setSearchParams(
+        SEARCH_PARAMS_FIELD.DIRECTION,
+        String(link.getHTML().getAttribute(DATA_KEYS.DIRECTION)),
+      );
+      this.callback();
     });
 
     this.sortingListLinks.push(link);
@@ -116,19 +135,15 @@ class ProductSortsView {
     const priceLink = this.createSortingLink('', TEXT[getStore().getState().currentLanguage].PRICE, SORTING_ID.PRICE);
     const nameLink = this.createSortingLink('', TEXT[getStore().getState().currentLanguage].NAME, SORTING_ID.NAME);
 
-    const currentLink = this.sortingListLinks.find(
-      (link) => link.getHTML().id === getStore().getState().selectedSorting?.field,
-    );
+    const initialField = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.FIELD);
+    const initialDirection = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.DIRECTION);
+    const currentLink = this.sortingListLinks.find((link) => link.getHTML().id === initialField);
     currentLink?.getHTML().classList.add(styles.activeLink);
 
-    currentLink
-      ?.getHTML()
-      .classList.toggle(styles.pass, getStore().getState().selectedSorting?.direction === SortDirection.DESC);
-    currentLink
-      ?.getHTML()
-      .classList.toggle(styles.hight, getStore().getState().selectedSorting?.direction === SortDirection.DESC);
-    if (currentLink) {
-      currentLink.getHTML().dataset.direction = getStore().getState().selectedSorting?.direction;
+    if (currentLink && initialField) {
+      currentLink?.getHTML().classList.toggle(styles.pass, initialDirection === SortDirection.DESC);
+      currentLink?.getHTML().classList.toggle(styles.hight, initialDirection === SortDirection.DESC);
+      currentLink.getHTML().dataset.field = initialField;
     }
 
     observeStore(selectCurrentLanguage, () => {

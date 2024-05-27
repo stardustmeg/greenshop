@@ -12,6 +12,7 @@ interface ProductFiltersParams {
   priceRange: PriceRange | null;
   products: Product[] | null;
   sizes: SizeProductCount[] | null;
+  totalProductCount: number;
 }
 
 export interface SelectedFilters {
