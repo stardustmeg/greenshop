@@ -32,18 +32,18 @@ class UserInfoModel {
     EventMediatorModel.getInstance().subscribe(MEDIATOR_EVENT.REDRAW_USER_INFO, this.redrawUserInfo.bind(this));
   }
 
-  private redrawUserInfo(): void {
-    getCustomerModel()
-      .getCurrentUser()
-      .then((user) => {
-        if (user) {
-          this.view.getFirstName().textContent = userInfoName(user.firstName);
-          this.view.getLastName().textContent = userInfoLastName(user.lastName);
-          this.view.getEmail().textContent = userInfoEmail(user.email);
-          this.view.getBirthDate().textContent = userInfoDateOfBirth(user.birthDate);
-        }
-      })
-      .catch(showErrorMessage);
+  private async redrawUserInfo(): Promise<void> {
+    try {
+      const user = await getCustomerModel().getCurrentUser();
+      if (user) {
+        this.view.getFirstName().textContent = userInfoName(user.firstName);
+        this.view.getLastName().textContent = userInfoLastName(user.lastName);
+        this.view.getEmail().textContent = userInfoEmail(user.email);
+        this.view.getBirthDate().textContent = userInfoDateOfBirth(user.birthDate);
+      }
+    } catch (error) {
+      showErrorMessage(error);
+    }
   }
 
   private setEditInfoButtonHandler(): boolean {

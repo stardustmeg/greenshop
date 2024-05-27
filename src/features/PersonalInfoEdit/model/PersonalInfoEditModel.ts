@@ -47,8 +47,8 @@ class PersonalInfoEditModel {
           user,
         );
         modal.hide();
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PERSONAL_INFO_CHANGED, MESSAGE_STATUS.SUCCESS);
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_INFO, '');
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PERSONAL_INFO_CHANGED, MESSAGE_STATUS.SUCCESS);
       }
     } catch (error) {
       showErrorMessage(error);

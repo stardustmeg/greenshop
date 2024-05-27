@@ -119,8 +119,8 @@ class AddressAddModel {
   }
 
   private handleSuccess(): void {
+    EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_ADDRESSES, '');
     serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_ADDED, MESSAGE_STATUS.SUCCESS);
-    EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_ADDRESSES, '');
     modal.hide();
   }
 
