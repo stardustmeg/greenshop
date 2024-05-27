@@ -4,6 +4,10 @@
   padding: 0 var(--small-offset);
   animation: show 0.2s ease-out forwards;
   gap: 2%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 @keyframes show {
@@ -29,16 +33,16 @@
   flex-shrink: 1;
 
   @media (max-width: 768px) {
-    position: fixed;
+    position: sticky;
     left: 0;
     bottom: 0;
     z-index: 100;
     margin-bottom: var(--tiny-offset);
-    border-radius: var(--small-offset) var(--small-offset) 0 0;
+    border-radius: var(--large-br);
     padding: var(--small-offset);
     width: 100%;
-    box-shadow: var(--mellow-shadow-600);
-    background-color: var(--noble-gray-1000);
+    box-shadow: var(--mellow-shadow-700);
+    background-color: var(--white-tr);
     backdrop-filter: blur(10px);
   }
 }

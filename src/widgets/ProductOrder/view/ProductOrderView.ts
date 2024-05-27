@@ -1,11 +1,12 @@
 import type { CartProduct } from '@/shared/types/cart';
 
 import getStore from '@/shared/Store/Store.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import { LANGUAGE_CHOICE, TABLET_WIDTH } from '@/shared/constants/common.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import { CartActive } from '@/shared/types/cart.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import Hammer from 'hammerjs';
 
 import styles from './productOrderView.module.scss';
 
@@ -43,7 +44,7 @@ class ProductOrderView {
   }
 
   private createDeleCell(): HTMLTableCellElement {
-    const tdDelete = createBaseElement({ cssClasses: [styles.td, styles.deleteCell], tag: 'td' });
+    const tdDelete = createBaseElement({ cssClasses: [styles.td, styles.deleteCell, styles.hide], tag: 'td' });
     const deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], tag: 'button' });
     deleteButton.addEventListener('click', () => this.callback(CartActive.DELETE));
     tdDelete.append(deleteButton);
@@ -69,6 +70,19 @@ class ProductOrderView {
     const quantityCell = this.createQuantityCell();
     const deleteCell = this.createDeleCell();
     this.view.append(imgCell, tdProduct, tdSize, this.price, quantityCell, this.total, deleteCell);
+    const animation = new Hammer(this.view);
+    animation.on('swipeleft', () => {
+      if (window.innerWidth <= TABLET_WIDTH) {
+        this.view.style.transform = 'translateX(-100px)';
+        deleteCell.classList.remove(styles.hide);
+      }
+    });
+    animation.on('swiperight', () => {
+      if (window.innerWidth <= TABLET_WIDTH) {
+        this.view.style.transform = 'none';
+        deleteCell.classList.add(styles.hide);
+      }
+    });
     return this.view;
   }
 
