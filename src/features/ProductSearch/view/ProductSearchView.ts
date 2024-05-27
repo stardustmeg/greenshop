@@ -1,8 +1,10 @@
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { TEXT } from '@/shared/constants/sorting.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
@@ -34,6 +36,11 @@ class ProductSearchView {
       placeholder: TEXT[getStore().getState().currentLanguage].SEARCH,
       type: INPUT_TYPE.SEARCH,
     });
+
+    const initialValue = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SEARCH);
+    if (initialValue) {
+      this.searchField.setValue(initialValue);
+    }
 
     observeStore(selectCurrentLanguage, () => {
       this.searchField.getHTML().placeholder = TEXT[getStore().getState().currentLanguage].SEARCH;

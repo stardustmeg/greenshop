@@ -131,12 +131,12 @@ class ProductInfoModel {
     });
     this.bigSlider.autoplay.start();
 
-    const modalSlider = new ProductModalSliderModel(this.params).getHTML();
-
-    this.view.getBigSliderSlides().forEach((slide) => {
+    this.view.getBigSliderSlides().forEach((slide, index) => {
       slide.addEventListener('click', () => {
+        const modalSlider = new ProductModalSliderModel(this.params);
         modal.show();
-        modal.setContent(modalSlider);
+        modalSlider.getModalSlider()?.slideTo(index);
+        modal.setContent(modalSlider.getHTML());
       });
     });
 

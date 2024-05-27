@@ -32,9 +32,9 @@ class AppModel {
         const { default: CartPageModel } = await import('@/pages/CartPage/model/CartPageModel.ts');
         return new CartPageModel(this.appView.getHTML());
       },
-      [PAGE_ID.CATALOG_PAGE]: async (params: PageParams): Promise<Page> => {
+      [PAGE_ID.CATALOG_PAGE]: async (): Promise<Page> => {
         const { default: CatalogPageModel } = await import('@/pages/CatalogPage/model/CatalogPageModel.ts');
-        return new CatalogPageModel(this.appView.getHTML(), params);
+        return new CatalogPageModel(this.appView.getHTML());
       },
       [PAGE_ID.DEFAULT_PAGE]: async (): Promise<Page> => {
         const { default: MainPageModel } = await import('@/pages/MainPage/model/MainPageModel.ts');

@@ -9,7 +9,6 @@ const PROJECT_TITLE = import.meta.env.VITE_APP_PROJECT_TITLE;
 const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
 const NEXT_SEGMENT = import.meta.env.VITE_APP_NEXT_SEGMENT;
 const PATH_SEGMENTS_TO_KEEP = import.meta.env.VITE_APP_PATH_SEGMENTS_TO_KEEP;
-const SEARCH_SEGMENT = import.meta.env.VITE_APP_SEARCH_SEGMENT;
 
 class RouterModel {
   private static router: RouterModel;
@@ -46,8 +45,40 @@ class RouterModel {
     });
   }
 
+  public static appendSearchParams(key: string, value: string): void {
+    const url = new URL(decodeURIComponent(window.location.href));
+    url.searchParams.append(key, value);
+    const path = url.pathname + encodeURIComponent(url.search);
+    window.history.pushState({ path: path.slice(1) }, '', path);
+  }
+
+  public static clearSearchParams(): void {
+    const url = new URL(decodeURIComponent(window.location.href));
+    const path = `${DEFAULT_SEGMENT}${url.pathname.split(DEFAULT_SEGMENT)[NEXT_SEGMENT]}${DEFAULT_SEGMENT}`;
+    window.history.pushState({ path: path.slice(1) }, '', path);
+  }
+
+  public static deleteSearchParams(key: string): void {
+    const url = new URL(decodeURIComponent(window.location.href));
+    url.searchParams.delete(key);
+    const path = url.pathname + encodeURIComponent(url.search);
+    window.history.pushState({ path: path.slice(1) }, '', path);
+  }
+
   public static getInstance(): RouterModel {
     return RouterModel.router;
+  }
+
+  public static getSearchParams(): URLSearchParams {
+    return new URL(decodeURIComponent(window.location.href)).searchParams;
+  }
+
+  public static setSearchParams(key: string, value: string): void {
+    const url = new URL(decodeURIComponent(window.location.href));
+    url.searchParams.delete(key);
+    url.searchParams.set(key, value);
+    const path = url.pathname + encodeURIComponent(url.search);
+    window.history.pushState({ path: path.slice(1) }, '', path);
   }
 
   private async checkPageAndParams(
@@ -57,7 +88,6 @@ class RouterModel {
     const hasRoute = this.routes.has(currentPage);
     const decodePath = decodeURIComponent(path);
     const id = decodePath.split(DEFAULT_SEGMENT).slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)[NEXT_SEGMENT];
-    const searchParams = decodeURIComponent(decodePath).split(SEARCH_SEGMENT)[NEXT_SEGMENT];
     const title = `${PROJECT_TITLE} | ${hasRoute ? formattedText(currentPage === PAGE_ID.DEFAULT_PAGE ? PAGE_ID.MAIN_PAGE.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT) : currentPage.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)) : PAGE_ID.NOT_FOUND_PAGE.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)}`;
     document.title = title;
 
@@ -71,7 +101,6 @@ class RouterModel {
       params: {
         [currentPage.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)]: {
           id: id ?? null,
-          searchParams: searchParams ?? null,
         },
       },
     };

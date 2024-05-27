@@ -21,6 +21,8 @@ export const SEARCH_PARAMS_FIELD = {
   MAX_PRICE: 'price-max',
   META: 'meta',
   MIN_PRICE: 'price-min',
+  PAGE: 'page',
+  SEARCH: 'search',
   SIZE: 'size',
   SUBCATEGORY: 'subcategory',
 } as const;
