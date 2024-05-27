@@ -51,7 +51,7 @@ class PersonalInfoEditModel {
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_INFO, '');
       }
     } catch (error) {
-      showErrorMessage();
+      showErrorMessage(error);
     } finally {
       loader.remove();
     }

@@ -58,7 +58,7 @@ class UserInfoModel {
           modal.setContent(personalInfo.getHTML());
         }
       } catch (error) {
-        showErrorMessage();
+        showErrorMessage(error);
       }
     });
     return true;

@@ -105,8 +105,8 @@ class CatalogModel {
     try {
       const { categoryCount, priceRange, products, sizeCount } = await getProductModel().getProducts(options);
       return { categoriesProductCount: categoryCount, priceRange, products, sizes: sizeCount };
-    } catch {
-      showErrorMessage();
+    } catch (error) {
+      showErrorMessage(error);
     } finally {
       loader.getHTML().remove();
     }

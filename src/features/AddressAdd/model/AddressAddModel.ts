@@ -50,7 +50,7 @@ class AddressAddModel {
         }
       }
     } catch (error) {
-      showErrorMessage();
+      showErrorMessage(error);
     }
   }
 
@@ -84,7 +84,7 @@ class AddressAddModel {
         await this.addAddressType();
       }
     } catch (error) {
-      showErrorMessage();
+      showErrorMessage(error);
     } finally {
       loader.remove();
     }

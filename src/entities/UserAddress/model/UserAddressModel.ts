@@ -36,11 +36,11 @@ class UserAddressModel {
               serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_DELETED, MESSAGE_STATUS.SUCCESS);
               this.view.getHTML().remove();
             } catch (error) {
-              showErrorMessage();
+              showErrorMessage(error);
             }
           }
         } catch (error) {
-          showErrorMessage();
+          showErrorMessage(error);
         } finally {
           loader.remove();
         }
@@ -60,7 +60,7 @@ class UserAddressModel {
           }
           modal.show();
         } catch (error) {
-          showErrorMessage();
+          showErrorMessage(error);
         } finally {
           modal.hide();
         }
