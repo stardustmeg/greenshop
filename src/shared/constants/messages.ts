@@ -14,8 +14,10 @@ export type MessageStatusKeysType = (typeof MESSAGE_STATUS_KEYS)[keyof typeof ME
 
 export const SERVER_MESSAGE = {
   en: {
+    ADDRESS_ADDED: 'Address has been added successfully',
     ADDRESS_CHANGED: 'Address has been changed successfully',
     ADDRESS_DELETED: 'Address has been deleted successfully',
+    ADDRESS_STATUS_CHANGED: 'Address status has been changed successfully',
     BAD_REQUEST: 'Sorry, something went wrong. Try again later.',
     COPY_TO_CLIPBOARD: 'SKU copied to clipboard',
     GREETING: 'Hi! Welcome to our store. Enjoy shopping!',
@@ -35,8 +37,10 @@ export const SERVER_MESSAGE = {
     USER_EXISTS: 'User with this email already exists, please check your email',
   },
   ru: {
+    ADDRESS_ADDED: 'Адрес был успешно добавлен',
     ADDRESS_CHANGED: 'Адрес был успешно изменен',
     ADDRESS_DELETED: 'Адрес был успешно удален',
+    ADDRESS_STATUS_CHANGED: 'Статус адреса был успешно изменен',
     BAD_REQUEST: 'Извините, что-то пошло не так. Попробуйте позже.',
     COPY_TO_CLIPBOARD: 'SKU скопирован в буфер обмена',
     GREETING: 'Здравствуйте! Добро пожаловать в наш магазин. Приятных покупок!',
@@ -58,8 +62,10 @@ export const SERVER_MESSAGE = {
 } as const;
 
 export const SERVER_MESSAGE_KEYS = {
+  ADDRESS_ADDED: 'ADDRESS_ADDED',
   ADDRESS_CHANGED: 'ADDRESS_CHANGED',
   ADDRESS_DELETED: 'ADDRESS_DELETED',
+  ADDRESS_STATUS_CHANGED: 'ADDRESS_STATUS_CHANGED',
   BAD_REQUEST: 'BAD_REQUEST',
   COPY_TO_CLIPBOARD: 'COPY_TO_CLIPBOARD',
   GREETING: 'GREETING',

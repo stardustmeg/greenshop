@@ -1,3 +1,5 @@
+@import 'src/app/styles/mixins';
+
 .addressesWrapper {
   position: relative;
   display: grid;
@@ -8,12 +10,16 @@
   padding: var(--small-offset);
   width: 60%;
   height: max-content;
-  box-shadow: var(--mellow-shadow-100);
   font: var(--extra-regular-font);
   letter-spacing: 1px;
   color: var(--noble-gray-900);
-  background-color: var(--noble-gray-tr-800);
+  background-color: var(--steam-green-900);
   gap: var(--small-offset);
+}
+
+.shippingLogo,
+.billingLogo {
+  @include logo;
 }
 
 .hidden {
@@ -23,31 +29,11 @@
 }
 
 .createAddressButton {
-  margin: 0 auto;
-  border-radius: var(--medium-br);
-  padding: calc(var(--small-offset) / 3) var(--small-offset);
-  height: max-content;
-  max-width: max-content;
-  font: var(--regular-font);
-  letter-spacing: 1px;
-  color: var(--white);
-  background-color: var(--steam-green-800);
-  transition:
-    color 0.2s,
-    background-color 0.2s;
+  @include round-btn;
 
-  &:focus {
-    background-color: var(--steam-green-700);
-  }
+  padding: var(--extra-small-offset);
+}
 
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--steam-green-700);
-    }
-  }
-
-  &:disabled {
-    background-color: var(--noble-gray-300);
-    pointer-events: none;
-  }
+.addressesListWrapper {
+  grid-column: 2 span;
 }

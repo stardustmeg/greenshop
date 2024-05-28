@@ -175,8 +175,8 @@ class CatalogModel {
         sizes: sizeCount,
         totalProductCount: total,
       };
-    } catch {
-      showErrorMessage();
+    } catch (error) {
+      showErrorMessage(error);
     } finally {
       loader.getHTML().remove();
     }

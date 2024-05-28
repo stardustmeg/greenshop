@@ -43,7 +43,7 @@ class UserProfilePageModel implements Page {
         getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
       }
     } catch (error) {
-      showErrorMessage();
+      showErrorMessage(error);
     }
   }
 

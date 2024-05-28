@@ -1,10 +1,12 @@
 const SVG_DETAILS = {
+  BILL: 'bill',
   BIN: 'bin',
   CART: 'cart',
   CLOSE_EYE: 'closeEye',
   COPY: 'copy',
   DARK: 'dark',
   DELETE: 'delete',
+  DELIVERY: 'delivery',
   EDIT: 'edit',
   FILL_HEART: 'heartFill',
   GO_DETAILS: 'arrow',
@@ -19,6 +21,8 @@ const SVG_DETAILS = {
     en: 'en',
     ru: 'ru',
   },
+  TRUCK: 'truck',
+  WALLET: 'wallet',
 } as const;
 
 export default SVG_DETAILS;

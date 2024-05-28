@@ -118,7 +118,7 @@ class HeaderModel {
             serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
           }
         } catch (error) {
-          showErrorMessage();
+          showErrorMessage(error);
         }
       } else {
         getStore().dispatch(setCurrentLanguage(newLanguage));

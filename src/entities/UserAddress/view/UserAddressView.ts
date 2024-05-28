@@ -1,25 +1,24 @@
-import type { Address, User } from '@/shared/types/user';
+/* eslint-disable max-lines-per-function */
+import type { TooltipTextKeysType } from '@/shared/constants/tooltip.ts';
+import type { Address } from '@/shared/types/user';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { USER_ADDRESS_TYPE, type UserAddressType } from '@/shared/constants/forms.ts';
+import { ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
-import TOOLTIP_TEXT from '@/shared/constants/tooltip.ts';
+import TOOLTIP_TEXT, { TOOLTIP_TEXT_KEYS } from '@/shared/constants/tooltip.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
-import {
-  addressMessage,
-  addressTemplate,
-  defaultBillingAddress,
-  defaultShippingAddress,
-} from '@/shared/utils/messageTemplates.ts';
+import { addressTemplate } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './userAddressView.module.scss';
 
 class UserAddressView {
+  private currentAddress: Address;
+
   private deleteButton: ButtonModel;
 
   private deleteLogo: HTMLDivElement;
@@ -28,31 +27,26 @@ class UserAddressView {
 
   private editLogo: HTMLDivElement;
 
+  private labels: Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }> = new Map();
+
   private view: HTMLLIElement;
 
-  constructor(user: User, address: Address, type: UserAddressType, defaultAddressId: string) {
+  constructor(locale: string, address: Address, types: AddressTypeType[], inactiveTypes?: AddressTypeType[]) {
+    this.currentAddress = address;
     this.deleteLogo = this.createDeleteLogo();
-    this.editLogo = this.createEditLogo();
     this.deleteButton = this.createDeleteButton();
+    this.editLogo = this.createEditLogo();
     this.editButton = this.createEditButton();
-    this.view = this.createHTML(user, address, type, defaultAddressId);
+    this.view = this.createHTML(locale, types, inactiveTypes);
   }
 
-  private createAddress(user: User, address: Address, type: UserAddressType, defaultAddressId: string): string {
-    const { locale } = user;
+  private createAddressText(locale: string): string {
+    const { city, country, postalCode, streetName } = this.currentAddress;
 
-    const country = findKeyByValue(COUNTRIES_LIST[locale], address.country);
-    const standartAddressText = addressTemplate(address.streetName, address.city, country, address.postalCode);
-    let addressText = addressMessage(type, standartAddressText);
+    const countryKey = findKeyByValue(COUNTRIES_LIST[locale], country);
+    const standardAddressText = addressTemplate(streetName, city, countryKey, postalCode);
 
-    if (defaultAddressId === address.id) {
-      if (type === USER_ADDRESS_TYPE.BILLING) {
-        addressText = defaultBillingAddress(standartAddressText);
-      } else if (type === USER_ADDRESS_TYPE.SHIPPING) {
-        addressText = defaultShippingAddress(standartAddressText);
-      }
-    }
-    return addressText;
+    return standardAddressText;
   }
 
   private createDeleteButton(): ButtonModel {
@@ -101,19 +95,94 @@ class UserAddressView {
     return this.editLogo;
   }
 
-  private createHTML(user: User, address: Address, type: UserAddressType, defaultAddressId: string): HTMLLIElement {
+  private createHTML(locale: string, activeTypes: AddressTypeType[], inactiveTypes?: AddressTypeType[]): HTMLLIElement {
     this.view = createBaseElement({
-      cssClasses: [styles.info],
+      cssClasses: [styles.addressItem],
       tag: 'li',
     });
     const addressText = createBaseElement({
       cssClasses: [styles.addressText],
-      innerContent: this.createAddress(user, address, type, defaultAddressId),
-      tag: 'div',
+      innerContent: this.createAddressText(locale),
+      tag: 'span',
     });
+
+    activeTypes.forEach((type) => {
+      this.setActiveAddressLabel(type);
+    });
+
+    if (inactiveTypes) {
+      inactiveTypes.forEach((type) => {
+        this.setActiveAddressLabel(type, true);
+      });
+    }
 
     this.view.append(addressText, this.editButton.getHTML(), this.deleteButton.getHTML());
     return this.view;
+  }
+
+  private createLabel(text: string, additionalStyles: string[], titleKey: TooltipTextKeysType): HTMLDivElement {
+    const label = createBaseElement({
+      cssClasses: [styles.addressType, ...additionalStyles],
+      innerContent: text,
+      tag: 'div',
+      title: TOOLTIP_TEXT[getStore().getState().currentLanguage][titleKey],
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      label.title = TOOLTIP_TEXT[getStore().getState().currentLanguage][titleKey];
+    });
+
+    return label;
+  }
+
+  private setActiveAddressLabel(ActiveType: AddressTypeType, inactive?: boolean): void {
+    let addressType = null;
+    switch (ActiveType) {
+      case ADDRESS_TYPE.BILLING:
+        addressType = this.createLabel(ActiveType, [styles.billing], TOOLTIP_TEXT_KEYS.EDIT_BILLING_ADDRESS);
+        this.view.append(addressType);
+        break;
+
+      case ADDRESS_TYPE.SHIPPING:
+        addressType = this.createLabel(ActiveType, [styles.shipping], TOOLTIP_TEXT_KEYS.EDIT_SHIPPING_ADDRESS);
+        this.view.append(addressType);
+        break;
+
+      case ADDRESS_TYPE.DEFAULT_BILLING:
+        addressType = this.createLabel(
+          ActiveType,
+          [styles.defaultBilling],
+          TOOLTIP_TEXT_KEYS.EDIT_DEFAULT_BILLING_ADDRESS,
+        );
+        this.view.append(addressType);
+        break;
+
+      case ADDRESS_TYPE.DEFAULT_SHIPPING:
+        addressType = this.createLabel(
+          ActiveType,
+          [styles.defaultShipping],
+          TOOLTIP_TEXT_KEYS.EDIT_DEFAULT_SHIPPING_ADDRESS,
+        );
+        this.view.append(addressType);
+        break;
+      default:
+        break;
+    }
+
+    if (addressType) {
+      this.labels.set(addressType, {
+        inactive,
+        type: ActiveType,
+      });
+    }
+
+    if (inactive) {
+      addressType?.classList.add(styles.inactive);
+    }
+  }
+
+  public getCurrentAddress(): Address {
+    return this.currentAddress;
   }
 
   public getDeleteButton(): ButtonModel {
@@ -126,6 +195,10 @@ class UserAddressView {
 
   public getHTML(): HTMLLIElement {
     return this.view;
+  }
+
+  public getLabels(): Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }> {
+    return this.labels;
   }
 }
 
