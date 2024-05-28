@@ -79,7 +79,9 @@ export const switchIsUserLoggedIn = (
   type: ACTION.SWITCH_IS_USER_LOGGED_IN,
 });
 
-export const setCurrentPage = (value: PageIdType): ActionWithPayload<PageIdType, typeof ACTION.SET_CURRENT_PAGE> => ({
+export const setCurrentPage = (
+  value: PageIdType | null,
+): ActionWithPayload<PageIdType | null, typeof ACTION.SET_CURRENT_PAGE> => ({
   payload: value,
   type: ACTION.SET_CURRENT_PAGE,
 });

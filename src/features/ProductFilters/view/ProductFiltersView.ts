@@ -1,4 +1,4 @@
-import type { SizeProductCount } from '@/shared/API/types/type';
+import type { PriceRange, SizeProductCount } from '@/shared/API/types/type';
 import type { Category } from '@/shared/types/product';
 import type ProductFiltersParams from '@/shared/types/productFilters';
 
@@ -629,17 +629,6 @@ class ProductFiltersView {
 
   public updateParams(params: ProductFiltersParams | null): void {
     this.params = params;
-    this.priceSlider.updateOptions(
-      {
-        range: { max: params?.priceRange?.max ?? 0, min: params?.priceRange?.min ?? 0 },
-        start: [params?.priceRange?.min ?? 0, params?.priceRange?.max ?? 0],
-      },
-      true,
-    );
-    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
-    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
-    fromInput?.setValue(this.params?.priceRange?.min.toFixed(2) ?? '');
-    toInput?.setValue(this.params?.priceRange?.max.toFixed(2) ?? '');
 
     this.categoryCountSpan.forEach((span) => {
       const currentSpan = span;
@@ -650,6 +639,23 @@ class ProductFiltersView {
       currentSpan.innerText = BASE_PRODUCT_COUNT;
     });
     this.redrawProductsCount();
+  }
+
+  public updatePriceRange(params: PriceRange): void {
+    if (this.params) {
+      this.params.priceRange = params;
+    }
+    this.priceSlider.updateOptions(
+      {
+        range: { max: params.max ?? 0, min: params.min ?? 0 },
+        start: [params.min ?? 0, params.max ?? 0],
+      },
+      true,
+    );
+    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
+    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    fromInput?.setValue(params.min.toFixed(2) ?? '');
+    toInput?.setValue(params.max.toFixed(2) ?? '');
   }
 }
 
