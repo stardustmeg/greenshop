@@ -6,6 +6,7 @@ export const BUTTON_TYPE = {
 
 export const BUTTON_TEXT = {
   en: {
+    ADD_ADDRESS: 'Add address',
     ADD_PRODUCT: 'Add to cart',
     BACK_TO_MAIN: 'Back to main',
     CANCEL: 'Cancel',
@@ -19,6 +20,7 @@ export const BUTTON_TEXT = {
     SAVE_CHANGES: 'Save changes',
   },
   ru: {
+    ADD_ADDRESS: 'Добавить адрес',
     ADD_PRODUCT: 'Добавить в корзину',
     BACK_TO_MAIN: 'Вернуться на главную',
     CANCEL: 'Отмена',
@@ -34,6 +36,7 @@ export const BUTTON_TEXT = {
 } as const;
 
 export const BUTTON_TEXT_KEYS = {
+  ADD_ADDRESS: 'ADD_ADDRESS',
   ADD_PRODUCT: 'ADD_PRODUCT',
   BACK_TO_MAIN: 'BACK_TO_MAIN',
   CANCEL: 'CANCEL',

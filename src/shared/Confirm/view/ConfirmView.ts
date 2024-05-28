@@ -11,9 +11,12 @@ class ConfirmView {
 
   private confirmButton: ButtonModel;
 
+  private userMessage: HTMLSpanElement;
+
   private view: HTMLDivElement;
 
-  constructor() {
+  constructor(userMessage: string) {
+    this.userMessage = this.createUserMessage(userMessage);
     this.cancelButton = this.createCancelButton();
     this.confirmButton = this.createConfirmButton();
     this.view = this.createHTML();
@@ -43,11 +46,21 @@ class ConfirmView {
 
   private createHTML(): HTMLDivElement {
     this.view = createBaseElement({
-      cssClasses: [styles.style],
+      cssClasses: [styles.wrapper],
       tag: 'div',
     });
-    this.view.append(this.cancelButton.getHTML(), this.confirmButton.getHTML());
+    this.view.append(this.userMessage, this.cancelButton.getHTML(), this.confirmButton.getHTML());
     return this.view;
+  }
+
+  private createUserMessage(message: string): HTMLSpanElement {
+    this.userMessage = createBaseElement({
+      cssClasses: [styles.userMessage],
+      innerContent: message,
+      tag: 'span',
+    });
+
+    return this.userMessage;
   }
 
   public getCancelButton(): ButtonModel {

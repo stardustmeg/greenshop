@@ -1,16 +1,22 @@
+import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
+import getStore from '@/shared/Store/Store.ts';
+import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import ConfirmView from '../view/ConfirmView.ts';
 
 class ConfirmModel {
-  private callback: () => void;
+  private callback: () => Promise<void> | void;
 
-  private view = new ConfirmView();
+  private view: ConfirmView;
 
-  constructor(callback: () => void) {
+  constructor(callback: () => Promise<void> | void) {
     this.callback = callback;
-    this.setConfirmButtonHandler();
+    this.view = new ConfirmView(USER_MESSAGE[getStore().getState().currentLanguage].DELETE_ADDRESS);
     this.setCancelButtonHandler();
+    this.setConfirmButtonHandler();
   }
 
   private setCancelButtonHandler(): void {
@@ -26,8 +32,16 @@ class ConfirmModel {
     this.view
       .getConfirmButton()
       .getHTML()
-      .addEventListener('click', () => {
-        this.callback();
+      .addEventListener('click', async () => {
+        const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
+        this.view.getConfirmButton().getHTML().append(loader);
+        try {
+          await this.callback();
+        } catch (error) {
+          showErrorMessage(error);
+        } finally {
+          loader.remove();
+        }
         modal.hide();
       });
   }
