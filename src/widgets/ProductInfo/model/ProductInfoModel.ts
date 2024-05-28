@@ -154,13 +154,17 @@ class ProductInfoModel {
       sizeButton.getHTML().addEventListener('click', () => {
         const currentVariant = this.params.variant.find(({ size }) => size === sizeButton.getHTML().textContent);
 
-        if (currentVariant) {
-          const path = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
-            size: [currentVariant.size ?? this.params.variant[0].size],
-          })}`;
-          RouterModel.getInstance().navigateTo(path);
-          modal.hide();
-        }
+        const path = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
+          size: [currentVariant?.size ?? this.params.variant[0].size],
+        })}`;
+        RouterModel.getInstance().navigateTo(path);
+        modal.hide();
+        this.currentVariant = currentVariant ?? this.params.variant[0];
+        this.params.currentSize = currentVariant?.size ?? this.params.variant[0].size;
+        this.view.updateParams(this.params);
+        this.price.getHTML().remove();
+        this.price = new ProductPriceModel(this.currentVariant);
+        this.view.getRightWrapper().append(this.price.getHTML());
       });
     });
   }

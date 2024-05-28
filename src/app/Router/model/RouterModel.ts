@@ -1,5 +1,6 @@
 import type { PageParams, PagesType } from '@/shared/types/page';
 
+import getStore from '@/shared/Store/Store.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { isValidPath, isValidState } from '@/shared/types/validation/paths.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
@@ -118,14 +119,16 @@ class RouterModel {
 
   public navigateTo(path: string): void {
     const currentPage = path.split(DEFAULT_SEGMENT)[PATH_SEGMENTS_TO_KEEP] + DEFAULT_SEGMENT || PAGE_ID.DEFAULT_PAGE;
-    this.checkPageAndParams(currentPage, path)
-      .then((check) => {
-        if (check) {
-          this.routes.get(currentPage)?.(check.params).catch(showErrorMessage);
-          history.pushState({ path }, '', `/${path}`);
-        }
-      })
-      .catch(showErrorMessage);
+    if (currentPage !== getStore().getState().currentPage) {
+      this.checkPageAndParams(currentPage, path)
+        .then((check) => {
+          if (check) {
+            this.routes.get(currentPage)?.(check.params).catch(showErrorMessage);
+          }
+        })
+        .catch(showErrorMessage);
+    }
+    history.pushState({ path }, '', `/${path}`);
   }
 }
 

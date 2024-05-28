@@ -12,10 +12,6 @@ class ProductFiltersModel {
   public getView(): ProductFiltersView {
     return this.view;
   }
-
-  public updateParams(params: ProductFiltersParams | null): void {
-    this.view.updateParams(params);
-  }
 }
 
 export default ProductFiltersModel;

@@ -7,7 +7,6 @@ import { DATA_KEYS } from '@/shared/constants/common.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { SORTING_ID, TEXT } from '@/shared/constants/sorting.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-import { isKeyOfSortField } from '@/shared/utils/isKeyOf.ts';
 
 import styles from './productSortsView.module.scss';
 
@@ -47,26 +46,20 @@ class ProductSortsView {
   private createCurrentSortingSpan(): HTMLSpanElement {
     const selectedSorting = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.FIELD);
 
-    const upperText = selectedSorting
-      ? selectedSorting.toUpperCase()
-      : TEXT[getStore().getState().currentLanguage].DEFAULT.toUpperCase();
-    if (isKeyOfSortField(upperText)) {
-      this.currentSortingSpan = createBaseElement({
-        cssClasses: [styles.currentSortingSpan],
-        innerContent: TEXT[getStore().getState().currentLanguage][upperText],
-        tag: 'span',
-      });
-    }
+    this.currentSortingSpan = createBaseElement({
+      cssClasses: [styles.currentSortingSpan],
+      innerContent: selectedSorting
+        ? selectedSorting.toUpperCase()
+        : TEXT[getStore().getState().currentLanguage].DEFAULT.toUpperCase(),
+      tag: 'span',
+    });
 
     observeStore(selectCurrentLanguage, () => {
       const selectedSorting = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.FIELD);
-      const upperText = selectedSorting
+
+      this.currentSortingSpan.innerText = selectedSorting
         ? selectedSorting.toUpperCase()
         : TEXT[getStore().getState().currentLanguage].DEFAULT.toUpperCase();
-
-      if (isKeyOfSortField(upperText)) {
-        this.currentSortingSpan.innerText = TEXT[getStore().getState().currentLanguage][upperText];
-      }
     });
 
     return this.currentSortingSpan;

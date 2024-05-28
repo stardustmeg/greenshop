@@ -95,25 +95,25 @@ class CatalogModel {
     productList.innerHTML = '';
     const options = await this.getOptions();
     const productsInfo = await this.getProductsInfo(options);
+    this.pagination?.getHTML().remove();
     if (productsInfo?.products?.length) {
       const shoppingList = await getShoppingListModel().getShoppingList();
       const cart = await getCartModel().getCart();
-      productList.innerHTML = '';
       productsInfo.products.forEach((productData) => {
         const product = new ProductCardModel(productData, this.currentSize, shoppingList, cart);
         productList.append(product.getHTML());
       });
       this.view.switchEmptyList(!productsInfo?.products?.length);
-      this.pagination?.getHTML().remove();
       this.pagination = new PaginationModel(
-        { productTotalCount: productsInfo?.totalProductCount ?? 0, productsPerPageCount: PRODUCT_LIMIT },
+        { productTotalCount: productsInfo?.totalProductCount, productsPerPageCount: PRODUCT_LIMIT },
         this.setCurrentPage.bind(this),
       );
       this.pagination.getView().setSelectedButton(options.page ?? DEFAULT_PAGE);
       this.view.getRightTopWrapper().append(this.pagination.getHTML());
     }
-
-    this.productFilters?.updateParams(productsInfo);
+    this.productFilters?.getView().updateParams(productsInfo);
+    const priceRange = await getProductModel().getPriceRange();
+    this.productFilters?.getView().updatePriceRange(priceRange);
     this.view.switchEmptyList(!productsInfo?.products?.length);
   }
 

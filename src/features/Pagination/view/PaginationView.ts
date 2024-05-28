@@ -101,11 +101,8 @@ class PaginationView {
   }
 
   private switchStateNavigationButtons(page: number): void {
-    const prevButton = this.prevPageButton.getHTML();
-    const nextButton = this.nextPageButton.getHTML();
-
-    prevButton.disabled = page === DEFAULT_PAGE;
-    nextButton.disabled = page === this.pageButtons.length;
+    this.prevPageButton.getHTML().disabled = page === DEFAULT_PAGE;
+    this.nextPageButton.getHTML().disabled = page === this.pageButtons.length;
   }
 
   public getHTML(): HTMLDivElement {
