@@ -46,9 +46,9 @@
   // 1440px
   body.light {
     // colors
+    --black: #000;
     --white: #fff;
     --white-tr: #ffffffa9;
-    --black: #000;
     --noble-white-100: #f5f5f5;
     --noble-white-200: #f0f0f0;
     --noble-gray-200: #eaeaea;
@@ -86,6 +86,8 @@
     --noble-gray-600: #cdcdcd;
     --noble-gray-700: #b0b0b0;
     --noble-gray-800: #c4c4c4;
+    --noble-gray-tr-800: #acacacbd;
+    --noble-gray-900: #1d1d1d;
     --noble-gray-1000: #1a1a1ab5;
     --red-power-600: #d0302f;
     --steam-green-300: #46a35880;
@@ -94,6 +96,7 @@
     --steam-green-500: #b6f09c;
     --steam-green-700: #70d27a;
     --steam-green-800: #46a358;
+    --steam-green-900: #46a3581a;
     --steam-green-gr-800: #c5e1cb2b;
   }
 }
