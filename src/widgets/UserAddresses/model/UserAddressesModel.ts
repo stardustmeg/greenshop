@@ -16,10 +16,9 @@ import showErrorMessage from '@/shared/utils/userMessage.ts';
 import UserAddressesView from '../view/UserAddressesView.ts';
 
 class UserAddressesModel {
-  private view: UserAddressesView;
+  private view = new UserAddressesView();
 
   constructor(user: User) {
-    this.view = new UserAddressesView();
     this.init(user);
   }
 

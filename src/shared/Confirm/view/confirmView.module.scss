@@ -1,0 +1,6 @@
+@import 'app/styles/mixins';
+
+.cancelButton,
+.confirmButton {
+  @include green-btn;
+}
