@@ -118,7 +118,7 @@ class CartPageView {
       innerContent: TITTLE.TOTAL[this.language],
       tag: 'th',
     });
-    this.textElement.push({ element: thQuantity, textItem: TITTLE.TOTAL });
+    this.textElement.push({ element: thTotal, textItem: TITTLE.TOTAL });
     const thDelete = this.createDeleCell();
     this.tableBody = createBaseElement({ cssClasses: [styles.tbody], tag: 'tbody' });
     this.table.append(thead, this.tableBody);

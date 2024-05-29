@@ -117,6 +117,7 @@ export class CartModel {
     });
     const opt: OptionsRequest = {
       filter: filter.getFilter(),
+      limit: this.cart.products.length,
     };
 
     const products = await getProductModel().getProducts(opt);
