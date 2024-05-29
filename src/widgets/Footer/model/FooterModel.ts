@@ -84,13 +84,14 @@ const HELP_LINKS: Link[] = [
 ];
 
 function generateRandomCategoryLink(categoriesArr: Category[]): Link[] {
+  const subCategory = categoriesArr.filter((category) => category.parent !== null);
   const result: Link[] = [];
   for (let i = 0; i < 5; i += 1) {
-    const randomIndex = Math.floor(Math.random() * categoriesArr.length);
-    const category = categoriesArr[randomIndex];
-    categoriesArr.splice(randomIndex, 1);
+    const randomIndex = Math.floor(Math.random() * subCategory.length);
+    const category = subCategory[randomIndex];
+    subCategory.splice(randomIndex, 1);
     result.push({
-      href: buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [category.id] }),
+      href: buildPathName(PAGE_ID.CATALOG_PAGE, null, { subcategory: [category.id] }),
       name: {
         en: category.name[0].value,
         ru: category.name[1].value,
