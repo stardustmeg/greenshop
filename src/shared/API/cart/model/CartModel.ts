@@ -116,7 +116,7 @@ export class CartModel {
       filter.addFilter(FilterFields.ID, product.productId);
     });
     const opt: OptionsRequest = {
-      filter: filter.getFilter(),
+      filter,
       limit: this.cart.products.length,
     };
 
