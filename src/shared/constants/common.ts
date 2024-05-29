@@ -13,4 +13,6 @@ export const DATA_KEYS = {
   DIRECTION: 'data-direction',
 } as const;
 
+export const TABLET_WIDTH = 768;
+
 export type LanguageChoiceType = (typeof LANGUAGE_CHOICE)[keyof typeof LANGUAGE_CHOICE];

@@ -13,7 +13,7 @@ export interface State {
   authToken: TokenStore | null;
   billingCountry: string;
   currentLanguage: LanguageChoiceType;
-  currentPage: PageIdType;
+  currentPage: PageIdType | null;
   defaultCountry: string;
   isAppThemeLight: boolean;
   isUserLoggedIn: boolean;

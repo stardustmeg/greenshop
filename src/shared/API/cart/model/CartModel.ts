@@ -4,6 +4,7 @@ import type {
   Cart as CartResponse,
   ClientResponse,
   LineItem,
+  MyCartUpdateAction,
 } from '@commercetools/platform-sdk';
 
 import getStore from '@/shared/Store/Store.ts';
@@ -35,9 +36,12 @@ export class CartModel {
       getStore().dispatch(setAnonymousCartId(data.id));
       getStore().dispatch(setAnonymousId(data.anonymousId));
     }
+    const discount = data.discountOnTotalPrice?.discountedAmount?.centAmount;
     return {
+      discounts: discount ? discount / PRICE_FRACTIONS : 0,
       id: data.id,
       products: data.lineItems.map((lineItem) => this.adaptLineItem(lineItem)),
+      total: data.totalPrice.centAmount / PRICE_FRACTIONS || 0,
       version: data.version,
     };
   }
@@ -70,8 +74,10 @@ export class CartModel {
 
   private getCartFromData(data: ClientResponse<CartPagedQueryResponse | CartResponse>): Cart {
     let cart: Cart = {
+      discounts: 0,
       id: '',
       products: [],
+      total: 0,
       version: 0,
     };
     if (isClientResponse(data) && isCart(data.body)) {
@@ -80,6 +86,24 @@ export class CartModel {
       cart = this.adaptCart(data.body.results[0]);
     }
     return cart;
+  }
+
+  public async addCoupon(discountCode: string): Promise<Cart> {
+    if (!this.cart) {
+      this.cart = await this.getCart();
+    }
+    const action: MyCartUpdateAction[] = [
+      {
+        action: 'addDiscountCode',
+        code: discountCode,
+      },
+    ];
+    const data = await this.root.updateCart(this.cart, action);
+    if (isClientResponse(data)) {
+      this.cart = this.getCartFromData(data);
+    }
+
+    return this.cart;
   }
 
   public async addProductInfo(): Promise<Cart> {
@@ -92,7 +116,8 @@ export class CartModel {
       filter.addFilter(FilterFields.ID, product.productId);
     });
     const opt: OptionsRequest = {
-      filter: filter.getFilter(),
+      filter,
+      limit: this.cart.products.length,
     };
 
     const products = await getProductModel().getProducts(opt);
@@ -128,6 +153,23 @@ export class CartModel {
   public clear(): boolean {
     this.cart = null;
     return true;
+  }
+
+  public async clearCart(): Promise<Cart> {
+    if (!this.cart) {
+      this.cart = await this.getCart();
+    }
+    const actions: MyCartUpdateAction[] = this.cart?.products.map((lineItem) => ({
+      action: 'removeLineItem',
+      lineItemId: lineItem.lineItemId,
+    }));
+    const data = await this.root.updateCart(this.cart, actions);
+    if (isClientResponse(data)) {
+      this.cart = this.getCartFromData(data);
+    }
+
+    this.dispatchUpdate();
+    return this.cart;
   }
 
   public async create(): Promise<Cart> {

@@ -12,11 +12,12 @@ import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
-import { PRODUCT_INFO_TEXT } from '@/shared/constants/product.ts';
+import { PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import './productInfoView.scss';
@@ -136,9 +137,11 @@ class ProductInfoView {
   private createCategoriesSpan(): HTMLSpanElement {
     this.categoriesSpan = createBaseElement({
       cssClasses: ['categoriesSpan'],
-      innerContent: 'Categories: ',
+      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].CATEGORY,
       tag: 'span',
     });
+
+    observeCurrentLanguage(this.categoriesSpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS.CATEGORY);
 
     const category =
       this.params.category[0].parent?.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
@@ -242,6 +245,8 @@ class ProductInfoView {
         tag: 'span',
       });
 
+      observeCurrentLanguage(difficultySpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS.DIFFICULTY);
+
       difficultySpan.append(...this.createDifficultyPoints());
       this.rightWrapper.append(difficultySpan);
     }
@@ -317,6 +322,16 @@ class ProductInfoView {
       button.setDisabled();
       button.getHTML().classList.add('selected');
     }
+
+    button.getHTML().addEventListener('click', () => {
+      this.sizeButtons.forEach((btn) => {
+        btn.setEnabled();
+        btn.getHTML().classList.remove('selected');
+      });
+      button.getHTML().classList.add('selected');
+      button.setDisabled();
+    });
+
     this.sizeButtons.push(button);
     return button;
   }
@@ -489,6 +504,11 @@ class ProductInfoView {
     } else {
       this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].ADD_PRODUCT;
     }
+  }
+
+  public updateParams(params: ProductInfoParams): void {
+    this.params = params;
+    this.hasProductInToCart();
   }
 }
 

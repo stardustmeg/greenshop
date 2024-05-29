@@ -29,15 +29,25 @@ export const SEARCH_PARAMS_FIELD = {
 
 export const PRODUCT_INFO_TEXT = {
   en: {
+    CATEGORY: 'Categories: ',
     DIFFICULTY: 'Difficulty: ',
     FULL_DESCRIPTION: 'Full description:',
     SHORT_DESCRIPTION: 'Short description:',
     SIZE: 'Size:',
   },
   ru: {
+    CATEGORY: 'Категории: ',
     DIFFICULTY: 'Сложность: ',
     FULL_DESCRIPTION: 'Полное описание:',
     SHORT_DESCRIPTION: 'Краткое описание:',
     SIZE: 'Размер:',
   },
+} as const;
+
+export const PRODUCT_INFO_TEXT_KEYS = {
+  CATEGORY: 'CATEGORY',
+  DIFFICULTY: 'DIFFICULTY',
+  FULL_DESCRIPTION: 'FULL_DESCRIPTION',
+  SHORT_DESCRIPTION: 'SHORT_DESCRIPTION',
+  SIZE: 'SIZE',
 } as const;
