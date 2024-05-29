@@ -8,7 +8,6 @@ import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './productModalSliderView.module.scss';
 
-const BIG_SLIDER_WIDTH = 40;
 const CLOSE_BUTTON_CONTENT = 'x';
 
 class ProductModalSliderView {
@@ -64,9 +63,6 @@ class ProductModalSliderView {
       cssClasses: ['swiper', styles.modalSlider],
       tag: 'div',
     });
-
-    const maxWidth = BIG_SLIDER_WIDTH;
-    slider.style.maxWidth = `${maxWidth}rem`;
 
     slider.append(this.createModalSliderWrapper());
     return slider;

@@ -13,6 +13,8 @@ const SLIDER_DELAY = 5000;
 const SLIDER_PER_VIEW = 1;
 
 class ProductModalSliderModel {
+  private modalSlider: Swiper | null = null;
+
   private view: ProductModalSliderView;
 
   constructor(params: ProductInfoParams) {
@@ -21,7 +23,7 @@ class ProductModalSliderModel {
   }
 
   private init(): void {
-    const modalSlider = new Swiper(this.view.getModalSlider(), {
+    this.modalSlider = new Swiper(this.view.getModalSlider(), {
       autoplay: {
         delay: SLIDER_DELAY,
       },
@@ -34,11 +36,14 @@ class ProductModalSliderModel {
       },
       slidesPerView: SLIDER_PER_VIEW,
     });
-    modalSlider.autoplay.start();
   }
 
   public getHTML(): HTMLDivElement {
     return this.view.getHTML();
+  }
+
+  public getModalSlider(): Swiper | null {
+    return this.modalSlider;
   }
 }
 

@@ -3,8 +3,6 @@ import type { TokenStore } from '@commercetools/sdk-client-v2';
 
 import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
-import type { SelectedFilters } from '../types/productFilters.ts';
-import type { SelectedSorting } from '../types/productSorting.ts';
 import type * as actions from './actions.ts';
 import type { Reducer } from './types.ts';
 
@@ -15,12 +13,9 @@ export interface State {
   authToken: TokenStore | null;
   billingCountry: string;
   currentLanguage: LanguageChoiceType;
-  currentPage: PageIdType;
+  currentPage: PageIdType | null;
   isAppThemeLight: boolean;
   isUserLoggedIn: boolean;
-  searchValue: string;
-  selectedFilters: SelectedFilters | null;
-  selectedSorting: SelectedSorting | null;
   shippingCountry: string;
 }
 
@@ -78,21 +73,6 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         isAppThemeLight: !state.isAppThemeLight,
-      };
-    case 'setSelectedFilters':
-      return {
-        ...state,
-        selectedFilters: action.payload,
-      };
-    case 'setSelectedSorting':
-      return {
-        ...state,
-        selectedSorting: action.payload,
-      };
-    case 'setSearchValue':
-      return {
-        ...state,
-        searchValue: action.payload,
       };
     default:
       return state;

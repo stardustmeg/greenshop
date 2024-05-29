@@ -30,6 +30,14 @@ export class CustomerModel {
     return { action: 'addAddress', address: CustomerModel.adaptAddressToServer(address) };
   }
 
+  public static actionAddBillingAddress(addressId: string): MyCustomerUpdateAction {
+    return { action: 'addBillingAddressId', addressId };
+  }
+
+  public static actionAddShippingAddress(addressId: string): MyCustomerUpdateAction {
+    return { action: 'addShippingAddressId', addressId };
+  }
+
   public static actionEditAddress(address: Address): MyCustomerUpdateAction {
     return { action: 'changeAddress', address: CustomerModel.adaptAddressToServer(address), addressId: address.id };
   }

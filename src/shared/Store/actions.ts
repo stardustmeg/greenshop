@@ -2,8 +2,6 @@ import type { TokenStore } from '@commercetools/sdk-client-v2';
 
 import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
-import type { SelectedFilters } from '../types/productFilters';
-import type { SelectedSorting } from '../types/productSorting.ts';
 
 const ACTION = {
   SET_ANONYM_TOKEN: 'setAnonymToken',
@@ -13,9 +11,6 @@ const ACTION = {
   SET_BILLING_COUNTRY: 'setBillingCountry',
   SET_CURRENT_LANGUAGE: 'setCurrentLanguage',
   SET_CURRENT_PAGE: 'setCurrentPage',
-  SET_SEARCH_VALUE: 'setSearchValue',
-  SET_SELECTED_FILTERS: 'setSelectedFilters',
-  SET_SELECTED_SORTING: 'setSelectedSorting',
   SET_SHIPPING_COUNTRY: 'setShippingCountry',
   SWITCH_APP_THEME: 'switchAppTheme',
   SWITCH_IS_USER_LOGGED_IN: 'switchIsUserLoggedIn',
@@ -84,30 +79,13 @@ export const switchIsUserLoggedIn = (
   type: ACTION.SWITCH_IS_USER_LOGGED_IN,
 });
 
-export const setCurrentPage = (value: PageIdType): ActionWithPayload<PageIdType, typeof ACTION.SET_CURRENT_PAGE> => ({
+export const setCurrentPage = (
+  value: PageIdType | null,
+): ActionWithPayload<PageIdType | null, typeof ACTION.SET_CURRENT_PAGE> => ({
   payload: value,
   type: ACTION.SET_CURRENT_PAGE,
 });
 
 export const switchAppTheme = (): ActionWithoutPayload<typeof ACTION.SWITCH_APP_THEME> => ({
   type: ACTION.SWITCH_APP_THEME,
-});
-
-export const setSelectedFilters = (
-  value: SelectedFilters | null,
-): ActionWithPayload<SelectedFilters | null, typeof ACTION.SET_SELECTED_FILTERS> => ({
-  payload: value,
-  type: ACTION.SET_SELECTED_FILTERS,
-});
-
-export const setSelectedSorting = (
-  value: SelectedSorting | null,
-): ActionWithPayload<SelectedSorting | null, typeof ACTION.SET_SELECTED_SORTING> => ({
-  payload: value,
-  type: ACTION.SET_SELECTED_SORTING,
-});
-
-export const setSearchValue = (value: string): ActionWithPayload<string, typeof ACTION.SET_SEARCH_VALUE> => ({
-  payload: value,
-  type: ACTION.SET_SEARCH_VALUE,
 });

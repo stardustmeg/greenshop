@@ -58,8 +58,8 @@ class PasswordEditModel {
                 }
               }
             });
-        } catch {
-          showErrorMessage();
+        } catch (error) {
+          showErrorMessage(error);
         } finally {
           loader.remove();
         }

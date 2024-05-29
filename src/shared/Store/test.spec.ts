@@ -1,7 +1,5 @@
-import type { SelectedFilters } from '../types/productFilters.ts';
 import type { State } from './reducer.ts';
 
-import { META_FILTERS } from '../constants/filters.ts';
 import { PAGE_ID } from '../constants/pages.ts';
 import getStore, { Store } from './Store.ts';
 import * as actions from './actions.ts';
@@ -65,9 +63,6 @@ vi.mock('./Store.ts', async (importOriginal) => {
       currentPage: '/',
       isAppThemeLight: true,
       isUserLoggedIn: false,
-      searchValue: '',
-      selectedFilters: null,
-      selectedSorting: null,
       shippingCountry: '',
     }),
   };
@@ -183,9 +178,6 @@ describe('rootReducer', () => {
       currentPage: '/',
       isAppThemeLight: true,
       isUserLoggedIn: false,
-      searchValue: '',
-      selectedFilters: null,
-      selectedSorting: null,
       shippingCountry: '',
     };
   });
@@ -229,17 +221,5 @@ describe('rootReducer', () => {
     const action = actions.switchAppTheme();
     const newState = rootReducer(initialState, action);
     expect(newState.isAppThemeLight).toEqual(!initialState.isAppThemeLight);
-  });
-
-  it('should handle setSelectedFilters action', () => {
-    const filters: SelectedFilters = {
-      category: new Set<string>(),
-      metaFilter: META_FILTERS.en.NEW_ARRIVALS,
-      price: null,
-      size: null,
-    };
-    const action = actions.setSelectedFilters(filters);
-    const newState = rootReducer(initialState, action);
-    expect(newState.selectedFilters).toEqual(filters);
   });
 });

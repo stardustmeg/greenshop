@@ -1,4 +1,4 @@
-import type { Page, PageParams } from '@/shared/types/page.ts';
+import type { Page } from '@/shared/types/page.ts';
 
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
@@ -8,13 +8,13 @@ import CatalogModel from '@/widgets/Catalog/model/CatalogModel.ts';
 import CatalogPageView from '../view/CatalogPageView.ts';
 
 class CatalogPageModel implements Page {
-  private catalog: CatalogModel;
+  private catalog: CatalogModel = new CatalogModel();
 
   private view: CatalogPageView;
 
-  constructor(parent: HTMLDivElement, params: PageParams) {
+  constructor(parent: HTMLDivElement) {
     this.view = new CatalogPageView(parent);
-    this.catalog = new CatalogModel(params.catalog?.searchParams || '');
+
     this.init();
   }
 

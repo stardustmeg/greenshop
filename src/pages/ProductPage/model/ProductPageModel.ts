@@ -2,6 +2,7 @@ import type { BreadCrumbLink } from '@/shared/types/link.ts';
 import type { Page, PageParams } from '@/shared/types/page.ts';
 import type { Product, localization } from '@/shared/types/product.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import BreadcrumbsModel from '@/features/Breadcrumbs/model/BreadcrumbsModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import getStore from '@/shared/Store/Store.ts';
@@ -57,8 +58,7 @@ class ProductPageModel implements Page {
   }
 
   private init(params: PageParams): void {
-    const searchParams = new URLSearchParams(params.product?.searchParams);
-    const currentSize = searchParams.get(SEARCH_PARAMS_FIELD.SIZE);
+    const currentSize = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SIZE);
 
     getProductModel()
       .getProductByKey(params.product?.id ?? '')

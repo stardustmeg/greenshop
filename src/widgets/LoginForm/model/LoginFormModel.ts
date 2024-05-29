@@ -46,7 +46,7 @@ class LoginFormModel {
           serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.INVALID_EMAIL, MESSAGE_STATUS.ERROR);
         }
       })
-      .catch(() => showErrorMessage())
+      .catch((error) => showErrorMessage(error))
       .finally(() => loader.remove());
   }
 
