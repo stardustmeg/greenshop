@@ -1,44 +1,29 @@
-import type { CartProduct, EditCartItem } from '@/shared/types/cart.ts';
+import type { Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import { CartActive } from '@/shared/types/cart.ts';
 
 import ProductOrderView from '../view/ProductOrderView.ts';
 
-type CallbackQuantity = () => Promise<void>;
-
-export type CallbackList = {
-  delete: CallbackQuantity;
-  minus: CallbackQuantity;
-  plus: CallbackQuantity;
-};
+type Callback = (cart: Cart) => void;
 
 class ProductOrderModel {
+  private callback: Callback;
+
   private productItem: CartProduct;
 
   private view: ProductOrderView;
 
-  constructor(productItem: CartProduct) {
+  constructor(productItem: CartProduct, callback: Callback) {
+    this.callback = callback;
     this.productItem = productItem;
-    const callbackList: CallbackList = {
-      delete: this.deleteClickHandler.bind(this),
-      minus: this.minusClickHandler.bind(this),
-      plus: this.plusClickHandler.bind(this),
-    };
-    this.view = new ProductOrderView(this.productItem, callbackList);
+    this.view = new ProductOrderView(this.productItem, this.updateProductHandler.bind(this));
     this.init();
   }
 
-  private init(): void {}
-
-  public async deleteClickHandler(): Promise<void> {
-    const cart = await getCartModel().deleteProductFromCart(this.productItem);
-    const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
-    if (updateItem) {
-      this.productItem = updateItem;
-      this.view.updateQuantity(this.productItem.quantity);
-    } else {
-      this.getHTML().remove();
-    }
+  private init(): void {
+    observeStore(selectCurrentLanguage, () => this.view.updateLanguage());
   }
 
   public getHTML(): HTMLDivElement {
@@ -49,31 +34,48 @@ class ProductOrderModel {
     return this.productItem;
   }
 
-  public async minusClickHandler(): Promise<void> {
-    const active: EditCartItem = {
-      lineId: this.productItem.lineItemId,
-      quantity: this.productItem.quantity - 1,
-    };
-    const cart = await getCartModel().editProductCount(active);
-    const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
+  public async updateProductHandler(active: CartActive): Promise<void> {
+    let updateItem: CartProduct | undefined;
+    let cart: Cart | null = null;
+    switch (active) {
+      case CartActive.DELETE: {
+        cart = await getCartModel().deleteProductFromCart(this.productItem);
+        updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
+        break;
+      }
+
+      case CartActive.MINUS: {
+        const active: EditCartItem = {
+          lineId: this.productItem.lineItemId,
+          quantity: this.productItem.quantity - 1,
+        };
+        cart = await getCartModel().editProductCount(active);
+        updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
+        break;
+      }
+      case CartActive.PLUS: {
+        const active: EditCartItem = {
+          lineId: this.productItem.lineItemId,
+          quantity: this.productItem.quantity + 1,
+        };
+        cart = await getCartModel().editProductCount(active);
+        updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
+        break;
+      }
+
+      default:
+        break;
+    }
+
     if (updateItem) {
       this.productItem = updateItem;
-      this.view.updateQuantity(this.productItem.quantity);
+      this.view.updateInfo(this.productItem);
     } else {
       this.getHTML().remove();
     }
-  }
 
-  public async plusClickHandler(): Promise<void> {
-    const active: EditCartItem = {
-      lineId: this.productItem.lineItemId,
-      quantity: this.productItem.quantity + 1,
-    };
-    const cart = await getCartModel().editProductCount(active);
-    const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
-    if (updateItem) {
-      this.productItem = updateItem;
-      this.view.updateQuantity(this.productItem.quantity);
+    if (cart) {
+      this.callback(cart);
     }
   }
 }
