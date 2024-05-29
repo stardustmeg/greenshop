@@ -5,11 +5,13 @@ import type {
   ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
 
-import { DEFAULT_PAGE, MAX_PRICE, MIN_PRICE, PRODUCT_LIMIT } from '@/shared/constants/product.ts';
+import { DEFAULT_PAGE, MAX_PRICE, MIN_PRICE, PRICE_FRACTIONS, PRODUCT_LIMIT } from '@/shared/constants/product.ts';
 
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
 import { type OptionsRequest } from '../types/type.ts';
 import makeSortRequest from './utils/sort.ts';
+
+const FACET_ADD = 1;
 
 export class ProductApi {
   private client: ApiClient;
@@ -46,6 +48,9 @@ export class ProductApi {
   public async getProducts(options?: OptionsRequest): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
     const { filter, limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, search, sort } = options || {};
     const filterQuery = filter?.getFilter();
+    const priceRange = filter?.getPriceRange();
+    const min = Math.round((priceRange?.min ?? MIN_PRICE) * PRICE_FRACTIONS - FACET_ADD);
+    const max = Math.round((priceRange?.max ?? MAX_PRICE) * PRICE_FRACTIONS + FACET_ADD);
 
     const data = await this.client
       .apiRoot()
@@ -56,7 +61,7 @@ export class ProductApi {
           facet: [
             `categories.id counting products`,
             `variants.attributes.size.key`,
-            `variants.price.centAmount:range(${MIN_PRICE} to ${MAX_PRICE})`,
+            `variants.price.centAmount:range(${min} to ${max})`,
           ],
           limit,
           markMatchingVariants: true,
