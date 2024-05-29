@@ -14,6 +14,7 @@ export interface State {
   billingCountry: string;
   currentLanguage: LanguageChoiceType;
   currentPage: PageIdType;
+  defaultCountry: string;
   isAppThemeLight: boolean;
   isUserLoggedIn: boolean;
   shippingCountry: string;
@@ -53,6 +54,11 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         billingCountry: action.payload,
+      };
+    case 'setDefaultCountry':
+      return {
+        ...state,
+        defaultCountry: action.payload,
       };
     case 'setCurrentLanguage':
       return {

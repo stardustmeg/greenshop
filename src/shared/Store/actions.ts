@@ -11,6 +11,7 @@ const ACTION = {
   SET_BILLING_COUNTRY: 'setBillingCountry',
   SET_CURRENT_LANGUAGE: 'setCurrentLanguage',
   SET_CURRENT_PAGE: 'setCurrentPage',
+  SET_DEFAULT_COUNTRY: 'setDefaultCountry',
   SET_SHIPPING_COUNTRY: 'setShippingCountry',
   SWITCH_APP_THEME: 'switchAppTheme',
   SWITCH_IS_USER_LOGGED_IN: 'switchIsUserLoggedIn',
@@ -63,6 +64,11 @@ export const setBillingCountry = (value: string): ActionWithPayload<string, type
 export const setShippingCountry = (value: string): ActionWithPayload<string, typeof ACTION.SET_SHIPPING_COUNTRY> => ({
   payload: value,
   type: ACTION.SET_SHIPPING_COUNTRY,
+});
+
+export const setDefaultCountry = (value: string): ActionWithPayload<string, typeof ACTION.SET_DEFAULT_COUNTRY> => ({
+  payload: value,
+  type: ACTION.SET_DEFAULT_COUNTRY,
 });
 
 export const setCurrentLanguage = (

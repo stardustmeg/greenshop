@@ -117,6 +117,11 @@ class UserAddressView {
     }
 
     this.view.append(addressText, this.editButton.getHTML(), this.deleteButton.getHTML());
+
+    observeStore(selectCurrentLanguage, () => {
+      addressText.innerText = this.createAddressText(getStore().getState().currentLanguage);
+    });
+
     return this.view;
   }
 
@@ -139,12 +144,12 @@ class UserAddressView {
     let addressType = null;
     switch (ActiveType) {
       case ADDRESS_TYPE.BILLING:
-        addressType = this.createLabel(ActiveType, [styles.billing], TOOLTIP_TEXT_KEYS.EDIT_BILLING_ADDRESS);
+        addressType = this.createLabel(ActiveType, [styles.billing], TOOLTIP_TEXT_KEYS.SWITCH_BILLING_ADDRESS);
         this.view.append(addressType);
         break;
 
       case ADDRESS_TYPE.SHIPPING:
-        addressType = this.createLabel(ActiveType, [styles.shipping], TOOLTIP_TEXT_KEYS.EDIT_SHIPPING_ADDRESS);
+        addressType = this.createLabel(ActiveType, [styles.shipping], TOOLTIP_TEXT_KEYS.SWITCH_SHIPPING_ADDRESS);
         this.view.append(addressType);
         break;
 
@@ -152,7 +157,7 @@ class UserAddressView {
         addressType = this.createLabel(
           ActiveType,
           [styles.defaultBilling],
-          TOOLTIP_TEXT_KEYS.EDIT_DEFAULT_BILLING_ADDRESS,
+          TOOLTIP_TEXT_KEYS.SWITCH_DEFAULT_BILLING_ADDRESS,
         );
         this.view.append(addressType);
         break;
@@ -161,7 +166,7 @@ class UserAddressView {
         addressType = this.createLabel(
           ActiveType,
           [styles.defaultShipping],
-          TOOLTIP_TEXT_KEYS.EDIT_DEFAULT_SHIPPING_ADDRESS,
+          TOOLTIP_TEXT_KEYS.SWITCH_DEFAULT_SHIPPING_ADDRESS,
         );
         this.view.append(addressType);
         break;

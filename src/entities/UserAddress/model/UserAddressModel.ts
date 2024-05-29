@@ -1,6 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import type { Address, User } from '@/shared/types/user.ts';
 
+import AddressEditModel from '@/features/AddressEdit/model/AddressEditModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
 import ConfirmModel from '@/shared/Confirm/model/ConfirmModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
@@ -118,8 +119,7 @@ class UserAddressModel {
       });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private setEditButtonHandler(_address: Address): void {
+  private setEditButtonHandler(address: Address): void {
     this.view
       .getEditButton()
       .getHTML()
@@ -129,11 +129,11 @@ class UserAddressModel {
           if (!user) {
             return;
           }
+          const newAddressEditForm = new AddressEditModel(address, user).getHTML();
           modal.show();
+          modal.setContent(newAddressEditForm);
         } catch (error) {
           showErrorMessage(error);
-        } finally {
-          modal.hide();
         }
       });
   }

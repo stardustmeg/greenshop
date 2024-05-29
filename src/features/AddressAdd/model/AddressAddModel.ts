@@ -30,7 +30,7 @@ class AddressAddModel {
 
   constructor(type: AddressType, options: Record<string, boolean>) {
     this.addressType = type;
-    this.newAddress = new AddressModel(this.addressType, options);
+    this.newAddress = new AddressModel(options, this.addressType);
     this.init();
   }
 
