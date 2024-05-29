@@ -1,23 +1,54 @@
+import type { LanguageChoiceType } from '@/shared/constants/common';
 import type { Cart } from '@/shared/types/cart';
+import type { languageVariants } from '@/shared/types/common';
 import type ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-// import getStore from '@/shared/Store/Store.ts';
+import getStore from '@/shared/Store/Store.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-// import SVG_DETAILS from '@/shared/constants/svg.ts';
-// import { buildPathName } from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-// import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
 import styles from './cartPageView.module.scss';
 
 type ClearCallback = () => void;
+type DiscountCallback = (discount: string) => void;
+type textElementsType = {
+  element: HTMLAnchorElement | HTMLButtonElement | HTMLParagraphElement | HTMLTableCellElement;
+  textItem: languageVariants;
+};
 
+const TITTLE = {
+  BUTTON_CHECKOUT: { en: 'Proceed To Checkout', ru: 'Оформить заказ' },
+  BUTTON_COUPON: { en: 'Apply', ru: 'Применить' },
+  CART_TOTAL: { en: 'Cart Totals', ru: 'Итого по корзине' },
+  CLEAR: { en: 'Clear all', ru: 'Очистить' },
+  CONTINUE: { en: 'Continue Shopping', ru: 'Продолжить покупки' },
+  COUPON_APPLY: { en: 'Coupon Apply', ru: 'Применить купон' },
+  COUPON_DISCOUNT: { en: 'Coupon Discount', ru: 'Скидка по купону' },
+  EMPTY: {
+    en: `Oops! Looks like you haven't added the item to your cart yet.`,
+    ru: `Ой! Похоже, вы еще не добавили товар в корзину.`,
+  },
+  INPUT_COUPON: { en: 'Enter coupon here...', ru: 'Введите купон здесь...' },
+  PRICE: { en: 'Price', ru: 'Цена' },
+  PRODUCT: { en: 'Product', ru: 'Продукт' },
+  QUANTITY: { en: 'Quantity', ru: 'Количество' },
+  SUBTOTAL: { en: 'Subtotal', ru: 'Сумма' },
+  TOTAL: { en: 'Total', ru: 'Итого' },
+};
 class CartPageView {
+  private addDiscountCallback: DiscountCallback;
+
   private clearCallback: ClearCallback;
+
+  private discount: HTMLParagraphElement;
+
+  private empty: HTMLDivElement;
+
+  private language: LanguageChoiceType;
 
   private page: HTMLDivElement;
 
@@ -33,29 +64,29 @@ class CartPageView {
 
   private tableBody: HTMLTableSectionElement | null = null;
 
+  private textElement: textElementsType[] = [];
+
   private total: HTMLParagraphElement;
 
   private totalWrap: HTMLDivElement;
 
-  constructor(parent: HTMLDivElement, clearCallback: ClearCallback) {
+  constructor(parent: HTMLDivElement, clearCallback: ClearCallback, addDiscountCallback: DiscountCallback) {
+    this.language = getStore().getState().currentLanguage;
     this.parent = parent;
     this.parent.innerHTML = '';
     this.clearCallback = clearCallback;
+    this.addDiscountCallback = addDiscountCallback;
     this.page = this.createPageHTML();
     this.productWrap = this.createWrapHTML();
     this.productWrap.classList.add(styles.products);
-    this.subTotal = createBaseElement({
-      cssClasses: [styles.totalTitle],
-      // innerContent: `$ ${totalPriceSum.toFixed(2)}`,
-      tag: 'p',
-    });
-    this.total = createBaseElement({
-      cssClasses: [styles.totalPrice],
-      // innerContent: `$ ${totalPriceSum.toFixed(2)}`,
-      tag: 'p',
-    });
+    this.subTotal = createBaseElement({ cssClasses: [styles.totalTitle], tag: 'p' });
+    this.total = createBaseElement({ cssClasses: [styles.totalPrice], tag: 'p' });
+    this.discount = createBaseElement({ cssClasses: [styles.title], tag: 'p' });
     this.totalWrap = this.createWrapHTML();
     this.totalWrap.classList.add(styles.total);
+    this.page.append(this.productWrap);
+    this.page.append(this.totalWrap);
+    this.empty = this.createEmptyHTML();
     window.scrollTo(0, 0);
   }
 
@@ -65,27 +96,30 @@ class CartPageView {
     const tr = createBaseElement({ cssClasses: [styles.tr, styles.head], tag: 'tr' });
     const thImage = createBaseElement({
       cssClasses: [styles.th, styles.imgCell, styles.mainText],
-      innerContent: 'Product',
+      innerContent: TITTLE.PRODUCT[this.language],
       tag: 'th',
     });
+    this.textElement.push({ element: thImage, textItem: TITTLE.PRODUCT });
     const thProduct = createBaseElement({ cssClasses: [styles.th, styles.nameCell, styles.mainText], tag: 'th' });
     const thPrice = createBaseElement({
       cssClasses: [styles.th, styles.priceCell, styles.mainText],
-      innerContent: 'Price',
+      innerContent: TITTLE.PRICE[this.language],
       tag: 'th',
     });
+    this.textElement.push({ element: thPrice, textItem: TITTLE.PRICE });
     const thQuantity = createBaseElement({
       cssClasses: [styles.th, styles.quantityCell, styles.mainText],
-      innerContent: 'Quantity',
+      innerContent: TITTLE.QUANTITY[this.language],
       tag: 'th',
     });
+    this.textElement.push({ element: thQuantity, textItem: TITTLE.QUANTITY });
     const thTotal = createBaseElement({
       cssClasses: [styles.th, styles.totalCell, styles.mainText],
-      innerContent: 'Total',
+      innerContent: TITTLE.TOTAL[this.language],
       tag: 'th',
     });
+    this.textElement.push({ element: thQuantity, textItem: TITTLE.TOTAL });
     const thDelete = this.createDeleCell();
-    // createBaseElement({ cssClasses: [styles.th, styles.deleteCell, styles.mainText], tag: 'th' });
     this.tableBody = createBaseElement({ cssClasses: [styles.tbody], tag: 'tbody' });
     this.table.append(thead, this.tableBody);
     thead.append(tr);
@@ -96,24 +130,28 @@ class CartPageView {
   private addTotalInfo(): void {
     const title = createBaseElement({
       cssClasses: [styles.totalTitle, styles.border, styles.mobileHide],
-      innerContent: 'Cart Totals',
+      innerContent: TITTLE.CART_TOTAL[this.language],
       tag: 'p',
     });
+    this.textElement.push({ element: title, textItem: TITTLE.CART_TOTAL });
     const couponTitle = createBaseElement({
       cssClasses: [styles.title, styles.mobileHide],
-      innerContent: 'Coupon Apply',
+      innerContent: TITTLE.COUPON_APPLY[this.language],
       tag: 'p',
     });
+    this.textElement.push({ element: couponTitle, textItem: TITTLE.COUPON_APPLY });
     const couponWrap = this.createCouponHTML();
     const subtotalWrap = this.createSubtotalHTML();
     const discountWrap = this.createDiscountHTML();
     const totalWrap = this.createTotalHTML();
     const finalButton = createBaseElement({
       cssClasses: [styles.button, styles.checkoutBtn],
-      innerContent: 'Proceed To Checkout',
+      innerContent: TITTLE.BUTTON_CHECKOUT[this.language],
       tag: 'button',
     });
+    this.textElement.push({ element: finalButton, textItem: TITTLE.BUTTON_CHECKOUT });
     const continueLink = this.createCatalogLinkHTML();
+    continueLink.getHTML().classList.add(styles.mobileHide);
     this.totalWrap.append(
       title,
       couponTitle,
@@ -131,9 +169,10 @@ class CartPageView {
       attrs: {
         href: PAGE_ID.CATALOG_PAGE,
       },
-      classes: [styles.continue, styles.mobileHide],
-      text: 'Continue Shopping',
+      classes: [styles.continue],
+      text: TITTLE.CONTINUE[this.language],
     });
+    this.textElement.push({ element: link.getHTML(), textItem: TITTLE.CONTINUE });
 
     link.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
@@ -147,14 +186,21 @@ class CartPageView {
     const couponInput = new InputModel({
       autocomplete: 'off',
       id: 'coupon',
-      placeholder: 'Enter coupon here...',
+      placeholder: TITTLE.INPUT_COUPON[this.language],
       type: INPUT_TYPE.TEXT,
     });
     couponInput.getHTML().classList.add(styles.couponInput);
+    this.textElement.push({ element: couponInput.getHTML(), textItem: TITTLE.INPUT_COUPON });
     const couponButton = createBaseElement({
       cssClasses: [styles.button, styles.applyBtn],
-      innerContent: 'Apply',
+      innerContent: TITTLE.BUTTON_COUPON[this.language],
       tag: 'button',
+    });
+    this.textElement.push({ element: couponButton, textItem: TITTLE.BUTTON_COUPON });
+    couponButton.addEventListener('click', (evn: Event) => {
+      evn.preventDefault();
+      this.addDiscountCallback(couponInput.getHTML().value);
+      couponInput.getHTML().value = '';
     });
     couponWrap.append(couponInput.getHTML(), couponButton);
     return couponWrap;
@@ -163,32 +209,43 @@ class CartPageView {
   private createDeleCell(): HTMLTableCellElement {
     const tdDelete = createBaseElement({ cssClasses: [styles.th, styles.deleteCell, styles.mainText], tag: 'th' });
     const clear = new LinkModel({
-      // attrs: {
-      //   href: PAGE_ID.CATALOG_PAGE,
-      // },
       classes: [styles.continue, styles.clear],
-      text: 'Clear all',
+      text: TITTLE.CLEAR[this.language],
     });
 
+    this.textElement.push({ element: clear.getHTML(), textItem: TITTLE.CLEAR });
     clear.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
       this.clearCallback();
     });
-    // const deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], innerContent: 'Clear', tag: 'button' });
-    // deleteButton.addEventListener('click', () => {});
     tdDelete.append(clear.getHTML());
-    // const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    // svg.append(createSVGUse(SVG_DETAILS.DELETE));
-    // deleteButton.append(svg);
     return tdDelete;
   }
 
   private createDiscountHTML(): HTMLDivElement {
     const discountWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
-    const discountTitle = createBaseElement({ cssClasses: [styles.title], innerContent: 'Coupon Discount', tag: 'p' });
-    const discountValue = createBaseElement({ cssClasses: [styles.title], innerContent: '(-) 00.00', tag: 'p' });
-    discountWrap.append(discountTitle, discountValue);
+    const discountTitle = createBaseElement({
+      cssClasses: [styles.title],
+      innerContent: TITTLE.COUPON_DISCOUNT[this.language],
+      tag: 'p',
+    });
+    discountWrap.append(discountTitle, this.discount);
+    this.textElement.push({ element: discountTitle, textItem: TITTLE.COUPON_DISCOUNT });
     return discountWrap;
+  }
+
+  private createEmptyHTML(): HTMLDivElement {
+    const empty = createBaseElement({ cssClasses: [styles.empty, styles.hide], tag: 'div' });
+    const emptyTitle = createBaseElement({
+      cssClasses: [styles.emptyTitle],
+      innerContent: TITTLE.EMPTY[this.language],
+      tag: 'p',
+    });
+    this.textElement.push({ element: emptyTitle, textItem: TITTLE.EMPTY });
+    const continueLink = this.createCatalogLinkHTML();
+    empty.append(emptyTitle, continueLink.getHTML());
+    this.page.append(empty);
+    return empty;
   }
 
   private createPageHTML(): HTMLDivElement {
@@ -204,26 +261,25 @@ class CartPageView {
 
   private createSubtotalHTML(): HTMLDivElement {
     const subtotalWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
-    const subtotalTitle = createBaseElement({ cssClasses: [styles.title], innerContent: 'Subtotal', tag: 'p' });
-
-    // const subtotalValue = createBaseElement({
-    //   cssClasses: [styles.totalTitle],
-    //   innerContent: `$ ${totalPriceSum.toFixed(2)}`,
-    //   tag: 'p',
-    // });
+    const subtotalTitle = createBaseElement({
+      cssClasses: [styles.title],
+      innerContent: TITTLE.SUBTOTAL[this.language],
+      tag: 'p',
+    });
     subtotalWrap.append(subtotalTitle, this.subTotal);
+    this.textElement.push({ element: subtotalTitle, textItem: TITTLE.SUBTOTAL });
     return subtotalWrap;
   }
 
   private createTotalHTML(): HTMLDivElement {
     const totalWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
-    const totalTitle = createBaseElement({ cssClasses: [styles.totalTitle], innerContent: 'Total', tag: 'p' });
-    // const totalValue = createBaseElement({
-    //   cssClasses: [styles.totalPrice],
-    //   innerContent: `$ ${totalPriceSum.toFixed(2)}`,
-    //   tag: 'p',
-    // });
+    const totalTitle = createBaseElement({
+      cssClasses: [styles.totalTitle],
+      innerContent: TITTLE.TOTAL[this.language],
+      tag: 'p',
+    });
     totalWrap.append(totalTitle, this.total);
+    this.textElement.push({ element: totalTitle, textItem: TITTLE.TOTAL });
     return totalWrap;
   }
 
@@ -232,8 +288,6 @@ class CartPageView {
       cssClasses: [styles.wrap],
       tag: 'div',
     });
-
-    this.page.append(wrap);
 
     return wrap;
   }
@@ -245,18 +299,40 @@ class CartPageView {
   public renderCart(productsItem: ProductOrderModel[]): void {
     this.productWrap.innerHTML = '';
     this.totalWrap.innerHTML = '';
+    this.productWrap.classList.remove(styles.hide);
+    this.totalWrap.classList.remove(styles.hide);
+    this.empty.classList.add(styles.hide);
     this.productRow.map((productEl) => productEl.remove());
     this.productRow = [];
     this.addTableHeader();
     productsItem.forEach((productEl) => this.tableBody?.append(productEl.getHTML()));
-    // const totalPriceSum = productsItem.reduce((sum, product) => sum + product.getProduct().totalPrice, 0);
     this.addTotalInfo();
   }
 
+  public renderEmpty(): void {
+    this.productWrap.innerHTML = '';
+    this.totalWrap.innerHTML = '';
+    this.productWrap.classList.add(styles.hide);
+    this.totalWrap.classList.add(styles.hide);
+    this.empty.classList.remove(styles.hide);
+  }
+
+  public updateLanguage(): void {
+    this.language = getStore().getState().currentLanguage;
+    this.textElement.forEach((textEl) => {
+      const elHTML = textEl.element;
+      if (elHTML instanceof HTMLInputElement) {
+        elHTML.placeholder = textEl.textItem[this.language];
+      } else {
+        elHTML.textContent = textEl.textItem[this.language];
+      }
+    });
+  }
+
   public updateTotal(cart: Cart): void {
-    const total = cart.products.reduce((sum, product) => sum + product.totalPrice, 0);
-    this.subTotal.innerHTML = `$ ${total.toFixed(2)}`;
-    this.total.innerHTML = `$ ${total.toFixed(2)}`;
+    this.subTotal.innerHTML = `$ ${(cart.total + cart.discounts).toFixed(2)}`;
+    this.discount.innerHTML = `-$ ${cart.discounts.toFixed(2)}`;
+    this.total.innerHTML = `$ ${cart.total.toFixed(2)}`;
   }
 }
 export default CartPageView;

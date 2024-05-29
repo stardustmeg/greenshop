@@ -1,8 +1,10 @@
 import type { SizeType, localization } from './product.ts';
 
 export interface Cart {
+  discounts: number;
   id: string;
   products: CartProduct[];
+  total: number;
   version: number;
 }
 

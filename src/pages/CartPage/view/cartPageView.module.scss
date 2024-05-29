@@ -55,10 +55,6 @@
 
 .thead {
   width: 100%;
-
-  // @media (max-width: 768px) {
-  //   display: none;
-  // }
 }
 
 .mainText {
@@ -99,6 +95,7 @@
   border-bottom: var(--one) solid var(--steam-green-800);
 }
 
+.emptyTitle,
 .totalTitle {
   padding: var(--tiny-offset) 0;
   font: var(--bold-font);
@@ -119,7 +116,7 @@
   display: flex;
   align-items: stretch;
   justify-content: space-between;
-  max-width: calc(var(--extra-large-offset) * 3.8); // 380px
+  max-width: calc(var(--extra-large-offset) * 3.8);
 
   @media (max-width: 768px) {
     width: 100%;
@@ -145,14 +142,8 @@
 .button {
   @include green-btn;
 
-  // border-radius: 0 var(--small-br) var(--small-br) 0;
-
   padding: var(--tiny-offset);
-
-  // font: var(--bold-font);
   color: var(--noble-gray-200);
-
-  // background-color: var(--steam-green-800);
 }
 
 .applyBtn {
@@ -170,6 +161,7 @@
   padding: var(--tiny-offset) 0;
   font: var(--regular-font);
   color: var(--steam-green-800);
+  cursor: pointer;
 }
 
 .mobileHide {
@@ -178,24 +170,23 @@
   }
 }
 
-.deleteButton {
-  &:hover {
-  }
-}
-
 .deleteCell {
   @media (max-width: 768px) {
-    // position: absolute;
-    // right: -10%;
-    // top: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     grid-area: 1/3;
-
-    // grid-column: auto;
-    // grid-row: auto;
-
-    // transform: translate(calc(var(--small-offset) / 2), calc(var(--small-offset) / 2 * -1));
   }
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.hide {
+  display: none;
 }

@@ -55,15 +55,6 @@
     svg {
       stroke: var(--steam-green-800);
     }
-
-    // @media (max-width: 768px) {
-    //   svg {
-    //     width: var(--small-offset);
-    //     height: var(--small-offset);
-    //     stroke: var(--steam-green-800);
-    //     transition: fill 0.2s;
-    //   }
-    // }
   }
 }
 
@@ -87,7 +78,7 @@
     position: relative;
     z-index: 10;
     margin-bottom: var(--extra-small-offset);
-    border-radius: 14px;
+    border-radius: var(--medium-br);
     box-shadow: var(--mellow-shadow-050);
   }
 }
@@ -97,16 +88,10 @@
   width: 100%;
   height: 100%;
 
-  // max-width: calc(var(--tiny-offset) * 10);
-  // max-height: calc(var(--tiny-offset) * 10);
-
   @media (max-width: 768px) {
-    border-radius: 14px 0 0 14px;
+    border-radius: var(--medium-br) 0 0 var(--medium-br);
     width: 100%;
     height: 100%;
-
-    // max-width: calc(var(--tiny-offset) * 10);
-    // max-height: calc(var(--tiny-offset) * 10);
   }
 }
 
@@ -196,9 +181,9 @@
 }
 
 .quantityButton {
-  border-radius: 29px;
-  width: 22px;
-  height: 25px;
+  border-radius: 50%;
+  width: calc(var(--tiny-offset) * 2.5);
+  height: calc(var(--tiny-offset) * 2.5);
   color: var(--noble-gray-200);
   background-color: var(--steam-green-800);
 }

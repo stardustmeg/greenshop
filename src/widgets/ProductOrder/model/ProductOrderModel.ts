@@ -1,6 +1,7 @@
 import type { Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { CartActive } from '@/shared/types/cart.ts';
 
 import ProductOrderView from '../view/ProductOrderView.ts';
@@ -21,7 +22,9 @@ class ProductOrderModel {
     this.init();
   }
 
-  private init(): void {}
+  private init(): void {
+    observeStore(selectCurrentLanguage, () => this.view.updateLanguage());
+  }
 
   public getHTML(): HTMLDivElement {
     return this.view.getHTML();

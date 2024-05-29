@@ -7,6 +7,8 @@ import type {
   MyCartUpdateAction,
 } from '@commercetools/platform-sdk';
 
+import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { CURRENCY } from '@/shared/constants/product.ts';
 
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
@@ -34,22 +36,6 @@ export class CartApi {
               variantId: addCartItem.variantId,
             },
           ],
-          version: cart.version,
-        },
-      })
-      .execute();
-    return data;
-  }
-
-  public async clearCart(cart: Cart, actions: MyCartUpdateAction[]): Promise<ClientResponse<CartResponse>> {
-    const data = await this.client
-      .apiRoot()
-      .me()
-      .carts()
-      .withId({ ID: cart.id })
-      .post({
-        body: {
-          actions,
           version: cart.version,
         },
       })
@@ -124,6 +110,26 @@ export class CartApi {
   public async getCarts(): Promise<ClientResponse<CartPagedQueryResponse>> {
     const data = await this.client.apiRoot().me().carts().get().execute();
     return data;
+  }
+
+  public updateCart(cart: Cart, actions: MyCartUpdateAction[]): Promise<ClientResponse<CartResponse> | boolean> {
+    return this.client
+      .apiRoot()
+      .me()
+      .carts()
+      .withId({ ID: cart.id })
+      .post({
+        body: {
+          actions,
+          version: cart.version,
+        },
+      })
+      .execute()
+      .then((data) => {
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_COUPON_TO_CART, MESSAGE_STATUS.SUCCESS);
+        return data;
+      })
+      .catch(() => serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.INVALID_COUPON, MESSAGE_STATUS.ERROR));
   }
 }
 

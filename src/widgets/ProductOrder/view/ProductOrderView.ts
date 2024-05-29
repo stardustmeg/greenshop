@@ -1,4 +1,6 @@
+import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 import type { CartProduct } from '@/shared/types/cart';
+import type { languageVariants } from '@/shared/types/common';
 
 import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE, TABLET_WIDTH } from '@/shared/constants/common.ts';
@@ -12,35 +14,60 @@ import styles from './productOrderView.module.scss';
 
 type CallbackActive = (active: CartActive) => Promise<void>;
 
+type textElementsType = {
+  element: HTMLTableCellElement;
+  textItem: languageVariants;
+};
+
+const TITTLE = {
+  MINUS: '-',
+  NAME: {
+    en: '',
+    ru: '',
+  },
+  PLUS: '+',
+  SIZE: {
+    en: 'Size',
+    ru: 'Размер',
+  },
+};
 class ProductOrderView {
   private callback: CallbackActive;
 
+  private language: LanguageChoiceType;
+
   private price: HTMLTableCellElement;
 
+  private productItem: CartProduct;
+
   private quantity: HTMLParagraphElement;
+
+  private textElement: textElementsType[] = [];
 
   private total: HTMLTableCellElement;
 
   private view: HTMLTableRowElement;
 
   constructor(productItem: CartProduct, callback: CallbackActive) {
+    this.productItem = productItem;
+    this.language = getStore().getState().currentLanguage;
     this.callback = callback;
     this.quantity = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityText],
-      innerContent: productItem.quantity.toString(),
+      innerContent: this.productItem.quantity.toString(),
       tag: 'p',
     });
     this.price = createBaseElement({
       cssClasses: [styles.td, styles.priceCell, styles.priceText],
-      innerContent: `$${productItem.price.toFixed(2)}`,
+      innerContent: `$${this.productItem.price.toFixed(2)}`,
       tag: 'td',
     });
     this.total = createBaseElement({
       cssClasses: [styles.td, styles.totalCell, styles.totalText],
-      innerContent: `$${productItem.totalPrice.toFixed(2)}`,
+      innerContent: `$${this.productItem.totalPrice.toFixed(2)}`,
       tag: 'td',
     });
-    this.view = this.createHTML(productItem);
+    this.view = this.createHTML();
   }
 
   private createDeleCell(): HTMLTableCellElement {
@@ -54,19 +81,21 @@ class ProductOrderView {
     return tdDelete;
   }
 
-  private createHTML(productItem: CartProduct): HTMLTableRowElement {
+  private createHTML(): HTMLTableRowElement {
     this.view = createBaseElement({ cssClasses: [styles.tr, styles.trProduct], tag: 'tr' });
-    const imgCell = this.createImgCell(productItem);
+    const imgCell = this.createImgCell();
     const tdProduct = createBaseElement({
       cssClasses: [styles.td, styles.nameCell, styles.mainText],
-      innerContent: productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      innerContent: this.productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
       tag: 'td',
     });
     const tdSize = createBaseElement({
       cssClasses: [styles.td, styles.sizeCell, styles.sizeText],
-      innerContent: productItem.size ? `Size: ${productItem.size}` : '',
+      innerContent: this.productItem.size ? `${TITTLE.SIZE[this.language]}: ${this.productItem.size}` : '',
       tag: 'td',
     });
+    this.textElement.push({ element: tdSize, textItem: TITTLE.SIZE });
+    this.textElement.push({ element: tdProduct, textItem: TITTLE.NAME });
     const quantityCell = this.createQuantityCell();
     const deleteCell = this.createDeleCell();
     this.view.append(imgCell, tdProduct, tdSize, this.price, quantityCell, this.total, deleteCell);
@@ -86,11 +115,11 @@ class ProductOrderView {
     return this.view;
   }
 
-  private createImgCell(productItem: CartProduct): HTMLTableCellElement {
+  private createImgCell(): HTMLTableCellElement {
     const tdImage = createBaseElement({ cssClasses: [styles.td, styles.imgCell], tag: 'td' });
     const img = createBaseElement({ cssClasses: [styles.img], tag: 'img' });
-    img.src = productItem.images;
-    img.alt = productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    img.src = this.productItem.images;
+    img.alt = this.productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
     tdImage.append(img);
     return tdImage;
   }
@@ -102,12 +131,12 @@ class ProductOrderView {
     });
     const plusButton = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityButton],
-      innerContent: '+',
+      innerContent: TITTLE.PLUS,
       tag: 'button',
     });
     const minusButton = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityButton],
-      innerContent: '-',
+      innerContent: TITTLE.MINUS,
       tag: 'button',
     });
     tdQuantity.append(minusButton, this.quantity, plusButton);
@@ -121,9 +150,22 @@ class ProductOrderView {
   }
 
   public updateInfo(productItem: CartProduct): void {
-    this.quantity.textContent = productItem.quantity.toString();
-    this.price.textContent = `$${productItem.price.toFixed(2)}`;
-    this.total.textContent = `$${productItem.totalPrice.toFixed(2)}`;
+    this.productItem = productItem;
+    this.quantity.textContent = this.productItem.quantity.toString();
+    this.price.textContent = `$${this.productItem.price.toFixed(2)}`;
+    this.total.textContent = `$${this.productItem.totalPrice.toFixed(2)}`;
+  }
+
+  public updateLanguage(): void {
+    this.language = getStore().getState().currentLanguage;
+    this.textElement.forEach((textEl) => {
+      const elHTML = textEl.element;
+      if (textEl.textItem === TITTLE.SIZE) {
+        elHTML.textContent = this.productItem.size ? `${TITTLE.SIZE[this.language]}: ${this.productItem.size}` : '';
+      } else if (textEl.textItem === TITTLE.NAME) {
+        elHTML.textContent = this.productItem.name[Number(this.language === LANGUAGE_CHOICE.RU)].value;
+      }
+    });
   }
 }
 
