@@ -1,5 +1,7 @@
 import type { Category, Product, SizeType } from '@/shared/types/product.ts';
 
+import type FilterProduct from '../product/utils/filter';
+
 export const Attribute = {
   FULL_DESCRIPTION: 'full_description',
   LEVEL: 'level',
@@ -50,7 +52,7 @@ export type SearchOptions = {
 };
 
 export type OptionsRequest = {
-  filter?: string[];
+  filter?: FilterProduct;
   limit?: number;
   page?: number;
   search?: SearchOptions;

@@ -45,6 +45,7 @@ export class ProductApi {
 
   public async getProducts(options?: OptionsRequest): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
     const { filter, limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, search, sort } = options || {};
+    const filterQuery = filter?.getFilter();
 
     const data = await this.client
       .apiRoot()
@@ -63,8 +64,8 @@ export class ProductApi {
           ...(search && { [`text.${search.locale}`]: search.value }),
           ...(search && { fuzzy: true }),
           ...(sort && { sort: makeSortRequest(sort) }),
-          ...(filter && { 'filter.query': filter }),
-          ...(filter && { 'filter.facets': filter }),
+          ...(filterQuery && { 'filter.query': filterQuery }),
+          ...(filterQuery && { 'filter.facets': filterQuery }),
           withTotal: true,
         },
       })
