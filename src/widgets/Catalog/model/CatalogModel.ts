@@ -144,14 +144,14 @@ class CatalogModel {
     const currentSort = this.getSelectedSorting(selectedSorting ?? null);
     if (currentSort) {
       result = {
-        filter: filter.getFilter(),
+        filter,
         page: Number(page),
         search: { locale: currentLanguage, value: searchValue },
         sort: currentSort ?? null,
       };
     } else {
       result = {
-        filter: filter.getFilter(),
+        filter,
         page: Number(page),
         search: { locale: currentLanguage, value: searchValue },
       };
