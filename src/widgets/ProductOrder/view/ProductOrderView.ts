@@ -102,13 +102,15 @@ class ProductOrderView {
     const animation = new Hammer(this.view);
     animation.on('swipeleft', () => {
       if (window.innerWidth <= TABLET_WIDTH) {
-        this.view.style.transform = 'translateX(-100px)';
+        this.view.classList.add(styles.swipeRow);
+        deleteCell.classList.add(styles.swipeDelete);
         deleteCell.classList.remove(styles.hide);
       }
     });
     animation.on('swiperight', () => {
       if (window.innerWidth <= TABLET_WIDTH) {
-        this.view.style.transform = 'none';
+        this.view.classList.remove(styles.swipeRow);
+        deleteCell.classList.remove(styles.swipeDelete);
         deleteCell.classList.add(styles.hide);
       }
     });
