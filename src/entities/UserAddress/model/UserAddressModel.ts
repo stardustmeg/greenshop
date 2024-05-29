@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import type { Address, User } from '@/shared/types/user.ts';
 
 import AddressEditModel from '@/features/AddressEdit/model/AddressEditModel.ts';
