@@ -13,7 +13,7 @@ class AddressModel {
 
   private view: AddressView;
 
-  constructor(addressType: AddressType, options: AddressOptions) {
+  constructor(options: AddressOptions, addressType: AddressType = ADDRESS_TYPE.GENERAL) {
     this.addressType = addressType;
     this.view = new AddressView(addressType, options);
     this.init();
@@ -26,9 +26,22 @@ class AddressModel {
 
   public getAddressData(personalData: PersonalData): Address {
     const store = getStore().getState();
+    let country: string;
+
+    switch (this.addressType) {
+      case ADDRESS_TYPE.BILLING:
+        country = store.billingCountry;
+        break;
+      case ADDRESS_TYPE.SHIPPING:
+        country = store.shippingCountry;
+        break;
+      default:
+        country = store.defaultCountry;
+        break;
+    }
     const addressData: Address = {
       city: formattedText(this.view.getCityField().getView().getValue()),
-      country: this.addressType === ADDRESS_TYPE.BILLING ? store.billingCountry : store.shippingCountry,
+      country,
       email: personalData.email,
       firstName: personalData.firstName,
       id: '',
@@ -38,6 +51,7 @@ class AddressModel {
       streetName: formattedText(this.view.getStreetField().getView().getValue()),
       streetNumber: '',
     };
+
     return addressData;
   }
 

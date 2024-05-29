@@ -38,7 +38,7 @@ class AddressAddView {
   private createSaveChangesButton(): ButtonModel {
     this.saveChangesButton = new ButtonModel({
       classes: [styles.saveChangesButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].SAVE_CHANGES,
+      text: BUTTON_TEXT[getStore().getState().currentLanguage].ADD_ADDRESS,
     });
     this.saveChangesButton.setDisabled();
     return this.saveChangesButton;

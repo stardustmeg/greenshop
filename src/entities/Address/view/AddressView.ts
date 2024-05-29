@@ -212,19 +212,29 @@ class AddressView {
   }
 
   private createTitle(): HTMLHeadingElement {
+    let titleText: string;
+    let key: string;
+    switch (this.addressType) {
+      case ADDRESS_TYPE.BILLING:
+        titleText = TITLE_TEXT[getStore().getState().currentLanguage].BILLING_ADDRESS;
+        key = TITLE_TEXT_KEYS.BILLING_ADDRESS;
+        break;
+      case ADDRESS_TYPE.SHIPPING:
+        titleText = TITLE_TEXT[getStore().getState().currentLanguage].SHIPPING_ADDRESS;
+        key = TITLE_TEXT_KEYS.SHIPPING_ADDRESS;
+        break;
+      default:
+        titleText = TITLE_TEXT[getStore().getState().currentLanguage].ADDRESS;
+        key = TITLE_TEXT_KEYS.ADDRESS;
+        break;
+    }
+
     const title = createBaseElement({
       cssClasses: [styles.title],
-      innerContent:
-        this.addressType === ADDRESS_TYPE.SHIPPING
-          ? TITLE_TEXT[getStore().getState().currentLanguage].SHIPPING_ADDRESS
-          : TITLE_TEXT[getStore().getState().currentLanguage].BILLING_ADDRESS,
+      innerContent: titleText,
       tag: 'h3',
     });
-    observeCurrentLanguage(
-      title,
-      TITLE_TEXT,
-      this.addressType === ADDRESS_TYPE.SHIPPING ? TITLE_TEXT_KEYS.SHIPPING_ADDRESS : TITLE_TEXT_KEYS.BILLING_ADDRESS,
-    );
+    observeCurrentLanguage(title, TITLE_TEXT, key);
     return title;
   }
 

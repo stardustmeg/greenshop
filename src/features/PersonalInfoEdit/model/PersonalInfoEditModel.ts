@@ -92,6 +92,7 @@ class PersonalInfoEditModel {
     const cancelButton = this.view.getCancelButton().getHTML();
     cancelButton.addEventListener('click', () => {
       modal.hide();
+      modal.removeContent();
     });
     return true;
   }

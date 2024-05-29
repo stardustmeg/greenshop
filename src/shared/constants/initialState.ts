@@ -10,6 +10,7 @@ const initialState: State = {
   billingCountry: '',
   currentLanguage: 'en',
   currentPage: PAGE_ID.DEFAULT_PAGE,
+  defaultCountry: '',
   isAppThemeLight: true,
   isUserLoggedIn: false,
   shippingCountry: '',
