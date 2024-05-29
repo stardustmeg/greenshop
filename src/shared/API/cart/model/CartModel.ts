@@ -47,12 +47,15 @@ export class CartModel {
   }
 
   private adaptLineItem(product: LineItem): CartProduct {
+    const price = product.price.discounted?.value.centAmount
+      ? product.price.discounted?.value.centAmount
+      : product.price.value.centAmount;
     const result: CartProduct = {
       images: product.variant.images?.length ? product.variant.images[0].url : '',
       key: product.productKey || '',
       lineItemId: product.id,
       name: [],
-      price: product.price.value.centAmount / PRICE_FRACTIONS || 0,
+      price: price / PRICE_FRACTIONS || 0,
       productId: product.productId || '',
       quantity: product.quantity || 0,
       size: null,
