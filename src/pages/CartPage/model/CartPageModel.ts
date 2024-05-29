@@ -4,6 +4,7 @@ import type { Page } from '@/shared/types/page.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 import ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel.ts';
@@ -11,14 +12,59 @@ import ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel.ts
 import CartPageView from '../view/CartPageView.ts';
 
 class CartPageModel implements Page {
+  private addDiscountHandler = async (discountCode: string): Promise<void> => {
+    if (discountCode.trim()) {
+      this.cart = await getCartModel().addCoupon(discountCode);
+      this.view.updateTotal(this.cart);
+
+      getCartModel()
+        .addCoupon(discountCode)
+        .then((cart) => {
+          this.cart = cart;
+          this.view.updateTotal(this.cart);
+        })
+        .catch(showErrorMessage);
+    }
+  };
+
   private cart: Cart | null = null;
+
+  private changeProductHandler = (cart: Cart): void => {
+    this.cart = cart;
+    this.productsItem = this.productsItem.filter((productItem) => {
+      const searchEl = this.cart?.products.find((item) => item.lineItemId === productItem.getProduct().lineItemId);
+      if (!searchEl) {
+        productItem.getHTML().remove();
+        return false;
+      }
+      return true;
+    });
+
+    if (!this.productsItem.length) {
+      this.view.renderEmpty();
+    }
+    this.view.updateTotal(this.cart);
+  };
+
+  private clearCart = async (): Promise<void> => {
+    this.cart = await getCartModel().clearCart();
+    this.productsItem = this.productsItem.filter((productItem) => {
+      const searchEl = this.cart?.products.find((item) => item.lineItemId === productItem.getProduct().lineItemId);
+      if (!searchEl) {
+        productItem.getHTML().remove();
+        return false;
+      }
+      return true;
+    });
+    this.renderCart();
+  };
 
   private productsItem: ProductOrderModel[] = [];
 
   private view: CartPageView;
 
   constructor(parent: HTMLDivElement) {
-    this.view = new CartPageView(parent);
+    this.view = new CartPageView(parent, this.clearCart, this.addDiscountHandler);
 
     this.init().catch(showErrorMessage);
   }
@@ -26,11 +72,24 @@ class CartPageModel implements Page {
   private async init(): Promise<void> {
     getStore().dispatch(setCurrentPage(PAGE_ID.CART_PAGE));
     this.cart = await getCartModel().addProductInfo();
-    this.cart.products.forEach((product) => {
-      this.productsItem.push(new ProductOrderModel(product));
-    });
+    this.renderCart();
+    observeStore(selectCurrentLanguage, () => this.view.updateLanguage());
+  }
 
-    this.view.renderCart(this.productsItem);
+  private renderCart(): void {
+    if (this.cart) {
+      this.cart.products.forEach((product) => {
+        this.productsItem.push(new ProductOrderModel(product, this.changeProductHandler));
+      });
+
+      if (this.productsItem.length) {
+        this.view.renderCart(this.productsItem);
+        this.view.updateTotal(this.cart);
+      } else {
+        this.view.renderEmpty();
+        this.view.updateTotal(this.cart);
+      }
+    }
   }
 
   public getHTML(): HTMLDivElement {

@@ -1,8 +1,10 @@
 import type { SizeType, localization } from './product.ts';
 
 export interface Cart {
+  discounts: number;
   id: string;
   products: CartProduct[];
+  total: number;
   version: number;
 }
 
@@ -27,4 +29,10 @@ export interface AddCartItem {
 export interface EditCartItem {
   lineId: string;
   quantity: number;
+}
+
+export enum CartActive {
+  DELETE = 'delete',
+  MINUS = 'minus',
+  PLUS = 'plus',
 }
