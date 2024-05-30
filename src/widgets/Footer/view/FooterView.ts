@@ -257,12 +257,12 @@ class FooterView {
       cssClasses: [styles.contactIcon],
       tag: 'img',
     });
-    const tittle = createBaseElement({
+    const title = createBaseElement({
       cssClasses: [styles.contactText],
       innerContent: contact.description,
       tag: 'p',
     });
-    wrap.append(icon, tittle);
+    wrap.append(icon, title);
     return wrap;
   }
 

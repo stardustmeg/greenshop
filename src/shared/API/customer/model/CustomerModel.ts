@@ -46,11 +46,11 @@ export class CustomerModel {
     return { action: 'setDateOfBirth', dateOfBirth };
   }
 
-  public static actionEditDefaultBillingAddress(addressId: string): MyCustomerUpdateAction {
+  public static actionEditDefaultBillingAddress(addressId?: string): MyCustomerUpdateAction {
     return { action: 'setDefaultBillingAddress', addressId };
   }
 
-  public static actionEditDefaultShippingAddress(addressId: string): MyCustomerUpdateAction {
+  public static actionEditDefaultShippingAddress(addressId?: string): MyCustomerUpdateAction {
     return { action: 'setDefaultShippingAddress', addressId };
   }
 

@@ -14,7 +14,7 @@ export interface Post {
     ru: string;
   };
   time: number;
-  tittle: {
+  title: {
     en: string;
     ru: string;
   };
