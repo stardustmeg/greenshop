@@ -49,48 +49,25 @@ class UserAddressModel {
   private async handleAddressType(user: User, activeType: AddressTypeType, inactive: boolean): Promise<void> {
     const customerModel = getCustomerModel();
 
-    if (inactive) {
-      switch (activeType) {
-        case ADDRESS_TYPE.BILLING:
-          await customerModel.editCustomer([CustomerModel.actionAddBillingAddress(this.currentAddress.id)], user);
-          break;
+    const actions = {
+      [ADDRESS_TYPE.BILLING]: inactive
+        ? CustomerModel.actionAddBillingAddress(this.currentAddress.id)
+        : CustomerModel.actionRemoveBillingAddress(this.currentAddress),
+      [ADDRESS_TYPE.DEFAULT_BILLING]: inactive
+        ? CustomerModel.actionEditDefaultBillingAddress(this.currentAddress.id)
+        : CustomerModel.actionEditDefaultBillingAddress(undefined),
+      [ADDRESS_TYPE.DEFAULT_SHIPPING]: inactive
+        ? CustomerModel.actionEditDefaultShippingAddress(this.currentAddress.id)
+        : CustomerModel.actionEditDefaultShippingAddress(undefined),
+      [ADDRESS_TYPE.SHIPPING]: inactive
+        ? CustomerModel.actionAddShippingAddress(this.currentAddress.id)
+        : CustomerModel.actionRemoveShippingAddress(this.currentAddress),
+    };
 
-        case ADDRESS_TYPE.SHIPPING:
-          await customerModel.editCustomer([CustomerModel.actionAddShippingAddress(this.currentAddress.id)], user);
-          break;
+    const action = actions[activeType];
 
-        case ADDRESS_TYPE.DEFAULT_BILLING:
-          await customerModel.editCustomer(
-            [CustomerModel.actionEditDefaultBillingAddress(this.currentAddress.id)],
-            user,
-          );
-          break;
-
-        case ADDRESS_TYPE.DEFAULT_SHIPPING:
-          await customerModel.editCustomer(
-            [CustomerModel.actionEditDefaultShippingAddress(this.currentAddress.id)],
-            user,
-          );
-          break;
-
-        default:
-          break;
-      }
-    } else {
-      switch (activeType) {
-        case ADDRESS_TYPE.BILLING:
-        case ADDRESS_TYPE.DEFAULT_BILLING:
-          await customerModel.editCustomer([CustomerModel.actionRemoveBillingAddress(this.currentAddress)], user);
-          break;
-
-        case ADDRESS_TYPE.SHIPPING:
-        case ADDRESS_TYPE.DEFAULT_SHIPPING:
-          await customerModel.editCustomer([CustomerModel.actionRemoveShippingAddress(this.currentAddress)], user);
-          break;
-
-        default:
-          break;
-      }
+    if (action) {
+      await customerModel.editCustomer([action], user);
     }
   }
 
