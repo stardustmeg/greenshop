@@ -34,6 +34,8 @@ const TITTLE = {
 class ProductOrderView {
   private callback: CallbackActive;
 
+  private deleteButton: HTMLButtonElement;
+
   private language: LanguageChoiceType;
 
   private price: HTMLTableCellElement;
@@ -67,17 +69,17 @@ class ProductOrderView {
       innerContent: `$${this.productItem.totalPrice.toFixed(2)}`,
       tag: 'td',
     });
+    this.deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], tag: 'button' });
     this.view = this.createHTML();
   }
 
   private createDeleCell(): HTMLTableCellElement {
     const tdDelete = createBaseElement({ cssClasses: [styles.td, styles.deleteCell, styles.hide], tag: 'td' });
-    const deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], tag: 'button' });
-    deleteButton.addEventListener('click', () => this.callback(CartActive.DELETE));
-    tdDelete.append(deleteButton);
+    this.deleteButton.addEventListener('click', () => this.callback(CartActive.DELETE));
+    tdDelete.append(this.deleteButton);
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.DELETE));
-    deleteButton.append(svg);
+    this.deleteButton.append(svg);
     return tdDelete;
   }
 
@@ -145,6 +147,10 @@ class ProductOrderView {
     plusButton.addEventListener('click', () => this.callback(CartActive.PLUS));
     minusButton.addEventListener('click', () => this.callback(CartActive.MINUS));
     return tdQuantity;
+  }
+
+  public getDeleteButton(): HTMLButtonElement {
+    return this.deleteButton;
   }
 
   public getHTML(): HTMLDivElement {

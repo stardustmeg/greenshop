@@ -10,6 +10,7 @@ import type {
 import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousCartId, setAnonymousId } from '@/shared/Store/actions.ts';
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import type { OptionsRequest } from '../../types/type.ts';
 
@@ -102,14 +103,11 @@ export class CartModel {
       },
     ];
     const data = await this.root.updateCart(this.cart, action);
-    if (isClientResponse(data)) {
-      this.cart = this.getCartFromData(data);
-    }
-
+    this.cart = this.getCartFromData(data);
     return this.cart;
   }
 
-  public async addProductInfo(): Promise<Cart> {
+  public async addProductInfo(): Promise<Cart | null> {
     if (!this.cart) {
       this.cart = await this.getCart();
     }
@@ -123,33 +121,29 @@ export class CartModel {
       limit: this.cart.products.length,
     };
 
-    const products = await getProductModel().getProducts(opt);
+    return getProductModel()
+      .getProducts(opt)
+      .then((products) => {
+        if (products.products.length && this.cart) {
+          this.cart.products = this.cart.products.map((product) => {
+            const productInfo = products.products.find(({ id }) => id === product.productId);
+            if (productInfo) {
+              if (!product.images) {
+                return { ...product, images: productInfo.images[0] };
+              }
+            }
 
-    if (products.products.length) {
-      this.cart.products = this.cart.products.map((product) => {
-        const productInfo = products.products.find(({ id }) => id === product.productId);
-        if (productInfo) {
-          if (!product.images) {
-            return { ...product, images: productInfo.images[0] };
-          }
+            return product;
+          });
         }
-
-        return product;
+        return this.cart;
       });
-    }
-
-    return this.cart;
   }
 
-  public async addProductToCart(addCartItem: AddCartItem): Promise<Cart> {
-    if (!this.cart) {
-      this.cart = await this.getCart();
-    }
-    const data = await this.root.addProduct(this.cart, addCartItem);
+  public async addProductToCart(addCartItem: AddCartItem): Promise<Cart | null> {
+    const data = await this.root.addProduct(await this.getCart(), addCartItem);
     this.cart = this.getCartFromData(data);
-
     this.dispatchUpdate();
-
     return this.cart;
   }
 
@@ -158,7 +152,7 @@ export class CartModel {
     return true;
   }
 
-  public async clearCart(): Promise<Cart> {
+  public async clearCart(): Promise<Cart | null> {
     if (!this.cart) {
       this.cart = await this.getCart();
     }
@@ -167,32 +161,32 @@ export class CartModel {
       lineItemId: lineItem.lineItemId,
     }));
     const data = await this.root.updateCart(this.cart, actions);
-    if (isClientResponse(data)) {
-      this.cart = this.getCartFromData(data);
-    }
-
+    this.cart = this.getCartFromData(data);
     this.dispatchUpdate();
     return this.cart;
   }
 
-  public async create(): Promise<Cart> {
-    const newCart = await this.root.create();
-    this.cart = this.getCartFromData(newCart);
-
-    this.dispatchUpdate();
-
-    return this.cart;
+  public create(): Promise<Cart | null> {
+    return this.root
+      .create()
+      .then((newCart) => {
+        this.cart = this.getCartFromData(newCart);
+        this.dispatchUpdate();
+        return this.cart;
+      })
+      .catch((error: Error) => {
+        showErrorMessage(error);
+        return this.cart;
+      });
   }
 
-  public async deleteProductFromCart(products: CartProduct): Promise<Cart> {
+  public async deleteProductFromCart(products: CartProduct): Promise<Cart | null> {
     if (!this.cart) {
       this.cart = await this.getCart();
     }
     const data = await this.root.deleteProduct(this.cart, products);
     this.cart = this.getCartFromData(data);
-
     this.dispatchUpdate();
-
     return this.cart;
   }
 

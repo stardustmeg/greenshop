@@ -42,7 +42,11 @@ const TITTLE = {
 class CartPageView {
   private addDiscountCallback: DiscountCallback;
 
+  private clear: LinkModel;
+
   private clearCallback: ClearCallback;
+
+  private couponButton: HTMLButtonElement;
 
   private discount: HTMLParagraphElement;
 
@@ -82,6 +86,12 @@ class CartPageView {
     this.subTotal = createBaseElement({ cssClasses: [styles.totalTitle], tag: 'p' });
     this.total = createBaseElement({ cssClasses: [styles.totalPrice], tag: 'p' });
     this.discount = createBaseElement({ cssClasses: [styles.title], tag: 'p' });
+    this.couponButton = createBaseElement({
+      cssClasses: [styles.button, styles.applyBtn],
+      innerContent: TITTLE.BUTTON_COUPON[this.language],
+      tag: 'button',
+    });
+    this.clear = new LinkModel({ classes: [styles.continue, styles.clear], text: TITTLE.CLEAR[this.language] });
     this.totalWrap = this.createWrapHTML();
     this.totalWrap.classList.add(styles.total);
     this.page.append(this.productWrap);
@@ -191,34 +201,25 @@ class CartPageView {
     });
     couponInput.getHTML().classList.add(styles.couponInput);
     this.textElement.push({ element: couponInput.getHTML(), textItem: TITTLE.INPUT_COUPON });
-    const couponButton = createBaseElement({
-      cssClasses: [styles.button, styles.applyBtn],
-      innerContent: TITTLE.BUTTON_COUPON[this.language],
-      tag: 'button',
-    });
-    this.textElement.push({ element: couponButton, textItem: TITTLE.BUTTON_COUPON });
-    couponButton.addEventListener('click', (evn: Event) => {
+    this.textElement.push({ element: this.couponButton, textItem: TITTLE.BUTTON_COUPON });
+    this.couponButton.addEventListener('click', (evn: Event) => {
       evn.preventDefault();
       this.addDiscountCallback(couponInput.getHTML().value);
       couponInput.getHTML().value = '';
     });
-    couponWrap.append(couponInput.getHTML(), couponButton);
+    couponWrap.append(couponInput.getHTML(), this.couponButton);
     return couponWrap;
   }
 
   private createDeleCell(): HTMLTableCellElement {
     const tdDelete = createBaseElement({ cssClasses: [styles.th, styles.deleteCell, styles.mainText], tag: 'th' });
-    const clear = new LinkModel({
-      classes: [styles.continue, styles.clear],
-      text: TITTLE.CLEAR[this.language],
-    });
 
-    this.textElement.push({ element: clear.getHTML(), textItem: TITTLE.CLEAR });
-    clear.getHTML().addEventListener('click', (event) => {
+    this.textElement.push({ element: this.clear.getHTML(), textItem: TITTLE.CLEAR });
+    this.clear.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
       this.clearCallback();
     });
-    tdDelete.append(clear.getHTML());
+    tdDelete.append(this.clear.getHTML());
     return tdDelete;
   }
 
@@ -290,6 +291,10 @@ class CartPageView {
     });
 
     return wrap;
+  }
+
+  public getCouponButton(): HTMLButtonElement {
+    return this.couponButton;
   }
 
   public getHTML(): HTMLDivElement {
