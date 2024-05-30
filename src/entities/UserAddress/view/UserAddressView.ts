@@ -205,6 +205,14 @@ class UserAddressView {
   public getLabels(): Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }> {
     return this.labels;
   }
+
+  public setDisabled(): void {
+    this.view.classList.add(styles.disabled);
+  }
+
+  public setEnabled(): void {
+    this.view.classList.remove(styles.disabled);
+  }
 }
 
 export default UserAddressView;
