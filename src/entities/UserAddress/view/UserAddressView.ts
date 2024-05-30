@@ -67,7 +67,7 @@ class UserAddressView {
   private createDeleteLogo(): HTMLDivElement {
     this.deleteLogo = createBaseElement({ cssClasses: [styles.deleteLogo], tag: 'div' });
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.BIN));
+    svg.append(createSVGUse(SVG_DETAILS.DELETE));
     this.deleteLogo.append(svg);
     return this.deleteLogo;
   }
