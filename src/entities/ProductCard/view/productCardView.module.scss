@@ -77,9 +77,6 @@
   width: var(--small-offset);
   height: var(--small-offset);
   background-color: var(--noble-gray-1000);
-  transition:
-    transform 0.2s,
-    outline 0.2s;
   backdrop-filter: blur(10px);
 
   svg {

@@ -53,8 +53,6 @@
 .active {
   color: var(--steam-green-800);
   opacity: 1;
-  cursor: auto;
-  pointer-events: none;
 
   &::after {
     opacity: 1;

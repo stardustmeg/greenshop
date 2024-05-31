@@ -64,6 +64,8 @@ class CountryChoiceModel {
         if (currentItem.textContent) {
           inputHTML.value = currentItem.textContent;
           this.setCountryToStore(currentItem, inputHTML.getAttribute(DATA_KEYS.ADDRESS_TYPE) ?? '');
+          const event = new Event('input');
+          input.dispatchEvent(event);
           this.view.hideCountryChoice();
         }
       });

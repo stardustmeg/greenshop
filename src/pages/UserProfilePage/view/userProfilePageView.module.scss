@@ -45,7 +45,6 @@
   width: 25%;
   height: fit-content;
   background-color: var(--white);
-  gap: var(--extra-small-offset);
 }
 
 .accountMenuItem {
@@ -69,7 +68,7 @@
   align-items: center;
   align-self: center;
   width: 100%;
-  height: 2.5rem;
+  height: 4rem;
   font: var(--regular-font);
   letter-spacing: var(--one);
   text-align: center;
@@ -81,7 +80,7 @@
     content: '';
     position: absolute;
     left: 0;
-    bottom: -5px;
+    bottom: 1rem;
     width: 100%;
     height: var(--two);
     background-color: currentcolor;
@@ -90,7 +89,8 @@
     transform-origin: center;
     transition:
       transform 0.2s,
-      opacity 0.2s;
+      opacity 0.2s,
+      background-color 0.2s;
   }
 
   @media (hover: hover) {
