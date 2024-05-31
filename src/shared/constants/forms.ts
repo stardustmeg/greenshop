@@ -82,3 +82,18 @@ export const PASSWORD_TEXT = {
   HIDDEN: '********',
   SHOWN: 'Password123',
 };
+
+export const ADDRESS_TEXT = {
+  en: {
+    CITY: 'City: ',
+    COUNTRY: 'Country: ',
+    POSTAL_CODE: 'Postal code: ',
+    STREET: 'Street: ',
+  },
+  ru: {
+    CITY: 'Город: ',
+    COUNTRY: 'Страна: ',
+    POSTAL_CODE: 'Почтовый индекс: ',
+    STREET: 'Улица: ',
+  },
+} as const;
