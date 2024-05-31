@@ -1,11 +1,6 @@
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, setDefaultCountry, setShippingCountry } from '@/shared/Store/actions.ts';
-import observeStore, {
-  selectBillingCountry,
-  selectCurrentLanguage,
-  selectDefaultCountry,
-  selectShippingCountry,
-} from '@/shared/Store/observer.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { DATA_KEYS } from '@/shared/constants/common.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
@@ -21,25 +16,6 @@ class CountryChoiceModel {
     this.view = new CountryChoiceView(input);
     this.setCountryItemsHandlers(input);
     this.setInputHandler(input);
-
-    let action;
-
-    switch (input.getAttribute(DATA_KEYS.ADDRESS_TYPE)) {
-      case USER_ADDRESS_TYPE.BILLING:
-        action = selectBillingCountry;
-        break;
-      case USER_ADDRESS_TYPE.SHIPPING:
-        action = selectShippingCountry;
-        break;
-      default:
-        action = selectDefaultCountry;
-        break;
-    }
-
-    observeStore(action, () => {
-      const event = new Event('input');
-      input.dispatchEvent(event);
-    });
   }
 
   private observeCurrentLanguage(item: HTMLDivElement): boolean {

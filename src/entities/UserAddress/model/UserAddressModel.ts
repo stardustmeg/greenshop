@@ -7,6 +7,8 @@ import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
+import getStore from '@/shared/Store/Store.ts';
+import { setBillingCountry } from '@/shared/Store/actions.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
@@ -25,7 +27,6 @@ class UserAddressModel {
   private view: UserAddressView;
 
   constructor(
-    user: User,
     address: Address,
     activeTypes: AddressTypeType[],
     callback: (isDisabled: boolean) => void,
@@ -33,7 +34,7 @@ class UserAddressModel {
   ) {
     this.callback = callback;
     this.currentAddress = address;
-    this.view = new UserAddressView(user.locale, address, activeTypes, inactiveTypes);
+    this.view = new UserAddressView(address, activeTypes, inactiveTypes);
     this.labels = this.view.getLabels();
     this.setEditButtonHandler(address);
     this.setDeleteButtonHandler(address);
@@ -57,7 +58,6 @@ class UserAddressModel {
     }
   }
 
-  // eslint-disable-next-line max-lines-per-function
   private async handleAddressType(user: User, activeType: AddressTypeType, inactive: boolean): Promise<void> {
     const customerModel = getCustomerModel();
 
@@ -84,10 +84,11 @@ class UserAddressModel {
   }
 
   private async labelClickHandler(activeType: AddressTypeType, inactive?: boolean): Promise<void> {
-    const loader = new LoaderModel(LOADER_SIZE.LARGE);
-    this.callback(true);
+    const loader = new LoaderModel(LOADER_SIZE.MEDIUM);
     loader.setAbsolutePosition();
-    this.view.getHTML().append(loader.getHTML());
+    this.callback(true);
+    this.view.toggleState(true);
+    this.getHTML().append(loader.getHTML());
     try {
       const user = await getCustomerModel().getCurrentUser();
       if (user) {
@@ -98,8 +99,8 @@ class UserAddressModel {
     } catch (error) {
       showErrorMessage(error);
     } finally {
+      this.view.toggleState(false);
       loader.getHTML().remove();
-      this.callback(false);
     }
   }
 
@@ -124,6 +125,8 @@ class UserAddressModel {
           if (!user) {
             return;
           }
+
+          getStore().dispatch(setBillingCountry(address.country));
           const newAddressEditForm = new AddressEditModel(address, user).getHTML();
           modal.show();
           modal.setContent(newAddressEditForm);

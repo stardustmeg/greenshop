@@ -1,5 +1,5 @@
 .loader {
-  margin: 0 calc(var(--extra-small-offset) / 4);
+  // margin: 0 calc(var(--extra-small-offset) / 4);
   border: var(--two) solid var(--noble-gray-200);
   border-top: var(--two) solid var(--steam-green-800);
   border-radius: 50%;
@@ -55,5 +55,6 @@
   position: absolute;
   left: 50%;
   top: 50%;
+  z-index: 10;
   transform: translate(-50%, -50%);
 }
