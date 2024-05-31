@@ -60,8 +60,8 @@ export class ProductModel {
         const parentCategory = data.results.find((item) => item.id === category.parent?.id);
         if (parentCategory) {
           result.parent = {
-            id: parentCategory.id || '',
-            key: parentCategory.key || '',
+            id: parentCategory.id ?? '',
+            key: parentCategory.key ?? '',
             name: [],
             parent: null,
             slug: [],
@@ -136,7 +136,7 @@ export class ProductModel {
       category: [],
       description: [],
       fullDescription: [],
-      id: product.id || '',
+      id: product.id ?? '',
       images: [],
       key: product.key ?? '',
       level: null,
@@ -181,9 +181,9 @@ export class ProductModel {
       }
 
       product.variant.push({
-        discount: this.adaptDiscount(variant) || 0,
+        discount: this.adaptDiscount(variant) ?? 0,
         id: variant.id,
-        price: this.adaptPrice(variant) || 0,
+        price: this.adaptPrice(variant) ?? 0,
         size,
       });
 
@@ -285,7 +285,7 @@ export class ProductModel {
             const currentSize = getSize(term.term);
             if (currentSize) {
               category.push({
-                count: term.count || 0,
+                count: term.count ?? 0,
                 size: currentSize,
               });
             }
@@ -299,14 +299,14 @@ export class ProductModel {
   private getTotalFromData(data: ClientResponse<ProductProjectionPagedSearchResponse>): number {
     let total = 0;
     if (isClientResponse(data) && isProductProjectionPagedQueryResponse(data.body)) {
-      total = data.body.total || 0;
+      total = data.body.total ?? 0;
     }
     return total;
   }
 
   public adaptLocalizationValue(data: LocalizedString | undefined): localization[] {
     const result: localization[] = [];
-    Object.entries(data || {}).forEach(([language, value]) => {
+    Object.entries(data ?? {}).forEach(([language, value]) => {
       result.push({
         language,
         value,
