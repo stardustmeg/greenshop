@@ -1,8 +1,9 @@
 import getStore from '@/shared/Store/Store.ts';
-import { setBillingCountry, setShippingCountry } from '@/shared/Store/actions.ts';
+import { setBillingCountry, setDefaultCountry, setShippingCountry } from '@/shared/Store/actions.ts';
 import observeStore, {
   selectBillingCountry,
   selectCurrentLanguage,
+  selectDefaultCountry,
   selectShippingCountry,
 } from '@/shared/Store/observer.ts';
 import { DATA_KEYS } from '@/shared/constants/common.ts';
@@ -21,10 +22,19 @@ class CountryChoiceModel {
     this.setCountryItemsHandlers(input);
     this.setInputHandler(input);
 
-    const action =
-      input.getAttribute(DATA_KEYS.ADDRESS_TYPE) === USER_ADDRESS_TYPE.BILLING
-        ? selectBillingCountry
-        : selectShippingCountry;
+    let action;
+
+    switch (input.getAttribute(DATA_KEYS.ADDRESS_TYPE)) {
+      case USER_ADDRESS_TYPE.BILLING:
+        action = selectBillingCountry;
+        break;
+      case USER_ADDRESS_TYPE.SHIPPING:
+        action = selectShippingCountry;
+        break;
+      default:
+        action = selectDefaultCountry;
+        break;
+    }
 
     observeStore(action, () => {
       const event = new Event('input');
@@ -54,6 +64,8 @@ class CountryChoiceModel {
         if (currentItem.textContent) {
           inputHTML.value = currentItem.textContent;
           this.setCountryToStore(currentItem, inputHTML.getAttribute(DATA_KEYS.ADDRESS_TYPE) ?? '');
+          const event = new Event('input');
+          input.dispatchEvent(event);
           this.view.hideCountryChoice();
         }
       });
@@ -66,7 +78,20 @@ class CountryChoiceModel {
       element instanceof HTMLDivElement ? formattedText(element.textContent ?? '') : formattedText(element.value),
     );
 
-    const action = key === USER_ADDRESS_TYPE.BILLING ? setBillingCountry : setShippingCountry;
+    let action;
+
+    switch (key) {
+      case USER_ADDRESS_TYPE.BILLING:
+        action = setBillingCountry;
+        break;
+      case USER_ADDRESS_TYPE.SHIPPING:
+        action = setShippingCountry;
+        break;
+      default:
+        action = setDefaultCountry;
+        break;
+    }
+
     getStore().dispatch(action(currentCountryIndex));
     return true;
   }

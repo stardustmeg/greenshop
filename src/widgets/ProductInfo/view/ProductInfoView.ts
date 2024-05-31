@@ -205,7 +205,7 @@ class ProductInfoView {
 
   private createProductTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
-      cssClasses: ['title'],
+      cssClasses: ['productTitle'],
       innerContent: this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
       tag: 'h3',
     });

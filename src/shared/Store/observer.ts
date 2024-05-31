@@ -50,6 +50,8 @@ export const selectBillingCountry = (state: State): string => state.billingCount
 
 export const selectShippingCountry = (state: State): string => state.shippingCountry;
 
+export const selectDefaultCountry = (state: State): string => state.defaultCountry;
+
 export const selectCurrentLanguage = (state: State): string => state.currentLanguage;
 
 export const selectIsUserLoggedIn = (state: State): boolean => state.isUserLoggedIn;

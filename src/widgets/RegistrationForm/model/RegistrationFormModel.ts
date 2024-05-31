@@ -17,14 +17,20 @@ import { ADDRESS_TYPE } from '@/shared/types/address.ts';
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
 class RegisterFormModel {
-  private addressWrappers: Record<AddressType, AddressModel> = {
-    [ADDRESS_TYPE.BILLING]: new AddressModel(ADDRESS_TYPE.BILLING, {
-      setDefault: true,
-    }),
-    [ADDRESS_TYPE.SHIPPING]: new AddressModel(ADDRESS_TYPE.SHIPPING, {
-      setAsBilling: true,
-      setDefault: true,
-    }),
+  private addressWrappers: Record<Exclude<AddressType, typeof ADDRESS_TYPE.GENERAL>, AddressModel> = {
+    [ADDRESS_TYPE.BILLING]: new AddressModel(
+      {
+        setDefault: true,
+      },
+      ADDRESS_TYPE.BILLING,
+    ),
+    [ADDRESS_TYPE.SHIPPING]: new AddressModel(
+      {
+        setAsBilling: true,
+        setDefault: true,
+      },
+      ADDRESS_TYPE.SHIPPING,
+    ),
   };
 
   private credentialsWrapper = new CredentialsModel();

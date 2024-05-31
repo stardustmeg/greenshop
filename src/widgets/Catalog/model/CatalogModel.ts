@@ -1,4 +1,4 @@
-import type { OptionsRequest, PriceRange, SortOptions } from '@/shared/API/types/type.ts';
+import type { OptionsRequest, SortOptions } from '@/shared/API/types/type.ts';
 import type ProductFiltersParams from '@/shared/types/productFilters.ts';
 import type { SelectedFilters } from '@/shared/types/productFilters.ts';
 import type { SelectedSorting } from '@/shared/types/productSorting.ts';
@@ -54,7 +54,7 @@ class CatalogModel {
     }
   }
 
-  private decodeSearchParams(priceRange: PriceRange): {
+  private decodeSearchParams(): {
     page: string;
     searchValue: null | string;
     selectedFilters: SelectedFilters;
@@ -67,8 +67,8 @@ class CatalogModel {
     const metaFilter = searchParams.get(SEARCH_PARAMS_FIELD.META) ?? META_FILTERS.en.ALL_PRODUCTS;
     const size = searchParams.get(SEARCH_PARAMS_FIELD.SIZE) ?? null;
     const price = {
-      max: parseFloat(searchParams.get(SEARCH_PARAMS_FIELD.MAX_PRICE) ?? priceRange.max.toString()),
-      min: parseFloat(searchParams.get(SEARCH_PARAMS_FIELD.MIN_PRICE) ?? priceRange.min.toString()),
+      max: parseFloat(searchParams.get(SEARCH_PARAMS_FIELD.MAX_PRICE) ?? '0'),
+      min: parseFloat(searchParams.get(SEARCH_PARAMS_FIELD.MIN_PRICE) ?? '0'),
     };
 
     const field = searchParams.get(SEARCH_PARAMS_FIELD.FIELD);
@@ -93,7 +93,7 @@ class CatalogModel {
   private async drawProducts(): Promise<void> {
     const productList = this.view.getItemsList();
     productList.innerHTML = '';
-    const options = await this.getOptions();
+    const options = this.getOptions();
     const productsInfo = await this.getProductsInfo(options);
     this.pagination?.getHTML().remove();
     if (productsInfo?.products?.length) {
@@ -112,16 +112,13 @@ class CatalogModel {
       this.view.getRightTopWrapper().append(this.pagination.getHTML());
     }
     this.productFilters?.getView().updateParams(productsInfo);
-    const priceRange = await getProductModel().getPriceRange();
-    this.productFilters?.getView().updatePriceRange(priceRange);
     this.view.switchEmptyList(!productsInfo?.products?.length);
   }
 
-  private async getOptions(): Promise<OptionsRequest> {
+  private getOptions(): OptionsRequest {
     let result = {};
-    const priceRange = await getProductModel().getPriceRange();
 
-    const { page, searchValue, selectedFilters, selectedSorting } = this.decodeSearchParams(priceRange);
+    const { page, searchValue, selectedFilters, selectedSorting } = this.decodeSearchParams();
     this.productFilters?.getView().setInitialActiveFilters({
       categoryLinks: Array.from(selectedFilters.category),
       metaLinks: selectedFilters.metaFilter ? [selectedFilters.metaFilter] : [],

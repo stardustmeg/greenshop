@@ -11,6 +11,10 @@ class ModalModel {
     this.view.hide();
   }
 
+  public removeContent(): void {
+    this.view.removeContent();
+  }
+
   public setContent(content: HTMLElement): void {
     this.view.setContent(content);
   }

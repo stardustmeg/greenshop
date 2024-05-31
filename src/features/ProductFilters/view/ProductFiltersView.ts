@@ -1,4 +1,4 @@
-import type { PriceRange, SizeProductCount } from '@/shared/API/types/type';
+import type { SizeProductCount } from '@/shared/API/types/type';
 import type { Category } from '@/shared/types/product';
 import type ProductFiltersParams from '@/shared/types/productFilters';
 
@@ -263,6 +263,7 @@ class ProductFiltersView {
 
     link.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
+
       RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.META, id);
       RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
       this.metaLinks.forEach((link) => this.switchSelectedFilter(link, false));
@@ -556,6 +557,19 @@ class ProductFiltersView {
     this.callback();
   }
 
+  private updatePriceRange(): void {
+    this.priceSlider.updateOptions(
+      {
+        start: [this.params?.priceRange?.min ?? 0, this.params?.priceRange?.max ?? 0],
+      },
+      true,
+    );
+    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
+    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    fromInput?.setValue((this.params?.priceRange?.min ?? 0).toFixed(2));
+    toInput?.setValue((this.params?.priceRange?.max ?? 0).toFixed(2));
+  }
+
   private updateSelectedPrice(from: InputModel | null = null, to: InputModel | null = null): void {
     RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MIN_PRICE, from?.getValue() ?? '0');
     RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MAX_PRICE, to?.getValue() ?? '0');
@@ -638,24 +652,8 @@ class ProductFiltersView {
       const currentSpan = span;
       currentSpan.innerText = BASE_PRODUCT_COUNT;
     });
+    this.updatePriceRange();
     this.redrawProductsCount();
-  }
-
-  public updatePriceRange(params: PriceRange): void {
-    if (this.params) {
-      this.params.priceRange = params;
-    }
-    this.priceSlider.updateOptions(
-      {
-        range: { max: params.max ?? 0, min: params.min ?? 0 },
-        start: [params.min ?? 0, params.max ?? 0],
-      },
-      true,
-    );
-    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
-    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
-    fromInput?.setValue(params.min.toFixed(2) ?? '');
-    toInput?.setValue(params.max.toFixed(2) ?? '');
   }
 }
 
