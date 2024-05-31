@@ -60,7 +60,7 @@ export default class PostListView {
   private createPageTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: [styles.pageTitle],
-      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].LIST_TITTLE,
+      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].LIST_TITLE,
       tag: 'h1',
     });
     return this.title;
@@ -87,7 +87,7 @@ export default class PostListView {
 
   public updateLanguage(): boolean {
     const ln = getStore().getState().currentLanguage;
-    this.title.innerText = BLOG_DESCRIPTION[ln].LIST_TITTLE;
+    this.title.innerText = BLOG_DESCRIPTION[ln].LIST_TITLE;
     this.description.innerText = BLOG_DESCRIPTION[ln].LIST_DESCRIPTION;
     return true;
   }

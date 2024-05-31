@@ -37,3 +37,8 @@
 .addressesListWrapper {
   grid-column: 2 span;
 }
+
+.disabled {
+  filter: blur(2px);
+  pointer-events: none;
+}

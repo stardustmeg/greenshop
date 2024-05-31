@@ -20,7 +20,7 @@ type textElementsType = {
   textItem: languageVariants;
 };
 
-const TITTLE = {
+const TITLE = {
   BUTTON_CHECKOUT: { en: 'Proceed To Checkout', ru: 'Оформить заказ' },
   BUTTON_COUPON: { en: 'Apply', ru: 'Применить' },
   CART_TOTAL: { en: 'Cart Totals', ru: 'Итого по корзине' },
@@ -96,29 +96,29 @@ class CartPageView {
     const tr = createBaseElement({ cssClasses: [styles.tr, styles.head], tag: 'tr' });
     const thImage = createBaseElement({
       cssClasses: [styles.th, styles.imgCell, styles.mainText],
-      innerContent: TITTLE.PRODUCT[this.language],
+      innerContent: TITLE.PRODUCT[this.language],
       tag: 'th',
     });
-    this.textElement.push({ element: thImage, textItem: TITTLE.PRODUCT });
+    this.textElement.push({ element: thImage, textItem: TITLE.PRODUCT });
     const thProduct = createBaseElement({ cssClasses: [styles.th, styles.nameCell, styles.mainText], tag: 'th' });
     const thPrice = createBaseElement({
       cssClasses: [styles.th, styles.priceCell, styles.mainText],
-      innerContent: TITTLE.PRICE[this.language],
+      innerContent: TITLE.PRICE[this.language],
       tag: 'th',
     });
-    this.textElement.push({ element: thPrice, textItem: TITTLE.PRICE });
+    this.textElement.push({ element: thPrice, textItem: TITLE.PRICE });
     const thQuantity = createBaseElement({
       cssClasses: [styles.th, styles.quantityCell, styles.mainText],
-      innerContent: TITTLE.QUANTITY[this.language],
+      innerContent: TITLE.QUANTITY[this.language],
       tag: 'th',
     });
-    this.textElement.push({ element: thQuantity, textItem: TITTLE.QUANTITY });
+    this.textElement.push({ element: thQuantity, textItem: TITLE.QUANTITY });
     const thTotal = createBaseElement({
       cssClasses: [styles.th, styles.totalCell, styles.mainText],
-      innerContent: TITTLE.TOTAL[this.language],
+      innerContent: TITLE.TOTAL[this.language],
       tag: 'th',
     });
-    this.textElement.push({ element: thTotal, textItem: TITTLE.TOTAL });
+    this.textElement.push({ element: thTotal, textItem: TITLE.TOTAL });
     const thDelete = this.createDeleCell();
     this.tableBody = createBaseElement({ cssClasses: [styles.tbody], tag: 'tbody' });
     this.table.append(thead, this.tableBody);
@@ -130,26 +130,26 @@ class CartPageView {
   private addTotalInfo(): void {
     const title = createBaseElement({
       cssClasses: [styles.totalTitle, styles.border, styles.mobileHide],
-      innerContent: TITTLE.CART_TOTAL[this.language],
+      innerContent: TITLE.CART_TOTAL[this.language],
       tag: 'p',
     });
-    this.textElement.push({ element: title, textItem: TITTLE.CART_TOTAL });
+    this.textElement.push({ element: title, textItem: TITLE.CART_TOTAL });
     const couponTitle = createBaseElement({
       cssClasses: [styles.title, styles.mobileHide],
-      innerContent: TITTLE.COUPON_APPLY[this.language],
+      innerContent: TITLE.COUPON_APPLY[this.language],
       tag: 'p',
     });
-    this.textElement.push({ element: couponTitle, textItem: TITTLE.COUPON_APPLY });
+    this.textElement.push({ element: couponTitle, textItem: TITLE.COUPON_APPLY });
     const couponWrap = this.createCouponHTML();
     const subtotalWrap = this.createSubtotalHTML();
     const discountWrap = this.createDiscountHTML();
     const totalWrap = this.createTotalHTML();
     const finalButton = createBaseElement({
       cssClasses: [styles.button, styles.checkoutBtn],
-      innerContent: TITTLE.BUTTON_CHECKOUT[this.language],
+      innerContent: TITLE.BUTTON_CHECKOUT[this.language],
       tag: 'button',
     });
-    this.textElement.push({ element: finalButton, textItem: TITTLE.BUTTON_CHECKOUT });
+    this.textElement.push({ element: finalButton, textItem: TITLE.BUTTON_CHECKOUT });
     const continueLink = this.createCatalogLinkHTML();
     continueLink.getHTML().classList.add(styles.mobileHide);
     this.totalWrap.append(
@@ -170,9 +170,9 @@ class CartPageView {
         href: PAGE_ID.CATALOG_PAGE,
       },
       classes: [styles.continue],
-      text: TITTLE.CONTINUE[this.language],
+      text: TITLE.CONTINUE[this.language],
     });
-    this.textElement.push({ element: link.getHTML(), textItem: TITTLE.CONTINUE });
+    this.textElement.push({ element: link.getHTML(), textItem: TITLE.CONTINUE });
 
     link.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
@@ -186,17 +186,17 @@ class CartPageView {
     const couponInput = new InputModel({
       autocomplete: 'off',
       id: 'coupon',
-      placeholder: TITTLE.INPUT_COUPON[this.language],
+      placeholder: TITLE.INPUT_COUPON[this.language],
       type: INPUT_TYPE.TEXT,
     });
     couponInput.getHTML().classList.add(styles.couponInput);
-    this.textElement.push({ element: couponInput.getHTML(), textItem: TITTLE.INPUT_COUPON });
+    this.textElement.push({ element: couponInput.getHTML(), textItem: TITLE.INPUT_COUPON });
     const couponButton = createBaseElement({
       cssClasses: [styles.button, styles.applyBtn],
-      innerContent: TITTLE.BUTTON_COUPON[this.language],
+      innerContent: TITLE.BUTTON_COUPON[this.language],
       tag: 'button',
     });
-    this.textElement.push({ element: couponButton, textItem: TITTLE.BUTTON_COUPON });
+    this.textElement.push({ element: couponButton, textItem: TITLE.BUTTON_COUPON });
     couponButton.addEventListener('click', (evn: Event) => {
       evn.preventDefault();
       this.addDiscountCallback(couponInput.getHTML().value);
@@ -210,10 +210,10 @@ class CartPageView {
     const tdDelete = createBaseElement({ cssClasses: [styles.th, styles.deleteCell, styles.mainText], tag: 'th' });
     const clear = new LinkModel({
       classes: [styles.continue, styles.clear],
-      text: TITTLE.CLEAR[this.language],
+      text: TITLE.CLEAR[this.language],
     });
 
-    this.textElement.push({ element: clear.getHTML(), textItem: TITTLE.CLEAR });
+    this.textElement.push({ element: clear.getHTML(), textItem: TITLE.CLEAR });
     clear.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
       this.clearCallback();
@@ -226,11 +226,11 @@ class CartPageView {
     const discountWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
     const discountTitle = createBaseElement({
       cssClasses: [styles.title],
-      innerContent: TITTLE.COUPON_DISCOUNT[this.language],
+      innerContent: TITLE.COUPON_DISCOUNT[this.language],
       tag: 'p',
     });
     discountWrap.append(discountTitle, this.discount);
-    this.textElement.push({ element: discountTitle, textItem: TITTLE.COUPON_DISCOUNT });
+    this.textElement.push({ element: discountTitle, textItem: TITLE.COUPON_DISCOUNT });
     return discountWrap;
   }
 
@@ -238,10 +238,10 @@ class CartPageView {
     const empty = createBaseElement({ cssClasses: [styles.empty, styles.hide], tag: 'div' });
     const emptyTitle = createBaseElement({
       cssClasses: [styles.emptyTitle],
-      innerContent: TITTLE.EMPTY[this.language],
+      innerContent: TITLE.EMPTY[this.language],
       tag: 'p',
     });
-    this.textElement.push({ element: emptyTitle, textItem: TITTLE.EMPTY });
+    this.textElement.push({ element: emptyTitle, textItem: TITLE.EMPTY });
     const continueLink = this.createCatalogLinkHTML();
     empty.append(emptyTitle, continueLink.getHTML());
     this.page.append(empty);
@@ -263,11 +263,11 @@ class CartPageView {
     const subtotalWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
     const subtotalTitle = createBaseElement({
       cssClasses: [styles.title],
-      innerContent: TITTLE.SUBTOTAL[this.language],
+      innerContent: TITLE.SUBTOTAL[this.language],
       tag: 'p',
     });
     subtotalWrap.append(subtotalTitle, this.subTotal);
-    this.textElement.push({ element: subtotalTitle, textItem: TITTLE.SUBTOTAL });
+    this.textElement.push({ element: subtotalTitle, textItem: TITLE.SUBTOTAL });
     return subtotalWrap;
   }
 
@@ -275,11 +275,11 @@ class CartPageView {
     const totalWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
     const totalTitle = createBaseElement({
       cssClasses: [styles.totalTitle],
-      innerContent: TITTLE.TOTAL[this.language],
+      innerContent: TITLE.TOTAL[this.language],
       tag: 'p',
     });
     totalWrap.append(totalTitle, this.total);
-    this.textElement.push({ element: totalTitle, textItem: TITTLE.TOTAL });
+    this.textElement.push({ element: totalTitle, textItem: TITLE.TOTAL });
     return totalWrap;
   }
 

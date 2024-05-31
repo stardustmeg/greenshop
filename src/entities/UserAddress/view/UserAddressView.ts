@@ -67,7 +67,7 @@ class UserAddressView {
   private createDeleteLogo(): HTMLDivElement {
     this.deleteLogo = createBaseElement({ cssClasses: [styles.deleteLogo], tag: 'div' });
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.BIN));
+    svg.append(createSVGUse(SVG_DETAILS.DELETE));
     this.deleteLogo.append(svg);
     return this.deleteLogo;
   }
@@ -204,6 +204,14 @@ class UserAddressView {
 
   public getLabels(): Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }> {
     return this.labels;
+  }
+
+  public setDisabled(): void {
+    this.view.classList.add(styles.disabled);
+  }
+
+  public setEnabled(): void {
+    this.view.classList.remove(styles.disabled);
   }
 }
 

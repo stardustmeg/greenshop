@@ -37,7 +37,15 @@ class UserAddressesModel {
       };
 
       const createAddress = (activeTypes: AddressTypeType[], inactiveTypes?: AddressTypeType[]): UserAddressModel =>
-        new UserAddressModel(user, address, activeTypes, inactiveTypes);
+        new UserAddressModel(
+          user,
+          address,
+          activeTypes,
+          (isDisabled: boolean) => {
+            this.view.toggleState(isDisabled);
+          },
+          inactiveTypes,
+        );
 
       const newAddress = determineNewAddress(addressesContainsID, defaultContainsID, user, createAddress);
 

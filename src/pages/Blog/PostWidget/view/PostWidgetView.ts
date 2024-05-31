@@ -59,7 +59,7 @@ export default class PostWidgetView {
   private createPageTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: [styles.pageTitle],
-      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITTLE,
+      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITLE,
       tag: 'h3',
     });
     return this.title;
@@ -85,7 +85,7 @@ export default class PostWidgetView {
   }
 
   public updateLanguage(): boolean {
-    this.title.innerText = BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITTLE;
+    this.title.innerText = BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITLE;
     this.description.innerText = BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_DESCRIPTIONS;
     return true;
   }
