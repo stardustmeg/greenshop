@@ -1,13 +1,22 @@
-import { PAGE_ID } from '../constants/pages.ts';
-import { appTitle } from './messageTemplates.ts';
+import getStore from '../Store/Store.ts';
+import { PAGE_ID, PAGE_TITLE } from '../constants/pages.ts';
+import { keyExistsInPageTitle } from './isKeyOf.ts';
 
-const {
-  VITE_APP_NEXT_SEGMENT: NEXT_SEGMENT,
-  VITE_APP_PATH_SEGMENTS_TO_KEEP: PATH_SEGMENTS_TO_KEEP,
-  VITE_APP_PROJECT_TITLE: PROJECT_TITLE,
-} = import.meta.env;
+const appTitle = (projectTitle: string, currentPageTitle: string): string => {
+  const { currentLanguage } = getStore().getState();
+  if (keyExistsInPageTitle(currentPageTitle)) {
+    return `${projectTitle} | ${PAGE_TITLE[currentLanguage][currentPageTitle]}`;
+  }
+  return `${projectTitle} | ${currentPageTitle}`;
+};
 
 const getPageTitle = (currentPage: string, hasRoute: boolean): string => {
+  const {
+    VITE_APP_NEXT_SEGMENT: NEXT_SEGMENT,
+    VITE_APP_PATH_SEGMENTS_TO_KEEP: PATH_SEGMENTS_TO_KEEP,
+    VITE_APP_PROJECT_TITLE: PROJECT_TITLE,
+  } = import.meta.env;
+
   let currentPageTitle: string;
 
   if (hasRoute) {

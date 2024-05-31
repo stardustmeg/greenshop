@@ -1,23 +1,13 @@
 import getStore from '../Store/Store.ts';
 import { LANGUAGE_CHOICE } from '../constants/common.ts';
 import { SERVER_MESSAGE } from '../constants/messages.ts';
-import { PAGE_DESCRIPTION, PAGE_TITLE, USER_INFO_TEXT } from '../constants/pages.ts';
+import { PAGE_DESCRIPTION, USER_INFO_TEXT } from '../constants/pages.ts';
 import { ADDRESS_TYPE } from '../types/address.ts';
-import { keyExistsInPageTitle } from './isKeyOf.ts';
 
 const textTemplate = (beginning: string, variable: number | string, end?: string): string => {
   const start = beginning ? `${beginning} ` : '';
   const ending = end ? `${end}` : '';
   return `${start}${variable}${ending}`;
-};
-
-export const appTitle = (projectTitle: string, currentPageTitle: string): string => {
-  const { currentLanguage } = getStore().getState();
-  if (keyExistsInPageTitle(currentPageTitle)) {
-    return `${projectTitle} | ${PAGE_TITLE[currentLanguage][currentPageTitle]}`;
-  }
-
-  return `${projectTitle} | ${currentPageTitle}`;
 };
 
 export const addressTemplate = (streetName = '', city = '', country: null | string = null, postalCode = ''): string =>
