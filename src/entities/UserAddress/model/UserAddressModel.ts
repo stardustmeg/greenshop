@@ -57,7 +57,6 @@ class UserAddressModel {
     }
   }
 
-  // eslint-disable-next-line max-lines-per-function
   private async handleAddressType(user: User, activeType: AddressTypeType, inactive: boolean): Promise<void> {
     const customerModel = getCustomerModel();
 
