@@ -47,9 +47,9 @@ class ProductPageModel implements Page {
       });
     }
 
-    if (subcategory) {
+    if (subcategory && category) {
       links.push({
-        link: '',
+        link: buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [category.id], subcategory: [subcategory.id] }),
         name: subcategory.name[0].value,
       });
     }

@@ -46,6 +46,7 @@ class UserAddressModel {
     }
   }
 
+  // eslint-disable-next-line max-lines-per-function
   private async handleAddressType(user: User, activeType: AddressTypeType, inactive: boolean): Promise<void> {
     const customerModel = getCustomerModel();
 
@@ -87,7 +88,6 @@ class UserAddressModel {
         case ADDRESS_TYPE.DEFAULT_SHIPPING:
           await customerModel.editCustomer([CustomerModel.actionRemoveShippingAddress(this.currentAddress)], user);
           break;
-
         default:
           break;
       }
