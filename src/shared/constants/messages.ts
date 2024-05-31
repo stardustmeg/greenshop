@@ -1,3 +1,5 @@
+import type { LanguageChoiceType } from './common';
+
 export const MESSAGE_STATUS = {
   ERROR: 'error',
   SUCCESS: 'success',
@@ -12,7 +14,7 @@ export const MESSAGE_STATUS_KEYS = {
 
 export type MessageStatusKeysType = (typeof MESSAGE_STATUS_KEYS)[keyof typeof MESSAGE_STATUS_KEYS];
 
-export const SERVER_MESSAGE = {
+export const SERVER_MESSAGE: Record<LanguageChoiceType, Record<string, string>> = {
   en: {
     ADDRESS_ADDED: 'Address has been added successfully',
     ADDRESS_CHANGED: 'Address has been changed successfully',

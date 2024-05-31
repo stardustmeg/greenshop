@@ -1,9 +1,10 @@
 import type { PageParams, PagesType } from '@/shared/types/page';
 
 import getStore from '@/shared/Store/Store.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { isValidPath, isValidState } from '@/shared/types/validation/paths.ts';
-import formattedText from '@/shared/utils/formattedText.ts';
+import { appTitle } from '@/shared/utils/messageTemplates.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 const PROJECT_TITLE = import.meta.env.VITE_APP_PROJECT_TITLE;
@@ -89,8 +90,10 @@ class RouterModel {
     const hasRoute = this.routes.has(currentPage);
     const decodePath = decodeURIComponent(path);
     const id = decodePath.split(DEFAULT_SEGMENT).slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)[NEXT_SEGMENT];
-    const title = `${PROJECT_TITLE} | ${hasRoute ? formattedText(currentPage === PAGE_ID.DEFAULT_PAGE ? PAGE_ID.MAIN_PAGE.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT) : currentPage.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)) : PAGE_ID.NOT_FOUND_PAGE.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)}`;
-    document.title = title;
+
+    this.setPageTitle(currentPage);
+
+    observeStore(selectCurrentLanguage, () => this.checkPageAndParams(currentPage, path));
 
     if (!hasRoute) {
       await this.routes.get(PAGE_ID.NOT_FOUND_PAGE)?.({});
@@ -115,6 +118,23 @@ class RouterModel {
         }
       })
       .catch(showErrorMessage);
+  }
+
+  private setPageTitle(currentPage: string): void {
+    const hasRoute = this.routes.has(currentPage);
+    let currentPageTitle: string;
+
+    if (hasRoute) {
+      if (currentPage === PAGE_ID.DEFAULT_PAGE) {
+        currentPageTitle = PAGE_ID.MAIN_PAGE.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT);
+      } else {
+        currentPageTitle = currentPage.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT);
+      }
+    } else {
+      currentPageTitle = PAGE_ID.NOT_FOUND_PAGE.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT);
+    }
+
+    document.title = appTitle(PROJECT_TITLE, currentPageTitle);
   }
 
   public navigateTo(path: string): void {
