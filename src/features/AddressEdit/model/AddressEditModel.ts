@@ -121,16 +121,12 @@ class AddressEditModel {
 
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
     const inputHTML = inputField.getView().getInput().getHTML();
-    inputHTML.addEventListener('input', () => {
-      this.switchSubmitFormButtonAccess();
-    });
+    inputHTML.addEventListener('input', () => this.switchSubmitFormButtonAccess());
     return true;
   }
 
   private setPreventDefaultToForm(): boolean {
-    this.getHTML().addEventListener('submit', (event) => {
-      event.preventDefault();
-    });
+    this.getHTML().addEventListener('submit', (event) => event.preventDefault());
     return true;
   }
 
