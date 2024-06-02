@@ -19,7 +19,7 @@ type textElementsType = {
   textItem: languageVariants;
 };
 
-const TITTLE = {
+const TITLE = {
   MINUS: '-',
   NAME: {
     en: '',
@@ -93,11 +93,11 @@ class ProductOrderView {
     });
     const tdSize = createBaseElement({
       cssClasses: [styles.td, styles.sizeCell, styles.sizeText],
-      innerContent: this.productItem.size ? `${TITTLE.SIZE[this.language]}: ${this.productItem.size}` : '',
+      innerContent: this.productItem.size ? `${TITLE.SIZE[this.language]}: ${this.productItem.size}` : '',
       tag: 'td',
     });
-    this.textElement.push({ element: tdSize, textItem: TITTLE.SIZE });
-    this.textElement.push({ element: tdProduct, textItem: TITTLE.NAME });
+    this.textElement.push({ element: tdSize, textItem: TITLE.SIZE });
+    this.textElement.push({ element: tdProduct, textItem: TITLE.NAME });
     const quantityCell = this.createQuantityCell();
     const deleteCell = this.createDeleCell();
     this.view.append(imgCell, tdProduct, tdSize, this.price, quantityCell, this.total, deleteCell);
@@ -135,12 +135,12 @@ class ProductOrderView {
     });
     const plusButton = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityButton],
-      innerContent: TITTLE.PLUS,
+      innerContent: TITLE.PLUS,
       tag: 'button',
     });
     const minusButton = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityButton],
-      innerContent: TITTLE.MINUS,
+      innerContent: TITLE.MINUS,
       tag: 'button',
     });
     tdQuantity.append(minusButton, this.quantity, plusButton);
@@ -168,9 +168,9 @@ class ProductOrderView {
     this.language = getStore().getState().currentLanguage;
     this.textElement.forEach((textEl) => {
       const elHTML = textEl.element;
-      if (textEl.textItem === TITTLE.SIZE) {
-        elHTML.textContent = this.productItem.size ? `${TITTLE.SIZE[this.language]}: ${this.productItem.size}` : '';
-      } else if (textEl.textItem === TITTLE.NAME) {
+      if (textEl.textItem === TITLE.SIZE) {
+        elHTML.textContent = this.productItem.size ? `${TITLE.SIZE[this.language]}: ${this.productItem.size}` : '';
+      } else if (textEl.textItem === TITLE.NAME) {
         elHTML.textContent = this.productItem.name[Number(this.language === LANGUAGE_CHOICE.RU)].value;
       }
     });

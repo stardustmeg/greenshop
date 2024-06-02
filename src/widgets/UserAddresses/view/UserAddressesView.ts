@@ -122,6 +122,10 @@ class UserAddressView {
   public show(): void {
     this.addressesWrapper.classList.remove(styles.hidden);
   }
+
+  public toggleState(isDisabled: boolean): void {
+    this.addressesListWrapper.classList.toggle(styles.disabled, isDisabled);
+  }
 }
 
 export default UserAddressView;

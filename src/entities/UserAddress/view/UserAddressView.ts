@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import type { TooltipTextKeysType } from '@/shared/constants/tooltip.ts';
 import type { Address } from '@/shared/types/user';
 
@@ -6,47 +5,99 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
+import { ADDRESS_TEXT, ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import TOOLTIP_TEXT, { TOOLTIP_TEXT_KEYS } from '@/shared/constants/tooltip.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
-import { addressTemplate } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './userAddressView.module.scss';
 
 class UserAddressView {
+  private citySpan: HTMLSpanElement;
+
+  private countrySpan: HTMLSpanElement;
+
   private currentAddress: Address;
 
   private deleteButton: ButtonModel;
 
-  private deleteLogo: HTMLDivElement;
-
   private editButton: ButtonModel;
-
-  private editLogo: HTMLDivElement;
 
   private labels: Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }> = new Map();
 
+  private labelsWrapper: HTMLDivElement;
+
+  private postalCodeSpan: HTMLSpanElement;
+
+  private streetNameSpan: HTMLSpanElement;
+
   private view: HTMLLIElement;
 
-  constructor(locale: string, address: Address, types: AddressTypeType[], inactiveTypes?: AddressTypeType[]) {
+  constructor(address: Address, types: AddressTypeType[], inactiveTypes?: AddressTypeType[]) {
     this.currentAddress = address;
-    this.deleteLogo = this.createDeleteLogo();
     this.deleteButton = this.createDeleteButton();
-    this.editLogo = this.createEditLogo();
     this.editButton = this.createEditButton();
-    this.view = this.createHTML(locale, types, inactiveTypes);
+    this.citySpan = this.createCitySpan();
+    this.countrySpan = this.createCountrySpan();
+    this.postalCodeSpan = this.createPostalCodeSpan();
+    this.streetNameSpan = this.createStreetNameSpan();
+    this.labelsWrapper = this.createLabelsWrapper();
+    this.view = this.createHTML(types, inactiveTypes);
   }
 
-  private createAddressText(locale: string): string {
-    const { city, country, postalCode, streetName } = this.currentAddress;
+  private createCitySpan(): HTMLSpanElement {
+    this.citySpan = createBaseElement({
+      cssClasses: [styles.citySpan],
+      innerContent: ADDRESS_TEXT[getStore().getState().currentLanguage].CITY,
+      tag: 'span',
+    });
 
-    const countryKey = findKeyByValue(COUNTRIES_LIST[locale], country);
-    const standardAddressText = addressTemplate(streetName, city, countryKey, postalCode);
+    observeStore(selectCurrentLanguage, () => {
+      const text = ADDRESS_TEXT[getStore().getState().currentLanguage].CITY;
+      const textNode = [...this.citySpan.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
+      if (textNode) {
+        textNode.textContent = text;
+      }
+    });
 
-    return standardAddressText;
+    const accentSpan = createBaseElement({
+      cssClasses: [styles.accentSpan],
+      innerContent: this.currentAddress.city,
+      tag: 'span',
+    });
+
+    this.citySpan.append(accentSpan);
+    return this.citySpan;
+  }
+
+  private createCountrySpan(): HTMLSpanElement {
+    this.countrySpan = createBaseElement({
+      cssClasses: [styles.countrySpan],
+      innerContent: ADDRESS_TEXT[getStore().getState().currentLanguage].COUNTRY,
+      tag: 'span',
+    });
+
+    const accentSpan = createBaseElement({
+      cssClasses: [styles.accentSpan],
+      innerContent:
+        findKeyByValue(COUNTRIES_LIST[getStore().getState().currentLanguage], this.currentAddress.country) ?? '',
+      tag: 'span',
+    });
+
+    this.countrySpan.append(accentSpan);
+    observeStore(selectCurrentLanguage, () => {
+      accentSpan.innerText =
+        findKeyByValue(COUNTRIES_LIST[getStore().getState().currentLanguage], this.currentAddress.country) ?? '';
+
+      const text = ADDRESS_TEXT[getStore().getState().currentLanguage].COUNTRY;
+      const textNode = [...this.countrySpan.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
+      if (textNode) {
+        textNode.textContent = text;
+      }
+    });
+    return this.countrySpan;
   }
 
   private createDeleteButton(): ButtonModel {
@@ -55,7 +106,9 @@ class UserAddressView {
       title: TOOLTIP_TEXT[getStore().getState().currentLanguage].DELETE_ADDRESS,
     });
 
-    this.deleteButton.getHTML().append(this.deleteLogo);
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.DELETE));
+    this.deleteButton.getHTML().append(svg);
 
     observeStore(selectCurrentLanguage, () => {
       this.deleteButton.getHTML().title = TOOLTIP_TEXT[getStore().getState().currentLanguage].DELETE_ADDRESS;
@@ -64,21 +117,15 @@ class UserAddressView {
     return this.deleteButton;
   }
 
-  private createDeleteLogo(): HTMLDivElement {
-    this.deleteLogo = createBaseElement({ cssClasses: [styles.deleteLogo], tag: 'div' });
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.BIN));
-    this.deleteLogo.append(svg);
-    return this.deleteLogo;
-  }
-
   private createEditButton(): ButtonModel {
     this.editButton = new ButtonModel({
       classes: [styles.editButton],
       title: TOOLTIP_TEXT[getStore().getState().currentLanguage].EDIT_ADDRESS,
     });
 
-    this.editButton.getHTML().append(this.editLogo);
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.EDIT));
+    this.editButton.getHTML().append(svg);
 
     observeStore(selectCurrentLanguage, () => {
       this.editButton.getHTML().title = TOOLTIP_TEXT[getStore().getState().currentLanguage].EDIT_ADDRESS;
@@ -87,23 +134,10 @@ class UserAddressView {
     return this.editButton;
   }
 
-  private createEditLogo(): HTMLDivElement {
-    this.editLogo = createBaseElement({ cssClasses: [styles.editLogo], tag: 'div' });
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.EDIT));
-    this.editLogo.append(svg);
-    return this.editLogo;
-  }
-
-  private createHTML(locale: string, activeTypes: AddressTypeType[], inactiveTypes?: AddressTypeType[]): HTMLLIElement {
+  private createHTML(activeTypes: AddressTypeType[], inactiveTypes?: AddressTypeType[]): HTMLLIElement {
     this.view = createBaseElement({
       cssClasses: [styles.addressItem],
       tag: 'li',
-    });
-    const addressText = createBaseElement({
-      cssClasses: [styles.addressText],
-      innerContent: this.createAddressText(locale),
-      tag: 'span',
     });
 
     activeTypes.forEach((type) => {
@@ -116,11 +150,19 @@ class UserAddressView {
       });
     }
 
-    this.view.append(addressText, this.editButton.getHTML(), this.deleteButton.getHTML());
-
-    observeStore(selectCurrentLanguage, () => {
-      addressText.innerText = this.createAddressText(getStore().getState().currentLanguage);
+    const addressTextWrapper = createBaseElement({
+      cssClasses: [styles.addressTextWrapper],
+      tag: 'div',
     });
+    addressTextWrapper.append(this.countrySpan, this.citySpan, this.streetNameSpan, this.postalCodeSpan);
+
+    const buttonsWrapper = createBaseElement({
+      cssClasses: [styles.buttonsWrapper],
+      tag: 'div',
+    });
+    buttonsWrapper.append(this.editButton.getHTML(), this.deleteButton.getHTML());
+
+    this.view.append(this.labelsWrapper, addressTextWrapper, buttonsWrapper);
 
     return this.view;
   }
@@ -140,17 +182,75 @@ class UserAddressView {
     return label;
   }
 
+  private createLabelsWrapper(): HTMLDivElement {
+    this.labelsWrapper = createBaseElement({
+      cssClasses: [styles.labelsWrapper],
+      tag: 'div',
+    });
+    return this.labelsWrapper;
+  }
+
+  private createPostalCodeSpan(): HTMLSpanElement {
+    this.postalCodeSpan = createBaseElement({
+      cssClasses: [styles.postalCodeSpan],
+      innerContent: ADDRESS_TEXT[getStore().getState().currentLanguage].POSTAL_CODE,
+      tag: 'span',
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      const text = ADDRESS_TEXT[getStore().getState().currentLanguage].POSTAL_CODE;
+      const textNode = [...this.postalCodeSpan.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
+      if (textNode) {
+        textNode.textContent = text;
+      }
+    });
+
+    const accentSpan = createBaseElement({
+      cssClasses: [styles.accentSpan],
+      innerContent: this.currentAddress.postalCode,
+      tag: 'span',
+    });
+
+    this.postalCodeSpan.append(accentSpan);
+    return this.postalCodeSpan;
+  }
+
+  private createStreetNameSpan(): HTMLSpanElement {
+    this.streetNameSpan = createBaseElement({
+      cssClasses: [styles.streetNameSpan],
+      innerContent: ADDRESS_TEXT[getStore().getState().currentLanguage].STREET,
+      tag: 'span',
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      const text = ADDRESS_TEXT[getStore().getState().currentLanguage].STREET;
+      const textNode = [...this.streetNameSpan.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
+      if (textNode) {
+        textNode.textContent = text;
+      }
+    });
+
+    const accentSpan = createBaseElement({
+      cssClasses: [styles.accentSpan],
+      innerContent: this.currentAddress.streetName,
+      tag: 'span',
+    });
+
+    this.streetNameSpan.append(accentSpan);
+    return this.streetNameSpan;
+  }
+
   private setActiveAddressLabel(ActiveType: AddressTypeType, inactive?: boolean): void {
     let addressType = null;
     switch (ActiveType) {
       case ADDRESS_TYPE.BILLING:
         addressType = this.createLabel(ActiveType, [styles.billing], TOOLTIP_TEXT_KEYS.SWITCH_BILLING_ADDRESS);
-        this.view.append(addressType);
+        this.labelsWrapper.append(addressType);
         break;
 
       case ADDRESS_TYPE.SHIPPING:
         addressType = this.createLabel(ActiveType, [styles.shipping], TOOLTIP_TEXT_KEYS.SWITCH_SHIPPING_ADDRESS);
-        this.view.append(addressType);
+        this.labelsWrapper.append(addressType);
         break;
 
       case ADDRESS_TYPE.DEFAULT_BILLING:
@@ -159,7 +259,7 @@ class UserAddressView {
           [styles.defaultBilling],
           TOOLTIP_TEXT_KEYS.SWITCH_DEFAULT_BILLING_ADDRESS,
         );
-        this.view.append(addressType);
+        this.labelsWrapper.append(addressType);
         break;
 
       case ADDRESS_TYPE.DEFAULT_SHIPPING:
@@ -168,7 +268,7 @@ class UserAddressView {
           [styles.defaultShipping],
           TOOLTIP_TEXT_KEYS.SWITCH_DEFAULT_SHIPPING_ADDRESS,
         );
-        this.view.append(addressType);
+        this.labelsWrapper.append(addressType);
         break;
       default:
         break;
@@ -204,6 +304,18 @@ class UserAddressView {
 
   public getLabels(): Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }> {
     return this.labels;
+  }
+
+  public setDisabled(): void {
+    this.view.classList.add(styles.disabled);
+  }
+
+  public setEnabled(): void {
+    this.view.classList.remove(styles.disabled);
+  }
+
+  public toggleState(isDisabled: boolean): void {
+    this.view.classList.toggle(styles.disabled, isDisabled);
   }
 }
 

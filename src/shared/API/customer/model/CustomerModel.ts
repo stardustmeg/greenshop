@@ -70,11 +70,11 @@ export class CustomerModel {
     return { action: Actions.setDateOfBirth, dateOfBirth };
   }
 
-  public static actionEditDefaultBillingAddress(addressId: string): MyCustomerUpdateAction {
+  public static actionEditDefaultBillingAddress(addressId?: string): MyCustomerUpdateAction {
     return { action: Actions.setDefaultBillingAddress, addressId };
   }
 
-  public static actionEditDefaultShippingAddress(addressId: string): MyCustomerUpdateAction {
+  public static actionEditDefaultShippingAddress(addressId?: string): MyCustomerUpdateAction {
     return { action: Actions.setDefaultShippingAddress, addressId };
   }
 

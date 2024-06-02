@@ -55,7 +55,7 @@ class PersonalInfoEditView {
       this.view.append(inputFieldElement.getHTML());
     }
 
-    this.view.append(this.cancelButton.getHTML(), this.saveChangesButton.getHTML());
+    this.view.append(this.saveChangesButton.getHTML(), this.cancelButton.getHTML());
     return this.view;
   }
 

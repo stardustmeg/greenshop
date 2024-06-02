@@ -77,6 +77,7 @@
   width: var(--small-offset);
   height: var(--small-offset);
   background-color: var(--noble-gray-1000);
+  transition: outline 0.2s;
   backdrop-filter: blur(10px);
 
   svg {
@@ -148,6 +149,7 @@
   flex-grow: 1;
   flex-direction: column;
   align-items: center;
+  border-radius: var(--medium-br);
   padding: calc(var(--extra-small-offset) / 2) calc(var(--extra-small-offset) / 4);
   width: 100%;
   background-color: var(--noble-white-200);
@@ -189,6 +191,7 @@
   order: 4;
   margin-top: calc(var(--extra-small-offset) * (-0.2));
   margin-right: var(--five);
+  padding: var(--five);
   font: var(--regular-font);
   letter-spacing: var(--one);
   color: var(--steam-green-700);
@@ -203,4 +206,21 @@
 
 .hidden {
   display: none;
+}
+
+.discountLabel {
+  position: absolute;
+  left: 0;
+  top: calc(var(--two) * 5);
+  z-index: 1;
+  display: flex;
+  border-radius: 0 var(--five) var(--five) 0;
+  padding: calc(var(--tiny-offset) / 2);
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--steam-green-400);
+  background-color: var(--steam-green-800);
+  gap: var(--two);
 }

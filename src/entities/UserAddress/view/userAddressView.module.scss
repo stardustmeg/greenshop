@@ -1,19 +1,31 @@
 @import 'src/app/styles/mixins';
 
 .addressItem {
-  display: flex;
+  position: relative;
+  display: grid;
   align-items: center;
-  justify-content: flex-start;
-  grid-column: 2 span;
-  max-width: 100%;
-  word-break: break-all;
+  border-radius: var(--medium-br);
+  padding: var(--extra-small-offset);
+  background: var(--noble-gray-1000);
+  gap: var(--tiny-offset);
+}
+
+.labelsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  grid-row: 1;
+  gap: var(--tiny-offset);
 }
 
 .addressType {
-  margin: var(--tiny-offset) var(--five);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--medium-br);
   padding: var(--tiny-offset);
+  min-width: 8rem;
   font: var(--small-font);
+  text-align: center;
   background-color: var(--steam-green-900);
   transition: scale 0.2s;
 
@@ -24,18 +36,22 @@
 }
 
 .billing {
+  order: 1;
   background-color: #d5e4f9;
 }
 
 .shipping {
+  order: 2;
   background-color: #e9fffe;
 }
 
 .defaultBilling {
+  order: 3;
   background-color: #dfd6ef;
 }
 
 .defaultShipping {
+  order: 4;
   background-color: #fee1c9;
 }
 
@@ -55,8 +71,15 @@
 .deleteButton {
   @include green-btn;
 
-  margin: var(--tiny-offset);
-  padding: var(--five);
+  padding: 0;
+  width: calc(var(--extra-small-offset) * 1.5);
+  height: calc(var(--extra-small-offset) * 1.5);
+
+  svg {
+    width: calc(var(--extra-small-offset) * 1.5);
+    height: calc(var(--extra-small-offset) * 1.5);
+    stroke: var(--noble-gray-900);
+  }
 
   @media (hover: hover) {
     &:hover {
@@ -65,5 +88,47 @@
         transition: fill 0.2s;
       }
     }
+  }
+}
+
+.buttonsWrapper {
+  display: flex;
+  grid-row: 1;
+  margin-left: auto;
+  gap: var(--tiny-offset);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    grid-row: 2;
+  }
+}
+
+.addressTextWrapper {
+  display: flex;
+  flex-direction: column;
+  grid-row: 2;
+  gap: var(--tiny-offset);
+}
+
+.citySpan,
+.streetNameSpan,
+.postalCodeSpan,
+.countrySpan {
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  word-break: break-all;
+  color: var(--steam-green-400);
+}
+
+.disabled {
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    border-radius: var(--medium-br);
+    backdrop-filter: blur(5px);
+    inset: 0;
   }
 }

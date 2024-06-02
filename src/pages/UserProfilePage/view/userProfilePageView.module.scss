@@ -9,8 +9,11 @@
 
 .userProfileWrapper {
   display: flex;
-  flex-flow: row nowrap;
   justify-content: space-evenly;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 .addressesWrapper {
@@ -45,6 +48,11 @@
   width: 25%;
   height: fit-content;
   background-color: var(--white);
+
+  @media (max-width: 768px) {
+    margin-bottom: var(--small-offset);
+    width: 100%;
+  }
 }
 
 .accountMenuItem {
