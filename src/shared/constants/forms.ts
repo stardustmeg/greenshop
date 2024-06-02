@@ -88,12 +88,12 @@ export const ADDRESS_TEXT = {
     CITY: 'City: ',
     COUNTRY: 'Country: ',
     POSTAL_CODE: 'Postal code: ',
-    STREET: 'Street: ',
+    STREET: 'Address: ',
   },
   ru: {
     CITY: 'Город: ',
     COUNTRY: 'Страна: ',
     POSTAL_CODE: 'Почтовый индекс: ',
-    STREET: 'Улица: ',
+    STREET: 'Адрес: ',
   },
 } as const;

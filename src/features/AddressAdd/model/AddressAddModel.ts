@@ -154,19 +154,13 @@ class AddressAddModel {
   }
 
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
-    if (inputField?.getView && typeof inputField.getView === 'function') {
-      const inputHTML = inputField.getView().getInput().getHTML();
-      inputHTML.addEventListener('input', () => {
-        this.switchSubmitFormButtonAccess();
-      });
-    }
+    const inputHTML = inputField.getView().getInput().getHTML();
+    inputHTML.addEventListener('input', () => this.switchSubmitFormButtonAccess());
     return true;
   }
 
   private setPreventDefaultToForm(): boolean {
-    this.getHTML().addEventListener('submit', (event) => {
-      event.preventDefault();
-    });
+    this.getHTML().addEventListener('submit', (event) => event.preventDefault());
     return true;
   }
 
