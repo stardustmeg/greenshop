@@ -1,9 +1,11 @@
 import type { ShoppingList, ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 import type {
   ClientResponse,
+  MyShoppingListAddLineItemAction,
   MyShoppingListDraft,
   ShoppingListPagedQueryResponse,
   ShoppingList as ShoppingListResponse,
+  ShoppingListSetAnonymousIdAction,
 } from '@commercetools/platform-sdk';
 
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
@@ -15,7 +17,10 @@ export class ShoppingListApi {
     this.client = getApiClient();
   }
 
-  public async addProduct(shoppingList: ShoppingList, productId: string): Promise<ClientResponse> {
+  public async addProduct(
+    shoppingList: ShoppingList,
+    actions: MyShoppingListAddLineItemAction[],
+  ): Promise<ClientResponse> {
     const data = await this.client
       .apiRoot()
       .me()
@@ -23,12 +28,7 @@ export class ShoppingListApi {
       .withId({ ID: shoppingList.id })
       .post({
         body: {
-          actions: [
-            {
-              action: 'addLineItem',
-              productId,
-            },
-          ],
+          actions,
           version: shoppingList.version,
         },
       })
@@ -38,6 +38,7 @@ export class ShoppingListApi {
 
   public async create(): Promise<ClientResponse<ShoppingListResponse>> {
     const myShopList: MyShoppingListDraft = {
+      deleteDaysAfterLastModification: 2,
       name: {
         en: 'Favorite',
         ru: 'Favorite',
@@ -76,8 +77,46 @@ export class ShoppingListApi {
     return data;
   }
 
+  public async deleteShopList(shoppingList: ShoppingList): Promise<ClientResponse<ShoppingListResponse>> {
+    const data = await this.client
+      .apiRoot()
+      .me()
+      .shoppingLists()
+      .withId({ ID: shoppingList.id })
+      .delete({
+        queryArgs: {
+          version: shoppingList.version,
+        },
+      })
+      .execute();
+    return data;
+  }
+
   public async get(): Promise<ClientResponse<ShoppingListPagedQueryResponse>> {
     const data = await this.client.apiRoot().me().shoppingLists().get().execute();
+    return data;
+  }
+
+  public async getAnonymList(ID: string): Promise<ClientResponse<ShoppingListResponse>> {
+    const data = await this.client.apiRoot().shoppingLists().withId({ ID }).get().execute();
+    return data;
+  }
+
+  public async setAnonymousId(
+    shoppingList: ShoppingList,
+    actions: ShoppingListSetAnonymousIdAction,
+  ): Promise<ClientResponse<ShoppingListResponse>> {
+    const data = await this.client
+      .apiRoot()
+      .shoppingLists()
+      .withId({ ID: shoppingList.id })
+      .post({
+        body: {
+          actions: [actions],
+          version: shoppingList.version,
+        },
+      })
+      .execute();
     return data;
   }
 }

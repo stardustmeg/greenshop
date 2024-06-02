@@ -9,6 +9,8 @@ import type {
   MyCustomerUpdateAction,
 } from '@commercetools/platform-sdk';
 
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+
 import {
   isClientResponse,
   isCustomerPagedQueryResponse,
@@ -17,6 +19,24 @@ import {
 } from '../../types/validation.ts';
 import getCustomerApi, { type CustomerApi } from '../CustomerApi.ts';
 
+const CUSTOMER_FIELD = 'customer';
+
+enum Actions {
+  addAddress = 'addAddress',
+  addBillingAddressId = 'addBillingAddressId',
+  addShippingAddressId = 'addShippingAddressId',
+  changeAddress = 'changeAddress',
+  changeEmail = 'changeEmail',
+  removeAddress = 'removeAddress',
+  removeBillingAddressId = 'removeBillingAddressId',
+  removeShippingAddressId = 'removeShippingAddressId',
+  setDateOfBirth = 'setDateOfBirth',
+  setDefaultBillingAddress = 'setDefaultBillingAddress',
+  setDefaultShippingAddress = 'setDefaultShippingAddress',
+  setFirstName = 'setFirstName',
+  setLastName = 'setLastName',
+  setLocale = 'setLocale',
+}
 export class CustomerModel {
   private anonymousId = '';
 
@@ -27,59 +47,63 @@ export class CustomerModel {
   }
 
   public static actionAddAddress(address: Address): MyCustomerUpdateAction {
-    return { action: 'addAddress', address: CustomerModel.adaptAddressToServer(address) };
+    return { action: Actions.addAddress, address: CustomerModel.adaptAddressToServer(address) };
   }
 
   public static actionAddBillingAddress(addressId: string): MyCustomerUpdateAction {
-    return { action: 'addBillingAddressId', addressId };
+    return { action: Actions.addBillingAddressId, addressId };
   }
 
   public static actionAddShippingAddress(addressId: string): MyCustomerUpdateAction {
-    return { action: 'addShippingAddressId', addressId };
+    return { action: Actions.addShippingAddressId, addressId };
   }
 
   public static actionEditAddress(address: Address): MyCustomerUpdateAction {
-    return { action: 'changeAddress', address: CustomerModel.adaptAddressToServer(address), addressId: address.id };
+    return {
+      action: Actions.changeAddress,
+      address: CustomerModel.adaptAddressToServer(address),
+      addressId: address.id,
+    };
   }
 
   public static actionEditDateOfBirth(dateOfBirth: string): MyCustomerUpdateAction {
-    return { action: 'setDateOfBirth', dateOfBirth };
+    return { action: Actions.setDateOfBirth, dateOfBirth };
   }
 
   public static actionEditDefaultBillingAddress(addressId: string): MyCustomerUpdateAction {
-    return { action: 'setDefaultBillingAddress', addressId };
+    return { action: Actions.setDefaultBillingAddress, addressId };
   }
 
   public static actionEditDefaultShippingAddress(addressId: string): MyCustomerUpdateAction {
-    return { action: 'setDefaultShippingAddress', addressId };
+    return { action: Actions.setDefaultShippingAddress, addressId };
   }
 
   public static actionEditEmail(email: string): MyCustomerUpdateAction {
-    return { action: 'changeEmail', email };
+    return { action: Actions.changeEmail, email };
   }
 
   public static actionEditFirstName(firstName: string): MyCustomerUpdateAction {
-    return { action: 'setFirstName', firstName };
+    return { action: Actions.setFirstName, firstName };
   }
 
   public static actionEditLastName(lastName: string): MyCustomerUpdateAction {
-    return { action: 'setLastName', lastName };
+    return { action: Actions.setLastName, lastName };
   }
 
   public static actionRemoveAddress(address: Address): MyCustomerUpdateAction {
-    return { action: 'removeAddress', addressId: address.id };
+    return { action: Actions.removeAddress, addressId: address.id };
   }
 
   public static actionRemoveBillingAddress(address: Address): MyCustomerUpdateAction {
-    return { action: 'removeBillingAddressId', addressId: address.id };
+    return { action: Actions.removeBillingAddressId, addressId: address.id };
   }
 
   public static actionRemoveShippingAddress(address: Address): MyCustomerUpdateAction {
-    return { action: 'removeShippingAddressId', addressId: address.id };
+    return { action: Actions.removeShippingAddressId, addressId: address.id };
   }
 
   public static actionSetLocale(locale: string): MyCustomerUpdateAction {
-    return { action: 'setLocale', locale };
+    return { action: Actions.setLocale, locale };
   }
 
   private adaptAddress(address: AddressResponse[]): Address[] {
@@ -112,7 +136,7 @@ export class CustomerModel {
   }
 
   private adaptCustomerData(customerData: { customer: Customer } | Customer): User {
-    const data = 'customer' in customerData ? customerData.customer : customerData;
+    const data = CUSTOMER_FIELD in customerData ? customerData.customer : customerData;
 
     return {
       addresses: this.adaptAddress(data.addresses),
@@ -124,7 +148,7 @@ export class CustomerModel {
       firstName: data.firstName ?? '',
       id: data.id || '',
       lastName: data.lastName ?? '',
-      locale: data.locale ?? 'en',
+      locale: data.locale ?? LANGUAGE_CHOICE.EN,
       password: data.password ?? '',
       shippingAddress: [],
       version: data.version || 0,

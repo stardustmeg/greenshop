@@ -14,6 +14,8 @@ import type {
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 import { getLevel, getSize } from '@/shared/utils/size.ts';
 
+import type { ProductApi } from '../ProductApi.ts';
+
 import {
   Attribute,
   type CategoriesProductCount,
@@ -38,7 +40,14 @@ import {
   isRangeFacetResult,
   isTermFacetResult,
 } from '../../types/validation.ts';
-import getProductApi, { type ProductApi } from '../ProductApi.ts';
+import getProductApi from '../ProductApi.ts';
+
+enum ProductConstant {
+  categoriesId = 'categories.id',
+  isMatchingVariant = 'isMatchingVariant',
+  variantsAttributesSizeKey = 'variants.attributes.size.key',
+  variantsPriceCentAmount = 'variants.price.centAmount',
+}
 
 export class ProductModel {
   private categories: Category[] = [];
@@ -164,7 +173,10 @@ export class ProductModel {
   private adaptVariants(product: Product, response: ProductProjection): Product {
     const variants = [response.masterVariant, ...response.variants];
     variants.forEach((variant) => {
-      if (('isMatchingVariant' in variant && variant.isMatchingVariant) || !('isMatchingVariant' in variant)) {
+      if (
+        (ProductConstant.isMatchingVariant in variant && variant.isMatchingVariant) ||
+        !(ProductConstant.isMatchingVariant in variant)
+      ) {
         let size: SizeType | null = null;
         let level: LevelType | null = null;
 
@@ -190,12 +202,11 @@ export class ProductModel {
           price: this.adaptPrice(variant) || 0,
           size,
         });
-
-        if (variant.images?.length) {
-          variant.images.forEach((image) => {
-            product.images.push(image.url);
-          });
-        }
+      }
+      if (variant.images?.length) {
+        variant.images.forEach((image) => {
+          product.images.push(image.url);
+        });
       }
     });
     return product;
@@ -217,9 +228,9 @@ export class ProductModel {
     if (
       isClientResponse(data) &&
       isProductProjectionPagedSearchResponse(data.body) &&
-      'categories.id' in data.body.facets
+      ProductConstant.categoriesId in data.body.facets
     ) {
-      const categoriesFacet = data.body.facets['categories.id'];
+      const categoriesFacet = data.body.facets[ProductConstant.categoriesId];
       if (isTermFacetResult(categoriesFacet)) {
         categoriesFacet.terms.forEach((term) => {
           if (isFacetTerm(term)) {
@@ -245,9 +256,9 @@ export class ProductModel {
     if (
       isClientResponse(date) &&
       isProductProjectionPagedSearchResponse(date.body) &&
-      'variants.price.centAmount' in date.body.facets
+      ProductConstant.variantsPriceCentAmount in date.body.facets
     ) {
-      const variantsPrice = date.body.facets['variants.price.centAmount'];
+      const variantsPrice = date.body.facets[ProductConstant.variantsPriceCentAmount];
       if (isRangeFacetResult(variantsPrice)) {
         variantsPrice.ranges.forEach((range) => {
           if (isFacetRange(range)) {
@@ -281,9 +292,9 @@ export class ProductModel {
     if (
       isClientResponse(data) &&
       isProductProjectionPagedSearchResponse(data.body) &&
-      'variants.attributes.size.key' in data.body.facets
+      ProductConstant.variantsAttributesSizeKey in data.body.facets
     ) {
-      const categoriesFacet = data.body.facets['variants.attributes.size.key'];
+      const categoriesFacet = data.body.facets[ProductConstant.variantsAttributesSizeKey];
       if (isTermFacetResult(categoriesFacet)) {
         categoriesFacet.terms.forEach((term) => {
           if (isFacetTerm(term) && typeof term.term === 'string') {

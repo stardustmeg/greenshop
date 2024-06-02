@@ -2,6 +2,7 @@ import type { AddCartItem, Cart, CartProduct, EditCartItem } from '@/shared/type
 import type {
   CartPagedQueryResponse,
   Cart as CartResponse,
+  CartSetAnonymousIdAction,
   ClientResponse,
   LineItem,
   MyCartUpdateAction,
@@ -16,9 +17,15 @@ import type { OptionsRequest } from '../../types/type.ts';
 
 import getProductModel from '../../product/model/ProductModel.ts';
 import FilterProduct from '../../product/utils/filter.ts';
-import { FilterFields } from '../../types/type.ts';
+import { Attribute, FilterFields } from '../../types/type.ts';
 import { isCart, isCartPagedQueryResponse, isClientResponse } from '../../types/validation.ts';
 import getCartApi, { type CartApi } from '../CartApi.ts';
+
+enum ACTIONS {
+  addDiscountCode = 'addDiscountCode',
+  removeLineItem = 'removeLineItem',
+  setAnonymousId = 'setAnonymousId',
+}
 
 type Callback = (cart: Cart) => boolean;
 export class CartModel {
@@ -33,7 +40,7 @@ export class CartModel {
   }
 
   private adaptCart(data: CartResponse): Cart {
-    if (data.anonymousId) {
+    if (data.anonymousId && !getStore().getState().authToken) {
       getStore().dispatch(setAnonymousCartId(data.id));
       getStore().dispatch(setAnonymousId(data.anonymousId));
     }
@@ -64,7 +71,7 @@ export class CartModel {
     };
     result.name.push(...getProductModel().adaptLocalizationValue(product.name));
     if (product.variant.attributes) {
-      const size = product.variant.attributes.find((attr) => attr.name === 'size');
+      const size = product.variant.attributes.find((attr) => attr.name === Attribute.SIZE);
       if (size) {
         result.size = getProductModel().adaptSize(size);
       }
@@ -72,11 +79,39 @@ export class CartModel {
     return result;
   }
 
+  private async deleteOtherCarts(data: ClientResponse<CartPagedQueryResponse>): Promise<void> {
+    if (this.cart) {
+      const carts: Cart[] = [];
+      data.body.results.forEach((cart) => {
+        carts.push(this.getCartFromData(cart));
+      });
+      const otherCarts = carts.filter((shopList) => this.cart?.id !== shopList.id);
+      await Promise.all(otherCarts.map((id) => this.root.deleteCart(id)));
+    }
+  }
+
   private dispatchUpdate(): void {
     this.callback.forEach((callback) => (this.cart !== null ? callback(this.cart) : null));
   }
 
-  private getCartFromData(data: ClientResponse<CartPagedQueryResponse | CartResponse>): Cart {
+  private async getAnonymousCart(anonymousCartId: string, anonymousId: string): Promise<Cart | null> {
+    const data = await this.root.getAnonymCart(anonymousCartId);
+    if (!data.body.customerId) {
+      this.cart = this.getCartFromData(data);
+      if (data.body.anonymousId !== anonymousId) {
+        const actions: CartSetAnonymousIdAction = {
+          action: ACTIONS.setAnonymousId,
+          anonymousId,
+        };
+        const data = await this.root.setAnonymousId(this.cart, actions);
+        this.cart = this.getCartFromData(data);
+      }
+    }
+
+    return this.cart;
+  }
+
+  private getCartFromData(data: CartResponse | ClientResponse<CartPagedQueryResponse | CartResponse>): Cart {
     let cart: Cart = {
       discounts: 0,
       id: '',
@@ -88,8 +123,25 @@ export class CartModel {
       cart = this.adaptCart(data.body);
     } else if (isClientResponse(data) && isCartPagedQueryResponse(data.body) && data.body.results.length) {
       cart = this.adaptCart(data.body.results[0]);
+    } else if (isCart(data)) {
+      cart = this.adaptCart(data);
     }
     return cart;
+  }
+
+  private async getUserCart(): Promise<Cart> {
+    const data = await this.root.getCarts();
+    if (data.body.count === 1) {
+      this.cart = this.getCartFromData(data);
+    } else if (data.body.count === 0) {
+      const newCart = await this.root.create();
+      this.cart = this.getCartFromData(newCart);
+    } else {
+      const activeCart = await this.root.getActiveCart();
+      this.cart = this.getCartFromData(activeCart);
+      await this.deleteOtherCarts(data);
+    }
+    return this.cart;
   }
 
   public async addCoupon(discountCode: string): Promise<Cart> {
@@ -98,7 +150,7 @@ export class CartModel {
     }
     const action: MyCartUpdateAction[] = [
       {
-        action: 'addDiscountCode',
+        action: ACTIONS.addDiscountCode,
         code: discountCode,
       },
     ];
@@ -157,7 +209,7 @@ export class CartModel {
       this.cart = await this.getCart();
     }
     const actions: MyCartUpdateAction[] = this.cart?.products.map((lineItem) => ({
-      action: 'removeLineItem',
+      action: ACTIONS.removeLineItem,
       lineItemId: lineItem.lineItemId,
     }));
     const data = await this.root.updateCart(this.cart, actions);
@@ -202,15 +254,12 @@ export class CartModel {
 
   public async getCart(): Promise<Cart> {
     if (!this.cart) {
-      const data = await this.root.getCarts();
-      if (data.body.count === 1) {
-        this.cart = this.getCartFromData(data);
-      } else if (data.body.count === 0) {
-        const newCart = await this.root.create();
-        this.cart = this.getCartFromData(newCart);
-      } else {
-        const activeCart = await this.root.getActiveCart();
-        this.cart = this.getCartFromData(activeCart);
+      const { anonymousCartId, anonymousId } = getStore().getState();
+      if (anonymousCartId && anonymousId) {
+        this.cart = await this.getAnonymousCart(anonymousCartId, anonymousId);
+      }
+      if (!this.cart) {
+        this.cart = await this.getUserCart();
       }
     }
     this.dispatchUpdate();

@@ -1,6 +1,8 @@
 import type { UserCredentials } from '@/shared/types/user';
 
 import getStore from '@/shared/Store/Store.ts';
+import { setAnonymousId } from '@/shared/Store/actions.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 import { type ByProjectKeyRequestBuilder, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import {
   type AnonymousAuthMiddlewareOptions,
@@ -11,11 +13,14 @@ import {
   type PasswordAuthMiddlewareOptions,
   type RefreshAuthMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
+import { v4 as uuid } from 'uuid';
 
 import type { TokenTypeType } from '../types/type.ts';
 
 import { TokenType } from '../types/type.ts';
+// import { isErrorResponse } from '../types/validation.ts';
 import getTokenCache from './token-cache/token-cache.ts';
+// import createAuthMiddlewareForAnonymousSessionFlow from '@commercetools/sdk-client-v2/dist/declarations/src/sdk-middleware-auth/anonymous-session-flow';
 
 const PROJECT_KEY = import.meta.env.VITE_APP_CTP_PROJECT_KEY;
 const SCOPES = import.meta.env.VITE_APP_CTP_SCOPES;
@@ -59,8 +64,9 @@ export class ApiClient {
     } else {
       this.anonymConnection = this.createAnonymConnection();
     }
-
     this.adminConnection = this.createAdminConnection();
+
+    this.init().catch(showErrorMessage);
   }
 
   private addAuthMiddleware(
@@ -109,30 +115,34 @@ export class ApiClient {
   private createAnonymConnection(): ByProjectKeyRequestBuilder {
     const defaultOptions = this.getDefaultOptions(TokenType.ANONYM);
     const client = this.getDefaultClient();
+    // const { anonymousCartId, anonymousId } = getStore().getState();
+    const anonymousId = uuid();
 
     const anonymOptions: AnonymousAuthMiddlewareOptions = {
       ...defaultOptions,
       credentials: {
         ...defaultOptions.credentials,
+        anonymousId,
       },
+      // ...(anonymousId && { anonymousId }),
+      // ...(anonymousCartId && { anonymousCartId }),
     };
 
     client.withAnonymousSessionFlow(anonymOptions);
-    this.addRefreshMiddleware(TokenType.ANONYM, client, defaultOptions);
-
+    // this.addRefreshMiddleware(TokenType.ANONYM, client, defaultOptions);
+    getStore().dispatch(setAnonymousId(anonymousId));
     this.anonymConnection = this.getConnection(client.build());
     return this.anonymConnection;
   }
 
   private createAuthConnectionWithRefreshToken(): ByProjectKeyRequestBuilder {
-    if (!this.authConnection || (this.authConnection && !this.isAuth)) {
-      const defaultOptions = this.getDefaultOptions(TokenType.AUTH);
-      const client = this.getDefaultClient();
+    const defaultOptions = this.getDefaultOptions(TokenType.AUTH);
+    const client = this.getDefaultClient();
 
-      this.addRefreshMiddleware(TokenType.AUTH, client, defaultOptions);
+    this.addRefreshMiddleware(TokenType.AUTH, client, defaultOptions);
 
-      this.authConnection = this.getConnection(client.build());
-    }
+    this.authConnection = this.getConnection(client.build());
+
     return this.authConnection;
   }
 
@@ -161,8 +171,17 @@ export class ApiClient {
       host: URL_AUTH,
       projectKey: this.projectKey,
       scopes: this.scopes,
-      tokenCache: USE_SAVE_TOKEN && tokenType ? getTokenCache(tokenType) : undefined,
+      tokenCache: USE_SAVE_TOKEN && tokenType === TokenType.AUTH ? getTokenCache(tokenType) : undefined,
     };
+  }
+
+  private async init(): Promise<void> {
+    await this.apiRoot()
+      .get()
+      .execute()
+      .catch((error: Error) => {
+        showErrorMessage(error);
+      });
   }
 
   public adminRoot(): ByProjectKeyRequestBuilder {
