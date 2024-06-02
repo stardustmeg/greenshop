@@ -100,7 +100,7 @@
   svg {
     width: var(--small-offset);
     height: var(--small-offset);
-    fill: var(--noble-gray-800);
+    fill: var(--noble-gray-1100);
     transition: fill 0.2s;
   }
 
@@ -129,7 +129,7 @@
   order: 2;
 
   svg {
-    stroke: var(--noble-gray-800);
+    stroke: var(--noble-gray-1100);
     transition: stroke 0.2s;
   }
 
@@ -268,13 +268,9 @@
 .switchThemeLabel {
   position: relative;
   display: inline-block;
-  width: calc(var(--extra-large-offset) + var(--extra-small-offset));
+  width: var(--large-offset);
   height: calc(calc(var(--small-offset) / 1.5) + var(--extra-small-offset));
   cursor: pointer;
-
-  @media (max-width: 768px) {
-    width: calc(var(--extra-large-offset) + var(--extra-small-offset));
-  }
 }
 
 .switchThemeCheckbox {
@@ -289,7 +285,7 @@
 
     + .switchThemeLabelSpan::before {
       background-color: var(--steam-green-1100);
-      transform: translate(calc(var(--small-offset) + var(--small-offset) + var(--two)), -50%);
+      transform: translate(calc(var(--small-offset) + var(--one)), -50%);
     }
   }
 }
@@ -412,12 +408,10 @@
 
 .enSVG {
   left: calc(var(--one) * 5); // 5px
-  fill: var(--noble-gray-800); // 5px
 }
 
 .ruSVG {
   right: calc(var(--one) * 5);
-  fill: var(--white);
 }
 
 @keyframes show {
