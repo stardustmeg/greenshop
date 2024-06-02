@@ -36,18 +36,22 @@
 }
 
 .billing {
+  order: 1;
   background-color: #d5e4f9;
 }
 
 .shipping {
+  order: 2;
   background-color: #e9fffe;
 }
 
 .defaultBilling {
+  order: 3;
   background-color: #dfd6ef;
 }
 
 .defaultShipping {
+  order: 4;
   background-color: #fee1c9;
 }
 
