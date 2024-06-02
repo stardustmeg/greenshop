@@ -7,6 +7,7 @@ const ACTION = {
   SET_ANONYM_TOKEN: 'setAnonymToken',
   SET_ANONYMOUS_CART_ID: 'setAnonymousCartId',
   SET_ANONYMOUS_ID: 'setAnonymousId',
+  SET_ANONYMOUS_SHOP_LIST_ID: 'setAnonymousShopListId',
   SET_AUTH_TOKEN: 'setAuthToken',
   SET_BILLING_COUNTRY: 'setBillingCountry',
   SET_CURRENT_LANGUAGE: 'setCurrentLanguage',
@@ -27,6 +28,13 @@ interface ActionWithPayload<T, U extends ActionType> {
 interface ActionWithoutPayload<U extends ActionType> {
   type: U;
 }
+
+export const setAnonymousShopListId = (
+  value: null | string,
+): ActionWithPayload<null | string, typeof ACTION.SET_ANONYMOUS_SHOP_LIST_ID> => ({
+  payload: value,
+  type: ACTION.SET_ANONYMOUS_SHOP_LIST_ID,
+});
 
 export const setAnonymToken = (
   value: TokenStore | null,

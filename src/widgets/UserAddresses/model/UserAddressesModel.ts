@@ -38,7 +38,6 @@ class UserAddressesModel {
 
       const createAddress = (activeTypes: AddressTypeType[], inactiveTypes?: AddressTypeType[]): UserAddressModel =>
         new UserAddressModel(
-          user,
           address,
           activeTypes,
           (isDisabled: boolean) => {
@@ -75,6 +74,8 @@ class UserAddressesModel {
       }
     } catch (error) {
       showErrorMessage(error);
+    } finally {
+      this.view.toggleState(false);
     }
   }
 

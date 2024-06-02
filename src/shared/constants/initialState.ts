@@ -6,6 +6,7 @@ const initialState: State = {
   anonymToken: null,
   anonymousCartId: null,
   anonymousId: null,
+  anonymousShopListId: null,
   authToken: null,
   billingCountry: '',
   currentLanguage: 'en',

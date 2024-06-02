@@ -5,10 +5,8 @@
   display: grid;
   align-items: center;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(auto);
-  margin: 0 var(--small-offset);
   padding: var(--small-offset);
-  width: 60%;
+  width: 100%;
   height: max-content;
   font: var(--extra-regular-font);
   letter-spacing: 1px;
@@ -33,10 +31,15 @@
 }
 
 .addressesListWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
   grid-column: 2 span;
+  width: 100%;
+  gap: var(--extra-small-offset);
 }
 
 .disabled {
-  filter: blur(2px);
   pointer-events: none;
 }

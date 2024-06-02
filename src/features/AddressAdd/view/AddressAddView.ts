@@ -1,6 +1,6 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
+import { BUTTON_TEXT, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './addressAddView.module.scss';
@@ -31,12 +31,15 @@ class AddressAddView {
       cssClasses: [styles.wrapper],
       tag: 'form',
     });
-    this.view.append(this.cancelButton.getHTML(), this.saveChangesButton.getHTML());
+    this.view.append(this.saveChangesButton.getHTML(), this.cancelButton.getHTML());
     return this.view;
   }
 
   private createSaveChangesButton(): ButtonModel {
     this.saveChangesButton = new ButtonModel({
+      attrs: {
+        type: BUTTON_TYPE.SUBMIT,
+      },
       classes: [styles.saveChangesButton],
       text: BUTTON_TEXT[getStore().getState().currentLanguage].ADD_ADDRESS,
     });

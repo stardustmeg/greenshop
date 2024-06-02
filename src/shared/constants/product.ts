@@ -31,6 +31,7 @@ export const PRODUCT_INFO_TEXT = {
   en: {
     CATEGORY: 'Categories: ',
     DIFFICULTY: 'Difficulty: ',
+    DISCOUNT_LABEL: 'OFF',
     FULL_DESCRIPTION: 'Full description:',
     SHORT_DESCRIPTION: 'Short description:',
     SIZE: 'Size:',
@@ -38,6 +39,7 @@ export const PRODUCT_INFO_TEXT = {
   ru: {
     CATEGORY: 'Категории: ',
     DIFFICULTY: 'Сложность: ',
+    DISCOUNT_LABEL: 'Скидка',
     FULL_DESCRIPTION: 'Полное описание:',
     SHORT_DESCRIPTION: 'Краткое описание:',
     SIZE: 'Размер:',
@@ -47,6 +49,7 @@ export const PRODUCT_INFO_TEXT = {
 export const PRODUCT_INFO_TEXT_KEYS = {
   CATEGORY: 'CATEGORY',
   DIFFICULTY: 'DIFFICULTY',
+  DISCOUNT_LABEL: 'DISCOUNT_LABEL',
   FULL_DESCRIPTION: 'FULL_DESCRIPTION',
   SHORT_DESCRIPTION: 'SHORT_DESCRIPTION',
   SIZE: 'SIZE',

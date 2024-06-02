@@ -17,19 +17,24 @@
   color: var(--noble-gray-800);
 }
 
+.swipeRow {
+  transform: translateX(calc(var(--extra-large-offset) * -1));
+}
+
+.swipeDelete {
+  transform: translateX(calc(var(--extra-large-offset) * 1.5));
+}
+
 .deleteCell {
   grid-area: 2 / 6 / 4 / 7;
 
   @media (max-width: 768px) {
-    position: absolute;
-    right: -10%;
-    top: 50%;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    grid-column: auto;
-    grid-row: auto;
-    transform: translate(calc(var(--small-offset) / 2), calc(var(--small-offset) / 2 * -1));
+    grid-area: 1 / 3 / 4 / 4;
+    transition: all 0.3s;
   }
 }
 
@@ -79,8 +84,6 @@
   transition: transform 0.3s ease-out;
 
   @media (max-width: 768px) {
-    position: relative;
-    z-index: 10;
     margin-bottom: var(--extra-small-offset);
     border-radius: var(--medium-br);
     box-shadow: var(--mellow-shadow-050);

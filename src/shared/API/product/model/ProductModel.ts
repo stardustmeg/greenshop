@@ -14,6 +14,8 @@ import type {
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 import { getLevel, getSize } from '@/shared/utils/size.ts';
 
+import type { ProductApi } from '../ProductApi.ts';
+
 import {
   Attribute,
   type CategoriesProductCount,
@@ -21,6 +23,9 @@ import {
   type PriceRange,
   type ProductWithCount,
   type SizeProductCount,
+  SortDirection,
+  SortFields,
+  type SortOptions,
 } from '../../types/type.ts';
 import {
   isAttributePlainEnumValue,
@@ -35,7 +40,14 @@ import {
   isRangeFacetResult,
   isTermFacetResult,
 } from '../../types/validation.ts';
-import getProductApi, { type ProductApi } from '../ProductApi.ts';
+import getProductApi from '../ProductApi.ts';
+
+enum ProductConstant {
+  categoriesId = 'categories.id',
+  isMatchingVariant = 'isMatchingVariant',
+  variantsAttributesSizeKey = 'variants.attributes.size.key',
+  variantsPriceCentAmount = 'variants.price.centAmount',
+}
 
 export class ProductModel {
   private categories: Category[] = [];
@@ -159,34 +171,38 @@ export class ProductModel {
   }
 
   private adaptVariants(product: Product, response: ProductProjection): Product {
-    const variants = [...response.variants, response.masterVariant];
+    const variants = [response.masterVariant, ...response.variants];
     variants.forEach((variant) => {
-      let size: SizeType | null = null;
-      let level: LevelType | null = null;
+      if (
+        (ProductConstant.isMatchingVariant in variant && variant.isMatchingVariant) ||
+        !(ProductConstant.isMatchingVariant in variant)
+      ) {
+        let size: SizeType | null = null;
+        let level: LevelType | null = null;
 
-      if (variant.attributes?.length) {
-        variant.attributes.forEach((attribute) => {
-          if (attribute.name === Attribute.FULL_DESCRIPTION && !product.fullDescription.length) {
-            product.fullDescription.push(...this.adaptFullDescription(attribute));
-          }
-          if (attribute.name === Attribute.SIZE) {
-            size = this.adaptSize(attribute);
-          }
-          if (attribute.name === Attribute.LEVEL) {
-            level = this.adaptLevel(attribute);
-            const productEl = product;
-            productEl.level = level;
-          }
+        if (variant.attributes?.length) {
+          variant.attributes.forEach((attribute) => {
+            if (attribute.name === Attribute.FULL_DESCRIPTION && !product.fullDescription.length) {
+              product.fullDescription.push(...this.adaptFullDescription(attribute));
+            }
+            if (attribute.name === Attribute.SIZE) {
+              size = this.adaptSize(attribute);
+            }
+            if (attribute.name === Attribute.LEVEL) {
+              level = this.adaptLevel(attribute);
+              const productEl = product;
+              productEl.level = level;
+            }
+          });
+        }
+
+        product.variant.push({
+          discount: this.adaptDiscount(variant) || 0,
+          id: variant.id,
+          price: this.adaptPrice(variant) || 0,
+          size,
         });
       }
-
-      product.variant.push({
-        discount: this.adaptDiscount(variant) ?? 0,
-        id: variant.id,
-        price: this.adaptPrice(variant) ?? 0,
-        size,
-      });
-
       if (variant.images?.length) {
         variant.images.forEach((image) => {
           product.images.push(image.url);
@@ -212,9 +228,9 @@ export class ProductModel {
     if (
       isClientResponse(data) &&
       isProductProjectionPagedSearchResponse(data.body) &&
-      'categories.id' in data.body.facets
+      ProductConstant.categoriesId in data.body.facets
     ) {
-      const categoriesFacet = data.body.facets['categories.id'];
+      const categoriesFacet = data.body.facets[ProductConstant.categoriesId];
       if (isTermFacetResult(categoriesFacet)) {
         categoriesFacet.terms.forEach((term) => {
           if (isFacetTerm(term)) {
@@ -240,9 +256,9 @@ export class ProductModel {
     if (
       isClientResponse(date) &&
       isProductProjectionPagedSearchResponse(date.body) &&
-      'variants.price.centAmount' in date.body.facets
+      ProductConstant.variantsPriceCentAmount in date.body.facets
     ) {
-      const variantsPrice = date.body.facets['variants.price.centAmount'];
+      const variantsPrice = date.body.facets[ProductConstant.variantsPriceCentAmount];
       if (isRangeFacetResult(variantsPrice)) {
         variantsPrice.ranges.forEach((range) => {
           if (isFacetRange(range)) {
@@ -276,9 +292,9 @@ export class ProductModel {
     if (
       isClientResponse(data) &&
       isProductProjectionPagedSearchResponse(data.body) &&
-      'variants.attributes.size.key' in data.body.facets
+      ProductConstant.variantsAttributesSizeKey in data.body.facets
     ) {
-      const categoriesFacet = data.body.facets['variants.attributes.size.key'];
+      const categoriesFacet = data.body.facets[ProductConstant.variantsAttributesSizeKey];
       if (isTermFacetResult(categoriesFacet)) {
         categoriesFacet.terms.forEach((term) => {
           if (isFacetTerm(term) && typeof term.term === 'string') {
@@ -302,6 +318,41 @@ export class ProductModel {
       total = data.body.total ?? 0;
     }
     return total;
+  }
+
+  private sortVariants(products: Product[], sort: SortOptions): void {
+    products.forEach((product) => {
+      product.variant.sort((a, b) => {
+        let result = 0;
+        if (sort.field === SortFields.PRICE) {
+          if (sort.direction === SortDirection.ASC) {
+            const priceA = a.discount ? a.discount : a.price;
+            const priceB = b.discount ? b.discount : b.price;
+            result = priceA - priceB;
+          } else if (sort.direction === SortDirection.DESC) {
+            const priceA = a.discount ? a.discount : a.price;
+            const priceB = b.discount ? b.discount : b.price;
+            result = priceB - priceA;
+          }
+        }
+        return result;
+      });
+    });
+    products.sort((a, b) => {
+      let result = 0;
+      if (sort.field === SortFields.PRICE) {
+        if (sort.direction === SortDirection.ASC) {
+          const priceA = a.variant[0].discount ? a.variant[0].discount : a.variant[0].price;
+          const priceB = b.variant[0].discount ? b.variant[0].discount : b.variant[0].price;
+          result = priceA - priceB;
+        } else if (sort.direction === SortDirection.DESC) {
+          const priceA = a.variant[0].discount ? a.variant[0].discount : a.variant[0].price;
+          const priceB = b.variant[0].discount ? b.variant[0].discount : b.variant[0].price;
+          result = priceB - priceA;
+        }
+      }
+      return result;
+    });
   }
 
   public adaptLocalizationValue(data: LocalizedString | undefined): localization[] {
@@ -346,6 +397,9 @@ export class ProductModel {
     await getProductModel().getCategories();
     const data = await this.root.getProducts(options);
     const products = this.getProductsFromData(data);
+    if (options?.sort) {
+      this.sortVariants(products, options?.sort);
+    }
     const sizeCount = this.getSizeProductCountFromData(data);
     const categoryCount = this.getCategoriesProductCountFromData(data);
     const priceRange = this.getPriceRangeFromData(data);

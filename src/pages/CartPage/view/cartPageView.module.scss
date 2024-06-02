@@ -3,6 +3,7 @@
 .cartPage {
   display: flex;
   flex-grow: 1;
+  overflow: hidden;
   padding: 0 var(--small-offset);
   animation: show 0.2s ease-out forwards;
   gap: 2%;

@@ -1,8 +1,13 @@
 import type { Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
+import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
+import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { CartActive } from '@/shared/types/cart.ts';
+import showErrorMessage from '@/shared/utils/userMessage.ts';
 
 import ProductOrderView from '../view/ProductOrderView.ts';
 
@@ -22,8 +27,61 @@ class ProductOrderModel {
     this.init();
   }
 
+  private async activeDelete(): Promise<void> {
+    const loader = new LoaderModel(LOADER_SIZE.EXTRA_SMALL).getHTML();
+    this.view.getDeleteButton().append(loader);
+    await getCartModel()
+      .deleteProductFromCart(this.productItem)
+      .then((cart) => {
+        if (cart) {
+          serverMessageModel.showServerMessage(
+            SERVER_MESSAGE_KEYS.SUCCESSFUL_DELETE_PRODUCT_FROM_CART,
+            MESSAGE_STATUS.SUCCESS,
+          );
+          const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
+          this.updateView(updateItem);
+          this.callback(cart);
+        }
+      })
+      .catch((error) => {
+        showErrorMessage(error);
+      })
+      .finally(() => loader.remove());
+  }
+
+  private async activeMinus(): Promise<void> {
+    const active: EditCartItem = {
+      lineId: this.productItem.lineItemId,
+      quantity: this.productItem.quantity - 1,
+    };
+    const cart = await getCartModel().editProductCount(active);
+    const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
+    this.updateView(updateItem);
+    this.callback(cart);
+  }
+
+  private async activePlus(): Promise<void> {
+    const active: EditCartItem = {
+      lineId: this.productItem.lineItemId,
+      quantity: this.productItem.quantity + 1,
+    };
+    const cart = await getCartModel().editProductCount(active);
+    const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
+    this.updateView(updateItem);
+    this.callback(cart);
+  }
+
   private init(): void {
     observeStore(selectCurrentLanguage, () => this.view.updateLanguage());
+  }
+
+  private updateView(item: CartProduct | undefined): void {
+    if (item) {
+      this.productItem = item;
+      this.view.updateInfo(this.productItem);
+    } else {
+      this.getHTML().remove();
+    }
   }
 
   public getHTML(): HTMLDivElement {
@@ -35,47 +93,21 @@ class ProductOrderModel {
   }
 
   public async updateProductHandler(active: CartActive): Promise<void> {
-    let updateItem: CartProduct | undefined;
-    let cart: Cart | null = null;
     switch (active) {
       case CartActive.DELETE: {
-        cart = await getCartModel().deleteProductFromCart(this.productItem);
-        updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
+        await this.activeDelete();
         break;
       }
-
       case CartActive.MINUS: {
-        const active: EditCartItem = {
-          lineId: this.productItem.lineItemId,
-          quantity: this.productItem.quantity - 1,
-        };
-        cart = await getCartModel().editProductCount(active);
-        updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
+        await this.activeMinus();
         break;
       }
       case CartActive.PLUS: {
-        const active: EditCartItem = {
-          lineId: this.productItem.lineItemId,
-          quantity: this.productItem.quantity + 1,
-        };
-        cart = await getCartModel().editProductCount(active);
-        updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
+        await this.activePlus();
         break;
       }
-
       default:
         break;
-    }
-
-    if (updateItem) {
-      this.productItem = updateItem;
-      this.view.updateInfo(this.productItem);
-    } else {
-      this.getHTML().remove();
-    }
-
-    if (cart) {
-      this.callback(cart);
     }
   }
 }

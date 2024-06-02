@@ -7,8 +7,6 @@ import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
-import getStore from '@/shared/Store/Store.ts';
-import { setBillingCountry } from '@/shared/Store/actions.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
@@ -96,7 +94,6 @@ class AddressEditModel {
     this.setSubmitFormHandler();
     this.setCancelButtonHandler();
     this.view.getHTML().append(this.newAddress.getHTML());
-    getStore().dispatch(setBillingCountry(this.currentAddress.country));
   }
 
   private initiateFieldsValues(): void {
@@ -124,16 +121,12 @@ class AddressEditModel {
 
   private setInputFieldHandlers(inputField: InputFieldModel): boolean {
     const inputHTML = inputField.getView().getInput().getHTML();
-    inputHTML.addEventListener('input', () => {
-      this.switchSubmitFormButtonAccess();
-    });
+    inputHTML.addEventListener('input', () => this.switchSubmitFormButtonAccess());
     return true;
   }
 
   private setPreventDefaultToForm(): boolean {
-    this.getHTML().addEventListener('submit', (event) => {
-      event.preventDefault();
-    });
+    this.getHTML().addEventListener('submit', (event) => event.preventDefault());
     return true;
   }
 
