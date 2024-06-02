@@ -23,6 +23,8 @@ $filter-brightness: 1.3;
     transform $transition-duration;
 
   svg {
+    fill: var(--noble-gray-900);
+    stroke: var(--noble-gray-900);
     transition:
       fill $transition-duration,
       stroke $transition-duration;

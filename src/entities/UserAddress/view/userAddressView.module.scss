@@ -6,7 +6,7 @@
   align-items: center;
   border-radius: var(--medium-br);
   padding: var(--extra-small-offset);
-  background: var(--noble-gray-1000);
+  background: var(--white-tr);
   gap: var(--tiny-offset);
 }
 
@@ -41,6 +41,7 @@
 }
 
 .billing {
+  order: 1;
   background-color: var(--steam-green-1000);
 }
 
@@ -50,6 +51,7 @@
 }
 
 .defaultBilling {
+  order: 3;
   background-color: var(--steam-green-300);
 }
 
@@ -60,7 +62,9 @@
 
 .inactive {
   filter: grayscale(1);
-  transition: filter 0.2s;
+  transition:
+    filter 0.2s,
+    scale 0.2s;
 }
 
 .editLogo,
@@ -82,16 +86,6 @@
   svg {
     width: calc(var(--extra-small-offset) * 1.5);
     height: calc(var(--extra-small-offset) * 1.5);
-    stroke: var(--noble-gray-900);
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      svg {
-        fill: var(--noble-gray-1000);
-        transition: fill 0.2s;
-      }
-    }
   }
 }
 

@@ -285,7 +285,7 @@
 
     + .switchThemeLabelSpan::before {
       background-color: var(--steam-green-1100);
-      transform: translate(calc(var(--small-offset) + var(--one)), -50%);
+      transform: translate(calc(var(--small-offset) + var(--two)), -50%);
     }
   }
 }
