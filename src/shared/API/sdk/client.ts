@@ -18,9 +18,7 @@ import { v4 as uuid } from 'uuid';
 import type { TokenTypeType } from '../types/type.ts';
 
 import { TokenType } from '../types/type.ts';
-// import { isErrorResponse } from '../types/validation.ts';
 import getTokenCache from './token-cache/token-cache.ts';
-// import createAuthMiddlewareForAnonymousSessionFlow from '@commercetools/sdk-client-v2/dist/declarations/src/sdk-middleware-auth/anonymous-session-flow';
 
 const PROJECT_KEY = import.meta.env.VITE_APP_CTP_PROJECT_KEY;
 const SCOPES = import.meta.env.VITE_APP_CTP_SCOPES;
@@ -115,7 +113,6 @@ export class ApiClient {
   private createAnonymConnection(): ByProjectKeyRequestBuilder {
     const defaultOptions = this.getDefaultOptions(TokenType.ANONYM);
     const client = this.getDefaultClient();
-    // const { anonymousCartId, anonymousId } = getStore().getState();
     const anonymousId = uuid();
 
     const anonymOptions: AnonymousAuthMiddlewareOptions = {
@@ -124,12 +121,9 @@ export class ApiClient {
         ...defaultOptions.credentials,
         anonymousId,
       },
-      // ...(anonymousId && { anonymousId }),
-      // ...(anonymousCartId && { anonymousCartId }),
     };
 
     client.withAnonymousSessionFlow(anonymOptions);
-    // this.addRefreshMiddleware(TokenType.ANONYM, client, defaultOptions);
     getStore().dispatch(setAnonymousId(anonymousId));
     this.anonymConnection = this.getConnection(client.build());
     return this.anonymConnection;
