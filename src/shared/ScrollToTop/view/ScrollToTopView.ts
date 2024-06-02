@@ -17,7 +17,7 @@ class ScrollToTopView {
 
   private createButton(): ButtonModel {
     this.button = new ButtonModel({
-      classes: [styles.scrollToTopButton],
+      classes: [styles.scrollToTopButton, styles.hidden],
       title: TOOLTIP_TEXT[getStore().getState().currentLanguage].SCROLL_TO_TOP,
     });
 

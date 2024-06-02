@@ -11,7 +11,7 @@ class ScrollToTopModel {
   private init(): void {
     const buttonElement = this.view.getHTML();
     buttonElement.addEventListener('click', this.scrollToTopHandler.bind(this));
-    window.addEventListener('scroll', this.view.toggleVisibility.bind(this));
+    window.addEventListener('scroll', () => this.view.toggleVisibility());
     this.view.toggleVisibility();
   }
 
