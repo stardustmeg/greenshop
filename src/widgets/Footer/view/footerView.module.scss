@@ -221,6 +221,10 @@
   margin: 0 auto;
   width: calc(var(--extra-large-offset) * 1.5);
   height: calc(var(--extra-small-offset) * 1.7);
+
+  @media (max-width: 484px) {
+    margin-bottom: var(--extra-small-offset);
+  }
 }
 
 .contactItem {
