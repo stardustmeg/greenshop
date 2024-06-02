@@ -2,17 +2,21 @@ import type { AddCartItem, Cart, CartProduct, EditCartItem } from '@/shared/type
 import type {
   CartPagedQueryResponse,
   Cart as CartResponse,
+  CartSetAnonymousIdAction,
   ClientResponse,
   MyCartDraft,
   MyCartUpdateAction,
 } from '@commercetools/platform-sdk';
 
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { CURRENCY } from '@/shared/constants/product.ts';
 
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
 
+enum Actions {
+  addLineItem = 'addLineItem',
+  changeLineItemQuantity = 'changeLineItemQuantity',
+  removeLineItem = 'removeLineItem',
+}
 export class CartApi {
   private client: ApiClient;
 
@@ -30,7 +34,7 @@ export class CartApi {
         body: {
           actions: [
             {
-              action: 'addLineItem',
+              action: Actions.addLineItem,
               productId: addCartItem.productId,
               quantity: addCartItem.quantity,
               variantId: addCartItem.variantId,
@@ -46,6 +50,7 @@ export class CartApi {
   public async create(): Promise<ClientResponse<CartResponse>> {
     const myCart: MyCartDraft = {
       currency: CURRENCY,
+      deleteDaysAfterLastModification: 2,
     };
     const newCart = await this.client
       .apiRoot()
@@ -59,6 +64,21 @@ export class CartApi {
     return newCart;
   }
 
+  public async deleteCart(cart: Cart): Promise<ClientResponse> {
+    const data = await this.client
+      .apiRoot()
+      .me()
+      .carts()
+      .withId({ ID: cart.id })
+      .delete({
+        queryArgs: {
+          version: cart.version,
+        },
+      })
+      .execute();
+    return data;
+  }
+
   public async deleteProduct(cart: Cart, product: CartProduct): Promise<ClientResponse> {
     const data = await this.client
       .apiRoot()
@@ -69,7 +89,7 @@ export class CartApi {
         body: {
           actions: [
             {
-              action: 'removeLineItem',
+              action: Actions.removeLineItem,
               lineItemId: product.lineItemId,
             },
           ],
@@ -90,7 +110,7 @@ export class CartApi {
         body: {
           actions: [
             {
-              action: 'changeLineItemQuantity',
+              action: Actions.changeLineItemQuantity,
               lineItemId: editCartItem.lineId,
               quantity: editCartItem.quantity,
             },
@@ -107,13 +127,33 @@ export class CartApi {
     return data;
   }
 
+  public async getAnonymCart(ID: string): Promise<ClientResponse<CartResponse>> {
+    const data = await this.client.apiRoot().carts().withId({ ID }).get().execute();
+    return data;
+  }
+
   public async getCarts(): Promise<ClientResponse<CartPagedQueryResponse>> {
     const data = await this.client.apiRoot().me().carts().get().execute();
     return data;
   }
 
-  public updateCart(cart: Cart, actions: MyCartUpdateAction[]): Promise<ClientResponse<CartResponse> | boolean> {
-    return this.client
+  public async setAnonymousId(cart: Cart, actions: CartSetAnonymousIdAction): Promise<ClientResponse> {
+    const data = await this.client
+      .apiRoot()
+      .carts()
+      .withId({ ID: cart.id })
+      .post({
+        body: {
+          actions: [actions],
+          version: cart.version,
+        },
+      })
+      .execute();
+    return data;
+  }
+
+  public async updateCart(cart: Cart, actions: MyCartUpdateAction[]): Promise<ClientResponse<CartResponse>> {
+    const data = await this.client
       .apiRoot()
       .me()
       .carts()
@@ -124,12 +164,8 @@ export class CartApi {
           version: cart.version,
         },
       })
-      .execute()
-      .then((data) => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_COUPON_TO_CART, MESSAGE_STATUS.SUCCESS);
-        return data;
-      })
-      .catch(() => serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.INVALID_COUPON, MESSAGE_STATUS.ERROR));
+      .execute();
+    return data;
   }
 }
 

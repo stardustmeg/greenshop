@@ -480,6 +480,12 @@ class FooterView {
       innerContent: FOOTER_PAGE.SUB_BTN[this.language],
       tag: 'button',
     });
+    submit.addEventListener('submit', (event) => {
+      event.preventDefault();
+    });
+    submit.addEventListener('click', (event) => {
+      event.preventDefault();
+    });
     form.append(inputHTML, submit);
     this.textElements.push({ element: submit, textItem: FOOTER_PAGE.SUB_BTN });
     this.textElements.push({ element: inputHTML, textItem: FOOTER_PAGE.SUB_PLACEHOLDER });

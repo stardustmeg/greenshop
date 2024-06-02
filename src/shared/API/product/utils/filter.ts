@@ -70,7 +70,6 @@ export default class FilterProduct {
       result.push(this.newArrival);
     }
     if (this.price) {
-      // `${field}: range(${value.min * PRICE_FRACTIONS} to ${value.max * PRICE_FRACTIONS})`;
       result.push(
         `${FilterFields.PRICE}: range(${Math.round(this.price.min * PRICE_FRACTIONS)} to ${Math.round(this.price.max * PRICE_FRACTIONS)})`,
       );

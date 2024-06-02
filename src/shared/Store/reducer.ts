@@ -10,6 +10,7 @@ export interface State {
   anonymToken: TokenStore | null;
   anonymousCartId: null | string;
   anonymousId: null | string;
+  anonymousShopListId: null | string;
   authToken: TokenStore | null;
   billingCountry: string;
   currentLanguage: LanguageChoiceType;
@@ -39,6 +40,11 @@ export const rootReducer: Reducer<State, Action> = (state: State, action: Action
       return {
         ...state,
         anonymousCartId: action.payload,
+      };
+    case 'setAnonymousShopListId':
+      return {
+        ...state,
+        anonymousShopListId: action.payload,
       };
     case 'setAnonymousId':
       return {

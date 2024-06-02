@@ -2,10 +2,14 @@ import type { Cart } from '@/shared/types/cart.ts';
 import type { Page } from '@/shared/types/page.ts';
 
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
+import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
+import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 import ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel.ts';
 
@@ -14,16 +18,22 @@ import CartPageView from '../view/CartPageView.ts';
 class CartPageModel implements Page {
   private addDiscountHandler = async (discountCode: string): Promise<void> => {
     if (discountCode.trim()) {
-      this.cart = await getCartModel().addCoupon(discountCode);
-      this.view.updateTotal(this.cart);
-
-      getCartModel()
+      const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
+      this.view.getCouponButton().append(loader);
+      await getCartModel()
         .addCoupon(discountCode)
         .then((cart) => {
-          this.cart = cart;
-          this.view.updateTotal(this.cart);
+          if (cart) {
+            serverMessageModel.showServerMessage(
+              SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_COUPON_TO_CART,
+              MESSAGE_STATUS.SUCCESS,
+            );
+            this.cart = cart;
+            this.view.updateTotal(this.cart);
+          }
         })
-        .catch(showErrorMessage);
+        .catch(showErrorMessage)
+        .finally(() => loader.remove());
     }
   };
 
@@ -47,16 +57,25 @@ class CartPageModel implements Page {
   };
 
   private clearCart = async (): Promise<void> => {
-    this.cart = await getCartModel().clearCart();
-    this.productsItem = this.productsItem.filter((productItem) => {
-      const searchEl = this.cart?.products.find((item) => item.lineItemId === productItem.getProduct().lineItemId);
-      if (!searchEl) {
-        productItem.getHTML().remove();
-        return false;
-      }
-      return true;
-    });
-    this.renderCart();
+    await getCartModel()
+      .clearCart()
+      .then((cart) => {
+        this.cart = cart;
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_CLEAR_CART, MESSAGE_STATUS.SUCCESS);
+        this.productsItem = this.productsItem.filter((productItem) => {
+          const searchEl = this.cart?.products.find((item) => item.lineItemId === productItem.getProduct().lineItemId);
+          if (!searchEl) {
+            productItem.getHTML().remove();
+            return false;
+          }
+          return true;
+        });
+        this.renderCart();
+      })
+      .catch((error: Error) => {
+        showErrorMessage(error);
+        return this.cart;
+      });
   };
 
   private productsItem: ProductOrderModel[] = [];
@@ -84,11 +103,10 @@ class CartPageModel implements Page {
 
       if (this.productsItem.length) {
         this.view.renderCart(this.productsItem);
-        this.view.updateTotal(this.cart);
       } else {
         this.view.renderEmpty();
-        this.view.updateTotal(this.cart);
       }
+      this.view.updateTotal(this.cart);
     }
   }
 
