@@ -1,3 +1,5 @@
+import type { LanguageChoiceType } from './common';
+
 export const MESSAGE_STATUS = {
   ERROR: 'error',
   SUCCESS: 'success',
@@ -12,7 +14,7 @@ export const MESSAGE_STATUS_KEYS = {
 
 export type MessageStatusKeysType = (typeof MESSAGE_STATUS_KEYS)[keyof typeof MESSAGE_STATUS_KEYS];
 
-export const SERVER_MESSAGE = {
+export const SERVER_MESSAGE: Record<LanguageChoiceType, Record<string, string>> = {
   en: {
     ADDRESS_ADDED: 'Address has been added successfully',
     ADDRESS_CHANGED: 'Address has been changed successfully',
@@ -25,6 +27,7 @@ export const SERVER_MESSAGE = {
     INVALID_COUPON: 'Invalid coupon',
     INVALID_EMAIL: "User with this email doesn't exist. Please, register first",
     LANGUAGE_CHANGED: 'Language preferences have been updated successfully',
+    NEED_LOGIN: 'You need to log in to see this page',
     PASSWORD_CHANGED: 'Your password has been changed successfully',
     PASSWORD_NOT_CHANGED: 'Your password has not been changed. Please, try again',
     PERSONAL_INFO_CHANGED: 'Personal information has been changed successfully',
@@ -51,6 +54,7 @@ export const SERVER_MESSAGE = {
     INVALID_COUPON: 'Неверный купон',
     INVALID_EMAIL: 'Пользователь с таким адресом не существует. Пожалуйста, сначала зарегистрируйтесь',
     LANGUAGE_CHANGED: 'Настройки языка успешно обновлены',
+    NEED_LOGIN: 'Вам нужно войти, чтобы перейти на эту страницу',
     PASSWORD_CHANGED: 'Ваш пароль успешно изменен',
     PASSWORD_NOT_CHANGED: 'Ваш пароль не был изменен. Пожалуйста, попробуйте ещё раз',
     PERSONAL_INFO_CHANGED: 'Персональные данные успешно изменены',
@@ -67,7 +71,7 @@ export const SERVER_MESSAGE = {
   },
 } as const;
 
-export const SERVER_MESSAGE_KEYS = {
+export const SERVER_MESSAGE_KEYS: Record<string, string> = {
   ADDRESS_ADDED: 'ADDRESS_ADDED',
   ADDRESS_CHANGED: 'ADDRESS_CHANGED',
   ADDRESS_DELETED: 'ADDRESS_DELETED',
@@ -79,6 +83,7 @@ export const SERVER_MESSAGE_KEYS = {
   INVALID_COUPON: 'INVALID_COUPON',
   INVALID_EMAIL: 'INVALID_EMAIL',
   LANGUAGE_CHANGED: 'LANGUAGE_CHANGED',
+  NEED_LOGIN: 'NEED_LOGIN',
   PASSWORD_CHANGED: 'PASSWORD_CHANGED',
   PASSWORD_NOT_CHANGED: 'PASSWORD_NOT_CHANGED',
   PERSONAL_INFO_CHANGED: 'PERSONAL_INFO_CHANGED',

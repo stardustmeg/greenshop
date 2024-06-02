@@ -17,7 +17,7 @@
 
 .shippingLogo,
 .billingLogo {
-  @include logo;
+  @include svg-logo;
 }
 
 .hidden {
@@ -28,8 +28,6 @@
 
 .createAddressButton {
   @include round-btn;
-
-  padding: var(--extra-small-offset);
 }
 
 .addressesListWrapper {

@@ -6,7 +6,7 @@
   align-items: center;
   border-radius: var(--medium-br);
   padding: var(--extra-small-offset);
-  background: var(--noble-gray-1000);
+  background: var(--white-tr);
   gap: var(--tiny-offset);
 }
 
@@ -26,42 +26,50 @@
   min-width: 8rem;
   font: var(--small-font);
   text-align: center;
+  color: var(--black);
   background-color: var(--steam-green-900);
   transition: scale 0.2s;
 
   &:hover {
     cursor: pointer;
-    scale: 1.1;
+    scale: 1.05;
+  }
+
+  &:active {
+    scale: 0.95;
   }
 }
 
 .billing {
   order: 1;
-  background-color: #d5e4f9;
+  background-color: var(--steam-green-1000);
 }
 
 .shipping {
   order: 2;
-  background-color: #e9fffe;
+  background-color: var(--steam-green-1000);
 }
 
 .defaultBilling {
   order: 3;
-  background-color: #dfd6ef;
+  background-color: var(--steam-green-300);
 }
 
 .defaultShipping {
   order: 4;
-  background-color: #fee1c9;
+  background-color: var(--steam-green-300);
 }
 
 .inactive {
-  background-color: var(--noble-gray-tr-800);
+  filter: grayscale(1);
+  transition:
+    filter 0.2s,
+    scale 0.2s;
 }
 
 .editLogo,
 .deleteLogo {
-  @include logo;
+  @include svg-logo;
 
   width: calc(var(--extra-small-offset) * 1.5);
   height: calc(var(--extra-small-offset) * 1.5);
@@ -78,16 +86,6 @@
   svg {
     width: calc(var(--extra-small-offset) * 1.5);
     height: calc(var(--extra-small-offset) * 1.5);
-    stroke: var(--noble-gray-900);
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      svg {
-        fill: var(--noble-gray-1000);
-        transition: fill 0.2s;
-      }
-    }
   }
 }
 

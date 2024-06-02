@@ -1,3 +1,36 @@
+import type { LanguageChoiceType } from './common';
+
+export const PAGE_TITLE: Record<LanguageChoiceType, Record<string, string>> = {
+  en: {
+    404: '404',
+    about: 'About us',
+    address: 'Address',
+    blog: 'Blog',
+    cart: 'Cart',
+    catalog: 'Catalog',
+    login: 'Login',
+    main: 'Main',
+    product: 'Product',
+    profile: 'Profile',
+    register: 'Register',
+    wishlist: 'Wishlist',
+  },
+  ru: {
+    404: '404',
+    about: 'О нас',
+    address: 'Адрес',
+    blog: 'Блог',
+    cart: 'Корзина',
+    catalog: 'Каталог',
+    login: 'Вход',
+    main: 'Главная',
+    product: 'Товар',
+    profile: 'Профиль',
+    register: 'Регистрация',
+    wishlist: 'Избранное',
+  },
+} as const;
+
 export const PAGE_LINK_TEXT = {
   en: {
     ABOUT: 'About us',
@@ -88,6 +121,7 @@ export const PAGE_ANSWER_KEYS = {
 
 export const PAGE_ID = {
   ABOUT_US_PAGE: 'about/',
+  ADDRESS: 'address/',
   BLOG: 'blog/',
   CART_PAGE: 'cart/',
   CATALOG_PAGE: 'catalog/',
@@ -98,6 +132,7 @@ export const PAGE_ID = {
   PRODUCT_PAGE: 'product/',
   REGISTRATION_PAGE: 'register/',
   USER_PROFILE_PAGE: 'profile/',
+  WISHLIST_PAGE: 'wishlist/',
 } as const;
 
 export const USER_INFO_TEXT = {

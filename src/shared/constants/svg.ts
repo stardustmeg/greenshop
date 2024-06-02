@@ -14,6 +14,7 @@ const SVG_DETAILS = {
   LEAVES: 'leaves',
   LIGHT: 'light',
   LOGO: 'logo',
+  NOT_FOUND: 'notFound',
   OPEN_EYE: 'openEye',
   PROFILE: 'userCircle',
   SVG_URL: 'http://www.w3.org/2000/svg',

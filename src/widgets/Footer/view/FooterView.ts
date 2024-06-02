@@ -173,8 +173,8 @@ const FOOTER_PAGE = {
     ru: 'Соцсети',
   },
   SUB_BTN: {
-    en: 'Join',
-    ru: 'С нами',
+    en: 'Yes',
+    ru: 'Да',
   },
   SUB_DESCRIPTION: {
     en: 'Subscribe to our newsletter for updates on new arrivals, exclusive discounts, and notifications about our latest blog articles. Stay informed and enhance your gardening experience with our expert tips and offers!',
@@ -185,7 +185,7 @@ const FOOTER_PAGE = {
     ru: 'введите ваш email...',
   },
   SUB_TITLE: {
-    en: 'Would you like to join newsletters?',
+    en: 'Want to subscribe to our newsletters?',
     ru: 'Хотите подписаться на нашу рассылку?',
   },
 };

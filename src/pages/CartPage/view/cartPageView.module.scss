@@ -144,11 +144,14 @@
   @include green-btn;
 
   padding: var(--tiny-offset);
-  color: var(--noble-gray-200);
 }
 
 .applyBtn {
   border-radius: 0 var(--small-br) var(--small-br) 0;
+
+  &:active {
+    transform: scale(1);
+  }
 }
 
 .checkoutBtn {

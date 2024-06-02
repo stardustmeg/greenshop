@@ -19,7 +19,7 @@ const postsData: Post[] = [
     time: 8,
     title: {
       en: 'How to Fertilize Your Houseplants',
-      ru: 'Как Удобрять Комнатные Растения',
+      ru: 'Как удобрять комнатные растения',
     },
   },
   {
@@ -40,7 +40,7 @@ const postsData: Post[] = [
     time: 6,
     title: {
       en: 'How Often & How Much You Should Water Houseplants',
-      ru: 'Как Часто И Как Много Нужно Поливать Комнатные Растения',
+      ru: 'Как часто и как много нужно поливать комнатные растения',
     },
   },
   {
@@ -61,7 +61,7 @@ const postsData: Post[] = [
     time: 4,
     title: {
       en: 'How To Keep Your Plants Alive While On Vacation',
-      ru: 'Как Сохранить Растения Живыми Во Время Отпуска',
+      ru: 'Как сохранить растения живыми во время отпуска',
     },
   },
   {
@@ -81,8 +81,8 @@ const postsData: Post[] = [
     },
     time: 3,
     title: {
-      en: '5 Causes For Your Plant’s Yellow Leaves',
-      ru: '5 Причин Пожелтения Листьев Ваших Растений',
+      en: 'Five Causes For Your Plant’s Yellow Leaves',
+      ru: 'Пять причин пожелтения листьев ваших растений',
     },
   },
   {
@@ -102,8 +102,8 @@ const postsData: Post[] = [
     },
     time: 7,
     title: {
-      en: 'To Pot or Not to Pot',
-      ru: 'Пересаживать Или Не Пересаживать',
+      en: 'To Pot or Not to Pot?',
+      ru: 'Пересаживать или не пересаживать?',
     },
   },
   {
@@ -124,7 +124,7 @@ const postsData: Post[] = [
     time: 2,
     title: {
       en: 'New Digs: Moving Plants Small & Tall',
-      ru: 'На Новом Месте: Переезд Маленьких И Больших Растений',
+      ru: 'На новом месте: переезд маленьких и больших растений',
     },
   },
   {
@@ -145,7 +145,7 @@ const postsData: Post[] = [
     time: 2,
     title: {
       en: 'How To Spring Clean Your Houseplants',
-      ru: 'Как Провести Весеннюю Уборку Комнатных Растений',
+      ru: 'Как провести весеннюю уборку комнатных растений',
     },
   },
   {

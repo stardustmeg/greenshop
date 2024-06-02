@@ -144,14 +144,14 @@ export class CustomerModel {
       birthDate: data.dateOfBirth ?? '',
       defaultBillingAddressId: null,
       defaultShippingAddressId: null,
-      email: data.email || '',
+      email: data.email ?? '',
       firstName: data.firstName ?? '',
-      id: data.id || '',
+      id: data.id ?? '',
       lastName: data.lastName ?? '',
       locale: data.locale ?? LANGUAGE_CHOICE.EN,
       password: data.password ?? '',
       shippingAddress: [],
-      version: data.version || 0,
+      version: data.version ?? 0,
     };
   }
 
@@ -180,7 +180,7 @@ export class CustomerModel {
   private adaptDefaultAddress(addressId: string | undefined, address: Address[]): Address | null {
     if (addressId) {
       const addressFound = address.find((address) => address.id === addressId);
-      return addressFound || null;
+      return addressFound ?? null;
     }
     return null;
   }

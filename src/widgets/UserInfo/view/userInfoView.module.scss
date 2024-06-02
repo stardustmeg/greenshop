@@ -23,7 +23,7 @@
 }
 
 .keyLogo {
-  @include logo;
+  @include svg-logo;
 }
 
 .editPasswordButton {

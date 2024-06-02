@@ -1,12 +1,12 @@
 import type { PageParams, PagesType } from '@/shared/types/page';
 
 import getStore from '@/shared/Store/Store.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { isValidPath, isValidState } from '@/shared/types/validation/paths.ts';
-import formattedText from '@/shared/utils/formattedText.ts';
+import setPageTitle from '@/shared/utils/setPageTitle.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
-const PROJECT_TITLE = import.meta.env.VITE_APP_PROJECT_TITLE;
 const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
 const NEXT_SEGMENT = import.meta.env.VITE_APP_NEXT_SEGMENT;
 const PATH_SEGMENTS_TO_KEEP = import.meta.env.VITE_APP_PATH_SEGMENTS_TO_KEEP;
@@ -89,8 +89,9 @@ class RouterModel {
     const hasRoute = this.routes.has(currentPage);
     const decodePath = decodeURIComponent(path);
     const id = decodePath.split(DEFAULT_SEGMENT).slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)[NEXT_SEGMENT];
-    const title = `${PROJECT_TITLE} | ${hasRoute ? formattedText(currentPage === PAGE_ID.DEFAULT_PAGE ? PAGE_ID.MAIN_PAGE.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT) : currentPage.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)) : PAGE_ID.NOT_FOUND_PAGE.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT)}`;
-    document.title = title;
+
+    setPageTitle(currentPage, hasRoute);
+    observeStore(selectCurrentLanguage, () => this.checkPageAndParams(currentPage, path));
 
     if (!hasRoute) {
       await this.routes.get(PAGE_ID.NOT_FOUND_PAGE)?.({});
