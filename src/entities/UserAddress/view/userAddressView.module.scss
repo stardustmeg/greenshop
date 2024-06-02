@@ -14,38 +14,38 @@
   border-radius: var(--medium-br);
   padding: var(--tiny-offset);
   font: var(--small-font);
+  color: var(--black);
   background-color: var(--steam-green-900);
   transition: scale 0.2s;
 
   &:hover {
     cursor: pointer;
-    scale: 1.1;
+    scale: 1.05;
+  }
+
+  &:active {
+    scale: 0.95;
   }
 }
 
-.billing {
-  background-color: #d5e4f9;
-}
-
+.billing,
 .shipping {
-  background-color: #e9fffe;
+  background-color: var(--steam-green-1000);
 }
 
-.defaultBilling {
-  background-color: #dfd6ef;
-}
-
+.defaultBilling,
 .defaultShipping {
-  background-color: #fee1c9;
+  background-color: var(--steam-green-300);
 }
 
 .inactive {
-  background-color: var(--noble-gray-tr-800);
+  filter: grayscale(1);
+  transition: filter 0.2s;
 }
 
 .editLogo,
 .deleteLogo {
-  @include logo;
+  @include svg-logo;
 
   width: calc(var(--extra-small-offset) * 1.5);
   height: calc(var(--extra-small-offset) * 1.5);
@@ -57,13 +57,4 @@
 
   margin: var(--tiny-offset);
   padding: var(--five);
-
-  @media (hover: hover) {
-    &:hover {
-      svg {
-        fill: var(--noble-gray-1000);
-        transition: fill 0.2s;
-      }
-    }
-  }
 }

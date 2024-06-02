@@ -10,13 +10,13 @@
   align-items: center;
   justify-content: center;
   margin: var(--tiny-offset) 0;
-  outline: var(--two) solid var(--noble-gray-300);
+  outline: calc(var(--one) * 1.5) solid var(--noble-gray-300);
   border-radius: var(--small-br);
   width: var(--extra-small-offset);
   height: var(--extra-small-offset);
   font: var(--regular-font);
-  color: var(--noble-gray-300);
-  background-color: var(--noble-gray-1000);
+  color: var(--noble-gray-700);
+  background-color: var(--white-tr);
   transition:
     color 0.2s,
     outline 0.2s,
@@ -26,7 +26,7 @@
 
   @media (hover: hover) {
     &:hover {
-      outline: var(--two) solid var(--steam-green-400);
+      outline: calc(var(--one) * 1.5) solid var(--steam-green-400);
       color: var(--steam-green-400);
     }
   }
@@ -47,7 +47,7 @@
 }
 
 .active {
-  outline: var(--two) solid var(--steam-green-400);
+  outline: calc(var(--one) * 1.5) solid var(--steam-green-400);
   color: var(--steam-green-400);
   background-color: var(--noble-white-100);
   pointer-events: none;

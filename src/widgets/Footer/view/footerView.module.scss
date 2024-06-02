@@ -1,3 +1,5 @@
+@import 'src/app/styles/mixins';
+
 .footer {
   margin-bottom: var(--small-offset);
   padding: 0 var(--small-offset);
@@ -85,7 +87,7 @@
   gap: var(--tiny-offset);
 
   &:not(:last-child) {
-    border-right: var(--one) solid var(--steam-green-350);
+    border-right: var(--one) solid var(--steam-green-1000);
   }
 
   @media (max-width: 768px) {
@@ -106,12 +108,11 @@
     position: absolute;
     left: 0;
     top: var(--tiny-offset);
-    z-index: 1;
     display: block;
     border-radius: 100%;
     width: var(--large-offset);
     height: var(--large-offset);
-    background-color: var(--steam-green-350);
+    background-color: var(--steam-green-1000);
   }
 }
 
@@ -178,6 +179,8 @@
 }
 
 .subButton {
+  @include green-btn;
+
   position: absolute;
   right: 0;
   top: 0;
@@ -185,8 +188,10 @@
   padding: var(--tiny-offset) var(--extra-small-offset);
   height: 100%;
   font: var(--medium-bold-font);
-  color: var(--noble-gray-200);
-  background-color: var(--steam-green-800);
+
+  &:active {
+    transform: scale(1);
+  }
 }
 
 .contactWrap {
@@ -196,7 +201,7 @@
   justify-content: space-between;
   padding: var(--extra-small-offset);
   width: 100%;
-  background-color: var(--steam-green-350);
+  background-color: var(--steam-green-1000);
   gap: 10%;
 }
 
@@ -250,10 +255,11 @@
   padding: var(--tiny-offset);
   width: var(--small-offset);
   height: var(--small-offset);
+  transition: background-color 0.2s;
   cursor: pointer;
 
   &:hover {
-    background-color: var(--steam-green-400);
+    background-color: var(--steam-green-1000);
   }
 }
 

@@ -1,6 +1,6 @@
 :root {
   // body wrapper
-  --wrapper-width: calc(var(--large-offset) * 18);
+  --wrapper-width: calc(var(--large-offset) * 18); // 1440px
 
   // small vars
   --one: 0.0625rem; // 1px
@@ -43,60 +43,90 @@
   --black-font: 900 2.1875rem 'Cerapro', sans-serif; // 35px
   --extra-black-font: 900 2.5rem 'Cerapro', sans-serif; // 40px
 
-  // 1440px
   body.light {
     // colors
-    --black: #000;
-    --white: #fff;
-    --white-tr: #ffffffa9;
-    --noble-white-100: #f5f5f5;
-    --noble-white-200: #f0f0f0;
-    --noble-gray-200: #eaeaea;
-    --noble-gray-300: #cbcbcb;
-    --noble-gray-400: #c4c4c4;
-    --noble-gray-500: #acacac;
-    --noble-gray-600: #a5a5a5;
-    --noble-gray-700: #727272;
-    --noble-gray-800: #3d3d3d;
-    --noble-gray-tr-800: #acacacbd;
-    --noble-gray-900: #1d1d1d;
-    --noble-gray-1000: #1a1a1ab5;
-    --red-power-600: #d0302f;
-    --steam-green-300: #46a35880;
-    --steam-green-350: #46a35937;
-    --steam-green-400: #c8f4b4;
-    --steam-green-500: #b6f09c;
-    --steam-green-700: #70d27a;
-    --steam-green-800: #46a358;
-    --steam-green-900: #46a3581a;
-    --steam-green-gr-800: #8c998f2b;
+    // basic colors:
+    --white: #fff; // table background, buttons text, blog post footer, blog text background, user menu, form background
+    --button-white: #fff; // buttons text
+
+    // backgrounds:
+    --noble-white-100: #f5f5f5; // page background, edit forms background
+    --noble-white-200: #f0f0f0; // catalog filters background and product cards
+    --white-tr: #ffffffa9; // footer background, modal background, pagination background, card buttons background
+    --noble-gray-200: #eaeaea; // loader / input basic
+    --noble-gray-1000: #1a1a1ab5; // header background
+    --steam-green-900: #46a3581a; // blog background, personal info background
+    --steam-green-1000: #46a35937; // footer links background, pics round thingies
+
+    // tranparent colors:
+    --noble-gray-tr-800: #acacacbd; // not active labels, tumblers
+    --noble-gray-tr-900: #c4c4c4a8; // not active labels, tumblers
+    --steam-green-300: #46a35880; // header outline, social media buttons outline
+
+    // outline:
+    --noble-gray-300: #cbcbcb; // item cards and pagination outline
+
+    // text colors:
+    --black: #000; // blog titles, footer titles
+    --red-power-600: #d0302f; // error messages, form errors
+    --noble-gray-400: #c4c4c4; // item cards description
+    --noble-gray-500: #acacac; // form titles
+    --noble-gray-600: #a5a5a5; // placeholders
+    --noble-gray-700: #727272; // blog/footer text
+    --noble-gray-800: #3d3d3d; // links, labels, base text, disabled svg, filters, descriptions
+    --noble-gray-900: #1d1d1d; // user profile text, buttons
+    --noble-gray-1100: #c4c4c4; // navigation links
+
+    // highlight colors:
+    --steam-green-400: #4b8f3a; // price inputs, filter highlight, pagination active, product info titles
+    --steam-green-500: #5a9f50; // new price, product name, filter titles
+    --steam-green-700: #70d27a; // price slider, more, added to wishlist
+    --steam-green-800: #46a358; // main green: buttons, logo, active links, burger, scroll, blog posts details, cart price, active svg
+    --steam-green-1100: #a7e599; // theme tumbler round thingy
   }
 
   body.dark {
     // colors
-    --black: #fff;
-    --white: #1a1a1a;
-    --white-tr: #1a1a1ab0;
-    --noble-white-100: #2b2b2b;
-    --noble-white-200: #4a4a4a;
-    --noble-gray-200: #f6f6f6;
-    --noble-gray-300: #dcdbdb;
-    --noble-gray-400: #ddd;
-    --noble-gray-500: #cfcfcf;
-    --noble-gray-600: #cdcdcd;
-    --noble-gray-700: #b0b0b0;
-    --noble-gray-800: #c4c4c4;
-    --noble-gray-tr-800: #acacacbd;
-    --noble-gray-900: #1d1d1d;
-    --noble-gray-1000: #1a1a1ab5;
-    --red-power-600: #d0302f;
-    --steam-green-300: #46a35880;
-    --steam-green-350: #46a35937;
-    --steam-green-400: #c8f4b4;
-    --steam-green-500: #b6f09c;
-    --steam-green-700: #70d27a;
-    --steam-green-800: #46a358;
-    --steam-green-900: #46a3581a;
-    --steam-green-gr-800: #c5e1cb2b;
+    // colors that mustn't change
+    --button-white: #fff; // buttons text
+    --red-power-600: #d0302f; // error messages, form errors
+    --steam-green-300: #46a35880; // header outline, social media buttons outline
+    --steam-green-800: #46a358; // main green: buttons, logo, active links, burger, scroll, blog posts details, cart price, active svg
+    --steam-green-900: #46a3581a; // blog background, personal info background
+    --steam-green-1000: #46a35937; // footer links background, pics round thingies
+    --steam-green-1100: #a7e599; // theme tumbler round thingy
+    --noble-gray-1000: #1a1a1ab5; // header background
+    --noble-gray-tr-900: #c4c4c4a8; // not active labels, tumblers
+    --noble-gray-1100: #ccc; // navigation links
+
+    // basic colors:
+
+    --white: #000; // table background, buttons text, blog post footer, blog text background, user menu, form background
+
+    // backgrounds:
+    --noble-white-100: #2b2b2b; // page background, edit forms background
+    --noble-white-200: #4a4a4a; // catalog filters background and product cards
+    --white-tr: #1a1a1ab5; // footer background, modal background, pagination background, card buttons background
+    --noble-gray-200: #f6f6f6; // loader / input basic
+
+    // tranparent colors:
+    --noble-gray-tr-800: #acacacbd; // not active labels, tumblers
+
+    // outline:
+    --noble-gray-300: #dcdbdb; // item cards and pagination outline
+
+    // text colors:
+    --black: #fff; // blog titles, footer titles
+    --noble-gray-400: #ddd; // item cards description
+    --noble-gray-500: #cfcfcf; // form titles
+    --noble-gray-600: #cdcdcd; // placeholders
+    --noble-gray-700: #b0b0b0; // blog/footer text
+    --noble-gray-800: #c4c4c4; // links, labels, base text, disabled svg, filters, descriptions
+    --noble-gray-900: #f5f5f5; // user profile text, buttons
+
+    // highlight colors:
+    --steam-green-400: #c8f4b4; // price inputs, filter highlight, pagination active, product info titles
+    --steam-green-500: #b6f09c; // new price, product name, filter titles
+    --steam-green-700: #70d27a; // price slider, more, added to wishlist
   }
 }

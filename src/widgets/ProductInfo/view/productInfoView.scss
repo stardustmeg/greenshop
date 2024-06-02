@@ -236,12 +236,12 @@
 }
 
 .switchToWishListButton {
-  outline: var(--two) solid var(--noble-gray-700);
+  outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
   border-radius: var(--medium-br);
   padding: var(--tiny-offset);
   width: var(--small-offset);
   height: var(--small-offset);
-  background-color: var(--noble-gray-1000);
+  background-color: var(--white-tr);
   transition:
     transform 0.2s,
     outline 0.2s;
@@ -260,7 +260,7 @@
 
   @media (hover: hover) {
     &:hover {
-      outline: var(--two) solid var(--red-power-600);
+      outline: calc(var(--one) * 1.5) solid var(--red-power-600);
 
       svg {
         fill: var(--red-power-600);
@@ -271,7 +271,7 @@
   &.inWishList {
     @media (hover: hover) {
       &:hover {
-        outline: var(--two) solid var(--noble-gray-700);
+        outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
 
         svg {
           fill: var(--noble-gray-700);
@@ -282,7 +282,7 @@
 }
 
 .inWishList {
-  outline: var(--two) solid var(--red-power-600);
+  outline: calc(var(--one) * 1.5) solid var(--red-power-600);
 
   svg {
     fill: var(--red-power-600);
@@ -294,7 +294,7 @@
     margin-bottom: 0;
     border-radius: var(--medium-br);
     padding: var(--extra-small-offset);
-    background-color: var(--noble-gray-1000);
+    background-color: var(--white-tr);
   }
 }
 
