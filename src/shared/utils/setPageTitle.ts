@@ -11,11 +11,8 @@ const appTitle = (projectTitle: string, currentPageTitle: string): string => {
 };
 
 const getPageTitle = (currentPage: string, hasRoute: boolean): string => {
-  const {
-    VITE_APP_NEXT_SEGMENT: NEXT_SEGMENT,
-    VITE_APP_PATH_SEGMENTS_TO_KEEP: PATH_SEGMENTS_TO_KEEP,
-    VITE_APP_PROJECT_TITLE: PROJECT_TITLE,
-  } = import.meta.env;
+  const { VITE_APP_PATH_SEGMENTS_TO_KEEP: PATH_SEGMENTS_TO_KEEP, VITE_APP_PROJECT_TITLE: PROJECT_TITLE } = import.meta
+    .env;
 
   let currentPageTitle: string;
 
@@ -25,7 +22,7 @@ const getPageTitle = (currentPage: string, hasRoute: boolean): string => {
     currentPageTitle = PAGE_ID.NOT_FOUND_PAGE;
   }
 
-  const trimmedTitle = currentPageTitle.slice(PATH_SEGMENTS_TO_KEEP, -NEXT_SEGMENT);
+  const trimmedTitle = currentPageTitle.slice(PATH_SEGMENTS_TO_KEEP);
 
   return appTitle(PROJECT_TITLE, trimmedTitle);
 };

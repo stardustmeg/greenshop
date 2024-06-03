@@ -40,6 +40,7 @@ export const SERVER_MESSAGE: Record<LanguageChoiceType, Record<string, string>> 
     SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST: 'Product has been deleted successfully from your wishlist',
     SUCCESSFUL_LOGIN: 'Welcome to our store. Enjoy shopping!',
     SUCCESSFUL_REGISTRATION: 'Your registration was successful',
+    SUCCESSFUL_SUBSCRIBE: 'You have successfully subscribed to our newsletter',
     USER_EXISTS: 'User with this email already exists, please check your email',
   },
   ru: {
@@ -67,6 +68,7 @@ export const SERVER_MESSAGE: Record<LanguageChoiceType, Record<string, string>> 
     SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST: 'Товар успешно удален из избранного',
     SUCCESSFUL_LOGIN: 'Добро пожаловать в наш магазин. Приятных покупок!',
     SUCCESSFUL_REGISTRATION: 'Регистрация прошла успешно',
+    SUCCESSFUL_SUBSCRIBE: 'Вы успешно подписались на рассылку новостей',
     USER_EXISTS: 'Пользователь с таким адресом уже существует, пожалуйста, проверьте свою почту',
   },
 } as const;
@@ -96,6 +98,7 @@ export const SERVER_MESSAGE_KEYS: Record<string, string> = {
   SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST: 'SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST',
   SUCCESSFUL_LOGIN: 'SUCCESSFUL_LOGIN',
   SUCCESSFUL_REGISTRATION: 'SUCCESSFUL_REGISTRATION',
+  SUCCESSFUL_SUBSCRIBE: 'SUCCESSFUL_SUBSCRIBE',
   USER_EXISTS: 'USER_EXISTS',
 } as const;
 
