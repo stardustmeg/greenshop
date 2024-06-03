@@ -1,78 +1,143 @@
+import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 import type { CartProduct } from '@/shared/types/cart';
+import type { languageVariants } from '@/shared/types/common';
 
+import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import { LANGUAGE_CHOICE, TABLET_WIDTH } from '@/shared/constants/common.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
+import { CartActive } from '@/shared/types/cart.ts';
+import { buildPathName } from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
-
-import type { CallbackList } from '../model/ProductOrderModel';
+import Hammer from 'hammerjs';
 
 import styles from './productOrderView.module.scss';
 
+type CallbackActive = (active: CartActive) => Promise<void>;
+
+type textElementsType = {
+  element: HTMLTableCellElement;
+  textItem: languageVariants;
+};
+
+const TITLE = {
+  MINUS: '-',
+  NAME: {
+    en: '',
+    ru: '',
+  },
+  PLUS: '+',
+  SIZE: {
+    en: 'Size',
+    ru: 'Размер',
+  },
+};
 class ProductOrderView {
-  private callbackList: CallbackList;
+  private callback: CallbackActive;
+
+  private deleteButton: HTMLButtonElement;
+
+  private language: LanguageChoiceType;
+
+  private price: HTMLTableCellElement;
+
+  private productItem: CartProduct;
 
   private quantity: HTMLParagraphElement;
 
+  private textElement: textElementsType[] = [];
+
+  private total: HTMLTableCellElement;
+
   private view: HTMLTableRowElement;
 
-  constructor(productItem: CartProduct, callbackList: CallbackList) {
-    this.callbackList = callbackList;
+  constructor(productItem: CartProduct, callback: CallbackActive) {
+    this.productItem = productItem;
+    this.language = getStore().getState().currentLanguage;
+    this.callback = callback;
     this.quantity = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityText],
-      innerContent: productItem.quantity.toString(),
+      innerContent: this.productItem.quantity.toString(),
       tag: 'p',
     });
-    this.view = this.createHTML(productItem);
+    this.price = createBaseElement({
+      cssClasses: [styles.td, styles.priceCell, styles.priceText],
+      innerContent: `$${this.productItem.price.toFixed(2)}`,
+      tag: 'td',
+    });
+    this.total = createBaseElement({
+      cssClasses: [styles.td, styles.totalCell, styles.totalText],
+      innerContent: `$${this.productItem.totalPrice.toFixed(2)}`,
+      tag: 'td',
+    });
+    this.deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], tag: 'button' });
+    this.view = this.createHTML();
   }
 
   private createDeleCell(): HTMLTableCellElement {
-    const tdDelete = createBaseElement({ cssClasses: [styles.td, styles.deleteCell], tag: 'td' });
-    const deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], tag: 'button' });
-    deleteButton.addEventListener('click', () => this.callbackList.delete());
-    tdDelete.append(deleteButton);
+    const tdDelete = createBaseElement({ cssClasses: [styles.td, styles.deleteCell, styles.hide], tag: 'td' });
+    this.deleteButton.addEventListener('click', () => this.callback(CartActive.DELETE));
+    tdDelete.append(this.deleteButton);
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.DELETE));
-    deleteButton.append(svg);
+    this.deleteButton.append(svg);
     return tdDelete;
   }
 
-  private createHTML(productItem: CartProduct): HTMLTableRowElement {
+  private createHTML(): HTMLTableRowElement {
     this.view = createBaseElement({ cssClasses: [styles.tr, styles.trProduct], tag: 'tr' });
-    const imgCell = this.createImgCell(productItem);
+    const imgCell = this.createImgCell();
     const tdProduct = createBaseElement({
       cssClasses: [styles.td, styles.nameCell, styles.mainText],
-      innerContent: productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      innerContent: this.productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
       tag: 'td',
     });
     const tdSize = createBaseElement({
       cssClasses: [styles.td, styles.sizeCell, styles.sizeText],
-      innerContent: productItem.size ? `Size: ${productItem.size}` : '',
+      innerContent: this.productItem.size ? `${TITLE.SIZE[this.language]}: ${this.productItem.size}` : '',
       tag: 'td',
     });
-    const tdPrice = createBaseElement({
-      cssClasses: [styles.td, styles.priceCell, styles.priceText],
-      innerContent: `$${productItem.price.toFixed(2)}`,
-      tag: 'td',
-    });
+    this.textElement.push({ element: tdSize, textItem: TITLE.SIZE });
+    this.textElement.push({ element: tdProduct, textItem: TITLE.NAME });
     const quantityCell = this.createQuantityCell();
-    const tdTotal = createBaseElement({
-      cssClasses: [styles.td, styles.totalCell, styles.totalText],
-      innerContent: `$${productItem.totalPrice.toFixed(2)}`,
-      tag: 'td',
-    });
     const deleteCell = this.createDeleCell();
-    this.view.append(imgCell, tdProduct, tdSize, tdPrice, quantityCell, tdTotal, deleteCell);
+    this.view.append(imgCell, tdProduct, tdSize, this.price, quantityCell, this.total, deleteCell);
+    const animation = new Hammer(this.view);
+    animation.on('swipeleft', () => {
+      if (window.innerWidth <= TABLET_WIDTH) {
+        this.view.classList.add(styles.swipeRow);
+        deleteCell.classList.add(styles.swipeDelete);
+        deleteCell.classList.remove(styles.hide);
+      }
+    });
+    animation.on('swiperight', () => {
+      if (window.innerWidth <= TABLET_WIDTH) {
+        this.view.classList.remove(styles.swipeRow);
+        deleteCell.classList.remove(styles.swipeDelete);
+        deleteCell.classList.add(styles.hide);
+      }
+    });
     return this.view;
   }
 
-  private createImgCell(productItem: CartProduct): HTMLTableCellElement {
+  private createImgCell(): HTMLTableCellElement {
     const tdImage = createBaseElement({ cssClasses: [styles.td, styles.imgCell], tag: 'td' });
+    const href = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.productItem.key, {
+      size: [this.productItem.size],
+    })}`;
+    const link = new LinkModel({
+      attrs: {
+        href,
+      },
+      classes: [styles.goDetailsPageLink],
+    });
     const img = createBaseElement({ cssClasses: [styles.img], tag: 'img' });
-    img.src = productItem.images;
-    img.alt = productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
-    tdImage.append(img);
+    img.src = this.productItem.images;
+    img.alt = this.productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    link.getHTML().append(img);
+    tdImage.append(link.getHTML());
     return tdImage;
   }
 
@@ -83,26 +148,45 @@ class ProductOrderView {
     });
     const plusButton = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityButton],
-      innerContent: '+',
+      innerContent: TITLE.PLUS,
       tag: 'button',
     });
     const minusButton = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityButton],
-      innerContent: '-',
+      innerContent: TITLE.MINUS,
       tag: 'button',
     });
     tdQuantity.append(minusButton, this.quantity, plusButton);
-    plusButton.addEventListener('click', () => this.callbackList.plus());
-    minusButton.addEventListener('click', () => this.callbackList.minus());
+    plusButton.addEventListener('click', () => this.callback(CartActive.PLUS));
+    minusButton.addEventListener('click', () => this.callback(CartActive.MINUS));
     return tdQuantity;
+  }
+
+  public getDeleteButton(): HTMLButtonElement {
+    return this.deleteButton;
   }
 
   public getHTML(): HTMLDivElement {
     return this.view;
   }
 
-  public updateQuantity(quantity: number): void {
-    this.quantity.textContent = quantity.toString();
+  public updateInfo(productItem: CartProduct): void {
+    this.productItem = productItem;
+    this.quantity.textContent = this.productItem.quantity.toString();
+    this.price.textContent = `$${this.productItem.price.toFixed(2)}`;
+    this.total.textContent = `$${this.productItem.totalPrice.toFixed(2)}`;
+  }
+
+  public updateLanguage(): void {
+    this.language = getStore().getState().currentLanguage;
+    this.textElement.forEach((textEl) => {
+      const elHTML = textEl.element;
+      if (textEl.textItem === TITLE.SIZE) {
+        elHTML.textContent = this.productItem.size ? `${TITLE.SIZE[this.language]}: ${this.productItem.size}` : '';
+      } else if (textEl.textItem === TITLE.NAME) {
+        elHTML.textContent = this.productItem.name[Number(this.language === LANGUAGE_CHOICE.RU)].value;
+      }
+    });
   }
 }
 

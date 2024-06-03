@@ -47,11 +47,11 @@ class PersonalInfoEditModel {
           user,
         );
         modal.hide();
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PERSONAL_INFO_CHANGED, MESSAGE_STATUS.SUCCESS);
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_INFO, '');
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PERSONAL_INFO_CHANGED, MESSAGE_STATUS.SUCCESS);
       }
     } catch (error) {
-      showErrorMessage();
+      showErrorMessage(error);
     } finally {
       loader.remove();
     }
@@ -92,6 +92,7 @@ class PersonalInfoEditModel {
     const cancelButton = this.view.getCancelButton().getHTML();
     cancelButton.addEventListener('click', () => {
       modal.hide();
+      modal.removeContent();
     });
     return true;
   }

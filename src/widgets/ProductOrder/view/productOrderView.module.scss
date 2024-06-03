@@ -1,3 +1,5 @@
+@import 'src/app/styles/mixins';
+
 .style {
   display: block;
 }
@@ -6,11 +8,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+}
+
+.mainText {
+  padding: var(--tiny-offset);
+  font: var(--extra-font);
+  color: var(--noble-gray-800);
+}
+
+.swipeRow {
+  transform: translateX(calc(var(--extra-large-offset) * -1));
+}
+
+.swipeDelete {
+  transform: translateX(calc(var(--extra-large-offset) * 1.5));
 }
 
 .deleteCell {
   grid-area: 2 / 6 / 4 / 7;
 
+  @media (max-width: 768px) {
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-area: 1 / 3 / 4 / 4;
+    transition: all 0.3s;
+  }
+}
+
+.hide {
   @media (max-width: 768px) {
     display: none;
   }
@@ -21,7 +49,15 @@
     width: var(--extra-small-offset);
     height: var(--extra-small-offset);
     stroke: var(--noble-gray-800);
-    transition: fill 0.2s;
+    transition:
+      fill 0.2s,
+      stroke 0.2s;
+
+    @media (max-width: 768px) {
+      width: var(--small-offset);
+      height: var(--small-offset);
+      stroke: var(--steam-green-800);
+    }
   }
 
   &:hover {
@@ -34,33 +70,35 @@
 .tr {
   display: grid;
   grid-gap: 0;
-  grid-template-columns: 70px 2fr 1fr 1fr 1fr 70px;
+  grid-template-columns: calc(var(--tiny-offset) * 10) 2fr 1fr 1fr 1fr calc(var(--tiny-offset) * 7);
   margin-bottom: var(--tiny-offset);
   width: 100%;
 
   @media (max-width: 768px) {
-    grid-template-columns: 100px 2fr 1fr;
+    grid-template-columns: calc(var(--tiny-offset) * 10) 2fr 1fr;
   }
 }
 
 .trProduct {
-  background-color: var(--noble-white-200);
+  background-color: var(--white);
+  transition: transform 0.3s ease-out;
 
   @media (max-width: 768px) {
     margin-bottom: var(--extra-small-offset);
-    border-radius: 14px;
-    box-shadow: var(--mellow-shadow-100);
+    border-radius: var(--medium-br);
+    box-shadow: var(--mellow-shadow-050);
   }
 }
 
 .img {
-  max-width: 70px;
-  max-height: 70px;
+  display: block;
+  width: 100%;
+  height: 100%;
 
   @media (max-width: 768px) {
-    border-radius: 14px 0 0 14px;
-    max-width: 100px;
-    max-height: 100px;
+    border-radius: var(--medium-br) 0 0 var(--medium-br);
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -71,6 +109,8 @@
 
   @media (max-width: 768px) {
     grid-area: 1 / 2 / 2 / 3;
+    padding: var(--tiny-offset);
+    padding-bottom: 0;
   }
 }
 
@@ -118,12 +158,6 @@
   }
 }
 
-.mainText {
-  padding: var(--tiny-offset);
-  font: var(--extra-font);
-  color: var(--noble-gray-800);
-}
-
 .quantityText {
   padding: var(--tiny-offset);
   font: var(--regular-font);
@@ -132,7 +166,7 @@
 
 .totalText {
   padding: var(--tiny-offset);
-  font: var(--regular-font);
+  font: var(--bold-font);
   color: var(--steam-green-800);
 }
 
@@ -147,14 +181,20 @@
   font: var(--regular-font);
   text-align: left;
   color: var(--noble-gray-700);
+
+  @media (max-width: 768px) {
+    padding-top: 0;
+  }
 }
 
 .quantityButton {
-  border-radius: 29px;
-  width: 22px;
-  height: 25px;
-  color: var(--noble-gray-200);
-  background-color: var(--steam-green-800);
+  @include green-btn;
+
+  border-radius: 50%;
+  padding: 0;
+  width: calc(var(--tiny-offset) * 2.5);
+  height: calc(var(--tiny-offset) * 2.5);
+  font: var(--regular-font);
 }
 
 .mobileHide {

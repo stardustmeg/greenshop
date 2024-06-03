@@ -1,3 +1,5 @@
+@import 'src/app/styles/mixins';
+
 .userProfilePage {
   position: relative;
   display: block;
@@ -7,8 +9,11 @@
 
 .userProfileWrapper {
   display: flex;
-  flex-flow: row nowrap;
   justify-content: space-evenly;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 .addressesWrapper {
@@ -42,8 +47,12 @@
   padding: var(--small-offset);
   width: 25%;
   height: fit-content;
-  background-color: var(--white-tr);
-  gap: var(--extra-small-offset);
+  background-color: var(--white);
+
+  @media (max-width: 768px) {
+    margin-bottom: var(--small-offset);
+    width: 100%;
+  }
 }
 
 .accountMenuItem {
@@ -55,84 +64,21 @@
 }
 
 .logoutButton {
+  @include green-btn;
+
   margin: var(--small-offset) auto;
-  border-radius: var(--medium-br);
   padding: calc(var(--small-offset) / 3) var(--small-offset);
-  max-width: max-content;
-  font: var(--regular-font);
-  letter-spacing: var(--one);
-  color: var(--white);
-  background-color: var(--steam-green-800);
-  transition:
-    color 0.2s,
-    background-color 0.2s;
-
-  &:focus {
-    background-color: var(--steam-green-700);
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--steam-green-700);
-    }
-  }
-
-  &:disabled {
-    background-color: var(--noble-gray-300);
-    pointer-events: none;
-  }
 }
 
 .link {
-  position: relative;
-  display: flex;
-  align-items: center;
+  @include link;
+
   align-self: center;
-  width: 100%;
-  height: 2.5rem;
-  font: var(--regular-font);
-  letter-spacing: var(--one);
-  text-align: center;
-  text-transform: uppercase;
-  color: var(--noble-gray-800);
-  transition: color 0.2s;
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    width: 100%;
-    height: var(--two);
-    background-color: currentcolor;
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: center;
-    transition:
-      transform 0.2s,
-      opacity 0.2s;
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      color: var(--steam-green-800);
-
-      &::after {
-        opacity: 1;
-        transform: scaleX(1);
-      }
-    }
-  }
+  height: calc(var(--large-offset) * 0.8);
 }
 
 .active {
-  color: var(--steam-green-800);
-  opacity: 1;
-
-  &::after {
-    opacity: 1;
-    transform: scaleX(1);
-  }
+  @include active;
 }
 
 @keyframes show {

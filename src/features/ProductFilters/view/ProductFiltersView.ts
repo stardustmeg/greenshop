@@ -4,12 +4,14 @@ import type ProductFiltersParams from '@/shared/types/productFilters';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { META_FILTERS, META_FILTERS_ID, PRICE_RANGE_LABEL, TITLE } from '@/shared/constants/filters.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
@@ -22,6 +24,8 @@ const BASE_PRODUCT_COUNT = '(0)';
 const INPUT_PRICE_STEP = 5;
 
 class ProductFiltersView {
+  private callback: () => void;
+
   private categoryCountSpan: HTMLSpanElement[] = [];
 
   private categoryLinks: LinkModel[] = [];
@@ -48,8 +52,9 @@ class ProductFiltersView {
 
   private sizesList: HTMLUListElement;
 
-  constructor(params: ProductFiltersParams | null) {
+  constructor(params: ProductFiltersParams | null, callback: () => void) {
     this.params = params;
+    this.callback = callback;
     this.categoryList = this.createCategoryList();
     this.priceSlider = this.createPriceSlider();
     this.sizesList = this.createSizesList();
@@ -60,14 +65,19 @@ class ProductFiltersView {
   }
 
   private categoryClickHandler(parentCategory: { category: Category; count: number } | null): void {
-    const url = new URL(decodeURIComponent(window.location.href));
-    if (url.searchParams.has(SEARCH_PARAMS_FIELD.CATEGORY)) {
-      url.searchParams.delete(SEARCH_PARAMS_FIELD.CATEGORY);
+    const searchParams = RouterModel.getSearchParams();
+    if (
+      searchParams.has(SEARCH_PARAMS_FIELD.CATEGORY) &&
+      searchParams.get(SEARCH_PARAMS_FIELD.CATEGORY) === parentCategory?.category.parent?.id
+    ) {
+      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.CATEGORY);
     } else {
-      url.searchParams.set(SEARCH_PARAMS_FIELD.CATEGORY, parentCategory?.category.parent?.id ?? '');
+      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.CATEGORY, parentCategory?.category.parent?.id ?? '');
     }
-    const path = url.pathname + url.search;
-    RouterModel.getInstance().navigateTo(path.slice(1));
+
+    RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
+
+    this.callback();
   }
 
   private createCategoryItems(subcategories: Map<string, { category: Category; count: number }[]>): void {
@@ -115,6 +125,7 @@ class ProductFiltersView {
 
     categoryLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
+      this.switchSelectedFilter(categoryLink);
     });
 
     const innerContent = category.count ? `(${category.count})` : '';
@@ -252,11 +263,12 @@ class ProductFiltersView {
 
     link.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      const url = new URL(decodeURIComponent(window.location.href));
-      url.searchParams.delete(SEARCH_PARAMS_FIELD.META);
-      url.searchParams.set(SEARCH_PARAMS_FIELD.META, id);
-      const path = url.pathname + encodeURIComponent(url.search);
-      RouterModel.getInstance().navigateTo(path.slice(1));
+
+      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.META, id);
+      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
+      this.metaLinks.forEach((link) => this.switchSelectedFilter(link, false));
+      this.switchSelectedFilter(link, true);
+      this.callback();
     });
 
     this.metaLinks.push(link);
@@ -282,8 +294,8 @@ class ProductFiltersView {
       tag: 'span',
     });
 
-    const minPrice = getStore().getState().selectedFilters?.price?.min.toFixed(2) ?? '';
-    const maxPrice = getStore().getState().selectedFilters?.price?.max.toFixed(2) ?? '';
+    const minPrice = this.params?.priceRange?.min.toFixed(2) ?? '';
+    const maxPrice = this.params?.priceRange?.max.toFixed(2) ?? '';
     const from = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
     const to = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO;
 
@@ -304,9 +316,8 @@ class ProductFiltersView {
   }
 
   private createPriceSlider(): noUiSlider.API {
-    const { max, min } = getStore().getState().selectedFilters?.price ?? { max: 0, min: 0 };
-    const SLIDER_START_MIN = min;
-    const SLIDER_START_MAX = max;
+    const min = this.params?.priceRange?.min ?? 0;
+    const max = this.params?.priceRange?.max ?? 0;
     const slider = createBaseElement({
       cssClasses: [styles.slider],
       tag: 'div',
@@ -317,7 +328,24 @@ class ProductFiltersView {
       connect: true,
       keyboardSupport: true,
       range: this.params?.priceRange ?? { max: 0, min: 0 },
-      start: [SLIDER_START_MIN, SLIDER_START_MAX],
+      start: [min, max],
+    });
+
+    this.priceSlider.on('change', (values) => {
+      const [min, max] = values;
+      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM)?.setValue(String(min));
+      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO)?.setValue(String(max));
+      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.MIN_PRICE);
+      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.MAX_PRICE);
+      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MIN_PRICE, String(min));
+      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MAX_PRICE, String(max));
+      this.callback();
+    });
+
+    this.priceSlider.on('slide', (values) => {
+      const [min, max] = values;
+      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM)?.setValue(String(min));
+      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO)?.setValue(String(max));
     });
 
     return this.priceSlider;
@@ -356,6 +384,25 @@ class ProductFiltersView {
       text: BUTTON_TEXT[getStore().getState().currentLanguage].RESET,
     });
 
+    this.resetFiltersButton.getHTML().addEventListener('click', () => {
+      this.sizeLinks.forEach((link) => this.switchSelectedFilter(link, false));
+      this.categoryLinks.forEach((link) => this.switchSelectedFilter(link, false));
+      this.metaLinks.forEach((link) => {
+        this.switchSelectedFilter(link, false);
+        if (link.getHTML().id === META_FILTERS.en.ALL_PRODUCTS) {
+          this.switchSelectedFilter(link, true);
+        }
+      });
+
+      RouterModel.clearSearchParams();
+      EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.CLEAR_CATALOG_SEARCH, '');
+      this.callback();
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      this.resetFiltersButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].RESET;
+    });
+
     return this.resetFiltersButton;
   }
 
@@ -371,11 +418,11 @@ class ProductFiltersView {
 
     sizeLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      const url = new URL(decodeURIComponent(window.location.href));
-      url.searchParams.delete(SEARCH_PARAMS_FIELD.SIZE);
-      url.searchParams.set(SEARCH_PARAMS_FIELD.SIZE, size.size);
-      const path = url.pathname + encodeURIComponent(url.search);
-      RouterModel.getInstance().navigateTo(path.slice(1));
+      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
+      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SIZE, size.size);
+      this.sizeLinks.forEach((link) => this.switchSelectedFilter(link, false));
+      this.switchSelectedFilter(sizeLink, true);
+      this.callback();
     });
 
     const span = createBaseElement({
@@ -478,38 +525,59 @@ class ProductFiltersView {
     const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
     const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
 
-    this.priceSlider.on('update', (values) => {
-      const [min, max] = values;
-      fromInput?.setValue(String(min));
-      toInput?.setValue(String(max));
-    });
-
-    fromInput?.getHTML().addEventListener('change', () => {
-      this.priceSlider.set([fromInput.getValue(), toInput?.getValue() ?? 0]);
-    });
-    toInput?.getHTML().addEventListener('change', () => {
-      this.priceSlider.set([fromInput?.getValue() ?? 0, toInput.getValue()]);
-    });
+    fromInput?.getHTML().addEventListener('change', () => this.updateSelectedPrice(fromInput, toInput));
+    toInput?.getHTML().addEventListener('change', () => this.updateSelectedPrice(fromInput, toInput));
   }
 
   private subcategoryClickHandler(subcategory: { category: Category; count: number }): void {
-    const url = new URL(decodeURIComponent(window.location.href));
-    const currentSubcategories = url.searchParams.getAll(SEARCH_PARAMS_FIELD.SUBCATEGORY);
-    const currentSubcategory = currentSubcategories.find((id) => id === subcategory.category.id);
+    const currentSubcategories = RouterModel.getSearchParams().getAll(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+    const currentSubcategory = currentSubcategories?.find((id) => id === subcategory.category.id);
+    const currentLink = this.categoryLinks.find((link) => link.getHTML().id === subcategory.category.id);
+    RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
 
     if (currentSubcategory) {
       const filteredSubcategories = currentSubcategories.filter((id) => id !== currentSubcategory);
       if (!filteredSubcategories.length) {
-        url.searchParams.delete(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+        RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+        if (currentLink) {
+          this.switchSelectedFilter(currentLink, false);
+        }
       } else {
-        url.searchParams.delete(SEARCH_PARAMS_FIELD.SUBCATEGORY);
-        filteredSubcategories.forEach((id) => url.searchParams.append(SEARCH_PARAMS_FIELD.SUBCATEGORY, id));
+        RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+        filteredSubcategories.forEach((id) => RouterModel.appendSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY, id));
+        filteredSubcategories.forEach((id) => {
+          const currentLink = this.categoryLinks.find((link) => link.getHTML().id === id);
+          if (currentLink) {
+            this.switchSelectedFilter(currentLink, true);
+          }
+        });
       }
     } else {
-      url.searchParams.append(SEARCH_PARAMS_FIELD.SUBCATEGORY, subcategory.category.id);
+      RouterModel.appendSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY, subcategory.category.id);
+      if (currentLink) {
+        this.switchSelectedFilter(currentLink, true);
+      }
     }
-    const path = url.pathname + encodeURIComponent(url.search);
-    RouterModel.getInstance().navigateTo(path.slice(1));
+    this.callback();
+  }
+
+  private updatePriceRange(): void {
+    this.priceSlider.updateOptions(
+      {
+        start: [this.params?.priceRange?.min ?? 0, this.params?.priceRange?.max ?? 0],
+      },
+      true,
+    );
+    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
+    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    fromInput?.setValue((this.params?.priceRange?.min ?? 0).toFixed(2));
+    toInput?.setValue((this.params?.priceRange?.max ?? 0).toFixed(2));
+  }
+
+  private updateSelectedPrice(from: InputModel | null = null, to: InputModel | null = null): void {
+    RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MIN_PRICE, from?.getValue() ?? '0');
+    RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MAX_PRICE, to?.getValue() ?? '0');
+    this.callback();
   }
 
   public getCategoryLinks(): LinkModel[] {
@@ -544,12 +612,42 @@ class ProductFiltersView {
     return this.sizeLinks;
   }
 
+  public setInitialActiveFilters(activeFilters: {
+    categoryLinks: string[];
+    metaLinks: string[];
+    sizeLinks: string[];
+  }): void {
+    this.sizeLinks.forEach((link) => this.switchSelectedFilter(link, false));
+    this.categoryLinks.forEach((link) => this.switchSelectedFilter(link, false));
+    this.metaLinks.forEach((link) => this.switchSelectedFilter(link, false));
+
+    activeFilters.categoryLinks.forEach((id) => {
+      const currentLink = this.categoryLinks.find((link) => link.getHTML().id === id);
+      if (currentLink) {
+        this.switchSelectedFilter(currentLink, true);
+      }
+    });
+    activeFilters.sizeLinks.forEach((id) => {
+      const currentLink = this.sizeLinks.find((link) => link.getHTML().id === id);
+      if (currentLink) {
+        this.switchSelectedFilter(currentLink, true);
+      }
+    });
+    activeFilters.metaLinks.forEach((id) => {
+      const currentLink = this.metaLinks.find((link) => link.getHTML().id === id);
+      if (currentLink) {
+        this.switchSelectedFilter(currentLink, true);
+      }
+    });
+  }
+
   public switchSelectedFilter(filterLink: LinkModel, toggle?: boolean): void {
     filterLink.getHTML().classList.toggle(styles.activeLink, toggle);
   }
 
   public updateParams(params: ProductFiltersParams | null): void {
     this.params = params;
+
     this.categoryCountSpan.forEach((span) => {
       const currentSpan = span;
       currentSpan.innerText = BASE_PRODUCT_COUNT;
@@ -558,6 +656,7 @@ class ProductFiltersView {
       const currentSpan = span;
       currentSpan.innerText = BASE_PRODUCT_COUNT;
     });
+    this.updatePriceRange();
     this.redrawProductsCount();
   }
 }

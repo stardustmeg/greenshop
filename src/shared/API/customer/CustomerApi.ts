@@ -10,7 +10,7 @@ import type {
 } from '@commercetools/platform-sdk';
 
 import getStore from '@/shared/Store/Store.ts';
-import { setAnonymousCartId, setAnonymousId } from '@/shared/Store/actions.ts';
+import { setAnonymousCartId, setAnonymousId, setAnonymousShopListId } from '@/shared/Store/actions.ts';
 import findAddressIndex from '@/shared/utils/address.ts';
 
 import getCartModel from '../cart/model/CartModel.ts';
@@ -22,6 +22,9 @@ interface ExtendedCustomerDraft extends MyCustomerDraft {
   billingAddresses?: number[];
   shippingAddresses?: number[];
 }
+const CART_MERGE_MODE = 'MergeWithExistingCustomerCart';
+const CART_TYPE_ID = 'cart';
+const EMAIL = 'email';
 
 export class CustomerApi {
   private client: ApiClient;
@@ -40,7 +43,7 @@ export class CustomerApi {
     if (anonymousCartId && anonymousId) {
       authData.anonymousCartId = anonymousCartId;
       authData.anonymousId = anonymousId;
-      authData.anonymousCartSignInMode = 'MergeWithExistingCustomerCart';
+      authData.anonymousCartSignInMode = CART_MERGE_MODE;
       authData.updateProductData = true;
     }
     return authData;
@@ -54,8 +57,10 @@ export class CustomerApi {
     if (!isErrorResponse(testConnect)) {
       this.client.approveAuth();
       getCartModel().clear();
+      getShoppingListModel().clear();
       getStore().dispatch(setAnonymousCartId(null));
       getStore().dispatch(setAnonymousId(null));
+      getStore().dispatch(setAnonymousShopListId(null));
       isOk = true;
     }
     return isOk;
@@ -78,7 +83,7 @@ export class CustomerApi {
     const anonymCart: CartResourceIdentifier | undefined = anonymousCartId
       ? {
           id: anonymousCartId,
-          typeId: 'cart',
+          typeId: CART_TYPE_ID,
         }
       : undefined;
     return {
@@ -93,7 +98,7 @@ export class CustomerApi {
       password: userData.password,
       ...(anonymCart && { anonymousCart: anonymCart }),
       ...(anonymousId && { anonymousId }),
-      ...(anonymCart && { anonymousCartSignInMode: 'MergeWithExistingCustomerCart' }),
+      ...(anonymCart && { anonymousCartSignInMode: CART_MERGE_MODE }),
       ...(anonymCart && { updateProductData: true }),
       billingAddresses: billingAddress !== null ? [billingAddress] : undefined,
       shippingAddresses: shippingAddress !== null ? [shippingAddress] : undefined,
@@ -106,7 +111,9 @@ export class CustomerApi {
     if (!isErrorResponse(data)) {
       await this.checkAuthConnection(authData);
       getCartModel().clear();
+      getShoppingListModel().clear();
       await getCartModel().getCart();
+      await getShoppingListModel().getShoppingList();
     }
     return data;
   }
@@ -152,7 +159,7 @@ export class CustomerApi {
     const data = await this.client
       .apiRoot()
       .customers()
-      .get({ queryArgs: { where: `email="${email}"` } })
+      .get({ queryArgs: { where: `${EMAIL}="${email}"` } })
       .execute();
     return data;
   }
@@ -162,6 +169,8 @@ export class CustomerApi {
     const testConnect = this.client.apiRoot().get().execute();
     getCartModel().clear();
     await getCartModel().getCart();
+    getShoppingListModel().clear();
+    await getShoppingListModel().getShoppingList();
     return client && !isErrorResponse(testConnect);
   }
 

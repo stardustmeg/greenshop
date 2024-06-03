@@ -1,3 +1,5 @@
+import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
+
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
@@ -17,10 +19,41 @@ class PasswordEditModel {
   }
 
   private init(): void {
+    this.view.getInputFields().forEach((inputField) => this.setInputFieldHandlers(inputField));
+    this.setPreventDefaultToForm();
     this.setSwitchOldPasswordVisibilityHandler();
     this.setSwitchNewPasswordVisibilityHandler();
+    this.setSubmitFormHandler();
     this.setCancelButtonHandler();
-    this.setSaveChangesButtonHandler();
+  }
+
+  private async saveNewPassword(): Promise<boolean> {
+    const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
+    this.view.getSubmitButton().getHTML().append(loader);
+    try {
+      await getCustomerModel()
+        .getCurrentUser()
+        .then(async (user) => {
+          if (user) {
+            try {
+              await getCustomerModel().editPassword(
+                user,
+                this.view.getOldPasswordField().getView().getValue(),
+                this.view.getNewPasswordField().getView().getValue(),
+              );
+              serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PASSWORD_CHANGED, MESSAGE_STATUS.SUCCESS);
+              modal.hide();
+            } catch {
+              serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PASSWORD_NOT_CHANGED, MESSAGE_STATUS.ERROR);
+            }
+          }
+        });
+    } catch (error) {
+      showErrorMessage(error);
+    } finally {
+      loader.remove();
+    }
+    return true;
   }
 
   private setCancelButtonHandler(): boolean {
@@ -33,37 +66,20 @@ class PasswordEditModel {
     return true;
   }
 
-  private setSaveChangesButtonHandler(): boolean {
-    this.view
-      .getSaveChangesButton()
-      .getHTML()
-      .addEventListener('click', async () => {
-        const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
-        this.view.getSaveChangesButton().getHTML().append(loader);
-        try {
-          await getCustomerModel()
-            .getCurrentUser()
-            .then(async (user) => {
-              if (user) {
-                try {
-                  await getCustomerModel().editPassword(
-                    user,
-                    this.view.getOldPasswordField().getView().getValue(),
-                    this.view.getNewPasswordField().getView().getValue(),
-                  );
-                  serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PASSWORD_CHANGED, MESSAGE_STATUS.SUCCESS);
-                  modal.hide();
-                } catch {
-                  serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PASSWORD_NOT_CHANGED, MESSAGE_STATUS.ERROR);
-                }
-              }
-            });
-        } catch {
-          showErrorMessage();
-        } finally {
-          loader.remove();
-        }
-      });
+  private setInputFieldHandlers(inputField: InputFieldModel): boolean {
+    const inputHTML = inputField.getView().getInput().getHTML();
+    inputHTML.addEventListener('input', () => this.switchSubmitFormButtonAccess());
+    return true;
+  }
+
+  private setPreventDefaultToForm(): boolean {
+    this.view.getHTML().addEventListener('submit', (event) => event.preventDefault());
+    return true;
+  }
+
+  private setSubmitFormHandler(): boolean {
+    const submitButton = this.view.getSubmitButton().getHTML();
+    submitButton.addEventListener('click', this.saveNewPassword.bind(this));
     return true;
   }
 
@@ -87,7 +103,16 @@ class PasswordEditModel {
     return true;
   }
 
-  public getHTML(): HTMLDivElement {
+  private switchSubmitFormButtonAccess(): boolean {
+    if (this.view.getInputFields().every((inputField) => inputField.getIsValid())) {
+      this.view.getSubmitButton().setEnabled();
+    } else {
+      this.view.getSubmitButton().setDisabled();
+    }
+    return true;
+  }
+
+  public getHTML(): HTMLFormElement {
     return this.view.getHTML();
   }
 

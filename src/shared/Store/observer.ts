@@ -50,10 +50,12 @@ export const selectBillingCountry = (state: State): string => state.billingCount
 
 export const selectShippingCountry = (state: State): string => state.shippingCountry;
 
+export const selectDefaultCountry = (state: State): string => state.defaultCountry;
+
 export const selectCurrentLanguage = (state: State): string => state.currentLanguage;
 
 export const selectIsUserLoggedIn = (state: State): boolean => state.isUserLoggedIn;
 
-export const selectCurrentPage = (state: State): string => state.currentPage;
+export const selectCurrentPage = (state: State): null | string => state.currentPage;
 
 export default observeStore;

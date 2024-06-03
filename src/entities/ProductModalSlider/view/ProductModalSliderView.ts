@@ -4,11 +4,12 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
 import styles from './productModalSliderView.module.scss';
 
-const BIG_SLIDER_WIDTH = 40;
 const CLOSE_BUTTON_CONTENT = 'x';
 
 class ProductModalSliderView {
@@ -65,9 +66,6 @@ class ProductModalSliderView {
       tag: 'div',
     });
 
-    const maxWidth = BIG_SLIDER_WIDTH;
-    slider.style.maxWidth = `${maxWidth}rem`;
-
     slider.append(this.createModalSliderWrapper());
     return slider;
   }
@@ -123,6 +121,10 @@ class ProductModalSliderView {
     this.nextSlideButton = new ButtonModel({
       classes: [styles.nextSlideButton],
     });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.ARROW_UP));
+    this.nextSlideButton.getHTML().append(svg);
     return this.nextSlideButton;
   }
 
@@ -130,6 +132,9 @@ class ProductModalSliderView {
     this.prevSlideButton = new ButtonModel({
       classes: [styles.prevSlideButton],
     });
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.ARROW_UP));
+    this.prevSlideButton.getHTML().append(svg);
     return this.prevSlideButton;
   }
 

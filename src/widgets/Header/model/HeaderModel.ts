@@ -33,15 +33,6 @@ class HeaderModel {
     this.init();
   }
 
-  private checkAuthUser(): boolean {
-    const { isUserLoggedIn } = getStore().getState();
-    if (!isUserLoggedIn) {
-      RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
-      return false;
-    }
-    return true;
-  }
-
   private checkCurrentUser(): void {
     const { isUserLoggedIn } = getStore().getState();
     const logoutButton = this.view.getLogoutButton();
@@ -64,7 +55,6 @@ class HeaderModel {
     this.setCartLinkHandler();
     this.observeCartChange();
     this.setCartCount().catch(showErrorMessage);
-    this.setProfileLinkHandler();
     this.setChangeLanguageCheckboxHandler();
   }
 
@@ -118,7 +108,7 @@ class HeaderModel {
             serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
           }
         } catch (error) {
-          showErrorMessage();
+          showErrorMessage(error);
         }
       } else {
         getStore().dispatch(setCurrentLanguage(newLanguage));
@@ -140,17 +130,6 @@ class HeaderModel {
     logoutButton.getHTML().addEventListener('click', async () => {
       await this.logoutHandler();
       logoutButton.setDisabled();
-    });
-  }
-
-  private setProfileLinkHandler(): void {
-    const logo = this.view.getToProfileLink().getHTML();
-    logo.addEventListener('click', (event) => {
-      event.preventDefault();
-      // TBD remove unnecessary check (we don't show this logo when user is not logged in) ??
-      if (this.checkAuthUser()) {
-        RouterModel.getInstance().navigateTo(PAGE_ID.USER_PROFILE_PAGE);
-      }
     });
   }
 

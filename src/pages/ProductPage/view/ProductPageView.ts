@@ -20,6 +20,7 @@ class ProductPageView {
     this.fullDescription = this.createFullDescription();
     this.fullDescriptionWrapper = this.createFullDescriptionWrapper();
     this.page = this.createHTML();
+    window.scrollTo(0, 0);
   }
 
   private createFullDescription(): HTMLParagraphElement {

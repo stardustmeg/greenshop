@@ -1,3 +1,4 @@
+import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import styles from './modalView.module.scss';
@@ -76,8 +77,12 @@ class ModalView {
     document.body.classList.remove('stop-scroll');
   }
 
+  public removeContent(): void {
+    clearOutElement(this.modalContent);
+  }
+
   public setContent(content: HTMLElement): void {
-    this.modalContent.innerHTML = '';
+    clearOutElement(this.modalContent);
     this.modalContent.append(content);
   }
 

@@ -8,6 +8,7 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { MORE_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { PRODUCT_INFO_TEXT } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import { buildPathName } from '@/shared/utils/buildPathname.ts';
@@ -24,6 +25,8 @@ class ProductCardView {
   private buttonsWrapper: HTMLDivElement;
 
   private currentSize: null | string;
+
+  private discountLabel: HTMLSpanElement;
 
   private goDetailsPageLink: LinkModel;
 
@@ -51,6 +54,7 @@ class ProductCardView {
     this.goDetailsPageLink = this.createGoDetailsPageLink();
     this.buttonsWrapper = this.createButtonsWrapper();
     this.productImage = this.createProductImage();
+    this.discountLabel = this.createDiscountLabel();
     this.productImageWrapper = this.createProductImageWrapper();
     this.productName = this.createProductName();
     this.productShortDescription = this.createProductShortDescription();
@@ -111,6 +115,30 @@ class ProductCardView {
     );
 
     return this.buttonsWrapper;
+  }
+
+  private createDiscountLabel(): HTMLSpanElement {
+    const currentVariant = this.params.variant.find(({ size }) => size === this.currentSize) ?? this.params.variant[0];
+    const innerContent = `${Math.round((1 - currentVariant.discount / currentVariant.price) * 100)}%`;
+    this.discountLabel = createBaseElement({
+      cssClasses: [styles.discountLabel],
+      innerContent,
+      tag: 'span',
+    });
+
+    const discountSpan = createBaseElement({
+      cssClasses: [styles.discountSpan],
+      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].DISCOUNT_LABEL,
+      tag: 'span',
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      discountSpan.textContent = PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].DISCOUNT_LABEL;
+    });
+
+    this.discountLabel.append(discountSpan);
+
+    return this.discountLabel;
   }
 
   private createGoDetailsPageLink(): LinkModel {
@@ -181,6 +209,10 @@ class ProductCardView {
       this.productImage.classList.remove(styles.hidden);
       loader.remove();
     });
+
+    if (this.params.variant.some(({ discount }) => discount)) {
+      this.productImageWrapper.append(this.discountLabel);
+    }
     return this.productImageWrapper;
   }
 

@@ -27,6 +27,7 @@ export default class PostWidgetView {
     this.description = this.createPageDescription();
 
     this.page = this.createHTML();
+    window.scrollTo(0, 0);
   }
 
   private createHTML(): HTMLDivElement {
@@ -58,7 +59,7 @@ export default class PostWidgetView {
   private createPageTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: [styles.pageTitle],
-      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITTLE,
+      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITLE,
       tag: 'h3',
     });
     return this.title;
@@ -80,10 +81,11 @@ export default class PostWidgetView {
   public openPost(post: BlogPostView): void {
     this.parent.innerHTML = '';
     this.parent.append(post.getPostHTML());
+    window.scrollTo(0, 0);
   }
 
   public updateLanguage(): boolean {
-    this.title.innerText = BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITTLE;
+    this.title.innerText = BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITLE;
     this.description.innerText = BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_DESCRIPTIONS;
     return true;
   }

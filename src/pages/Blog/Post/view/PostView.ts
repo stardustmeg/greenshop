@@ -23,6 +23,7 @@ export default class PostView {
 
     this.card.addEventListener('click', () => this.onPostClick());
     observeStore(selectCurrentLanguage, () => this.updateLanguage());
+    window.scrollTo(0, 0);
   }
 
   private createCardHTML(): HTMLLIElement {
@@ -44,10 +45,10 @@ export default class PostView {
     const content = `
       <article class=${styles.article}>
         <div class=${styles.wrapImage}>
-          <img src="/${this.post.image}" alt="${this.post.tittle[ln]}" class=${styles.img}></img>
+          <img src="/${this.post.image}" alt="${this.post.title[ln]}" class=${styles.img}></img>
         </div>
           <p class=${styles.dataTime}>${this.post.date[ln]} | ${read}</p>
-          <p class=${styles.title}>${this.post.tittle[ln]}</p>
+          <p class=${styles.title}>${this.post.title[ln]}</p>
           <p class=${styles.shortDescription}>${this.post.shortDescription[ln]}</p>
           <p class=${styles.reed}>${readMore}</p>
         </div>
@@ -79,16 +80,16 @@ export default class PostView {
     this.post.content[ln] = this.post.content[ln].replace(/<h5>/g, `<h4 class=${styles.headText}>`);
     this.post.content[ln] = this.post.content[ln].replace(/<ul>/g, `<h4 class=${styles.list}>`);
     this.post.content[ln] = this.post.content[ln].replace(/<li>/g, `<h4 class=${styles.item}>`);
-    const tittle = `
+    const title = `
     <div class=${styles.head}>
-      <h1 class=${styles.title}>${this.post.tittle[ln]}</h1>
+      <h1 class=${styles.title}>${this.post.title[ln]}</h1>
       <p class=${styles.shortDescription}>${this.post.shortDescription[ln]}</p>
     </div>
-    <img src="/${this.post.image}" alt="${this.post.tittle[ln]}" class=${styles.img}></img>
+    <img src="/${this.post.image}" alt="${this.post.title[ln]}" class=${styles.img}></img>
     <div class=${styles.info}>
       ${this.post.content[ln]}
     </div>`;
-    return tittle;
+    return title;
   }
 
   public getCardHTML(short?: boolean): HTMLLIElement {

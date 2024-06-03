@@ -54,7 +54,7 @@ export class MyTokenCache implements TokenCache {
   }
 
   public isExist(): boolean {
-    return this.myCache.token !== '' || this.myCache.refreshToken !== undefined;
+    return this.myCache.token !== '' ?? this.myCache.refreshToken !== undefined;
   }
 
   public set(newCache: TokenStore): void {

@@ -28,6 +28,7 @@ export default class PostListView {
     this.description = this.createPageDescription();
 
     this.page = this.createHTML();
+    window.scrollTo(0, 0);
   }
 
   private createHTML(): HTMLDivElement {
@@ -59,7 +60,7 @@ export default class PostListView {
   private createPageTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: [styles.pageTitle],
-      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].LIST_TITTLE,
+      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].LIST_TITLE,
       tag: 'h1',
     });
     return this.title;
@@ -81,11 +82,12 @@ export default class PostListView {
   public openPost(post: BlogPostView): void {
     this.parent.innerHTML = '';
     this.parent.append(post.getPostHTML());
+    window.scrollTo(0, 0);
   }
 
   public updateLanguage(): boolean {
     const ln = getStore().getState().currentLanguage;
-    this.title.innerText = BLOG_DESCRIPTION[ln].LIST_TITTLE;
+    this.title.innerText = BLOG_DESCRIPTION[ln].LIST_TITLE;
     this.description.innerText = BLOG_DESCRIPTION[ln].LIST_DESCRIPTION;
     return true;
   }

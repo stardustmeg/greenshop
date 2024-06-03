@@ -28,9 +28,11 @@ class AddressEditView {
 
   private createHTML(): HTMLFormElement {
     this.view = createBaseElement({
-      cssClasses: [styles.style],
+      cssClasses: [styles.wrapper],
       tag: 'form',
     });
+
+    this.view.append(this.saveChangesButton.getHTML(), this.cancelButton.getHTML());
     return this.view;
   }
 

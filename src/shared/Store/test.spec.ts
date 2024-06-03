@@ -1,7 +1,5 @@
-import type { SelectedFilters } from '../types/productFilters.ts';
 import type { State } from './reducer.ts';
 
-import { META_FILTERS } from '../constants/filters.ts';
 import { PAGE_ID } from '../constants/pages.ts';
 import getStore, { Store } from './Store.ts';
 import * as actions from './actions.ts';
@@ -59,15 +57,14 @@ vi.mock('./Store.ts', async (importOriginal) => {
       anonymToken: null,
       anonymousCartId: null,
       anonymousId: null,
+      anonymousShopListId: null,
       authToken: null,
       billingCountry: '',
       currentLanguage: 'en',
-      currentPage: '/',
+      currentPage: '',
+      defaultCountry: '',
       isAppThemeLight: true,
       isUserLoggedIn: false,
-      searchValue: '',
-      selectedFilters: null,
-      selectedSorting: null,
       shippingCountry: '',
     }),
   };
@@ -177,15 +174,14 @@ describe('rootReducer', () => {
       anonymToken: null,
       anonymousCartId: null,
       anonymousId: null,
+      anonymousShopListId: null,
       authToken: null,
       billingCountry: '',
       currentLanguage: 'en',
-      currentPage: '/',
+      currentPage: '',
+      defaultCountry: '',
       isAppThemeLight: true,
       isUserLoggedIn: false,
-      searchValue: '',
-      selectedFilters: null,
-      selectedSorting: null,
       shippingCountry: '',
     };
   });
@@ -219,7 +215,7 @@ describe('rootReducer', () => {
   });
 
   it('should handle setCurrentPage action', () => {
-    const page = 'main/';
+    const page = 'main';
     const action = actions.setCurrentPage(PAGE_ID.MAIN_PAGE);
     const newState = rootReducer(initialState, action);
     expect(newState.currentPage).toEqual(page);
@@ -229,17 +225,5 @@ describe('rootReducer', () => {
     const action = actions.switchAppTheme();
     const newState = rootReducer(initialState, action);
     expect(newState.isAppThemeLight).toEqual(!initialState.isAppThemeLight);
-  });
-
-  it('should handle setSelectedFilters action', () => {
-    const filters: SelectedFilters = {
-      category: new Set<string>(),
-      metaFilter: META_FILTERS.en.NEW_ARRIVALS,
-      price: null,
-      size: null,
-    };
-    const action = actions.setSelectedFilters(filters);
-    const newState = rootReducer(initialState, action);
-    expect(newState.selectedFilters).toEqual(filters);
   });
 });

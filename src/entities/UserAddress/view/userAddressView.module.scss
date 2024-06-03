@@ -1,55 +1,134 @@
-.info {
-  grid-column: 2 span;
-  max-width: 100%;
-  word-break: break-all;
+@import 'src/app/styles/mixins';
+
+.addressItem {
+  position: relative;
+  display: grid;
+  align-items: center;
+  border-radius: var(--medium-br);
+  padding: var(--extra-small-offset);
+  background: var(--white-tr);
+  gap: var(--tiny-offset);
 }
 
-.deleteLogo,
-.editLogo {
+.labelsWrapper {
   display: flex;
-  margin: 0 auto;
-
-  svg {
-    z-index: 1;
-    width: var(--extra-small-offset);
-    height: var(--extra-small-offset);
-    fill: var(--noble-gray-900);
-    transition: 0.2s;
-  }
+  flex-wrap: wrap;
+  grid-row: 1;
+  gap: var(--tiny-offset);
 }
 
-.deleteButton,
-.editButton {
+.addressType {
   display: flex;
-  margin: var(--tiny-offset);
+  align-items: center;
+  justify-content: center;
   border-radius: var(--medium-br);
   padding: var(--tiny-offset);
-  height: max-content;
-  max-width: max-content;
-  font: var(--regular-font);
-  letter-spacing: 1px;
-  color: var(--white);
-  background-color: var(--steam-green-800);
-  transition:
-    color 0.2s,
-    background-color 0.2s;
+  min-width: 8rem;
+  font: var(--small-font);
+  text-align: center;
+  color: var(--black);
+  background-color: var(--steam-green-900);
+  transition: scale 0.2s;
 
-  &:focus {
-    background-color: var(--steam-green-700);
+  &:hover {
+    cursor: pointer;
+    scale: 1.05;
   }
 
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--steam-green-700);
+  &:active {
+    scale: 0.95;
+  }
+}
 
-      svg {
-        fill: var(--noble-gray-1000);
-      }
+.billing {
+  order: 1;
+  background-color: var(--steam-green-1000);
+}
+
+.shipping {
+  order: 2;
+  background-color: var(--steam-green-1000);
+}
+
+.defaultBilling {
+  order: 3;
+  background-color: var(--steam-green-300);
+}
+
+.defaultShipping {
+  order: 4;
+  background-color: var(--steam-green-300);
+}
+
+.inactive {
+  filter: grayscale(1);
+  transition:
+    filter 0.2s,
+    scale 0.2s;
+}
+
+.editButton,
+.deleteButton {
+  @include green-btn;
+
+  padding: 0;
+  width: calc(var(--extra-small-offset) * 1.5);
+  height: calc(var(--extra-small-offset) * 1.5);
+  background-color: transparent;
+
+  svg {
+    width: calc(var(--extra-small-offset) * 1.5);
+    height: calc(var(--extra-small-offset) * 1.5);
+
+    &:hover {
+      fill: var(--steam-green-800);
+      stroke: var(--steam-green-800);
     }
   }
 
-  &:disabled {
-    background-color: var(--noble-gray-300);
-    pointer-events: none;
+  &:hover {
+    filter: brightness(1);
+  }
+}
+
+.buttonsWrapper {
+  display: flex;
+  grid-row: 1;
+  margin-left: auto;
+  gap: var(--tiny-offset);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    grid-row: 2;
+  }
+}
+
+.addressTextWrapper {
+  display: flex;
+  flex-direction: column;
+  grid-row: 2;
+  gap: var(--tiny-offset);
+}
+
+.citySpan,
+.streetNameSpan,
+.postalCodeSpan,
+.countrySpan {
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  word-break: break-all;
+  color: var(--steam-green-400);
+}
+
+.disabled {
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    border-radius: var(--medium-br);
+    backdrop-filter: blur(5px);
+    inset: 0;
   }
 }

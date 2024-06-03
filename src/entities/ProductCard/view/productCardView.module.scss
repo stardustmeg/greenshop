@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-self: center;
-  outline: var(--two) solid var(--noble-gray-300);
+  outline: calc(var(--one) * 1.5) solid var(--noble-gray-300);
   border-radius: var(--medium-br);
   min-height: calc(var(--extra-small-offset) * 17.5); // 350px
   max-width: calc(var(--extra-large-offset) * 2.5); // 250px
@@ -16,7 +16,7 @@
 
   @media (hover: hover) {
     &:hover {
-      outline: var(--two) solid var(--steam-green-800);
+      outline: calc(var(--one) * 1.5) solid var(--steam-green-800);
       transform: scale(0.98);
     }
   }
@@ -71,15 +71,13 @@
 .switchToWishListButton,
 .goDetailsPageLink {
   position: relative;
-  outline: var(--two) solid var(--noble-gray-700);
+  outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
   border-radius: var(--medium-br);
   padding: var(--tiny-offset);
   width: var(--small-offset);
   height: var(--small-offset);
-  background-color: var(--noble-gray-1000);
-  transition:
-    transform 0.2s,
-    outline 0.2s;
+  background-color: var(--white-tr);
+  transition: outline 0.2s;
   backdrop-filter: blur(10px);
 
   svg {
@@ -98,7 +96,7 @@
 .goDetailsPageLink {
   @media (hover: hover) {
     &:hover {
-      outline: var(--two) solid var(--steam-green-400);
+      outline: calc(var(--one) * 1.5) solid var(--steam-green-400);
 
       svg {
         fill: var(--steam-green-400);
@@ -115,7 +113,7 @@
 }
 
 .inWishList {
-  outline: var(--two) solid var(--red-power-600);
+  outline: calc(var(--one) * 1.5) solid var(--red-power-600);
 
   svg {
     fill: var(--red-power-600);
@@ -125,7 +123,7 @@
 .switchToWishListButton {
   @media (hover: hover) {
     &:hover {
-      outline: var(--two) solid var(--red-power-600);
+      outline: calc(var(--one) * 1.5) solid var(--red-power-600);
 
       svg {
         fill: var(--red-power-600);
@@ -136,7 +134,7 @@
   &.inWishList {
     @media (hover: hover) {
       &:hover {
-        outline: var(--two) solid var(--noble-gray-700);
+        outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
 
         svg {
           fill: var(--noble-gray-700);
@@ -151,6 +149,7 @@
   flex-grow: 1;
   flex-direction: column;
   align-items: center;
+  border-radius: var(--medium-br);
   padding: calc(var(--extra-small-offset) / 2) calc(var(--extra-small-offset) / 4);
   width: 100%;
   background-color: var(--noble-white-200);
@@ -175,7 +174,7 @@
   letter-spacing: var(--one);
   text-align: left;
   text-overflow: ellipsis;
-  color: var(--noble-gray-400);
+  color: var(--noble-gray-700);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 
@@ -192,6 +191,7 @@
   order: 4;
   margin-top: calc(var(--extra-small-offset) * (-0.2));
   margin-right: var(--five);
+  padding: var(--five);
   font: var(--regular-font);
   letter-spacing: var(--one);
   color: var(--steam-green-700);
@@ -206,4 +206,21 @@
 
 .hidden {
   display: none;
+}
+
+.discountLabel {
+  position: absolute;
+  left: 0;
+  top: calc(var(--two) * 5);
+  z-index: 1;
+  display: flex;
+  border-radius: 0 var(--five) var(--five) 0;
+  padding: calc(var(--tiny-offset) / 2);
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--steam-green-1100);
+  background-color: var(--steam-green-800);
+  gap: var(--two);
 }

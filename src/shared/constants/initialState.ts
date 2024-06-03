@@ -6,23 +6,14 @@ const initialState: State = {
   anonymToken: null,
   anonymousCartId: null,
   anonymousId: null,
+  anonymousShopListId: null,
   authToken: null,
   billingCountry: '',
   currentLanguage: 'en',
   currentPage: PAGE_ID.DEFAULT_PAGE,
+  defaultCountry: '',
   isAppThemeLight: true,
   isUserLoggedIn: false,
-  searchValue: '',
-  selectedFilters: {
-    category: new Set(),
-    metaFilter: 'All products',
-    price: null,
-    size: null,
-  },
-  selectedSorting: {
-    direction: 'asc',
-    field: 'price',
-  },
   shippingCountry: '',
 };
 

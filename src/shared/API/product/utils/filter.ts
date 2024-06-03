@@ -1,4 +1,4 @@
-import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
+import { MAX_PRICE, MIN_PRICE, PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 
 import type { FilterFieldsType, PriceRange } from '../../types/type.ts';
 
@@ -11,7 +11,10 @@ export default class FilterProduct {
 
   private newArrival = '';
 
-  private price = '';
+  private price: PriceRange = {
+    max: MAX_PRICE,
+    min: MIN_PRICE,
+  };
 
   private sale = '';
 
@@ -42,7 +45,8 @@ export default class FilterProduct {
         break;
       case FilterFields.PRICE:
         if (value && typeof value !== 'string') {
-          this.price = `${field}: range(${value.min * PRICE_FRACTIONS} to ${value.max * PRICE_FRACTIONS})`;
+          this.price.max = value.max;
+          this.price.min = value.min;
         }
         break;
       default:
@@ -66,11 +70,17 @@ export default class FilterProduct {
       result.push(this.newArrival);
     }
     if (this.price) {
-      result.push(this.price);
+      result.push(
+        `${FilterFields.PRICE}: range(${Math.round(this.price.min * PRICE_FRACTIONS)} to ${Math.round(this.price.max * PRICE_FRACTIONS)})`,
+      );
     }
     if (this.sale) {
       result.push(this.sale);
     }
     return result;
+  }
+
+  public getPriceRange(): PriceRange {
+    return this.price;
   }
 }

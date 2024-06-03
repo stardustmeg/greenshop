@@ -1,31 +1,63 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
+import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import SVG_DETAILS from '@/shared/constants/svg.ts';
+import TOOLTIP_TEXT from '@/shared/constants/tooltip.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
+import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
 import styles from './userAddressesView.module.scss';
 
 class UserAddressView {
+  private addressesListWrapper: HTMLUListElement;
+
   private addressesWrapper: HTMLDivElement;
+
+  private billingLogo: HTMLDivElement;
 
   private createBillingAddressButton: ButtonModel;
 
   private createShippingAddressButton: ButtonModel;
 
+  private shippingLogo: HTMLDivElement;
+
   constructor() {
+    this.billingLogo = this.createBillingLogo();
+    this.shippingLogo = this.createShippingLogo();
     this.createBillingAddressButton = this.createCreateBillingAddressButton();
     this.createShippingAddressButton = this.createCreateShippingAddressButton();
+    this.addressesListWrapper = this.createAddressesListWrapper();
     this.addressesWrapper = this.createHTML();
+  }
+
+  private createAddressesListWrapper(): HTMLUListElement {
+    this.addressesListWrapper = createBaseElement({
+      cssClasses: [styles.addressesListWrapper],
+      tag: 'ul',
+    });
+    return this.addressesListWrapper;
+  }
+
+  private createBillingLogo(): HTMLDivElement {
+    this.billingLogo = createBaseElement({ cssClasses: [styles.billingLogo], tag: 'div' });
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.BILL));
+    this.billingLogo.append(svg);
+    return this.billingLogo;
   }
 
   private createCreateBillingAddressButton(): ButtonModel {
     this.createBillingAddressButton = new ButtonModel({
       classes: [styles.createAddressButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].NEW_ADDRESS,
+      title: TOOLTIP_TEXT[getStore().getState().currentLanguage].ADD_BILLING_ADDRESS,
     });
 
-    observeCurrentLanguage(this.createBillingAddressButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.NEW_ADDRESS);
+    this.createBillingAddressButton.getHTML().append(this.billingLogo);
+
+    observeStore(selectCurrentLanguage, () => {
+      this.createBillingAddressButton.getHTML().title =
+        TOOLTIP_TEXT[getStore().getState().currentLanguage].ADD_BILLING_ADDRESS;
+    });
 
     return this.createBillingAddressButton;
   }
@@ -33,9 +65,16 @@ class UserAddressView {
   private createCreateShippingAddressButton(): ButtonModel {
     this.createShippingAddressButton = new ButtonModel({
       classes: [styles.createAddressButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].NEW_ADDRESS,
+      title: TOOLTIP_TEXT[getStore().getState().currentLanguage].ADD_SHIPPING_ADDRESS,
     });
-    observeCurrentLanguage(this.createShippingAddressButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.NEW_ADDRESS);
+
+    this.createShippingAddressButton.getHTML().append(this.shippingLogo);
+
+    observeStore(selectCurrentLanguage, () => {
+      this.createShippingAddressButton.getHTML().title =
+        TOOLTIP_TEXT[getStore().getState().currentLanguage].ADD_SHIPPING_ADDRESS;
+    });
+
     return this.createShippingAddressButton;
   }
 
@@ -44,9 +83,24 @@ class UserAddressView {
       cssClasses: [styles.addressesWrapper, styles.hidden],
       tag: 'div',
     });
-
-    this.addressesWrapper.append(this.createBillingAddressButton.getHTML(), this.createShippingAddressButton.getHTML());
+    this.addressesWrapper.append(
+      this.createBillingAddressButton.getHTML(),
+      this.createShippingAddressButton.getHTML(),
+      this.addressesListWrapper,
+    );
     return this.addressesWrapper;
+  }
+
+  private createShippingLogo(): HTMLDivElement {
+    this.shippingLogo = createBaseElement({ cssClasses: [styles.shippingLogo], tag: 'div' });
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.DELIVERY));
+    this.shippingLogo.append(svg);
+    return this.shippingLogo;
+  }
+
+  public getAddressesListWrapper(): HTMLUListElement {
+    return this.addressesListWrapper;
   }
 
   public getCreateBillingAddressButton(): ButtonModel {
@@ -67,6 +121,10 @@ class UserAddressView {
 
   public show(): void {
     this.addressesWrapper.classList.remove(styles.hidden);
+  }
+
+  public toggleState(isDisabled: boolean): void {
+    this.addressesListWrapper.classList.toggle(styles.disabled, isDisabled);
   }
 }
 

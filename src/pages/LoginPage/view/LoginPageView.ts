@@ -44,6 +44,7 @@ class LoginPageView {
     this.linksWrapper = this.createLinksWrapper();
     this.authWrapper = this.createAuthWrapper();
     this.page = this.createHTML();
+    window.scrollTo(0, 0);
   }
 
   private createAuthDescription(): HTMLHeadingElement {

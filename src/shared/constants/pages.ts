@@ -1,3 +1,36 @@
+import type { LanguageChoiceType } from './common';
+
+export const PAGE_TITLE: Record<LanguageChoiceType, Record<string, string>> = {
+  en: {
+    404: '404',
+    about: 'About us',
+    address: 'Address',
+    blog: 'Blog',
+    cart: 'Cart',
+    catalog: 'Catalog',
+    login: 'Login',
+    main: 'Main',
+    product: 'Product',
+    profile: 'Profile',
+    register: 'Register',
+    wishlist: 'Wishlist',
+  },
+  ru: {
+    404: '404',
+    about: 'О нас',
+    address: 'Адрес',
+    blog: 'Блог',
+    cart: 'Корзина',
+    catalog: 'Каталог',
+    login: 'Вход',
+    main: 'Главная',
+    product: 'Товар',
+    profile: 'Профиль',
+    register: 'Регистрация',
+    wishlist: 'Избранное',
+  },
+} as const;
+
 export const PAGE_LINK_TEXT = {
   en: {
     ABOUT: 'About us',
@@ -47,16 +80,16 @@ export const BLOG_DESCRIPTION = {
   en: {
     LIST_DESCRIPTION:
       'Empowering all people to be plant people—a collection of articles from ours team of plant experts across a variety of plant care topics to inspire confidence in the next generation of plant parents. Welcome to GREENSHOP',
-    LIST_TITTLE: 'Your Journey to Plant Parenthood',
+    LIST_TITLE: 'Your Journey to Plant Parenthood',
     WIDGET_DESCRIPTIONS: 'This is where we share our experiences with all green friend lovers',
-    WIDGET_TITTLE: 'Our Blog Posts',
+    WIDGET_TITLE: 'Our Blog Posts',
   },
   ru: {
     LIST_DESCRIPTION:
       'Дать возможность всем людям стать родителями растений - сборник статей от нашей команды экспертов по уходу за растениями на самые разные темы, чтобы вселить уверенность в следующее поколение родителей растений. Добро пожаловать на сайт GREENSHOP',
-    LIST_TITTLE: 'Превращение в заботливого родителя растений',
+    LIST_TITLE: 'Превращение в заботливого родителя растений',
     WIDGET_DESCRIPTIONS: 'Здесь мы делимся своим опытом со всеми любителями зеленых друзей',
-    WIDGET_TITTLE: 'Наши статьи в Блоге',
+    WIDGET_TITLE: 'Наши статьи в Блоге',
   },
 } as const;
 
@@ -87,17 +120,19 @@ export const PAGE_ANSWER_KEYS = {
 } as const;
 
 export const PAGE_ID = {
-  ABOUT_US_PAGE: 'about/',
-  BLOG: 'blog/',
-  CART_PAGE: 'cart/',
-  CATALOG_PAGE: 'catalog/',
-  DEFAULT_PAGE: '/',
-  LOGIN_PAGE: 'login/',
-  MAIN_PAGE: 'main/',
-  NOT_FOUND_PAGE: '404/',
-  PRODUCT_PAGE: 'product/',
-  REGISTRATION_PAGE: 'register/',
-  USER_PROFILE_PAGE: 'profile/',
+  ABOUT_US_PAGE: 'about',
+  ADDRESS: 'address',
+  BLOG: 'blog',
+  CART_PAGE: 'cart',
+  CATALOG_PAGE: 'catalog',
+  DEFAULT_PAGE: '',
+  LOGIN_PAGE: 'login',
+  MAIN_PAGE: 'main',
+  NOT_FOUND_PAGE: '404',
+  PRODUCT_PAGE: 'product',
+  REGISTRATION_PAGE: 'register',
+  USER_PROFILE_PAGE: 'profile',
+  WISHLIST_PAGE: 'wishlist',
 } as const;
 
 export const USER_INFO_TEXT = {
