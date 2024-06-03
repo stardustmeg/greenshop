@@ -3,8 +3,10 @@ import type { languageVariants } from '@/shared/types/common';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -338,6 +340,8 @@ class FooterView {
         event.preventDefault();
         if (linkParams.href) {
           RouterModel.getInstance().navigateTo(linkParams.href);
+          EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
+          window.scrollTo(0, 0);
         }
       });
     } else {
@@ -483,9 +487,7 @@ class FooterView {
     submit.addEventListener('submit', (event) => {
       event.preventDefault();
     });
-    submit.addEventListener('click', (event) => {
-      event.preventDefault();
-    });
+
     form.append(inputHTML, submit);
     this.textElements.push({ element: submit, textItem: FOOTER_PAGE.SUB_BTN });
     this.textElements.push({ element: inputHTML, textItem: FOOTER_PAGE.SUB_PLACEHOLDER });

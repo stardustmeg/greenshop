@@ -1,8 +1,6 @@
 @import 'src/app/styles/mixins';
 
 .footer {
-  margin-bottom: var(--small-offset);
-  padding: 0 var(--small-offset);
   width: 100%;
 }
 
@@ -279,16 +277,41 @@
 }
 
 .link {
-  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
 
-  &:hover {
-    color: var(--steam-green-800);
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: calc(var(--two) * -3);
+    width: 100%;
+    height: var(--two);
+    background-color: currentcolor;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition:
+      transform 0.2s,
+      opacity 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--steam-green-800);
+
+      &::after {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
   }
 }
 
 .inactive {
   opacity: 0.5;
   cursor: default;
+  pointer-events: none;
 
   &:hover {
     color: var(--noble-gray-700);

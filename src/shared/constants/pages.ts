@@ -120,19 +120,19 @@ export const PAGE_ANSWER_KEYS = {
 } as const;
 
 export const PAGE_ID = {
-  ABOUT_US_PAGE: 'about/',
-  ADDRESS: 'address/',
-  BLOG: 'blog/',
-  CART_PAGE: 'cart/',
-  CATALOG_PAGE: 'catalog/',
-  DEFAULT_PAGE: '/',
-  LOGIN_PAGE: 'login/',
-  MAIN_PAGE: 'main/',
-  NOT_FOUND_PAGE: '404/',
-  PRODUCT_PAGE: 'product/',
-  REGISTRATION_PAGE: 'register/',
-  USER_PROFILE_PAGE: 'profile/',
-  WISHLIST_PAGE: 'wishlist/',
+  ABOUT_US_PAGE: 'about',
+  ADDRESS: 'address',
+  BLOG: 'blog',
+  CART_PAGE: 'cart',
+  CATALOG_PAGE: 'catalog',
+  DEFAULT_PAGE: '',
+  LOGIN_PAGE: 'login',
+  MAIN_PAGE: 'main',
+  NOT_FOUND_PAGE: '404',
+  PRODUCT_PAGE: 'product',
+  REGISTRATION_PAGE: 'register',
+  USER_PROFILE_PAGE: 'profile',
+  WISHLIST_PAGE: 'wishlist',
 } as const;
 
 export const USER_INFO_TEXT = {

@@ -14,8 +14,10 @@ import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import FilterProduct from '@/shared/API/product/utils/filter.ts';
 import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import { FilterFields, SortDirection, SortFields } from '@/shared/API/types/type.ts';
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { META_FILTERS } from '@/shared/constants/filters.ts';
 import { DEFAULT_PAGE, PRODUCT_LIMIT, SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
@@ -198,6 +200,7 @@ class CatalogModel {
   }
 
   private init(): void {
+    EventMediatorModel.getInstance().subscribe(MEDIATOR_EVENT.REDRAW_PRODUCTS, this.drawProducts.bind(this));
     this.getProductsInfo({})
       .then((productsInfo) => {
         this.initSettingComponents(productsInfo);
