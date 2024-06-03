@@ -67,14 +67,6 @@
     scale 0.2s;
 }
 
-.editLogo,
-.deleteLogo {
-  @include svg-logo;
-
-  width: calc(var(--extra-small-offset) * 1.5);
-  height: calc(var(--extra-small-offset) * 1.5);
-}
-
 .editButton,
 .deleteButton {
   @include green-btn;
@@ -82,10 +74,20 @@
   padding: 0;
   width: calc(var(--extra-small-offset) * 1.5);
   height: calc(var(--extra-small-offset) * 1.5);
+  background-color: transparent;
 
   svg {
     width: calc(var(--extra-small-offset) * 1.5);
     height: calc(var(--extra-small-offset) * 1.5);
+
+    &:hover {
+      fill: var(--steam-green-800);
+      stroke: var(--steam-green-800);
+    }
+  }
+
+  &:hover {
+    filter: brightness(1);
   }
 }
 
