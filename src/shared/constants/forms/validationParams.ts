@@ -14,6 +14,22 @@ export const EMAIL_VALIDATE = {
   },
 } as const;
 
+export const FOOTER_EMAIL_VALIDATE = {
+  notWhitespace: {
+    messages: { en: 'Email must not contain white spaces', ru: 'Адрес электронной почты не должен содержать пробелы' },
+    pattern: /^\S+$/,
+  },
+  required: false,
+  validMail: {
+    messages: {
+      en: 'Enter correct email (user@example.com)',
+      ru: 'Введите правильный адрес электронной почты (user@example.com)',
+    },
+    pattern:
+      /^(?!.*[_.-]{2})(?!^[_.-])(?!.*[_\\-]$)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\.[a-zA-Z]{2,6}$/,
+  },
+} as const;
+
 export const PASSWORD_VALIDATE = {
   minLength: 8,
   notWhitespace: {

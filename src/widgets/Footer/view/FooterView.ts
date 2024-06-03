@@ -496,7 +496,7 @@ class FooterView {
       cssClasses: [styles.subForm],
       tag: 'form',
     });
-    const email = new InputFieldModel(FORM_FIELDS.EMAIL_NOT_LABEL_TEXT, FORM_VALIDATION.EMAIL_VALIDATE);
+    const email = new InputFieldModel(FORM_FIELDS.EMAIL_NOT_LABEL_TEXT, FORM_VALIDATION.FOOTER_EMAIL_VALIDATE);
     const inputFieldElement = email.getView().getHTML();
     const inputHTML = email.getView().getInput().getHTML();
     if (inputFieldElement instanceof HTMLLabelElement) {
