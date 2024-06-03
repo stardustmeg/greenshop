@@ -63,6 +63,11 @@
   &:active {
     transform: scale(0.9);
   }
+
+  /* stylelint-disable-next-line order/order */
+  &:active {
+    transform: scale(0.9);
+  }
 }
 
 .navigationWrapper {
@@ -109,6 +114,11 @@
         stroke: var(--steam-green-1100);
       }
     }
+  }
+
+  /* stylelint-disable-next-line order/order */
+  &:active {
+    transform: scale(0.9);
   }
 
   /* stylelint-disable-next-line order/order */

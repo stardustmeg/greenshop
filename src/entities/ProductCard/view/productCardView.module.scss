@@ -25,6 +25,11 @@
   &:active {
     transform: scale(0.95);
   }
+
+  /* stylelint-disable-next-line order/order */
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 .productImageWrapper {
@@ -85,6 +90,10 @@
     height: var(--extra-small-offset);
     fill: var(--noble-gray-800);
     transition: fill 0.2s;
+  }
+
+  &:active {
+    transform: scale(0.9);
   }
 
   &:active {
