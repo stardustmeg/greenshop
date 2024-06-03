@@ -27,6 +27,14 @@
   background-color: var(--white-tr);
 }
 
+.navigateWrap {
+  padding-left: var(--small-offset);
+}
+
+.goalsSubWrap {
+  padding-left: calc(var(--small-offset) - var(--tiny-offset));
+}
+
 .socialPayWrap {
   display: flex;
   flex-direction: column;
@@ -207,6 +215,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--extra-small-offset);
+  padding-left: var(--small-offset);
   width: 100%;
   background-color: var(--steam-green-1000);
   gap: 10%;
