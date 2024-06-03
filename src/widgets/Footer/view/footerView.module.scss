@@ -1,8 +1,6 @@
 @import 'src/app/styles/mixins';
 
 .footer {
-  margin-bottom: var(--small-offset);
-  padding: 0 var(--small-offset);
   width: 100%;
 }
 
@@ -169,24 +167,33 @@
   width: 100%;
 }
 
+.label {
+  display: flex;
+  flex-direction: column;
+  width: 78%;
+
+  span {
+    font-size: 0.71rem;
+    word-break: break-all;
+  }
+}
+
 .subInput {
-  border-radius: var(--small-br);
+  margin-bottom: var(--tiny-offset);
+  border-radius: var(--small-br) 0 0 var(--small-br);
   padding: calc(var(--extra-small-offset) * 0.8) var(--tiny-offset);
   width: 100%;
   box-shadow: var(--mellow-shadow-050);
   font: var(--regular-font);
-  color: var(--noble-gray-400);
+  color: var(--noble-gray-800);
 }
 
 .subButton {
   @include green-btn;
 
-  position: absolute;
-  right: 0;
-  top: 0;
   border-radius: 0 var(--small-br) var(--small-br) 0;
-  padding: var(--tiny-offset) var(--extra-small-offset);
-  height: 100%;
+  padding: calc(var(--extra-small-offset) / 1.6) var(--extra-small-offset);
+  height: max-content;
   font: var(--medium-bold-font);
 
   &:active {
@@ -279,16 +286,41 @@
 }
 
 .link {
-  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
 
-  &:hover {
-    color: var(--steam-green-800);
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: calc(var(--two) * -3);
+    width: 100%;
+    height: var(--two);
+    background-color: currentcolor;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition:
+      transform 0.2s,
+      opacity 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--steam-green-800);
+
+      &::after {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
   }
 }
 
 .inactive {
   opacity: 0.5;
   cursor: default;
+  pointer-events: none;
 
   &:hover {
     color: var(--noble-gray-700);

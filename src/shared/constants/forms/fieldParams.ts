@@ -14,6 +14,20 @@ export const EMAIL = {
   },
 } as const;
 
+export const EMAIL_NOT_LABEL_TEXT = {
+  inputParams: {
+    autocomplete: 'off',
+    placeholder: 'user@example.com',
+    type: 'text',
+  },
+  labelParams: {
+    text: {
+      en: '',
+      ru: '',
+    },
+  },
+} as const;
+
 export const PASSWORD = {
   inputParams: {
     autocomplete: 'off',
@@ -225,6 +239,7 @@ export const BILLING_ADDRESS_POSTAL_CODE = {
 
 export const INPUT = [
   EMAIL,
+  EMAIL_NOT_LABEL_TEXT,
   PASSWORD,
   FIRST_NAME,
   LAST_NAME,

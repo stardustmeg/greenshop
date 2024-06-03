@@ -24,9 +24,9 @@ export const PRICE_RANGE_LABEL = {
 
 export const META_FILTERS = {
   en: {
-    ALL_PRODUCTS: 'All',
-    NEW_ARRIVALS: 'New',
-    SALE: 'Sale',
+    ALL_PRODUCTS: 'all',
+    NEW_ARRIVALS: 'new',
+    SALE: 'sale',
   },
   ru: {
     ALL_PRODUCTS: 'Все',

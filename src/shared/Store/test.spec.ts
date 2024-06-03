@@ -61,7 +61,7 @@ vi.mock('./Store.ts', async (importOriginal) => {
       authToken: null,
       billingCountry: '',
       currentLanguage: 'en',
-      currentPage: '/',
+      currentPage: '',
       defaultCountry: '',
       isAppThemeLight: true,
       isUserLoggedIn: false,
@@ -178,7 +178,7 @@ describe('rootReducer', () => {
       authToken: null,
       billingCountry: '',
       currentLanguage: 'en',
-      currentPage: '/',
+      currentPage: '',
       defaultCountry: '',
       isAppThemeLight: true,
       isUserLoggedIn: false,
@@ -215,7 +215,7 @@ describe('rootReducer', () => {
   });
 
   it('should handle setCurrentPage action', () => {
-    const page = 'main/';
+    const page = 'main';
     const action = actions.setCurrentPage(PAGE_ID.MAIN_PAGE);
     const newState = rootReducer(initialState, action);
     expect(newState.currentPage).toEqual(page);

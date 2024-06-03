@@ -3,10 +3,16 @@ import type { languageVariants } from '@/shared/types/common';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
+import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
+import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
+import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
+import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import type { Link } from '../model/FooterModel';
@@ -338,6 +344,8 @@ class FooterView {
         event.preventDefault();
         if (linkParams.href) {
           RouterModel.getInstance().navigateTo(linkParams.href);
+          EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
+          window.scrollTo(0, 0);
         }
       });
     } else {
@@ -471,23 +479,41 @@ class FooterView {
       cssClasses: [styles.subForm],
       tag: 'form',
     });
-    const email = new InputFieldModel(FORM_FIELDS.EMAIL, FORM_VALIDATION.EMAIL_VALIDATE);
+    const email = new InputFieldModel(FORM_FIELDS.EMAIL_NOT_LABEL_TEXT, FORM_VALIDATION.EMAIL_VALIDATE);
+    const inputFieldElement = email.getView().getHTML();
     const inputHTML = email.getView().getInput().getHTML();
+    if (inputFieldElement instanceof HTMLLabelElement) {
+      inputFieldElement.classList.add(styles.label);
+      inputHTML.classList.add(styles.input);
+      form.append(inputFieldElement);
+    } else if (inputFieldElement instanceof InputModel) {
+      form.append(inputFieldElement.getHTML());
+    }
     inputHTML.placeholder = FOOTER_PAGE.SUB_PLACEHOLDER[this.language];
     inputHTML.classList.add(styles.subInput);
-    const submit = createBaseElement({
-      cssClasses: [styles.subButton],
-      innerContent: FOOTER_PAGE.SUB_BTN[this.language],
-      tag: 'button',
+    const submit = new ButtonModel({
+      classes: [styles.subButton],
+      text: FOOTER_PAGE.SUB_BTN[this.language],
     });
-    submit.addEventListener('submit', (event) => {
+
+    submit.setDisabled();
+
+    form.addEventListener('submit', (event) => {
       event.preventDefault();
     });
-    submit.addEventListener('click', (event) => {
-      event.preventDefault();
+
+    submit.getHTML().addEventListener('click', () => {
+      email.getView().getInput().clear();
+      serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_SUBSCRIBE, MESSAGE_STATUS.SUCCESS);
+      submit.setDisabled();
     });
-    form.append(inputHTML, submit);
-    this.textElements.push({ element: submit, textItem: FOOTER_PAGE.SUB_BTN });
+
+    inputHTML.addEventListener('input', () => {
+      this.switchSubmitFormButtonAccess(email, submit);
+    });
+
+    form.append(submit.getHTML());
+    this.textElements.push({ element: submit.getHTML(), textItem: FOOTER_PAGE.SUB_BTN });
     this.textElements.push({ element: inputHTML, textItem: FOOTER_PAGE.SUB_PLACEHOLDER });
     return form;
   }
@@ -531,6 +557,16 @@ class FooterView {
     });
 
     return this.wrapper;
+  }
+
+  private switchSubmitFormButtonAccess(email: InputFieldModel, submitButton: ButtonModel): boolean {
+    if (email.getIsValid()) {
+      submitButton.setEnabled();
+    } else {
+      submitButton.setDisabled();
+    }
+
+    return true;
   }
 
   public addNavLists(generalLinks: Link[], helpLinks: Link[], categoryLinks: Link[]): void {

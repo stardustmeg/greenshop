@@ -16,27 +16,6 @@ import ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel.ts
 import CartPageView from '../view/CartPageView.ts';
 
 class CartPageModel implements Page {
-  private addDiscountHandler = async (discountCode: string): Promise<void> => {
-    if (discountCode.trim()) {
-      const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
-      this.view.getCouponButton().append(loader);
-      await getCartModel()
-        .addCoupon(discountCode)
-        .then((cart) => {
-          if (cart) {
-            serverMessageModel.showServerMessage(
-              SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_COUPON_TO_CART,
-              MESSAGE_STATUS.SUCCESS,
-            );
-            this.cart = cart;
-            this.view.updateTotal(this.cart);
-          }
-        })
-        .catch(showErrorMessage)
-        .finally(() => loader.remove());
-    }
-  };
-
   private cart: Cart | null = null;
 
   private changeProductHandler = (cart: Cart): void => {
@@ -83,9 +62,30 @@ class CartPageModel implements Page {
   private view: CartPageView;
 
   constructor(parent: HTMLDivElement) {
-    this.view = new CartPageView(parent, this.clearCart, this.addDiscountHandler);
+    this.view = new CartPageView(parent, this.clearCart, this.addDiscountHandler.bind(this));
 
     this.init().catch(showErrorMessage);
+  }
+
+  private async addDiscountHandler(discountCode: string): Promise<void> {
+    if (discountCode.trim()) {
+      const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
+      this.view.getCouponButton().append(loader);
+      await getCartModel()
+        .addCoupon(discountCode)
+        .then((cart) => {
+          if (cart) {
+            serverMessageModel.showServerMessage(
+              SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_COUPON_TO_CART,
+              MESSAGE_STATUS.SUCCESS,
+            );
+            this.cart = cart;
+            this.view.updateTotal(this.cart);
+          }
+        })
+        .catch(showErrorMessage)
+        .finally(() => loader.remove());
+    }
   }
 
   private async init(): Promise<void> {
