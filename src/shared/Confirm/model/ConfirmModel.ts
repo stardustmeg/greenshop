@@ -1,7 +1,5 @@
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import getStore from '@/shared/Store/Store.ts';
-import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import showErrorMessage from '@/shared/utils/userMessage.ts';
 
@@ -12,9 +10,9 @@ class ConfirmModel {
 
   private view: ConfirmView;
 
-  constructor(callback: () => Promise<void> | void) {
+  constructor(callback: () => Promise<void> | void, message: string) {
     this.callback = callback;
-    this.view = new ConfirmView(USER_MESSAGE[getStore().getState().currentLanguage].DELETE_ADDRESS);
+    this.view = new ConfirmView(message);
     this.setCancelButtonHandler();
     this.setConfirmButtonHandler();
   }

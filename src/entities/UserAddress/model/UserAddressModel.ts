@@ -9,6 +9,7 @@ import modal from '@/shared/Modal/model/ModalModel.ts';
 import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry } from '@/shared/Store/actions.ts';
+import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
@@ -109,7 +110,10 @@ class UserAddressModel {
       .getDeleteButton()
       .getHTML()
       .addEventListener('click', () => {
-        const confirmModel = new ConfirmModel(() => this.deleteAddress(address));
+        const confirmModel = new ConfirmModel(
+          () => this.deleteAddress(address),
+          USER_MESSAGE[getStore().getState().currentLanguage].DELETE_ADDRESS,
+        );
         modal.setContent(confirmModel.getHTML());
         modal.show();
       });

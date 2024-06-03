@@ -16,7 +16,7 @@ class ScrollToTopModel {
   }
 
   private scrollToTopHandler(): void {
-    window.scrollTo({ behavior: 'smooth', top: 0 });
+    window.scrollTo(0, 0);
   }
 
   public getHTML(): ScrollToTopView {
