@@ -1,4 +1,5 @@
 const SVG_DETAILS = {
+  ARROW_UP: 'arrowUp',
   BILL: 'bill',
   BIN: 'bin',
   CART: 'cart',

@@ -3,6 +3,7 @@ import type { Page, PageParams, PagesType } from '@/shared/types/page.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
+import ScrollToTopModel from '@/shared/ScrollToTop/model/ScrollToTopModel.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import FooterModel from '@/widgets/Footer/model/FooterModel.ts';
 import HeaderModel from '@/widgets/Header/model/HeaderModel.ts';
@@ -77,7 +78,8 @@ class AppModel {
   private async initialize(): Promise<RouterModel> {
     const routes = await this.createRoutes();
     const router = new RouterModel(routes);
-    document.body.append(this.appView.getHTML());
+    const scrollToTop = new ScrollToTopModel();
+    document.body.append(this.appView.getHTML(), scrollToTop.getHTML().getHTML());
     this.appView.getHTML().insertAdjacentElement('beforebegin', new HeaderModel(this.appView.getHTML()).getHTML());
     this.appView.getHTML().insertAdjacentElement('afterend', new FooterModel().getHTML());
     this.appView.getHTML().insertAdjacentElement('afterend', modal.getHTML());

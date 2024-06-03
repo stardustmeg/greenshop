@@ -1,0 +1,45 @@
+/* stylelint-disable scss/no-global-function-names */
+@import 'src/app/styles/mixins';
+
+$btn-vars: (
+  padding: var(--tiny-offset),
+  bg: var(--steam-green-900),
+  hover-bg: var(--steam-green-1000),
+  fill: var(--steam-green-800),
+  stroke: var(--steam-green-800),
+  offset: var(--small-offset),
+);
+
+.scrollToTopButton {
+  @include round-btn(
+    map-get($btn-vars, padding),
+    map-get($btn-vars, bg),
+    map-get($btn-vars, hover-bg),
+    map-get($btn-vars, fill),
+    map-get($btn-vars, stroke)
+  );
+
+  position: fixed;
+  right: map-get($btn-vars, offset);
+  bottom: map-get($btn-vars, offset);
+  z-index: 1;
+  width: calc(map-get($btn-vars, offset) * 1.5);
+  height: calc(map-get($btn-vars, offset) * 1.5);
+  fill: map-get($btn-vars, fill);
+  stroke: map-get($btn-vars, stroke);
+  transition:
+    transform 0.2s,
+    opacity 0.2s,
+    visibility 0.2s;
+
+  svg {
+    width: map-get($btn-vars, offset);
+    height: map-get($btn-vars, offset);
+  }
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0);
+}
