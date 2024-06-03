@@ -32,7 +32,9 @@ type Goal = {
 type Contact = {
   alt: string;
   description: string;
+  href?: string;
   src: string;
+  tag: keyof HTMLElementTagNameMap;
 };
 
 type Img = {
@@ -98,16 +100,21 @@ const CONTACTS: Contact[] = [
     alt: 'location greenshop',
     description: '70 West Buckingham Ave. Farmingdale, NY 11735',
     src: '/img/png/location.png',
+    tag: 'address',
   },
   {
     alt: 'email greenshop',
     description: 'contact@greenshop.com',
+    href: 'mailto:contact@greenshop.com',
     src: '/img/png/message.png',
+    tag: 'a',
   },
   {
     alt: 'phone greenshop',
     description: '+88 01911 717 490',
+    href: 'tel:+8801911717490',
     src: '/img/png/calling.png',
+    tag: 'a',
   },
 ];
 
@@ -250,11 +257,19 @@ class FooterView {
     return wrap;
   }
 
-  private createContactItemHTML(contact: Contact): HTMLDivElement {
+  private createContactItemHTML(contact: Contact): HTMLElement {
+    const attributes: { [key: string]: string } = {};
+
+    if (contact.href) {
+      attributes.href = contact.href;
+    }
+
     const wrap = createBaseElement({
+      attributes,
       cssClasses: [styles.contactItem],
-      tag: 'div',
+      tag: contact.tag,
     });
+
     const icon = createBaseElement({
       attributes: {
         alt: contact.alt,
@@ -263,11 +278,13 @@ class FooterView {
       cssClasses: [styles.contactIcon],
       tag: 'img',
     });
+
     const title = createBaseElement({
       cssClasses: [styles.contactText],
       innerContent: contact.description,
-      tag: 'p',
+      tag: 'span',
     });
+
     wrap.append(icon, title);
     return wrap;
   }
