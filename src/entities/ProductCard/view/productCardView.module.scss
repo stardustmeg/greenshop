@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-self: center;
-  outline: calc(var(--one) * 1.5) solid var(--noble-gray-300);
+  outline: var(--two) solid var(--noble-gray-300);
   border-radius: var(--medium-br);
   min-height: calc(var(--extra-small-offset) * 17.5); // 350px
   max-width: calc(var(--extra-large-offset) * 2.5); // 250px
@@ -16,14 +16,9 @@
 
   @media (hover: hover) {
     &:hover {
-      outline: calc(var(--one) * 1.5) solid var(--steam-green-800);
+      outline: var(--two) solid var(--steam-green-800);
       transform: scale(0.98);
     }
-  }
-
-  /* stylelint-disable-next-line order/order */
-  &:active {
-    transform: scale(0.95);
   }
 
   /* stylelint-disable-next-line order/order */
@@ -76,12 +71,12 @@
 .switchToWishListButton,
 .goDetailsPageLink {
   position: relative;
-  outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
+  outline: var(--two) solid var(--noble-gray-700);
   border-radius: var(--medium-br);
   padding: var(--tiny-offset);
   width: var(--small-offset);
   height: var(--small-offset);
-  background-color: var(--white-tr);
+  background-color: var(--noble-gray-1000);
   transition: outline 0.2s;
   backdrop-filter: blur(10px);
 
@@ -95,17 +90,13 @@
   &:active {
     transform: scale(0.9);
   }
-
-  &:active {
-    transform: scale(0.9);
-  }
 }
 
 .addToCartButton,
 .goDetailsPageLink {
   @media (hover: hover) {
     &:hover {
-      outline: calc(var(--one) * 1.5) solid var(--steam-green-400);
+      outline: var(--two) solid var(--steam-green-400);
 
       svg {
         fill: var(--steam-green-400);
@@ -122,7 +113,7 @@
 }
 
 .inWishList {
-  outline: calc(var(--one) * 1.5) solid var(--red-power-600);
+  outline: var(--two) solid var(--red-power-600);
 
   svg {
     fill: var(--red-power-600);
@@ -132,7 +123,7 @@
 .switchToWishListButton {
   @media (hover: hover) {
     &:hover {
-      outline: calc(var(--one) * 1.5) solid var(--red-power-600);
+      outline: var(--two) solid var(--red-power-600);
 
       svg {
         fill: var(--red-power-600);
@@ -143,7 +134,7 @@
   &.inWishList {
     @media (hover: hover) {
       &:hover {
-        outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
+        outline: var(--two) solid var(--noble-gray-700);
 
         svg {
           fill: var(--noble-gray-700);
@@ -183,7 +174,7 @@
   letter-spacing: var(--one);
   text-align: left;
   text-overflow: ellipsis;
-  color: var(--noble-gray-700);
+  color: var(--noble-gray-400);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 
@@ -229,7 +220,7 @@
   letter-spacing: var(--one);
   text-align: center;
   text-transform: uppercase;
-  color: var(--steam-green-1100);
+  color: var(--steam-green-400);
   background-color: var(--steam-green-800);
   gap: var(--two);
 }

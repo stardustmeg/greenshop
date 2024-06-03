@@ -1,5 +1,4 @@
 @import 'src/app/styles/mixins';
-@import 'src/app/styles/mixins';
 
 .wrapper {
   display: flex;
@@ -219,7 +218,6 @@
 
 .switchToCartButton {
   @include green-btn;
-  @include green-btn;
 
   padding: calc(var(--small-offset) / 3) calc(var(--small-offset) / 2);
   width: 100%;
@@ -254,10 +252,6 @@
     height: var(--extra-small-offset);
     fill: var(--noble-gray-800);
     transition: fill 0.2s;
-  }
-
-  &:active {
-    transform: scale(0.9);
   }
 
   &:active {

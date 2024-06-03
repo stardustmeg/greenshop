@@ -63,11 +63,6 @@
   &:active {
     transform: scale(0.9);
   }
-
-  /* stylelint-disable-next-line order/order */
-  &:active {
-    transform: scale(0.9);
-  }
 }
 
 .navigationWrapper {
@@ -83,9 +78,8 @@
 
 .nextSlideButton,
 .prevSlideButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  display: block;
   border: var(--one) solid var(--noble-gray-200);
   border-radius: 50%;
   width: 3rem;
@@ -98,27 +92,11 @@
     border-color 0.2s,
     transform 0.2s;
 
-  svg {
-    width: 2.5rem;
-    height: 2.5rem;
-    stroke: var(--steam-green-800);
-    transition: stroke 0.2s;
-  }
-
   @media (hover: hover) {
     &:hover {
       border-color: var(--steam-green-400);
       color: var(--steam-green-700);
-
-      svg {
-        stroke: var(--steam-green-1100);
-      }
     }
-  }
-
-  /* stylelint-disable-next-line order/order */
-  &:active {
-    transform: scale(0.9);
   }
 
   /* stylelint-disable-next-line order/order */
@@ -128,14 +106,22 @@
 }
 
 .nextSlideButton {
-  svg {
-    transform: rotate(90deg);
+  &::after {
+    content: '↑';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
   }
 }
 
 .prevSlideButton {
-  svg {
-    transform: rotate(-90deg);
+  &::after {
+    content: '↑';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
   }
 }
 
