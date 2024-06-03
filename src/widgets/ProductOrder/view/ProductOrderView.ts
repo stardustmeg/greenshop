@@ -2,10 +2,13 @@ import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 import type { CartProduct } from '@/shared/types/cart';
 import type { languageVariants } from '@/shared/types/common';
 
+import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE, TABLET_WIDTH } from '@/shared/constants/common.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import { CartActive } from '@/shared/types/cart.ts';
+import { buildPathName } from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import Hammer from 'hammerjs';
@@ -121,10 +124,20 @@ class ProductOrderView {
 
   private createImgCell(): HTMLTableCellElement {
     const tdImage = createBaseElement({ cssClasses: [styles.td, styles.imgCell], tag: 'td' });
+    const href = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.productItem.key, {
+      size: [this.productItem.size],
+    })}`;
+    const link = new LinkModel({
+      attrs: {
+        href,
+      },
+      classes: [styles.goDetailsPageLink],
+    });
     const img = createBaseElement({ cssClasses: [styles.img], tag: 'img' });
     img.src = this.productItem.images;
     img.alt = this.productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
-    tdImage.append(img);
+    link.getHTML().append(img);
+    tdImage.append(link.getHTML());
     return tdImage;
   }
 

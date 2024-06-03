@@ -4,9 +4,12 @@ import type { languageVariants } from '@/shared/types/common';
 import type ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
+import ConfirmModel from '@/shared/Confirm/model/ConfirmModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
+import modal from '@/shared/Modal/model/ModalModel.ts';
 import getStore from '@/shared/Store/Store.ts';
+import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -218,7 +221,12 @@ class CartPageView {
     this.textElement.push({ element: this.clear.getHTML(), textItem: TITLE.CLEAR });
     this.clear.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      this.clearCallback();
+      const confirmModel = new ConfirmModel(
+        () => this.clearCallback(),
+        USER_MESSAGE[getStore().getState().currentLanguage].CLEAR_CART,
+      );
+      modal.setContent(confirmModel.getHTML());
+      modal.show();
     });
     tdDelete.append(this.clear.getHTML());
     return tdDelete;
