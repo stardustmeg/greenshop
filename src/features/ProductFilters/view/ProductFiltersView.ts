@@ -399,6 +399,10 @@ class ProductFiltersView {
       this.callback();
     });
 
+    observeStore(selectCurrentLanguage, () => {
+      this.resetFiltersButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].RESET;
+    });
+
     return this.resetFiltersButton;
   }
 
