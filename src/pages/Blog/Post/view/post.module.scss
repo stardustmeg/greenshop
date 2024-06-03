@@ -1,5 +1,9 @@
 .cardItem {
   background-color: var(--white);
+  transition:
+    box-shadow 0.2s,
+    color 0.2s,
+    transform 0.2s;
 
   &:hover {
     box-shadow: var(--mellow-shadow-500);

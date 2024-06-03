@@ -27,6 +27,14 @@
   background-color: var(--white-tr);
 }
 
+.navigateWrap {
+  padding-left: var(--small-offset);
+}
+
+.goalsSubWrap {
+  padding-left: calc(var(--small-offset) - var(--tiny-offset));
+}
+
 .socialPayWrap {
   display: flex;
   flex-direction: column;
@@ -207,6 +215,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--extra-small-offset);
+  padding-left: var(--small-offset);
   width: 100%;
   background-color: var(--steam-green-1000);
   gap: 10%;
@@ -286,34 +295,15 @@
 }
 
 .link {
-  position: relative;
-  transition: color 0.2s;
+  @include link;
+
+  padding: 0;
+  width: max-content;
+  height: var(--extra-small-offset);
+  text-transform: none;
 
   &::after {
-    content: '';
-    position: absolute;
-    left: 0;
     bottom: calc(var(--two) * -3);
-    width: 100%;
-    height: var(--two);
-    background-color: currentcolor;
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: center;
-    transition:
-      transform 0.2s,
-      opacity 0.2s;
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      color: var(--steam-green-800);
-
-      &::after {
-        opacity: 1;
-        transform: scaleX(1);
-      }
-    }
   }
 }
 

@@ -21,16 +21,16 @@ class PasswordEditView {
 
   private oldPasswordField: InputFieldModel;
 
-  private saveChangesButton: ButtonModel;
-
   private showNewPasswordElement: HTMLDivElement;
 
   private showOldPasswordElement: HTMLDivElement;
 
-  private view: HTMLDivElement;
+  private submitButton: ButtonModel;
+
+  private view: HTMLFormElement;
 
   constructor() {
-    this.saveChangesButton = this.createSaveChangesButton();
+    this.submitButton = this.createSubmitButton();
     this.cancelButton = this.createCancelButton();
     this.showOldPasswordElement = this.createShowOldPasswordElement();
     this.showNewPasswordElement = this.createShowNewPasswordElement();
@@ -47,10 +47,10 @@ class PasswordEditView {
     return this.cancelButton;
   }
 
-  private createHTML(): HTMLDivElement {
+  private createHTML(): HTMLFormElement {
     this.view = createBaseElement({
       cssClasses: [styles.wrapper],
-      tag: 'div',
+      tag: 'form',
     });
 
     this.inputFields.forEach((inputField) => {
@@ -65,7 +65,7 @@ class PasswordEditView {
       }
     });
 
-    this.view.append(this.cancelButton.getHTML(), this.saveChangesButton.getHTML());
+    this.view.append(this.submitButton.getHTML(), this.cancelButton.getHTML());
     return this.view;
   }
 
@@ -89,14 +89,6 @@ class PasswordEditView {
     return this.oldPasswordField;
   }
 
-  private createSaveChangesButton(): ButtonModel {
-    this.saveChangesButton = new ButtonModel({
-      classes: [styles.saveChangesButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].SAVE_CHANGES,
-    });
-    return this.saveChangesButton;
-  }
-
   private createShowNewPasswordElement(): HTMLDivElement {
     this.showNewPasswordElement = createBaseElement({
       cssClasses: [styles.showPasswordElement],
@@ -115,11 +107,20 @@ class PasswordEditView {
     return this.showOldPasswordElement;
   }
 
+  private createSubmitButton(): ButtonModel {
+    this.submitButton = new ButtonModel({
+      classes: [styles.submitButton],
+      text: BUTTON_TEXT[getStore().getState().currentLanguage].SAVE_CHANGES,
+    });
+    this.submitButton.setDisabled();
+    return this.submitButton;
+  }
+
   public getCancelButton(): ButtonModel {
     return this.cancelButton;
   }
 
-  public getHTML(): HTMLDivElement {
+  public getHTML(): HTMLFormElement {
     return this.view;
   }
 
@@ -135,16 +136,16 @@ class PasswordEditView {
     return this.oldPasswordField;
   }
 
-  public getSaveChangesButton(): ButtonModel {
-    return this.saveChangesButton;
-  }
-
   public getShowNewPasswordElement(): HTMLDivElement {
     return this.showNewPasswordElement;
   }
 
   public getShowOldPasswordElement(): HTMLDivElement {
     return this.showOldPasswordElement;
+  }
+
+  public getSubmitButton(): ButtonModel {
+    return this.submitButton;
   }
 
   public switchPasswordElementSVG(type: string, el: HTMLDivElement): SVGSVGElement {

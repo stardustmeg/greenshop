@@ -48,3 +48,6 @@ sprint3:
 
 sprint4:
   - head-branch: 'ECOMM-4'
+
+sprint5:
+  - head-branch: 'ECOMM-5'
