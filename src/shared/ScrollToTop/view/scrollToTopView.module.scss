@@ -25,7 +25,7 @@ $btn-vars: (
   z-index: 1;
   width: calc(map-get($btn-vars, offset) * 1.5);
   height: calc(map-get($btn-vars, offset) * 1.5);
-  fill: map-get($btn-vars, fill);
+  fill: none;
   stroke: map-get($btn-vars, stroke);
   transition:
     transform 0.2s,

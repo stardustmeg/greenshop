@@ -1,3 +1,5 @@
+@import 'src/app/styles/mixins';
+
 .registrationPage {
   position: relative;
   display: block;
@@ -63,35 +65,14 @@
 }
 
 .loginLink {
-  position: relative;
-  color: var(--noble-gray-800);
-  transition: color 0.2s;
+  @include link;
+
+  padding: 0;
+  font: var(--medium-font);
+  text-transform: none;
 
   &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -4px;
-    width: 100%;
-    height: var(--two);
-    background-color: currentcolor;
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: center;
-    transition:
-      transform 0.2s,
-      opacity 0.2s;
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      color: var(--steam-green-800);
-
-      &::after {
-        opacity: 1;
-        transform: scaleX(1);
-      }
-    }
+    bottom: calc(var(--one) * -4);
   }
 }
 

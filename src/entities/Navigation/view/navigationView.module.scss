@@ -1,3 +1,5 @@
+@import 'src/app/styles/mixins';
+
 .navigation {
   display: flex;
   align-items: center;
@@ -14,52 +16,13 @@
   }
 }
 
+$color: var(--noble-gray-1100);
+$padding: 0 calc(var(--extra-small-offset) / 2);
+
 .link {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 0 calc(var(--extra-small-offset) / 2);
-  height: 100%;
-  font: var(--regular-font);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--noble-gray-1100);
-  transition: color 0.2s;
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: calc(var(--one) * -1);
-    width: 100%;
-    height: var(--two);
-    background-color: currentcolor;
-    opacity: 0;
-    transform: scaleX(0);
-    transform-origin: center;
-    transition:
-      transform 0.2s,
-      opacity 0.2s;
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      color: var(--steam-green-800);
-
-      &::after {
-        opacity: 1;
-        transform: scaleX(1);
-      }
-    }
-  }
+  @include link($padding, $color);
 }
 
 .active {
-  color: var(--steam-green-800);
-  opacity: 1;
-
-  &::after {
-    opacity: 1;
-    transform: scaleX(1);
-  }
+  @include active;
 }
