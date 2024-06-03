@@ -33,10 +33,13 @@ export class CartModel {
 
   private cart: Cart | null = null;
 
+  private isSetAnonymousId = false;
+
   private root: CartApi;
 
   constructor() {
     this.root = getCartApi();
+    this.getCart().catch(showErrorMessage);
   }
 
   private adaptCart(data: CartResponse): Cart {
@@ -98,13 +101,15 @@ export class CartModel {
     const data = await this.root.getAnonymCart(anonymousCartId);
     if (!data.body.customerId) {
       this.cart = this.getCartFromData(data);
-      if (data.body.anonymousId !== anonymousId) {
+      const cartAnonymId = data.body.anonymousId;
+      if (cartAnonymId !== anonymousId && !this.isSetAnonymousId) {
+        this.isSetAnonymousId = true;
         const actions: CartSetAnonymousIdAction = {
           action: ACTIONS.setAnonymousId,
           anonymousId,
         };
-        const data = await this.root.setAnonymousId(this.cart, actions);
-        this.cart = this.getCartFromData(data);
+        const dataSetId = await this.root.setAnonymousId(this.cart, actions);
+        this.cart = this.getCartFromData(dataSetId);
       }
     }
 
@@ -256,6 +261,9 @@ export class CartModel {
     if (!this.cart) {
       const { anonymousCartId, anonymousId } = getStore().getState();
       if (anonymousCartId && anonymousId) {
+        // const data = await this.root.getAnonymCart(anonymousCartId);
+        // this.cart = this.getCartFromData(data);
+
         this.cart = await this.getAnonymousCart(anonymousCartId, anonymousId);
       }
       if (!this.cart) {
