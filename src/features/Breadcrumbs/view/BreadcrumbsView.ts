@@ -3,7 +3,7 @@ import type { BreadCrumbLink } from '@/shared/types/link';
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-import formattedText from '@/shared/utils/formattedText.ts';
+import { formattedTextForMainAndCatalog } from '@/shared/utils/formattedText.ts';
 
 import styles from './breadcrumbsView.module.scss';
 
@@ -38,7 +38,7 @@ class BreadcrumbsView {
         href: linkParams.link,
       },
       classes: [styles.link],
-      text: formattedText(linkParams.name),
+      text: formattedTextForMainAndCatalog(linkParams.name),
     });
 
     link.getHTML().addEventListener('click', (event) => {
