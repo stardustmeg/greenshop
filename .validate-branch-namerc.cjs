@@ -9,3 +9,4 @@ module.exports = {
 // "fix(RSS-ECOMM-2_15)/addCorrectProduct" // where 2 is the sprint number and 15 is the issue number
 // "chore(RSS-ECOMM-3_01)/addNewProduct" // where 3 is the sprint number and 01 is the issue number
 // "refactor(RSS-ECOMM-4_01)/addNewProduct" // where 4 is the sprint number and 01 is the issue number
+// "revert(RSS-ECOMM-5_01)/addNewProduct" // where 5 is the sprint number and 01 is the issue number
