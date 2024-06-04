@@ -8,7 +8,7 @@ import { Autoplay, Pagination } from 'swiper/modules';
 
 import PromoCodeSliderView from '../view/PromoCodeSliderView.ts';
 
-const SLIDER_DELAY = 1000000000;
+const SLIDER_DELAY = 10000;
 const SLIDER_PER_VIEW = 1;
 
 class PromoCodeSliderModel {
