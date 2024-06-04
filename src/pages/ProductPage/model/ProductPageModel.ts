@@ -31,11 +31,11 @@ class ProductPageModel implements Page {
     const links = [
       {
         link: buildPathName(PAGE_ID.MAIN_PAGE, null, null),
-        name: PAGE_ID.MAIN_PAGE.slice(0, -1),
+        name: PAGE_ID.MAIN_PAGE.toString(),
       },
       {
         link: buildPathName(PAGE_ID.CATALOG_PAGE, null, null),
-        name: PAGE_ID.CATALOG_PAGE.slice(0, -1),
+        name: PAGE_ID.CATALOG_PAGE.toString(),
       },
     ];
 
