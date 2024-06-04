@@ -40,7 +40,7 @@ export default class PostView {
   private createCardInfoHTML(): string {
     const ln = getStore().getState().currentLanguage;
     const read =
-      ln === 'en' ? `Read in ${this.post.time.toString()} minutes` : `Читать за ${this.post.time.toString()} минуты`;
+      ln === 'en' ? `Read in ${this.post.time.toString()} min.` : `Читать за ${this.post.time.toString()} мин.`;
     const readMore = ln === 'en' ? 'Read more...' : 'Читать далее...';
     const content = `
       <article class=${styles.article}>
