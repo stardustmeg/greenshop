@@ -38,9 +38,12 @@ class PromoCodeSliderView {
 
     const start = createBaseElement({
       cssClasses: [styles.sliderDateStart],
+      // eslint-disable-next-line no-nested-ternary
       innerContent: currentUser
         ? `${calcUserBirthDayRange(currentUser.birthDate).start} &mdash;`
-        : `${PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start} &mdash;` ?? '',
+        : PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.end
+          ? `${PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start} &mdash;`
+          : PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start,
       tag: 'span',
     });
 
