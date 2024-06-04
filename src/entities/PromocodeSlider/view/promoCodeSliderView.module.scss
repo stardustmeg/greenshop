@@ -1,0 +1,111 @@
+.slider {
+  border: calc(var(--two) * 1.5) solid var(--steam-green-1100);
+  border-radius: var(--large-br);
+  background-color: var(--steam-green-1000);
+}
+
+.sliderContent {
+  position: relative;
+  padding: var(--medium-offset);
+}
+
+.sliderTitle {
+  margin-bottom: var(--medium-offset);
+  max-width: 50%;
+  font: var(--extra-black-font);
+  letter-spacing: var(--one);
+  color: var(--steam-green-800);
+
+  @media (max-width: 600px) {
+    max-width: 100%;
+  }
+}
+
+.sliderImage {
+  position: absolute;
+  right: var(--medium-offset);
+  top: 50%;
+  width: 20%;
+  height: auto;
+  transform: translateY(-50%);
+
+  @media (max-width: 950px) {
+    width: 30%;
+  }
+
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
+
+.sliderDescription {
+  margin-bottom: var(--small-offset);
+  max-width: 50%;
+  font: var(--bold-font);
+  letter-spacing: var(--one);
+  color: var(--noble-gray-800);
+
+  @media (max-width: 600px) {
+    max-width: 100%;
+  }
+}
+
+.sliderPromoCode {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--small-offset);
+  max-width: max-content;
+  gap: var(--tiny-offset);
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: transparent;
+    stroke: var(--steam-green-400);
+    transition: stroke 0.2s;
+    cursor: copy;
+
+    @media (hover: hover) {
+      &:hover {
+        stroke: var(--steam-green-800);
+      }
+    }
+  }
+}
+
+.currentPromoCode {
+  font: var(--medium-font);
+  letter-spacing: var(--one);
+  color: var(--steam-green-400);
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.paginationWrapper {
+  z-index: 2;
+  display: flex;
+  margin: 0 auto;
+  margin-bottom: var(--tiny-offset);
+  max-width: max-content;
+  gap: var(--tiny-offset);
+
+  > * {
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--steam-green-800);
+    cursor: pointer;
+  }
+}
+
+.sliderDate {
+  display: flex;
+  gap: var(--tiny-offset);
+}
+
+.sliderDateStart,
+.sliderDateEnd {
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  color: var(--noble-gray-800);
+}
