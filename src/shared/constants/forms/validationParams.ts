@@ -14,10 +14,6 @@ export const EMAIL_VALIDATE = {
   },
 } as const;
 
-export const FOOTER_EMAIL_VALIDATE = {
-  required: false,
-} as const;
-
 export const PASSWORD_VALIDATE = {
   minLength: 8,
   notWhitespace: {

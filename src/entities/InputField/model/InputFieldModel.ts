@@ -18,7 +18,11 @@ class InputFieldModel {
       this.setInputHandler();
     }
 
-    observeStore(selectCurrentLanguage, () => this.inputHandler());
+    observeStore(selectCurrentLanguage, () => {
+      if (this.view.getErrorField()?.textContent?.length) {
+        this.inputHandler();
+      }
+    });
   }
 
   private inputHandler(): boolean {

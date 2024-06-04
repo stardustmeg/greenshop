@@ -35,6 +35,7 @@ type Contact = {
   href?: string;
   src: string;
   tag: keyof HTMLElementTagNameMap;
+  target?: string;
 };
 
 type Img = {
@@ -99,8 +100,10 @@ const CONTACTS: Contact[] = [
   {
     alt: 'location greenshop',
     description: '70 West Buckingham Ave. Farmingdale, NY 11735',
+    href: 'https://www.google.com/maps/place/70+West+Dr,+Massapequa,+NY+11758,+%D0%A1%D0%A8%D0%90/@40.7095332,-73.4562642,17z/data=!3m1!4b1!4m6!3m5!1s0x89e9d5501f64213b:0xb7d1b7ebb0725ac6!8m2!3d40.7095332!4d-73.4536893!16s%2Fg%2F11c5fp8grj?entry=ttu',
     src: '/img/png/location.png',
-    tag: 'address',
+    tag: 'a',
+    target: '_blank',
   },
   {
     alt: 'email greenshop',
@@ -262,6 +265,10 @@ class FooterView {
 
     if (contact.href) {
       attributes.href = contact.href;
+    }
+
+    if (contact.target) {
+      attributes.target = contact.target;
     }
 
     const wrap = createBaseElement({
@@ -496,7 +503,7 @@ class FooterView {
       cssClasses: [styles.subForm],
       tag: 'form',
     });
-    const email = new InputFieldModel(FORM_FIELDS.EMAIL_NOT_LABEL_TEXT, FORM_VALIDATION.FOOTER_EMAIL_VALIDATE);
+    const email = new InputFieldModel(FORM_FIELDS.EMAIL_NOT_LABEL_TEXT, FORM_VALIDATION.EMAIL_VALIDATE);
     const inputFieldElement = email.getView().getHTML();
     const inputHTML = email.getView().getInput().getHTML();
     if (inputFieldElement instanceof HTMLLabelElement) {
