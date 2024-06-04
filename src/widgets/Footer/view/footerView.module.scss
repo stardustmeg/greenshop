@@ -136,6 +136,7 @@
 .goalTitle {
   padding: var(--tiny-offset) 0;
   font: var(--bold-font);
+  letter-spacing: var(--one);
   color: var(--black);
 }
 
@@ -144,6 +145,7 @@
 .subDescription {
   padding: var(--tiny-offset) 0;
   font: var(--regular-font);
+  letter-spacing: var(--one);
   word-wrap: break-word;
   color: var(--noble-gray-700);
 }
@@ -165,6 +167,7 @@
 .subTitle {
   padding: var(--tiny-offset) 0 var(--extra-small-offset);
   font: var(--medium-bold-font);
+  letter-spacing: var(--one);
   color: var(--black);
 }
 
@@ -181,7 +184,9 @@
   width: 78%;
 
   span {
+    max-width: 17rem;
     font-size: 0.71rem;
+    letter-spacing: var(--one);
     word-break: break-all;
   }
 }
@@ -193,6 +198,7 @@
   width: 100%;
   box-shadow: var(--mellow-shadow-050);
   font: var(--regular-font);
+  letter-spacing: var(--one);
   color: var(--noble-gray-800);
 }
 
@@ -203,6 +209,7 @@
   padding: calc(var(--extra-small-offset) / 1.6) var(--extra-small-offset);
   height: max-content;
   font: var(--medium-bold-font);
+  letter-spacing: var(--one);
 
   &:active {
     transform: scale(1);
@@ -247,7 +254,16 @@
   display: flex;
   flex-basis: 25%;
   align-items: center;
+  letter-spacing: var(--one);
   gap: var(--tiny-offset);
+
+  @media (hover: hover) {
+    &:hover {
+      .contactText {
+        color: var(--steam-green-1100);
+      }
+    }
+  }
 }
 
 .contactIcon {
@@ -258,6 +274,7 @@
 .contactText {
   font: var(--regular-font);
   color: var(--noble-gray-800);
+  transition: color 0.2s;
 }
 
 .linkWrap {
