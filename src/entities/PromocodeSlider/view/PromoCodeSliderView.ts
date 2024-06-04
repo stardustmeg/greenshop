@@ -39,8 +39,8 @@ class PromoCodeSliderView {
     const start = createBaseElement({
       cssClasses: [styles.sliderDateStart],
       innerContent: currentUser
-        ? calcUserBirthDayRange(currentUser.birthDate).start
-        : PROMO_SLIDER_CONTENT[index].en.date.start ?? '',
+        ? `${calcUserBirthDayRange(currentUser.birthDate).start} &mdash;`
+        : `${PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start} &mdash;` ?? '',
       tag: 'span',
     });
 
@@ -48,8 +48,15 @@ class PromoCodeSliderView {
       cssClasses: [styles.sliderDateEnd],
       innerContent: currentUser
         ? calcUserBirthDayRange(currentUser.birthDate).end
-        : PROMO_SLIDER_CONTENT[index].en.date.end ?? '',
+        : PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.end ?? '',
       tag: 'span',
+    });
+
+    observeStore(selectCurrentLanguage, () => {
+      start.innerHTML = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.end
+        ? `${PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start} &mdash;`
+        : PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start;
+      end.textContent = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.end ?? '';
     });
 
     date.append(start, end);
@@ -121,7 +128,7 @@ class PromoCodeSliderView {
     return this.slider;
   }
 
-  private async createSliderSlideContent(index: number): Promise<HTMLDivElement> {
+  private async createSliderSlideContent(index: number, slideWrapper: HTMLDivElement): Promise<HTMLDivElement> {
     const slide = createBaseElement({
       cssClasses: [styles.sliderContent],
       tag: 'div',
@@ -133,15 +140,15 @@ class PromoCodeSliderView {
       title,
       description,
       this.createPromoCodeSpan(PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].promoCode),
-      img,
     );
+    slideWrapper.append(img);
 
     observeStore(selectCurrentLanguage, () => {
       title.textContent = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].title;
       description.textContent = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].description;
     });
 
-    if (PROMO_SLIDER_CONTENT[index].en.date.start === null) {
+    if (PROMO_SLIDER_CONTENT[index].en.date.end === null && getStore().getState().isUserLoggedIn) {
       const currentUser = await getCustomerModel().getCurrentUser();
       if (currentUser) {
         slide.append(this.createDateSpan(index, currentUser));
@@ -192,7 +199,7 @@ class PromoCodeSliderView {
         cssClasses: ['swiper-slide', styles.sliderSlide],
         tag: 'div',
       });
-      this.createSliderSlideContent(index)
+      this.createSliderSlideContent(index, slideWrapper)
         .then((slide) => slideWrapper.append(slide))
         .catch(showErrorMessage);
 
@@ -212,6 +219,11 @@ class PromoCodeSliderView {
 
   public getSlider(): HTMLDivElement {
     return this.slider;
+  }
+
+  public redrawSlider(): void {
+    this.slider.innerHTML = '';
+    this.slider.append(this.createSliderWrapper());
   }
 }
 

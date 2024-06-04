@@ -1,7 +1,7 @@
 .slider {
-  border: calc(var(--two) * 1.5) solid var(--steam-green-1100);
   border-radius: var(--large-br);
-  background-color: var(--steam-green-1000);
+  height: max-content;
+  background-color: var(--steam-green-900);
 }
 
 .sliderContent {
@@ -10,50 +10,52 @@
 }
 
 .sliderTitle {
-  margin-bottom: var(--medium-offset);
-  max-width: 50%;
+  margin-bottom: var(--tiny-offset);
+  max-width: 55%;
   font: var(--extra-black-font);
   letter-spacing: var(--one);
   color: var(--steam-green-800);
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     max-width: 100%;
+    font: var(--black-font);
   }
 }
 
 .sliderImage {
   position: absolute;
   right: var(--medium-offset);
-  top: 50%;
-  width: 20%;
+  top: 55%;
+  width: 40%;
   height: auto;
-  transform: translateY(-50%);
+  transform: translateY(-45%);
 
   @media (max-width: 950px) {
-    width: 30%;
+    width: 35%;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     display: none;
   }
 }
 
 .sliderDescription {
-  margin-bottom: var(--small-offset);
-  max-width: 50%;
-  font: var(--bold-font);
+  margin-bottom: var(--extra-small-offset);
+  max-width: 55%;
+  font: var(--black-font);
   letter-spacing: var(--one);
   color: var(--noble-gray-800);
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     max-width: 100%;
+    font: var(--bold-font);
   }
 }
 
 .sliderPromoCode {
   display: flex;
   align-items: center;
-  margin-bottom: var(--small-offset);
+  margin-bottom: var(--extra-small-offset);
   max-width: max-content;
   gap: var(--tiny-offset);
 
@@ -94,13 +96,26 @@
     width: 1rem;
     height: 1rem;
     background-color: var(--steam-green-800);
+    transition:
+      transform 0.2s,
+      background-color 0.2s;
     cursor: pointer;
+
+    &:active {
+      transform: scale(0.9);
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--steam-green-400);
+      }
+    }
   }
 }
 
 .sliderDate {
   display: flex;
-  gap: var(--tiny-offset);
+  gap: var(--five);
 }
 
 .sliderDateStart,

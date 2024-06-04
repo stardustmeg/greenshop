@@ -1,3 +1,4 @@
+import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import Swiper from 'swiper';
 import 'swiper/css';
 import 'swiper/css/autoplay';
@@ -22,6 +23,8 @@ class PromoCodeSliderModel {
 
   private init(): void {
     this.initSlider();
+
+    observeStore(selectIsUserLoggedIn, () => this.view.redrawSlider());
   }
 
   private initSlider(): void {

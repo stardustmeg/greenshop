@@ -25,9 +25,9 @@ const PROMO_SLIDER_CONTENT = [
     en: {
       date: {
         end: null,
-        start: null,
+        start: 'The promotion is valid 3 days before and 3 days after your birthday',
       },
-      description: 'For your birthday discount 10% from total purchase amount',
+      description: 'For your birthday 10% discount off the entire cart',
       img: './img/png/promo-slider-2.png',
       promoCode: 'HAPPY-BIRTHDAY-10',
       title: 'Happy birthday!',
@@ -35,9 +35,9 @@ const PROMO_SLIDER_CONTENT = [
     ru: {
       date: {
         end: null,
-        start: null,
+        start: 'Акция действует 3 дня до и 3 дня после дня рождения',
       },
-      description: 'В честь вашего дня рождения скидка 10% от общей суммы покупок',
+      description: 'В честь вашего дня рождения скидка 10% от общей суммы товаров',
       img: './img/png/promo-slider-2.png',
       promoCode: 'HAPPY-BIRTHDAY-10',
       title: 'С днем рождения!',
@@ -49,10 +49,10 @@ const PROMO_SLIDER_CONTENT = [
         end: '2024-06-15',
         start: '2024-06-01',
       },
-      description: 'For all products from the category Succulents',
+      description: 'For all products from the Succulents category',
       img: './img/png/promo-slider-3.png',
       promoCode: 'SUCCULENT-SALE-15',
-      title: 'Succulents are for everyone!',
+      title: 'Succulents for everyone!',
     },
     ru: {
       date: {
