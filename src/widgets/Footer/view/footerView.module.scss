@@ -255,7 +255,6 @@
   flex-basis: 25%;
   align-items: center;
   letter-spacing: var(--one);
-  transition: color 0.2s;
   gap: var(--tiny-offset);
 
   @media (hover: hover) {
@@ -275,6 +274,7 @@
 .contactText {
   font: var(--regular-font);
   color: var(--noble-gray-800);
+  transition: color 0.2s;
 }
 
 .linkWrap {
