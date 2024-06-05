@@ -43,8 +43,9 @@ const GENERAL_LINKS: Link[] = [
     },
   },
   {
+    href: PAGE_ID.COOPERATION_PAGE,
     name: {
-      en: 'Specials',
+      en: 'Cooperation',
       ru: 'Сотрудничество',
     },
   },

@@ -96,6 +96,7 @@ const GOALS: Goal[] = [
     },
   },
 ];
+
 const CONTACTS: Contact[] = [
   {
     alt: 'location greenshop',
@@ -167,6 +168,7 @@ type textElementsType = {
   element: HTMLAnchorElement | HTMLButtonElement | HTMLInputElement | HTMLParagraphElement | HTMLUListElement;
   textItem: languageVariants;
 };
+
 const FOOTER_PAGE = {
   NAV_CATEGORY: {
     en: 'Categories',
