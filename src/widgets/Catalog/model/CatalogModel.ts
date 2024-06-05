@@ -22,7 +22,7 @@ import { META_FILTERS } from '@/shared/constants/filters.ts';
 import { DEFAULT_PAGE, PRODUCT_LIMIT, SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { SORTING_ID } from '@/shared/constants/sorting.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import CatalogView from '../view/CatalogView.ts';
 

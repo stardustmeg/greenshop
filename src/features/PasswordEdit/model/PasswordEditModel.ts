@@ -3,11 +3,10 @@ import type InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import PasswordEditView from '../view/PasswordEditView.ts';
 
@@ -41,10 +40,10 @@ class PasswordEditModel {
                 this.view.getOldPasswordField().getView().getValue(),
                 this.view.getNewPasswordField().getView().getValue(),
               );
-              serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PASSWORD_CHANGED, MESSAGE_STATUS.SUCCESS);
+              showSuccessMessage(SERVER_MESSAGE_KEYS.PASSWORD_CHANGED);
               modal.hide();
             } catch {
-              serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PASSWORD_NOT_CHANGED, MESSAGE_STATUS.ERROR);
+              showErrorMessage(SERVER_MESSAGE_KEYS.PASSWORD_NOT_CHANGED);
             }
           }
         });

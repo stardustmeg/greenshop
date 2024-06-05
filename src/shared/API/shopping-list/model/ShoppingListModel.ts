@@ -10,7 +10,7 @@ import type {
 
 import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousId, setAnonymousShopListId } from '@/shared/Store/actions.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import {
   isClientResponse,

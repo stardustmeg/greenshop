@@ -5,20 +5,19 @@ import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListM
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import { SKUCopiedMessage } from '@/shared/utils/messageTemplates.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import './productInfoView.scss';
 
@@ -285,13 +284,8 @@ class ProductInfoView {
     svg.addEventListener('click', () => {
       window.navigator.clipboard
         .writeText(currentSKU.getValue())
-        .then(() =>
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE_KEYS.SUCCESSFUL_COPY_TO_CLIPBOARD,
-            MESSAGE_STATUS.SUCCESS,
-          ),
-        )
-        .catch(() => serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.BAD_REQUEST, MESSAGE_STATUS.ERROR));
+        .then(() => showSuccessMessage(SKUCopiedMessage(currentSKU.getValue())))
+        .catch(showErrorMessage);
     });
 
     this.SKUSpan.append(currentSKU.getHTML(), svg);

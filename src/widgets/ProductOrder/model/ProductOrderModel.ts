@@ -2,12 +2,13 @@ import type { Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
+import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { CartActive } from '@/shared/types/cart.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import ProductOrderView from '../view/ProductOrderView.ts';
 
@@ -34,9 +35,10 @@ class ProductOrderModel {
       .deleteProductFromCart(this.productItem)
       .then((cart) => {
         if (cart) {
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE_KEYS.SUCCESSFUL_DELETE_PRODUCT_FROM_CART,
-            MESSAGE_STATUS.SUCCESS,
+          showSuccessMessage(
+            productRemovedFromCartMessage(
+              this.productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+            ),
           );
           const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
           this.updateView(updateItem);

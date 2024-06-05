@@ -3,14 +3,14 @@ import type { Page } from '@/shared/types/page.ts';
 
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { promoCodeAppliedMessage } from '@/shared/utils/messageTemplates.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel.ts';
 
 import CartPageView from '../view/CartPageView.ts';
@@ -40,7 +40,7 @@ class CartPageModel implements Page {
       .clearCart()
       .then((cart) => {
         this.cart = cart;
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_CLEAR_CART, MESSAGE_STATUS.SUCCESS);
+        showSuccessMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_CLEAR_CART);
         this.productsItem = this.productsItem.filter((productItem) => {
           const searchEl = this.cart?.products.find((item) => item.lineItemId === productItem.getProduct().lineItemId);
           if (!searchEl) {
@@ -75,10 +75,7 @@ class CartPageModel implements Page {
         .addCoupon(discountCode)
         .then((cart) => {
           if (cart) {
-            serverMessageModel.showServerMessage(
-              SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_COUPON_TO_CART,
-              MESSAGE_STATUS.SUCCESS,
-            );
+            showSuccessMessage(promoCodeAppliedMessage(discountCode));
             this.cart = cart;
             this.view.updateTotal(this.cart);
           }

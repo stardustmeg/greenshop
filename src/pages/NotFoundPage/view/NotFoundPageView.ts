@@ -1,7 +1,7 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
-import { PAGE_DESCRIPTION_KEYS } from '@/shared/constants/pages.ts';
+import { PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEYS } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
@@ -48,8 +48,12 @@ class NotFoundPageView {
   private createPageDescription(): HTMLParagraphElement {
     this.description = createBaseElement({
       cssClasses: [styles.pageDescription],
+      innerContent: PAGE_DESCRIPTION[getStore().getState().currentLanguage][404],
       tag: 'p',
     });
+
+    observeCurrentLanguage(this.description, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEYS[404]);
+
     return this.description;
   }
 
@@ -85,11 +89,6 @@ class NotFoundPageView {
 
   public getToMainButton(): ButtonModel {
     return this.toMainButton;
-  }
-
-  public setPageDescription(text: string): HTMLParagraphElement {
-    this.description.innerText = text;
-    return this.description;
   }
 }
 

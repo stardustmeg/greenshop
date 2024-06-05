@@ -7,12 +7,12 @@ import CredentialsModel from '@/entities/Credentials/model/CredentialsModel.ts';
 import PersonalInfoModel from '@/entities/PersonalInfo/model/PersonalInfoModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
@@ -120,11 +120,11 @@ class RegisterFormModel {
         if (newUserData) {
           getStore().dispatch(switchIsUserLoggedIn(false));
           getStore().dispatch(switchIsUserLoggedIn(true));
-          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_REGISTRATION, MESSAGE_STATUS.SUCCESS);
+          showSuccessMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_REGISTRATION);
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.USER_EXISTS, MESSAGE_STATUS.ERROR);
+        showErrorMessage(SERVER_MESSAGE_KEYS.USER_EXISTS);
       })
       .finally(() => loader.remove());
   }

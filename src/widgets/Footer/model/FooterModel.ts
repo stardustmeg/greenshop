@@ -5,7 +5,7 @@ import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { buildPathName } from '@/shared/utils/buildPathname.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import FooterView from '../view/FooterView.ts';
 

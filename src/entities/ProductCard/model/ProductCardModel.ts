@@ -7,11 +7,16 @@ import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.t
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import getStore from '@/shared/Store/Store.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { buildPathName } from '@/shared/utils/buildPathname.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import {
+  productAddedToCartMessage,
+  productAddedToWishListMessage,
+  productRemovedFromWishListMessage,
+} from '@/shared/utils/messageTemplates.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
 import ProductCardView from '../view/ProductCardView.ts';
@@ -40,10 +45,7 @@ class ProductCardModel {
     getCartModel()
       .addProductToCart(this.getProductMeta())
       .then(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_PRODUCT_TO_CART,
-          MESSAGE_STATUS.SUCCESS,
-        );
+        showSuccessMessage(productAddedToCartMessage(this.getProductMeta().name));
         this.view.getAddToCartButton().setDisabled();
       })
       .catch(showErrorMessage);
@@ -53,9 +55,10 @@ class ProductCardModel {
     getShoppingListModel()
       .addProduct(this.params.id)
       .then(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST,
-          MESSAGE_STATUS.SUCCESS,
+        showSuccessMessage(
+          productAddedToWishListMessage(
+            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+          ),
         );
         this.view.switchStateWishListButton(true);
       })
@@ -66,9 +69,10 @@ class ProductCardModel {
     getShoppingListModel()
       .deleteProduct(productInWishList)
       .then(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST,
-          MESSAGE_STATUS.SUCCESS,
+        showSuccessMessage(
+          productRemovedFromWishListMessage(
+            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+          ),
         );
         this.view.switchStateWishListButton(false);
       })
@@ -77,6 +81,7 @@ class ProductCardModel {
 
   private getProductMeta(): AddCartItem {
     return {
+      name: this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
       productId: this.params.id,
       quantity: 1,
       variantId: this.currentVariant.id,

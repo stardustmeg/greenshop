@@ -83,6 +83,7 @@
     --steam-green-700: #70d27a; // price slider, more, added to wishlist
     --steam-green-800: #46a358; // main green: buttons, logo, active links, burger, scroll, blog posts details, cart price, active svg
     --steam-green-1100: #a7e599; // theme tumbler round thingy
+    --steam-green-1200: #008500; // hover footer links
   }
 
   body.dark {
@@ -91,6 +92,7 @@
     --button-white: #fff; // buttons text
     --red-power-600: #d0302f; // error messages, form errors
     --steam-green-300: #46a35880; // header outline, social media buttons outline
+    --steam-green-700: #70d27a; // price slider, more, added to wishlist
     --steam-green-800: #46a358; // main green: buttons, logo, active links, burger, scroll, blog posts details, cart price, active svg
     --steam-green-900: #46a3581a; // blog background, personal info background
     --steam-green-1000: #46a35937; // footer links background, pics round thingies
@@ -127,6 +129,6 @@
     // highlight colors:
     --steam-green-400: #c8f4b4; // price inputs, filter highlight, pagination active, product info titles
     --steam-green-500: #b6f09c; // new price, product name, filter titles
-    --steam-green-700: #70d27a; // price slider, more, added to wishlist
+    --steam-green-1200: #a7e599; // hover footer links
   }
 }

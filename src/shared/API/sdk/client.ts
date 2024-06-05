@@ -2,7 +2,7 @@ import type { UserCredentials } from '@/shared/types/user';
 
 import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousId } from '@/shared/Store/actions.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 import { type ByProjectKeyRequestBuilder, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import {
   type AnonymousAuthMiddlewareOptions,
