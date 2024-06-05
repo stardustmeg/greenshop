@@ -1,6 +1,7 @@
 import type { SizeType, localization } from './product.ts';
 
 export interface Cart {
+  anonymousId: null | string;
   discounts: number;
   id: string;
   products: CartProduct[];

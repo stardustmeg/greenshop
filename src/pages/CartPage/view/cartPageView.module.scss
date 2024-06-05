@@ -149,6 +149,10 @@
 .applyBtn {
   border-radius: 0 var(--small-br) var(--small-br) 0;
 
+  div {
+    position: absolute;
+  }
+
   &:active {
     transform: scale(1);
   }

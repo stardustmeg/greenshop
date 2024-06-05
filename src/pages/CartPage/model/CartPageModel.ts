@@ -18,51 +18,12 @@ import CartPageView from '../view/CartPageView.ts';
 class CartPageModel implements Page {
   private cart: Cart | null = null;
 
-  private changeProductHandler = (cart: Cart): void => {
-    this.cart = cart;
-    this.productsItem = this.productsItem.filter((productItem) => {
-      const searchEl = this.cart?.products.find((item) => item.lineItemId === productItem.getProduct().lineItemId);
-      if (!searchEl) {
-        productItem.getHTML().remove();
-        return false;
-      }
-      return true;
-    });
-
-    if (!this.productsItem.length) {
-      this.view.renderEmpty();
-    }
-    this.view.updateTotal(this.cart);
-  };
-
-  private clearCart = async (): Promise<void> => {
-    await getCartModel()
-      .clearCart()
-      .then((cart) => {
-        this.cart = cart;
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_CLEAR_CART, MESSAGE_STATUS.SUCCESS);
-        this.productsItem = this.productsItem.filter((productItem) => {
-          const searchEl = this.cart?.products.find((item) => item.lineItemId === productItem.getProduct().lineItemId);
-          if (!searchEl) {
-            productItem.getHTML().remove();
-            return false;
-          }
-          return true;
-        });
-        this.renderCart();
-      })
-      .catch((error: Error) => {
-        showErrorMessage(error);
-        return this.cart;
-      });
-  };
-
   private productsItem: ProductOrderModel[] = [];
 
   private view: CartPageView;
 
   constructor(parent: HTMLDivElement) {
-    this.view = new CartPageView(parent, this.clearCart, this.addDiscountHandler.bind(this));
+    this.view = new CartPageView(parent, this.clearCart.bind(this), this.addDiscountHandler.bind(this));
 
     this.init().catch(showErrorMessage);
   }
@@ -88,6 +49,45 @@ class CartPageModel implements Page {
     }
   }
 
+  private changeProductHandler(cart: Cart): void {
+    this.cart = cart;
+    this.productsItem = this.productsItem.filter((productItem) => {
+      const searchEl = this.cart?.products.find((item) => item.lineItemId === productItem.getProduct().lineItemId);
+      if (!searchEl) {
+        productItem.getHTML().remove();
+        return false;
+      }
+      return true;
+    });
+
+    if (!this.productsItem.length) {
+      this.view.renderEmpty();
+    }
+    this.view.updateTotal(this.cart);
+  }
+
+  private async clearCart(): Promise<void> {
+    await getCartModel()
+      .clearCart()
+      .then((cart) => {
+        this.cart = cart;
+        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_CLEAR_CART, MESSAGE_STATUS.SUCCESS);
+        this.productsItem = this.productsItem.filter((productItem) => {
+          const searchEl = this.cart?.products.find((item) => item.lineItemId === productItem.getProduct().lineItemId);
+          if (!searchEl) {
+            productItem.getHTML().remove();
+            return false;
+          }
+          return true;
+        });
+        this.renderCart();
+      })
+      .catch((error: Error) => {
+        showErrorMessage(error);
+        return this.cart;
+      });
+  }
+
   private async init(): Promise<void> {
     getStore().dispatch(setCurrentPage(PAGE_ID.CART_PAGE));
     this.cart = await getCartModel().addProductInfo();
@@ -98,7 +98,7 @@ class CartPageModel implements Page {
   private renderCart(): void {
     if (this.cart) {
       this.cart.products.forEach((product) => {
-        this.productsItem.push(new ProductOrderModel(product, this.changeProductHandler));
+        this.productsItem.push(new ProductOrderModel(product, this.changeProductHandler.bind(this)));
       });
 
       if (this.productsItem.length) {
