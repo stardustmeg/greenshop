@@ -1,15 +1,15 @@
 import type { Page } from '@/shared/types/page.ts';
 
 import PromoCodeSliderModel from '@/entities/PromocodeSlider/model/PromoCodeSliderModel.ts';
-import PostWidgetModel from '@/pages/Blog/PostWidget/model/PostWidgetModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import BlogWidgetModel from '@/widgets/Blog/model/BogWidgetModel.ts';
 
 import MainPageView from '../view/MainPageView.ts';
 
 class MainPageModel implements Page {
-  private blogWidget: PostWidgetModel;
+  private blogWidget: BlogWidgetModel;
 
   private parent: HTMLDivElement;
 
@@ -20,7 +20,7 @@ class MainPageModel implements Page {
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
     this.view = new MainPageView(this.parent);
-    this.blogWidget = new PostWidgetModel(this.view.getHTML());
+    this.blogWidget = new BlogWidgetModel(this.view.getHTML());
     this.init();
   }
 

@@ -1,12 +1,12 @@
-import type BlogPostView from '@/pages/Blog/Post/view/PostView';
+import type BlogPostView from '@/entities/Post/view/PostView';
 
 import getStore from '@/shared/Store/Store.ts';
 import { BLOG_DESCRIPTION } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import styles from './postWidgetView.module.scss';
+import styles from './blogPageView.module.scss';
 
-export default class PostWidgetView {
+export default class BlogPageView {
   private description: HTMLParagraphElement;
 
   private page: HTMLDivElement;
@@ -22,6 +22,7 @@ export default class PostWidgetView {
   constructor(parent: HTMLDivElement, postsItem: BlogPostView[]) {
     this.parent = parent;
     this.postItems = postsItem;
+    this.parent.innerHTML = '';
     this.title = this.createPageTitle();
     this.postList = this.createPostList();
     this.description = this.createPageDescription();
@@ -50,7 +51,7 @@ export default class PostWidgetView {
   private createPageDescription(): HTMLParagraphElement {
     this.description = createBaseElement({
       cssClasses: [styles.pageDescription],
-      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_DESCRIPTIONS,
+      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].LIST_DESCRIPTION,
       tag: 'p',
     });
     return this.description;
@@ -59,8 +60,8 @@ export default class PostWidgetView {
   private createPageTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: [styles.pageTitle],
-      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITLE,
-      tag: 'h3',
+      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].LIST_TITLE,
+      tag: 'h1',
     });
     return this.title;
   }
@@ -70,7 +71,7 @@ export default class PostWidgetView {
       cssClasses: [styles.postList],
       tag: 'ul',
     });
-    this.postList.append(...this.postItems.map((post) => post.getCardHTML(true)));
+    this.postList.append(...this.postItems.map((post) => post.getCardHTML()));
     return this.postList;
   }
 
@@ -85,8 +86,9 @@ export default class PostWidgetView {
   }
 
   public updateLanguage(): boolean {
-    this.title.innerText = BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITLE;
-    this.description.innerText = BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_DESCRIPTIONS;
+    const ln = getStore().getState().currentLanguage;
+    this.title.innerText = BLOG_DESCRIPTION[ln].LIST_TITLE;
+    this.description.innerText = BLOG_DESCRIPTION[ln].LIST_DESCRIPTION;
     return true;
   }
 }

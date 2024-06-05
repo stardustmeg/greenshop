@@ -45,6 +45,14 @@
 }
 
 .deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  div {
+    position: absolute;
+  }
+
   svg {
     width: var(--extra-small-offset);
     height: var(--extra-small-offset);

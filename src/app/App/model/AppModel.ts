@@ -26,8 +26,8 @@ class AppModel {
         return new AboutUsPageModel(this.appView.getHTML());
       },
       [PAGE_ID.BLOG]: async (): Promise<Page> => {
-        const { default: PostListModel } = await import('@/pages/Blog/PostList/model/PostListModel.ts');
-        return new PostListModel(this.appView.getHTML());
+        const { default: BlogPageModel } = await import('@/pages/BlogPage/model/BlogPageModel.ts');
+        return new BlogPageModel(this.appView.getHTML());
       },
       [PAGE_ID.CART_PAGE]: async (): Promise<Page> => {
         const { default: CartPageModel } = await import('@/pages/CartPage/model/CartPageModel.ts');
@@ -36,6 +36,10 @@ class AppModel {
       [PAGE_ID.CATALOG_PAGE]: async (): Promise<Page> => {
         const { default: CatalogPageModel } = await import('@/pages/CatalogPage/model/CatalogPageModel.ts');
         return new CatalogPageModel(this.appView.getHTML());
+      },
+      [PAGE_ID.COOPERATION_PAGE]: async (): Promise<Page> => {
+        const { default: CooperationPageModel } = await import('@/pages/CooperationPage/model/CooperationPageModel.ts');
+        return new CooperationPageModel(this.appView.getHTML());
       },
       [PAGE_ID.DEFAULT_PAGE]: async (): Promise<Page> => {
         const { default: MainPageModel } = await import('@/pages/MainPage/model/MainPageModel.ts');

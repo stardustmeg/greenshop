@@ -149,6 +149,10 @@
 .applyBtn {
   border-radius: 0 var(--small-br) var(--small-br) 0;
 
+  div {
+    position: absolute;
+  }
+
   &:active {
     transform: scale(1);
   }
@@ -170,6 +174,7 @@ $color: var(--steam-green-800);
   width: max-content;
   height: max-content;
   text-transform: none;
+  cursor: pointer;
 
   &::after {
     bottom: var(--five);

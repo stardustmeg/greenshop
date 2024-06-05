@@ -1,16 +1,16 @@
 import type { Post } from '@/shared/constants/blog.ts';
 import type { Page } from '@/shared/types/page.ts';
 
-import PostView from '@/pages/Blog/Post/view/PostView.ts';
+import PostView from '@/entities/Post/view/PostView.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 
-import postsData from '../../data/posts.ts';
-import BlogPageView from '../view/PostListView.ts';
+import postsData from '../../../shared/Posts/posts.ts';
+import BlogPageView from '../view/BlogPageView.ts';
 
-export default class PostListModel implements Page {
+export default class BlogPageModel implements Page {
   private parent: HTMLDivElement;
 
   private postClickHandler = (post: PostView): void => {

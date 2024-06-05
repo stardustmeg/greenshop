@@ -2,7 +2,6 @@ import type { UserCredentials } from '@/shared/types/user';
 
 import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousId } from '@/shared/Store/actions.ts';
-import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 import { type ByProjectKeyRequestBuilder, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import {
   type AnonymousAuthMiddlewareOptions,
@@ -63,8 +62,6 @@ export class ApiClient {
       this.anonymConnection = this.createAnonymConnection();
     }
     this.adminConnection = this.createAdminConnection();
-
-    this.init().catch(showErrorMessage);
   }
 
   private addAuthMiddleware(
@@ -167,15 +164,6 @@ export class ApiClient {
       scopes: this.scopes,
       tokenCache: USE_SAVE_TOKEN && tokenType === TokenType.AUTH ? getTokenCache(tokenType) : undefined,
     };
-  }
-
-  private async init(): Promise<void> {
-    await this.apiRoot()
-      .get()
-      .execute()
-      .catch((error: Error) => {
-        showErrorMessage(error);
-      });
   }
 
   public adminRoot(): ByProjectKeyRequestBuilder {

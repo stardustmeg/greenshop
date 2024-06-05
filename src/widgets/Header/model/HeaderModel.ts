@@ -53,7 +53,6 @@ class HeaderModel {
     this.setLogoutButtonHandler();
     this.setCartLinkHandler();
     this.observeCartChange();
-    this.setCartCount().catch(showErrorMessage);
     this.setChangeLanguageCheckboxHandler();
   }
 
@@ -76,12 +75,6 @@ class HeaderModel {
     observeStore(selectIsUserLoggedIn, () => {
       this.checkCurrentUser();
     });
-  }
-
-  private async setCartCount(): Promise<boolean> {
-    const cart = await getCartModel().getCart();
-    this.view.updateCartCount(cart.products.length);
-    return true;
   }
 
   private setCartLinkHandler(): void {

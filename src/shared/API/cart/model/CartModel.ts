@@ -33,22 +33,31 @@ export class CartModel {
 
   private cart: Cart | null = null;
 
-  private isSetAnonymousId = false;
-
   private root: CartApi;
 
   constructor() {
     this.root = getCartApi();
-    this.getCart().catch(showErrorMessage);
+    this.getCart()
+      .then(() => {
+        const { anonymousId } = getStore().getState();
+        if (anonymousId && this.cart?.anonymousId !== anonymousId) {
+          this.updateCartCustomer(anonymousId).catch(showErrorMessage);
+        }
+      })
+      .catch(showErrorMessage);
   }
 
   private adaptCart(data: CartResponse): Cart {
-    if (data.anonymousId && !getStore().getState().authToken) {
+    const { anonymousId, authToken } = getStore().getState();
+    if (data.anonymousId && !authToken) {
       getStore().dispatch(setAnonymousCartId(data.id));
+    }
+    if (data.anonymousId && !authToken && !anonymousId) {
       getStore().dispatch(setAnonymousId(data.anonymousId));
     }
     const discount = data.discountOnTotalPrice?.discountedAmount?.centAmount;
     return {
+      anonymousId: data.anonymousId || null,
       discounts: discount ? discount / PRICE_FRACTIONS : 0,
       id: data.id,
       products: data.lineItems.map((lineItem) => this.adaptLineItem(lineItem)),
@@ -97,20 +106,10 @@ export class CartModel {
     this.callback.forEach((callback) => (this.cart !== null ? callback(this.cart) : null));
   }
 
-  private async getAnonymousCart(anonymousCartId: string, anonymousId: string): Promise<Cart | null> {
+  private async getAnonymousCart(anonymousCartId: string): Promise<Cart | null> {
     const data = await this.root.getAnonymCart(anonymousCartId);
     if (!data.body.customerId) {
       this.cart = this.getCartFromData(data);
-      const cartAnonymId = data.body.anonymousId;
-      if (cartAnonymId !== anonymousId && !this.isSetAnonymousId) {
-        this.isSetAnonymousId = true;
-        const actions: CartSetAnonymousIdAction = {
-          action: ACTIONS.setAnonymousId,
-          anonymousId,
-        };
-        const dataSetId = await this.root.setAnonymousId(this.cart, actions);
-        this.cart = this.getCartFromData(dataSetId);
-      }
     }
 
     return this.cart;
@@ -118,6 +117,7 @@ export class CartModel {
 
   private getCartFromData(data: CartResponse | ClientResponse<CartPagedQueryResponse | CartResponse>): Cart {
     let cart: Cart = {
+      anonymousId: null,
       discounts: 0,
       id: '',
       products: [],
@@ -145,6 +145,18 @@ export class CartModel {
       const activeCart = await this.root.getActiveCart();
       this.cart = this.getCartFromData(activeCart);
       await this.deleteOtherCarts(data);
+    }
+    return this.cart;
+  }
+
+  private async updateCartCustomer(anonymousId: string): Promise<Cart | null> {
+    if (this.cart) {
+      const actions: CartSetAnonymousIdAction = {
+        action: ACTIONS.setAnonymousId,
+        anonymousId,
+      };
+      const dataSetId = await this.root.setAnonymousId(this.cart, actions);
+      this.cart = this.getCartFromData(dataSetId);
     }
     return this.cart;
   }
@@ -261,10 +273,7 @@ export class CartModel {
     if (!this.cart) {
       const { anonymousCartId, anonymousId } = getStore().getState();
       if (anonymousCartId && anonymousId) {
-        // const data = await this.root.getAnonymCart(anonymousCartId);
-        // this.cart = this.getCartFromData(data);
-
-        this.cart = await this.getAnonymousCart(anonymousCartId, anonymousId);
+        this.cart = await this.getAnonymousCart(anonymousCartId);
       }
       if (!this.cart) {
         this.cart = await this.getUserCart();

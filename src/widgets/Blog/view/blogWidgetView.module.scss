@@ -17,6 +17,13 @@
   margin: 0 auto;
   gap: var(--extra-small-offset);
 
+  div {
+    overflow: hidden;
+    width: 100%;
+    height: calc(var(--extra-large-offset) * 2);
+    object-fit: cover;
+  }
+
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
