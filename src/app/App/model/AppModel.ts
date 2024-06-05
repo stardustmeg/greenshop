@@ -37,6 +37,10 @@ class AppModel {
         const { default: CatalogPageModel } = await import('@/pages/CatalogPage/model/CatalogPageModel.ts');
         return new CatalogPageModel(this.appView.getHTML());
       },
+      [PAGE_ID.COOPERATION_PAGE]: async (): Promise<Page> => {
+        const { default: CooperationPageModel } = await import('@/pages/CooperationPage/model/CooperationPageModel.ts');
+        return new CooperationPageModel(this.appView.getHTML());
+      },
       [PAGE_ID.DEFAULT_PAGE]: async (): Promise<Page> => {
         const { default: MainPageModel } = await import('@/pages/MainPage/model/MainPageModel.ts');
         return new MainPageModel(this.appView.getHTML());
