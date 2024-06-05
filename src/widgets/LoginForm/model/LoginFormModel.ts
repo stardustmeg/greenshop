@@ -4,14 +4,13 @@ import type { UserCredentials } from '@/shared/types/user.ts';
 import CredentialsModel from '@/entities/Credentials/model/CredentialsModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentLanguage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import isLanguageChoiceType from '@/shared/types/validation/language.ts';
 import { createGreetingMessage } from '@/shared/utils/messageTemplates.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import LoginFormView from '../view/LoginFormView.ts';
 import styles from '../view/loginForm.module.scss';
@@ -43,7 +42,7 @@ class LoginFormModel {
         if (response) {
           this.loginUserHandler(userLoginData);
         } else {
-          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.INVALID_EMAIL, MESSAGE_STATUS.ERROR);
+          showErrorMessage(SERVER_MESSAGE_KEYS.INVALID_EMAIL);
         }
       })
       .catch((error) => showErrorMessage(error))
@@ -61,15 +60,11 @@ class LoginFormModel {
           if (isLanguageChoiceType(data.locale)) {
             getStore().dispatch(setCurrentLanguage(data.locale));
           }
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE_KEYS.GREETING,
-            MESSAGE_STATUS.SUCCESS,
-            createGreetingMessage(),
-          );
+          showSuccessMessage(createGreetingMessage(data.firstName));
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.INCORRECT_PASSWORD, MESSAGE_STATUS.ERROR);
+        showErrorMessage(SERVER_MESSAGE_KEYS.INCORRECT_PASSWORD);
       })
       .finally(() => loader.remove());
   }

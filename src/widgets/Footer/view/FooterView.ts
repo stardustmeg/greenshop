@@ -7,13 +7,13 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import { showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import type { Link } from '../model/FooterModel';
 
@@ -54,7 +54,7 @@ const GOALS: Goal[] = [
     alt: 'Garden Care',
     description: {
       en: 'Provide expert tips and tools for maintaining a healthy and beautiful garden',
-      ru: 'Для Вас советы экспертов и инструменты для поддержания здорового и красивого сада',
+      ru: 'Для вас советы экспертов и инструменты для поддержания здорового и красивого сада',
     },
     id: 'goal_1',
     imgH: 93,
@@ -96,6 +96,7 @@ const GOALS: Goal[] = [
     },
   },
 ];
+
 const CONTACTS: Contact[] = [
   {
     alt: 'location greenshop',
@@ -167,6 +168,7 @@ type textElementsType = {
   element: HTMLAnchorElement | HTMLButtonElement | HTMLInputElement | HTMLParagraphElement | HTMLUListElement;
   textItem: languageVariants;
 };
+
 const FOOTER_PAGE = {
   NAV_CATEGORY: {
     en: 'Categories',
@@ -253,7 +255,7 @@ class FooterView {
 
     const wrapContactItems = createBaseElement({
       cssClasses: [styles.contactItemsWrap],
-      tag: 'div',
+      tag: 'address',
     });
     CONTACTS.forEach((contact) => wrapContactItems.append(this.createContactItemHTML(contact)));
     wrap.append(logoImg, wrapContactItems);
@@ -528,7 +530,7 @@ class FooterView {
 
     submit.getHTML().addEventListener('click', () => {
       email.getView().getInput().clear();
-      serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_SUBSCRIBE, MESSAGE_STATUS.SUCCESS);
+      showSuccessMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_SUBSCRIBE);
       submit.setDisabled();
     });
 

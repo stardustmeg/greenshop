@@ -4,14 +4,13 @@ import RouterModel from '@/app/Router/model/RouterModel.ts';
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setAuthToken, setCurrentLanguage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import HeaderView from '../view/HeaderView.ts';
 
@@ -98,14 +97,14 @@ class HeaderModel {
           if (user) {
             await getCustomerModel().editCustomer([CustomerModel.actionSetLocale(newLanguage)], user);
             getStore().dispatch(setCurrentLanguage(newLanguage));
-            serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
+            showSuccessMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED);
           }
         } catch (error) {
           showErrorMessage(error);
         }
       } else {
         getStore().dispatch(setCurrentLanguage(newLanguage));
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
+        showSuccessMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED);
       }
     });
   }

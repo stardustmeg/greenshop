@@ -6,15 +6,14 @@ import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/Cus
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
 import getCountryIndex from '@/shared/utils/getCountryIndex.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import AddressEditView from '../view/AddressEditView.ts';
 
@@ -61,7 +60,7 @@ class AddressEditModel {
       if (user) {
         await getCustomerModel().editCustomer([CustomerModel.actionEditAddress(this.createAddress(user))], user);
         modal.hide();
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_CHANGED, MESSAGE_STATUS.SUCCESS);
+        showSuccessMessage(SERVER_MESSAGE_KEYS.ADDRESS_CHANGED);
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_ADDRESSES, '');
       }
     } catch (error) {

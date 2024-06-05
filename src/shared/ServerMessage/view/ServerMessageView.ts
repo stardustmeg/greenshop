@@ -78,12 +78,23 @@ class ServerMessageView {
     return this.serverWrapper;
   }
 
-  public setServerMessage(keyOrMessage: ServerMessageKeysType, status: MessageStatusType, message?: string): boolean {
+  public setServerMessage(status: MessageStatusType, keyOrMessage?: ServerMessageKeysType, message?: string): boolean {
+    const { currentLanguage } = getStore().getState();
+
     this.serverWrapper.classList.toggle(styles.error, status === MESSAGE_STATUS.ERROR);
     this.serverWrapper.classList.toggle(styles.success, status === MESSAGE_STATUS.SUCCESS);
 
-    this.serverMessage.textContent = SERVER_MESSAGE[getStore().getState().currentLanguage][keyOrMessage];
-    this.serverMessage.textContent = message || this.serverMessage.textContent;
+    let userMessage = '';
+
+    if (keyOrMessage) {
+      userMessage = SERVER_MESSAGE[currentLanguage][keyOrMessage] || '';
+    }
+
+    if (message) {
+      userMessage += message;
+    }
+
+    this.serverMessage.textContent = userMessage;
 
     this.startAnimation();
     return true;

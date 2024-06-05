@@ -10,6 +10,33 @@ const textTemplate = (beginning: string, variable: number | string, end?: string
   return `${start}${variable}${ending}`;
 };
 
+export const productAddedToCartMessage = (name: string): string =>
+  textTemplate(name, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_ADD_PRODUCT_TO_CART);
+
+export const productRemovedFromCartMessage = (name: string): string =>
+  textTemplate(name, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_DELETE_PRODUCT_FROM_CART);
+
+export const productAddedToWishListMessage = (name: string): string =>
+  textTemplate(name, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST);
+
+export const productRemovedFromWishListMessage = (name: string): string =>
+  textTemplate(name, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST);
+
+export const promoCodeAppliedMessage = (promocode: string): string =>
+  textTemplate(promocode, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_ADD_COUPON_TO_CART);
+
+export const promoCodeCopiedMessage = (promocode: string): string =>
+  textTemplate(
+    promocode,
+    SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_COPY_PROMO_CODE_TO_CLIPBOARD,
+  );
+
+export const notFoundMessage = (name: string): string =>
+  textTemplate(`Hi, ${name}!`, PAGE_DESCRIPTION[getStore().getState().currentLanguage][404]);
+
+export const SKUCopiedMessage = (key: string): string =>
+  textTemplate(`SKU ${key}`, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_COPY_TO_CLIPBOARD);
+
 export const addressTemplate = (streetName = '', city = '', country: null | string = null, postalCode = ''): string =>
   `${streetName}, ${city}, ${country}, ${postalCode}`;
 
@@ -25,11 +52,8 @@ export const userInfoEmail = (email: string): string =>
 export const userInfoDateOfBirth = (date: string): string =>
   textTemplate(USER_INFO_TEXT[getStore().getState().currentLanguage].DATE_OF_BIRTH, date);
 
-export const greeting = (name: string): string =>
-  textTemplate(PAGE_DESCRIPTION[getStore().getState().currentLanguage].GREETING, name, '!');
-
-export const createGreetingMessage = (): string =>
-  `${SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_LOGIN}`;
+export const createGreetingMessage = (name: string): string =>
+  textTemplate(`Hi, ${name}!`, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_LOGIN);
 
 const maxLengthMessageRu = (maxLength: number): string =>
   textTemplate('Максимальная длина не должна превышать', maxLength, ' символов');

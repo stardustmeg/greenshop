@@ -12,7 +12,7 @@ import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { buildPathName } from '@/shared/utils/buildPathname.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
 import ProductPageView from '../view/ProductPageView.ts';

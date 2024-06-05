@@ -11,7 +11,7 @@ import type {
 import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousCartId, setAnonymousId } from '@/shared/Store/actions.ts';
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import type { OptionsRequest } from '../../types/type.ts';
 

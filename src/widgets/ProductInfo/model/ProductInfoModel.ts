@@ -10,13 +10,19 @@ import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListM
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
+import getStore from '@/shared/Store/Store.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { buildPathName } from '@/shared/utils/buildPathname.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import {
+  productAddedToCartMessage,
+  productAddedToWishListMessage,
+  productRemovedFromCartMessage,
+  productRemovedFromWishListMessage,
+} from '@/shared/utils/messageTemplates.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import Swiper from 'swiper';
 import 'swiper/css';
 import 'swiper/css/autoplay';
@@ -54,12 +60,18 @@ class ProductInfoModel {
     const loader = new LoaderModel(LOADER_SIZE.EXTRA_SMALL).getHTML();
     this.view.getSwitchToCartButton().getHTML().append(loader);
     getCartModel()
-      .addProductToCart({ productId: this.params.id, quantity: 1, variantId: this.currentVariant.id })
+      .addProductToCart({
+        name: this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+        productId: this.params.id,
+        quantity: 1,
+        variantId: this.currentVariant.id,
+      })
       .then(() => {
         this.view.switchToCartButtonText(true);
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_PRODUCT_TO_CART,
-          MESSAGE_STATUS.SUCCESS,
+        showSuccessMessage(
+          productAddedToCartMessage(
+            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+          ),
         );
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
       })
@@ -71,9 +83,10 @@ class ProductInfoModel {
     getShoppingListModel()
       .addProduct(this.params.id)
       .then(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST,
-          MESSAGE_STATUS.SUCCESS,
+        showSuccessMessage(
+          productAddedToWishListMessage(
+            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+          ),
         );
         this.view.switchStateWishListButton(true);
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
@@ -90,9 +103,10 @@ class ProductInfoModel {
         .deleteProductFromCart(currentProduct)
         .then(() => {
           this.view.switchToCartButtonText(false);
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE_KEYS.SUCCESSFUL_DELETE_PRODUCT_FROM_CART,
-            MESSAGE_STATUS.SUCCESS,
+          showSuccessMessage(
+            productRemovedFromCartMessage(
+              this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+            ),
           );
           EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
         })
@@ -105,9 +119,10 @@ class ProductInfoModel {
     getShoppingListModel()
       .deleteProduct(productInWishList)
       .then(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST,
-          MESSAGE_STATUS.SUCCESS,
+        showSuccessMessage(
+          productRemovedFromWishListMessage(
+            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+          ),
         );
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
         this.view.switchStateWishListButton(false);

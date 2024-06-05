@@ -6,7 +6,7 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import isCooperationData from '@/shared/types/validation/cooperationData.ts';
 import getCooperationData from '@/shared/utils/getCooperationData.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import CooperationPageView from '../view/CooperationPageView.ts';
 

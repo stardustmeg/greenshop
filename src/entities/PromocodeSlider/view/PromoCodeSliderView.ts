@@ -2,18 +2,17 @@ import type { User } from '@/shared/types/user';
 
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import PROMO_SLIDER_CONTENT from '@/shared/constants/promo.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import calcUserBirthDayRange from '@/shared/utils/calcUserBirthDayRange.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { promoCodeCopiedMessage } from '@/shared/utils/messageTemplates.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import styles from './promoCodeSliderView.module.scss';
 
@@ -38,12 +37,16 @@ class PromoCodeSliderView {
 
     const start = createBaseElement({
       cssClasses: [styles.sliderDateStart],
-      // eslint-disable-next-line no-nested-ternary
-      innerContent: currentUser
-        ? `${calcUserBirthDayRange(currentUser.birthDate).start} &mdash;`
-        : PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.end
-          ? `${PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start} &mdash;`
-          : PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start,
+      innerContent: ((): string => {
+        const promoContent = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date;
+        if (currentUser) {
+          return `${calcUserBirthDayRange(currentUser.birthDate).start} &mdash;`;
+        }
+        if (promoContent.end) {
+          return `${promoContent.start} &mdash;`;
+        }
+        return promoContent.start;
+      })(),
       tag: 'span',
     });
 
@@ -107,13 +110,8 @@ class PromoCodeSliderView {
     svg.addEventListener('click', () => {
       window.navigator.clipboard
         .writeText(currentPromoCode.getValue())
-        .then(() =>
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE_KEYS.SUCCESSFUL_COPY_PROMO_CODE_TO_CLIPBOARD,
-            MESSAGE_STATUS.SUCCESS,
-          ),
-        )
-        .catch(() => serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.BAD_REQUEST, MESSAGE_STATUS.ERROR));
+        .then(() => showSuccessMessage(promoCodeCopiedMessage(currentPromoCode.getValue())))
+        .catch(showErrorMessage);
     });
 
     promoCode.append(svg, currentPromoCode.getHTML());

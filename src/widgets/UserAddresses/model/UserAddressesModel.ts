@@ -11,7 +11,7 @@ import { ADDRESS_TYPE, DEFAULT_ADDRESS } from '@/shared/constants/forms.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import determineNewAddress from '@/shared/utils/determineNewAddress.ts';
 import { arrayContainsObjectWithValue, objectHasPropertyValue } from '@/shared/utils/hasValue.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import UserAddressesView from '../view/UserAddressesView.ts';
 

@@ -1,7 +1,7 @@
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import ConfirmView from '../view/ConfirmView.ts';
 

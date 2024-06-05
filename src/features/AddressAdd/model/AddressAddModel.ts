@@ -8,14 +8,13 @@ import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/Cus
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import AddressAddView from '../view/AddressAddView.ts';
 
@@ -120,7 +119,7 @@ class AddressAddModel {
 
   private handleSuccess(): void {
     EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_ADDRESSES, '');
-    serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_ADDED, MESSAGE_STATUS.SUCCESS);
+    showSuccessMessage(SERVER_MESSAGE_KEYS.ADDRESS_ADDED);
     modal.hide();
   }
 

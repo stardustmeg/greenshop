@@ -5,7 +5,7 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { isValidPath, isValidState } from '@/shared/types/validation/paths.ts';
 import setPageTitle from '@/shared/utils/setPageTitle.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 const DEFAULT_SEGMENT = import.meta.env.VITE_APP_DEFAULT_SEGMENT;
 const NEXT_SEGMENT = import.meta.env.VITE_APP_NEXT_SEGMENT;

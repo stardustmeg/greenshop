@@ -6,15 +6,14 @@ import ConfirmModel from '@/shared/Confirm/model/ConfirmModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry } from '@/shared/Store/actions.ts';
 import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import UserAddressView from '../view/UserAddressView.ts';
 
@@ -49,7 +48,7 @@ class UserAddressModel {
         try {
           await getCustomerModel().editCustomer([CustomerModel.actionRemoveAddress(address)], user);
           EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_ADDRESSES, '');
-          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_DELETED, MESSAGE_STATUS.SUCCESS);
+          showSuccessMessage(SERVER_MESSAGE_KEYS.ADDRESS_DELETED);
         } catch (error) {
           showErrorMessage(error);
         }
@@ -68,10 +67,10 @@ class UserAddressModel {
         : CustomerModel.actionRemoveBillingAddress(this.currentAddress),
       [ADDRESS_TYPE.DEFAULT_BILLING]: inactive
         ? CustomerModel.actionEditDefaultBillingAddress(this.currentAddress.id)
-        : CustomerModel.actionEditDefaultBillingAddress(undefined),
+        : CustomerModel.actionEditDefaultBillingAddress(),
       [ADDRESS_TYPE.DEFAULT_SHIPPING]: inactive
         ? CustomerModel.actionEditDefaultShippingAddress(this.currentAddress.id)
-        : CustomerModel.actionEditDefaultShippingAddress(undefined),
+        : CustomerModel.actionEditDefaultShippingAddress(),
       [ADDRESS_TYPE.SHIPPING]: inactive
         ? CustomerModel.actionAddShippingAddress(this.currentAddress.id)
         : CustomerModel.actionRemoveShippingAddress(this.currentAddress),
@@ -95,7 +94,7 @@ class UserAddressModel {
       if (user) {
         await this.handleAddressType(user, activeType, inactive ?? false);
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_ADDRESSES, '');
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_STATUS_CHANGED, MESSAGE_STATUS.SUCCESS);
+        showSuccessMessage(SERVER_MESSAGE_KEYS.ADDRESS_STATUS_CHANGED);
       }
     } catch (error) {
       showErrorMessage(error);

@@ -22,6 +22,7 @@ export interface CartProduct {
 }
 
 export interface AddCartItem {
+  name: string;
   productId: string;
   quantity: number;
   variantId: number;
