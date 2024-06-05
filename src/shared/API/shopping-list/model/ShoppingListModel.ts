@@ -44,9 +44,12 @@ export class ShoppingListModel {
   }
 
   private adaptShopList(data: ShoppingListResponse): ShoppingList {
-    if (data.anonymousId && !getStore().getState().authToken) {
-      getStore().dispatch(setAnonymousId(data.anonymousId));
+    const { anonymousId, authToken } = getStore().getState();
+    if (data.anonymousId && !authToken) {
       getStore().dispatch(setAnonymousShopListId(data.id));
+    }
+    if (data.anonymousId && !authToken && !anonymousId) {
+      getStore().dispatch(setAnonymousId(data.anonymousId));
     }
     return {
       id: data.id,
