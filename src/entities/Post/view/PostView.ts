@@ -2,7 +2,9 @@ import type { Post } from '@/shared/constants/blog';
 
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import formattedMinutes from '@/shared/utils/formattedTime.ts';
 
 import styles from './post.module.scss';
 
@@ -40,8 +42,10 @@ export default class PostView {
   private createCardInfoHTML(): string {
     const ln = getStore().getState().currentLanguage;
     const read =
-      ln === 'en' ? `Read in ${this.post.time.toString()} min.` : `Читать за ${this.post.time.toString()} мин.`;
-    const readMore = ln === 'en' ? 'Read more...' : 'Читать далее...';
+      ln === LANGUAGE_CHOICE.EN
+        ? `Read in ${this.post.time.toString()} minutes`
+        : `Читать за ${formattedMinutes(this.post.time)}`;
+    const readMore = ln === LANGUAGE_CHOICE.EN ? 'Read more...' : 'Читать далее...';
     const content = `
       <article class=${styles.article}>
         <div class=${styles.wrapImage}>
