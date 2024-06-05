@@ -4,7 +4,7 @@ const calcUserBirthDayRange = (birthDay: string): { end: string; start: string }
   const birthDate = new Date(birthDay);
 
   const start = new Date(birthDate.getFullYear(), birthDate.getMonth(), birthDate.getDate() - 3);
-  const end = new Date(birthDate.getFullYear(), birthDate.getMonth(), birthDate.getDate() + 4);
+  const end = new Date(birthDate.getFullYear(), birthDate.getMonth(), birthDate.getDate() + 3);
 
   if (start.getDate() < 1) {
     start.setMonth(start.getMonth() - 1);

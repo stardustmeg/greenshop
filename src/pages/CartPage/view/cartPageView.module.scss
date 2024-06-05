@@ -170,6 +170,7 @@ $color: var(--steam-green-800);
   width: max-content;
   height: max-content;
   text-transform: none;
+  cursor: pointer;
 
   &::after {
     bottom: var(--five);
