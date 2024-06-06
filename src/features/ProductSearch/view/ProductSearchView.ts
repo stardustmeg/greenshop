@@ -2,7 +2,6 @@ import RouterModel from '@/app/Router/model/RouterModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { TEXT } from '@/shared/constants/sorting.ts';
@@ -32,7 +31,6 @@ class ProductSearchView {
 
   private createSearchField(): InputModel {
     this.searchField = new InputModel({
-      autocomplete: AUTOCOMPLETE_OPTION.ON,
       placeholder: TEXT[getStore().getState().currentLanguage].SEARCH,
       type: INPUT_TYPE.SEARCH,
     });

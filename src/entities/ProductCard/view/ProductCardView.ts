@@ -44,13 +44,10 @@ class ProductCardView {
 
   private productShortDescription: HTMLParagraphElement;
 
-  private switchToWishListButton: ButtonModel;
-
   constructor(params: ProductCardParams, currentSize: null | string) {
     this.params = params;
     this.currentSize = currentSize;
     this.addToCartButton = this.createAddToCartButton();
-    this.switchToWishListButton = this.createSwitchToWishListButton();
     this.goDetailsPageLink = this.createGoDetailsPageLink();
     this.buttonsWrapper = this.createButtonsWrapper();
     this.productImage = this.createProductImage();
@@ -108,11 +105,7 @@ class ProductCardView {
       tag: 'div',
     });
 
-    this.buttonsWrapper.append(
-      this.addToCartButton.getHTML(),
-      this.switchToWishListButton.getHTML(),
-      this.goDetailsPageLink.getHTML(),
-    );
+    this.buttonsWrapper.append(this.addToCartButton.getHTML(), this.goDetailsPageLink.getHTML());
 
     return this.buttonsWrapper;
   }
@@ -249,18 +242,6 @@ class ProductCardView {
     return this.productShortDescription;
   }
 
-  private createSwitchToWishListButton(): ButtonModel {
-    this.switchToWishListButton = new ButtonModel({
-      classes: [styles.switchToWishListButton],
-    });
-
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
-    this.switchToWishListButton.getHTML().append(svg);
-
-    return this.switchToWishListButton;
-  }
-
   private updateMoreButtonText(moreButton: HTMLButtonElement): void {
     const { currentLanguage } = getStore().getState();
     const moreText = MORE_TEXT[currentLanguage];
@@ -292,14 +273,6 @@ class ProductCardView {
 
   public getMoreButton(): ButtonModel {
     return this.moreButton;
-  }
-
-  public getSwitchToWishListButton(): ButtonModel {
-    return this.switchToWishListButton;
-  }
-
-  public switchStateWishListButton(hasProductInWishList: boolean): void {
-    this.switchToWishListButton.getHTML().classList.toggle(styles.inWishList, hasProductInWishList);
   }
 }
 

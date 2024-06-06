@@ -111,9 +111,9 @@
 }
 
 .sizesWrapper {
-  display: grid;
+  display: flex;
+  align-items: center;
   order: 4;
-  grid-template-columns: max-content;
   width: max-content;
   font: var(--regular-font);
   letter-spacing: var(--one);
@@ -132,8 +132,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  justify-self: center;
-  grid-row: 2;
   border: var(--one) solid var(--noble-gray-800);
   border-radius: 50%;
   width: 2rem;
@@ -232,60 +230,6 @@
 
   @media (max-width: 768px) {
     align-self: center;
-  }
-}
-
-.switchToWishListButton {
-  outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
-  border-radius: var(--medium-br);
-  padding: var(--tiny-offset);
-  width: var(--small-offset);
-  height: var(--small-offset);
-  background-color: var(--white-tr);
-  transition:
-    transform 0.2s,
-    outline 0.2s;
-  backdrop-filter: blur(10px);
-
-  svg {
-    width: var(--extra-small-offset);
-    height: var(--extra-small-offset);
-    fill: var(--noble-gray-800);
-    transition: fill 0.2s;
-  }
-
-  &:active {
-    transform: scale(0.9);
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      outline: calc(var(--one) * 1.5) solid var(--red-power-600);
-
-      svg {
-        fill: var(--red-power-600);
-      }
-    }
-  }
-
-  &.inWishList {
-    @media (hover: hover) {
-      &:hover {
-        outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
-
-        svg {
-          fill: var(--noble-gray-700);
-        }
-      }
-    }
-  }
-}
-
-.inWishList {
-  outline: calc(var(--one) * 1.5) solid var(--red-power-600);
-
-  svg {
-    fill: var(--red-power-600);
   }
 }
 
