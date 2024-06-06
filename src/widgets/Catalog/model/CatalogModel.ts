@@ -25,10 +25,14 @@ import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import CatalogView from '../view/CatalogView.ts';
 
+const PRODUCT_COUNT_FOR_HIDDEN_PAGINATION = 7;
+
 class CatalogModel {
   private currentSize: null | string = null;
 
-  private pagination: PaginationModel | null = null;
+  private paginationBottom: PaginationModel | null = null;
+
+  private paginationTop: PaginationModel | null = null;
 
   private productFilters: ProductFiltersModel | null = null;
 
@@ -96,7 +100,8 @@ class CatalogModel {
     productList.innerHTML = '';
     const options = this.getOptions();
     const productsInfo = await this.getProductsInfo(options);
-    this.pagination?.getHTML().remove();
+    this.paginationTop?.getHTML().remove();
+    this.paginationBottom?.getHTML().remove();
     if (productsInfo?.products?.length) {
       const cart = await getCartModel().getCart();
       productsInfo.products.forEach((productData) => {
@@ -104,12 +109,20 @@ class CatalogModel {
         productList.append(product.getHTML());
       });
       this.view.switchEmptyList(!productsInfo?.products?.length);
-      this.pagination = new PaginationModel(
+      this.paginationTop = new PaginationModel(
         { productTotalCount: productsInfo?.totalProductCount, productsPerPageCount: PRODUCT_LIMIT },
         this.setCurrentPage.bind(this),
       );
-      this.pagination.getView().setSelectedButton(options.page ?? DEFAULT_PAGE);
-      this.view.getRightTopWrapper().append(this.pagination.getHTML());
+      this.paginationBottom = new PaginationModel(
+        { productTotalCount: productsInfo?.totalProductCount, productsPerPageCount: PRODUCT_LIMIT },
+        this.setCurrentPage.bind(this),
+      );
+      this.paginationTop.getView().setSelectedButton(options.page ?? DEFAULT_PAGE);
+      this.paginationBottom.getView().setSelectedButton(options.page ?? DEFAULT_PAGE);
+      this.view.getRightTopWrapper().append(this.paginationTop.getHTML());
+      if (productsInfo.products.length >= PRODUCT_COUNT_FOR_HIDDEN_PAGINATION) {
+        this.view.getRightBottomWrapper().append(this.paginationBottom.getHTML());
+      }
     }
     this.productFilters?.getView().updateParams(productsInfo);
     this.view.switchEmptyList(!productsInfo?.products?.length);

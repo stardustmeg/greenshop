@@ -46,8 +46,10 @@
   justify-content: center;
   order: 2;
   grid-template-columns: repeat(3, auto);
+  grid-template-rows: max-content max-content;
+  margin-bottom: var(--tiny-offset);
   height: max-content;
-  min-height: calc(var(--extra-large-offset) * 5); // 500px
+  min-height: calc(var(--extra-large-offset) * 13.5);
   font-size: var(--regular-font);
   letter-spacing: var(--one);
   text-align: center;
