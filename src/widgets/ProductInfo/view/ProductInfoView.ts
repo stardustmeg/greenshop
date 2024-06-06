@@ -1,15 +1,13 @@
 import type { ProductInfoParams } from '@/shared/types/product';
 
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
-import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
-import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
@@ -48,8 +46,6 @@ class ProductInfoView {
 
   private switchToCartButton: ButtonModel;
 
-  private switchToWishListButton: ButtonModel;
-
   private title: HTMLHeadingElement;
 
   private view: HTMLDivElement;
@@ -63,7 +59,6 @@ class ProductInfoView {
     this.SKUSpan = this.createSKUSpan();
     this.categoriesSpan = this.createCategoriesSpan();
     this.switchToCartButton = this.createSwitchToCartButton();
-    this.switchToWishListButton = this.createSwitchToWishListButton();
     this.buttonsWrapper = this.createButtonsWrapper();
     this.rightWrapper = this.createRightWrapper();
     this.view = this.createHTML();
@@ -128,7 +123,7 @@ class ProductInfoView {
       tag: 'div',
     });
 
-    this.buttonsWrapper.append(this.switchToCartButton.getHTML(), this.switchToWishListButton.getHTML());
+    this.buttonsWrapper.append(this.switchToCartButton.getHTML());
 
     return this.buttonsWrapper;
   }
@@ -268,13 +263,7 @@ class ProductInfoView {
       tag: 'span',
     });
 
-    const currentSKU = new InputModel({
-      autocomplete: AUTOCOMPLETE_OPTION.ON,
-      id: '',
-      placeholder: '',
-      type: INPUT_TYPE.TEXT,
-      value: this.params.key,
-    });
+    const currentSKU = new InputModel({ value: this.params.key });
 
     currentSKU.getHTML().classList.add('currentSKU');
 
@@ -415,20 +404,6 @@ class ProductInfoView {
     return this.switchToCartButton;
   }
 
-  private createSwitchToWishListButton(): ButtonModel {
-    this.switchToWishListButton = new ButtonModel({
-      classes: ['switchToWishListButton'],
-    });
-
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
-    this.switchToWishListButton.getHTML().append(svg);
-
-    this.hasProductInWishList();
-
-    return this.switchToWishListButton;
-  }
-
   private hasProductInToCart(): void {
     getCartModel()
       .getCart()
@@ -446,22 +421,16 @@ class ProductInfoView {
       .catch(showErrorMessage);
   }
 
-  private hasProductInWishList(): void {
-    getShoppingListModel()
-      .getShoppingList()
-      .then((shoppingList) => {
-        const result = shoppingList.products.find((product) => product.productId === this.params.id);
-        this.switchStateWishListButton(Boolean(result));
-      })
-      .catch(showErrorMessage);
-  }
-
   public getBigSlider(): HTMLDivElement {
     return this.bigSlider;
   }
 
   public getBigSliderSlides(): HTMLDivElement[] {
     return this.bigSliderSlides;
+  }
+
+  public getButtonsWrapper(): HTMLDivElement {
+    return this.buttonsWrapper;
   }
 
   public getHTML(): HTMLDivElement {
@@ -482,14 +451,6 @@ class ProductInfoView {
 
   public getSwitchToCartButton(): ButtonModel {
     return this.switchToCartButton;
-  }
-
-  public getSwitchToWishListButton(): ButtonModel {
-    return this.switchToWishListButton;
-  }
-
-  public switchStateWishListButton(hasProductInWishList: boolean): void {
-    this.switchToWishListButton.getHTML().classList.toggle('inWishList', hasProductInWishList);
   }
 
   public switchToCartButtonText(hasCart: boolean): void {

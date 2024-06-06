@@ -68,7 +68,6 @@
 }
 
 .addToCartButton,
-.switchToWishListButton,
 .goDetailsPageLink {
   position: relative;
   outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
@@ -90,10 +89,7 @@
   &:active {
     transform: scale(0.9);
   }
-}
 
-.addToCartButton,
-.goDetailsPageLink {
   @media (hover: hover) {
     &:hover {
       outline: calc(var(--one) * 1.5) solid var(--steam-green-400);
@@ -109,38 +105,6 @@
   &:disabled {
     opacity: 0.5;
     pointer-events: none;
-  }
-}
-
-.inWishList {
-  outline: calc(var(--one) * 1.5) solid var(--red-power-600);
-
-  svg {
-    fill: var(--red-power-600);
-  }
-}
-
-.switchToWishListButton {
-  @media (hover: hover) {
-    &:hover {
-      outline: calc(var(--one) * 1.5) solid var(--red-power-600);
-
-      svg {
-        fill: var(--red-power-600);
-      }
-    }
-  }
-
-  &.inWishList {
-    @media (hover: hover) {
-      &:hover {
-        outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
-
-        svg {
-          fill: var(--noble-gray-700);
-        }
-      }
-    }
   }
 }
 

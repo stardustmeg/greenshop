@@ -1,12 +1,11 @@
 import type { Cart } from '@/shared/types/cart.ts';
 import type { ProductInfoParams, Variant } from '@/shared/types/product.ts';
-import type { ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ProductModalSliderModel from '@/entities/ProductModalSlider/model/ProductModalSliderModel.ts';
 import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
+import WishlistButtonModel from '@/features/WishlistButton/model/WishlistButtonModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
-import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
@@ -16,12 +15,7 @@ import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { buildPathName } from '@/shared/utils/buildPathname.ts';
-import {
-  productAddedToCartMessage,
-  productAddedToWishListMessage,
-  productRemovedFromCartMessage,
-  productRemovedFromWishListMessage,
-} from '@/shared/utils/messageTemplates.ts';
+import { productAddedToCartMessage, productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import Swiper from 'swiper';
 import 'swiper/css';
@@ -47,12 +41,15 @@ class ProductInfoModel {
 
   private view: ProductInfoView;
 
+  private wishlistButton: WishlistButtonModel;
+
   constructor(params: ProductInfoParams) {
     this.params = params;
     this.view = new ProductInfoView(this.params);
     this.currentVariant =
       this.params.variant.find(({ size }) => size === this.params.currentSize) ?? this.params.variant[0];
     this.price = new ProductPriceModel(this.currentVariant);
+    this.wishlistButton = new WishlistButtonModel(this.params);
     this.init();
   }
 
@@ -79,21 +76,6 @@ class ProductInfoModel {
       .finally(() => loader.remove());
   }
 
-  private addProductToWishListHandler(): void {
-    getShoppingListModel()
-      .addProduct(this.params.id)
-      .then(() => {
-        showSuccessMessage(
-          productAddedToWishListMessage(
-            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-          ),
-        );
-        this.view.switchStateWishListButton(true);
-        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
-      })
-      .catch(showErrorMessage);
-  }
-
   private deleteProductFromCart(cart: Cart): void {
     const currentProduct = cart.products.find((product) => product.key === this.params.key);
     if (currentProduct) {
@@ -113,21 +95,6 @@ class ProductInfoModel {
         .catch(showErrorMessage)
         .finally(() => loader.remove());
     }
-  }
-
-  private deleteProductToWishListHandler(productInWishList: ShoppingListProduct): void {
-    getShoppingListModel()
-      .deleteProduct(productInWishList)
-      .then(() => {
-        showSuccessMessage(
-          productRemovedFromWishListMessage(
-            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-          ),
-        );
-        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
-        this.view.switchStateWishListButton(false);
-      })
-      .catch(showErrorMessage);
   }
 
   private init(): void {
@@ -159,8 +126,8 @@ class ProductInfoModel {
     });
 
     this.view.getRightWrapper().append(this.price.getHTML());
+    this.view.getButtonsWrapper().append(this.wishlistButton.getHTML().getHTML());
     this.switchToCartButtonHandler();
-    this.switchToWishListButtonHandler();
     this.setSizeButtonHandler();
   }
 
@@ -200,19 +167,6 @@ class ProductInfoModel {
           }
         })
         .catch(showErrorMessage);
-    });
-  }
-
-  private switchToWishListButtonHandler(): void {
-    const switchToWishListButton = this.view.getSwitchToWishListButton();
-    switchToWishListButton.getHTML().addEventListener('click', async () => {
-      const shoppingList = await getShoppingListModel().getShoppingList();
-      const productInWishList = shoppingList.products.find((product) => product.productId === this.params.id);
-      if (productInWishList) {
-        this.deleteProductToWishListHandler(productInWishList);
-      } else {
-        this.addProductToWishListHandler();
-      }
     });
   }
 

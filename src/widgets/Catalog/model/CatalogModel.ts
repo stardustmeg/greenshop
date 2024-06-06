@@ -12,7 +12,6 @@ import ProductSortsModel from '@/features/ProductSorts/model/ProductSortsModel.t
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import FilterProduct from '@/shared/API/product/utils/filter.ts';
-import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import { FilterFields, SortDirection, SortFields } from '@/shared/API/types/type.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
@@ -99,10 +98,9 @@ class CatalogModel {
     const productsInfo = await this.getProductsInfo(options);
     this.pagination?.getHTML().remove();
     if (productsInfo?.products?.length) {
-      const shoppingList = await getShoppingListModel().getShoppingList();
       const cart = await getCartModel().getCart();
       productsInfo.products.forEach((productData) => {
-        const product = new ProductCardModel(productData, this.currentSize, shoppingList, cart);
+        const product = new ProductCardModel(productData, this.currentSize, cart);
         productList.append(product.getHTML());
       });
       this.view.switchEmptyList(!productsInfo?.products?.length);

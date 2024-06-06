@@ -1,0 +1,52 @@
+.switchToWishListButton {
+  position: relative;
+  outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
+  border-radius: var(--medium-br);
+  padding: var(--tiny-offset);
+  width: var(--small-offset);
+  height: var(--small-offset);
+  background-color: var(--white-tr);
+  transition: outline 0.2s;
+  backdrop-filter: blur(10px);
+
+  svg {
+    width: var(--extra-small-offset);
+    height: var(--extra-small-offset);
+    fill: var(--noble-gray-800);
+    transition: fill 0.2s;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      outline: calc(var(--one) * 1.5) solid var(--red-power-600);
+
+      svg {
+        fill: var(--red-power-600);
+      }
+    }
+  }
+
+  &.inWishList {
+    @media (hover: hover) {
+      &:hover {
+        outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
+
+        svg {
+          fill: var(--noble-gray-700);
+        }
+      }
+    }
+  }
+}
+
+.inWishList {
+  outline: calc(var(--one) * 1.5) solid var(--red-power-600);
+
+  svg {
+    fill: var(--red-power-600);
+  }
+}

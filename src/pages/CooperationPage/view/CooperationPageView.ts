@@ -70,7 +70,7 @@ class CooperationPageView {
   private createSubtitle(subtitle: string): HTMLHeadingElement {
     const subtitleElement = createBaseElement({
       cssClasses: [styles.cooperationSubtitle],
-      tag: 'h2',
+      tag: 'h3',
     });
     subtitleElement.textContent = subtitle;
     return subtitleElement;

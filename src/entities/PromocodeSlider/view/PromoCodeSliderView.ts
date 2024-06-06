@@ -4,8 +4,6 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
-import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import PROMO_SLIDER_CONTENT from '@/shared/constants/promo.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import calcUserBirthDayRange from '@/shared/utils/calcUserBirthDayRange.ts';
@@ -59,10 +57,15 @@ class PromoCodeSliderView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      start.innerHTML = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.end
-        ? `${PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start} &mdash;`
-        : PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start;
-      end.textContent = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.end ?? '';
+      if (currentUser) {
+        start.innerHTML = getStore().getState().isUserLoggedIn
+          ? `${calcUserBirthDayRange(currentUser.birthDate).start} &mdash;`
+          : PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start;
+        end.textContent = getStore().getState().isUserLoggedIn ? calcUserBirthDayRange(currentUser.birthDate).end : '';
+      } else {
+        start.innerHTML = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start;
+        end.textContent = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.end ?? '';
+      }
     });
 
     date.append(start, end);
@@ -94,13 +97,7 @@ class PromoCodeSliderView {
       tag: 'span',
     });
 
-    const currentPromoCode = new InputModel({
-      autocomplete: AUTOCOMPLETE_OPTION.ON,
-      id: '',
-      placeholder: '',
-      type: INPUT_TYPE.TEXT,
-      value: code,
-    });
+    const currentPromoCode = new InputModel({ value: code });
 
     currentPromoCode.getHTML().classList.add(styles.currentPromoCode);
 

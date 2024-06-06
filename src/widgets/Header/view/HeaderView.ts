@@ -7,7 +7,7 @@ import getStore from '@/shared/Store/Store.ts';
 import { switchAppTheme } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentPage, selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
-import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import APP_THEME from '@/shared/constants/styles.ts';
@@ -182,9 +182,7 @@ class HeaderView {
 
   private createSwitchLanguageCheckbox(): InputModel {
     this.switchLanguageCheckbox = new InputModel({
-      autocomplete: AUTOCOMPLETE_OPTION.OFF,
       id: styles.switchLanguageLabel,
-      placeholder: '',
       type: INPUT_TYPE.CHECK_BOX,
     });
     this.switchLanguageCheckbox.getHTML().classList.add(styles.switchLanguageCheckbox);
@@ -214,9 +212,7 @@ class HeaderView {
 
   private createSwitchThemeCheckbox(): InputModel {
     this.switchThemeCheckbox = new InputModel({
-      autocomplete: AUTOCOMPLETE_OPTION.OFF,
       id: styles.switchThemeLabel,
-      placeholder: '',
       type: INPUT_TYPE.CHECK_BOX,
     });
     this.switchThemeCheckbox.getHTML().classList.add(styles.switchThemeCheckbox);
