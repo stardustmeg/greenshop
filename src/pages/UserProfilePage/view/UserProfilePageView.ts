@@ -31,8 +31,6 @@ class UserProfilePageView {
 
   private userProfileWrapper: HTMLDivElement;
 
-  private wishListLink: LinkModel;
-
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
     clearOutElement(this.parent);
@@ -42,7 +40,6 @@ class UserProfilePageView {
     this.addressesLink = this.createAddressesLink();
     this.ordersLink = this.createOrdersLink();
     this.supportLink = this.createSupportLink();
-    this.wishListLink = this.createWishListLink();
     this.accountMenu = this.createAccountMenu();
 
     this.setLinksHandlers();
@@ -166,21 +163,6 @@ class UserProfilePageView {
 
     this.userProfileWrapper.append(this.accountMenu);
     return this.userProfileWrapper;
-  }
-
-  private createWishListLink(): LinkModel {
-    this.wishListLink = new LinkModel({
-      attrs: {
-        href: USER_PROFILE_MENU_LINK.WISHLIST,
-      },
-      classes: [styles.link],
-      text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].WISHLIST,
-    });
-    this.links.push(this.wishListLink);
-
-    observeCurrentLanguage(this.wishListLink.getHTML(), USER_INFO_MENU_LINK, USER_INFO_MENU_LINK_KEYS.WISHLIST);
-
-    return this.wishListLink;
   }
 
   private setLinksHandlers(): boolean {

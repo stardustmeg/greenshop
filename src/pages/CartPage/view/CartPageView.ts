@@ -4,6 +4,7 @@ import type { languageVariants } from '@/shared/types/common';
 import type ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
+import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import ConfirmModel from '@/shared/Confirm/model/ConfirmModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
@@ -12,6 +13,7 @@ import getStore from '@/shared/Store/Store.ts';
 import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import { cartPrice } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './cartPageView.module.scss';
 
@@ -23,13 +25,13 @@ type textElementsType = {
 };
 
 const TITLE = {
-  BUTTON_CHECKOUT: { en: 'Proceed To Checkout', ru: 'Оформить заказ' },
+  BUTTON_CHECKOUT: { en: 'Proceed to Checkout', ru: 'Оформить заказ' },
   BUTTON_COUPON: { en: 'Apply', ru: 'Применить' },
   CART_TOTAL: { en: 'Cart Totals', ru: 'Итого по корзине' },
   CLEAR: { en: 'Clear all', ru: 'Очистить' },
   CONTINUE: { en: 'Continue Shopping', ru: 'Продолжить покупки' },
-  COUPON_APPLY: { en: 'Coupon Apply', ru: 'Применить купон' },
-  COUPON_DISCOUNT: { en: 'Coupon Discount', ru: 'Скидка по купону' },
+  COUPON_APPLY: { en: 'Apply Coupon', ru: 'Применить купон' },
+  COUPON_DISCOUNT: { en: 'Cart Discount', ru: 'Скидка на корзину' },
   EMPTY: {
     en: `Oops! Looks like you haven't added the item to your cart yet.`,
     ru: `Ой! Похоже, вы еще не добавили товар в корзину.`,
@@ -44,7 +46,7 @@ const TITLE = {
 class CartPageView {
   private addDiscountCallback: DiscountCallback;
 
-  private clear: LinkModel;
+  private clear: ButtonModel;
 
   private clearCallback: ClearCallback;
 
@@ -93,7 +95,7 @@ class CartPageView {
       innerContent: TITLE.BUTTON_COUPON[this.language],
       tag: 'button',
     });
-    this.clear = new LinkModel({ classes: [styles.continue, styles.clear], text: TITLE.CLEAR[this.language] });
+    this.clear = new ButtonModel({ classes: [styles.clear], text: TITLE.CLEAR[this.language] });
     this.totalWrap = this.createWrapHTML();
     this.totalWrap.classList.add(styles.total);
     this.page.append(this.productWrap);
@@ -216,8 +218,7 @@ class CartPageView {
     const tdDelete = createBaseElement({ cssClasses: [styles.th, styles.deleteCell, styles.mainText], tag: 'th' });
 
     this.textElement.push({ element: this.clear.getHTML(), textItem: TITLE.CLEAR });
-    this.clear.getHTML().addEventListener('click', (event) => {
-      event.preventDefault();
+    this.clear.getHTML().addEventListener('click', () => {
       const confirmModel = new ConfirmModel(
         () => this.clearCallback(),
         USER_MESSAGE[getStore().getState().currentLanguage].CLEAR_CART,
@@ -341,9 +342,9 @@ class CartPageView {
   }
 
   public updateTotal(cart: Cart): void {
-    this.subTotal.innerHTML = `$ ${(cart.total + cart.discounts).toFixed(2)}`;
-    this.discount.innerHTML = `-$ ${cart.discounts.toFixed(2)}`;
-    this.total.innerHTML = `$ ${cart.total.toFixed(2)}`;
+    this.subTotal.innerHTML = cartPrice((cart.total + cart.discounts).toFixed(2));
+    this.discount.innerHTML = cartPrice(cart.discounts.toFixed(2));
+    this.total.innerHTML = cartPrice(cart.total.toFixed(2));
   }
 }
 export default CartPageView;
