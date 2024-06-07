@@ -28,24 +28,27 @@ class ProductPageModel implements Page {
   }
 
   private createBreadcrumbLinks(currentProduct: Product): BreadcrumbLink[] {
+    const { currentLanguage } = getStore().getState();
+    const isRuLanguage = currentLanguage === LANGUAGE_CHOICE.RU;
     const category = currentProduct.category[0].parent;
     const subcategory = currentProduct.category[0];
+
     const links: BreadcrumbLink[] = [
-      { link: PAGE_ID.MAIN_PAGE, name: PAGE_TITLE[getStore().getState().currentLanguage].main },
-      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_TITLE[getStore().getState().currentLanguage].catalog },
+      { link: PAGE_ID.MAIN_PAGE, name: PAGE_TITLE[currentLanguage].main },
+      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_TITLE[currentLanguage].catalog },
     ];
 
     if (category) {
       links.push({
         link: buildPath.catalogPathWithIDAndQuery(null, { category: [category.id] }),
-        name: category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+        name: category.name[Number(isRuLanguage)].value,
       });
     }
 
     if (subcategory && category) {
       links.push({
         link: buildPath.catalogPathWithIDAndQuery(null, { category: [category.id], subcategory: [subcategory.id] }),
-        name: subcategory.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+        name: subcategory.name[Number(isRuLanguage)].value,
       });
     }
 
@@ -60,16 +63,7 @@ class ProductPageModel implements Page {
       .then((productData) => {
         if (productData) {
           this.currentProduct = productData;
-          const productInfo = new ProductInfoModel({
-            currentSize: currentSize ?? productData.variant[0].size,
-            ...productData,
-          });
-          this.initBreadcrumbs(productData);
-          this.getHTML().append(productInfo.getHTML(), this.view.getFullDescriptionWrapper());
-          this.view.setFullDescription(
-            productData.fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-          );
-          this.observeLanguage(productData.fullDescription);
+          this.updatePageContent(productData, currentSize);
         }
       })
       .catch(showErrorMessage);
@@ -78,26 +72,43 @@ class ProductPageModel implements Page {
   }
 
   private initBreadcrumbs(currentProduct: Product): void {
+    const breadcrumbsContainer = this.view.getBreadcrumbsContainer();
+    if (!breadcrumbsContainer) {
+      return;
+    }
+
     const breadcrumbs = new BreadcrumbsModel();
     breadcrumbs.addBreadcrumbLinks(this.createBreadcrumbLinks(currentProduct));
-    const breadcrumbsContainer = this.view.getBreadcrumbsContainer();
 
-    if (breadcrumbsContainer) {
-      while (breadcrumbsContainer.firstChild) {
-        breadcrumbsContainer.removeChild(breadcrumbsContainer.firstChild);
-      }
-      breadcrumbsContainer.appendChild(breadcrumbs.getHTML());
+    while (breadcrumbsContainer.firstChild) {
+      breadcrumbsContainer.removeChild(breadcrumbsContainer.firstChild);
     }
+    breadcrumbsContainer.appendChild(breadcrumbs.getHTML());
   }
 
   private observeLanguage(fullDescription: localization[]): void {
     observeStore(selectCurrentLanguage, () => {
-      const language = getStore().getState().currentLanguage;
-      this.view.setFullDescription(fullDescription[Number(language === LANGUAGE_CHOICE.RU)].value);
+      this.view.setFullDescription(
+        fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      );
       if (this.currentProduct) {
         this.initBreadcrumbs(this.currentProduct);
       }
     });
+  }
+
+  private updatePageContent(productData: Product, currentSize: null | string): void {
+    this.initBreadcrumbs(productData);
+
+    const productInfo = new ProductInfoModel({
+      currentSize: currentSize ?? productData.variant[0].size,
+      ...productData,
+    });
+    this.getHTML().append(productInfo.getHTML(), this.view.getFullDescriptionWrapper());
+    this.view.setFullDescription(
+      productData.fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+    );
+    this.observeLanguage(productData.fullDescription);
   }
 
   public getHTML(): HTMLDivElement {
