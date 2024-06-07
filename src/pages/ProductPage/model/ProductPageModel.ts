@@ -11,7 +11,7 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
-import { buildCatalogPathName, buildMainPathName } from '@/shared/utils/buildPathname.ts';
+import * as buildPath from '@/shared/utils/buildPathname.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
@@ -30,18 +30,21 @@ class ProductPageModel implements Page {
   private createBreadcrumbLinks(currentProduct: Product): BreadcrumbLink[] {
     const category = currentProduct.category[0].parent;
     const subcategory = currentProduct.category[0];
-    const links = [
-      { link: buildMainPathName(), name: PAGE_ID.MAIN_PAGE.toString() },
-      { link: buildCatalogPathName(), name: PAGE_ID.CATALOG_PAGE.toString() },
+    const links: BreadcrumbLink[] = [
+      { link: PAGE_ID.MAIN_PAGE, name: PAGE_ID.MAIN_PAGE.toString() },
+      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_ID.CATALOG_PAGE.toString() },
     ];
 
     if (category) {
-      links.push({ link: buildCatalogPathName(null, { category: [category.id] }), name: category.name[0].value });
+      links.push({
+        link: buildPath.catalogPathWithIDAndQuery(null, { category: [category.id] }),
+        name: category.name[0].value,
+      });
     }
 
     if (subcategory && category) {
       links.push({
-        link: buildCatalogPathName(null, { category: [category.id], subcategory: [subcategory.id] }),
+        link: buildPath.catalogPathWithIDAndQuery(null, { category: [category.id], subcategory: [subcategory.id] }),
         name: subcategory.name[0].value,
       });
     }

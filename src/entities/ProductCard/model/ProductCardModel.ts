@@ -8,7 +8,7 @@ import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { buildProductPathName } from '@/shared/utils/buildPathname.ts';
+import * as buildPath from '@/shared/utils/buildPathname.ts';
 import { productAddedToCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
@@ -33,7 +33,7 @@ class ProductCardModel {
     this.currentSize = currentSize ?? this.params.variant[0].size;
     this.currentVariant = this.params.variant.find(({ size }) => size === currentSize) ?? this.params.variant[0];
     this.view = new ProductCardView(params, currentSize);
-    this.price = new ProductPriceModel(this.currentVariant);
+    this.price = new ProductPriceModel({ new: this.currentVariant.discount, old: this.currentVariant.price });
     this.wishlistButton = new WishlistButtonModel(this.params);
     this.init(cart);
   }
@@ -61,7 +61,9 @@ class ProductCardModel {
     const goDetailsPageLink = this.view.getGoDetailsPageLink();
     goDetailsPageLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      const path = buildProductPathName(this.params.key, { size: [this.currentSize ?? this.params.variant[0].size] });
+      const path = buildPath.productPathWithIDAndQuery(this.params.key, {
+        size: [this.currentSize ?? this.params.variant[0].size],
+      });
       RouterModel.getInstance().navigateTo(path);
     });
   }

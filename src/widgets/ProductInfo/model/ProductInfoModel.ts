@@ -13,7 +13,7 @@ import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import { buildProductPathName } from '@/shared/utils/buildPathname.ts';
+import * as buildPath from '@/shared/utils/buildPathname.ts';
 import { productAddedToCartMessage, productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import Swiper from 'swiper';
@@ -47,7 +47,7 @@ class ProductInfoModel {
     this.view = new ProductInfoView(this.params);
     this.currentVariant =
       this.params.variant.find(({ size }) => size === this.params.currentSize) ?? this.params.variant[0];
-    this.price = new ProductPriceModel(this.currentVariant);
+    this.price = new ProductPriceModel({ new: this.currentVariant.discount, old: this.currentVariant.price });
     this.wishlistButton = new WishlistButtonModel(this.params);
     this.init();
   }
@@ -134,14 +134,14 @@ class ProductInfoModel {
     this.view.getSizeButtons().forEach((sizeButton) => {
       sizeButton.getHTML().addEventListener('click', () => {
         const currentVariant = this.params.variant.find(({ size }) => size === sizeButton.getHTML().textContent);
-        const path = `${buildProductPathName(this.params.key, { size: [currentVariant?.size ?? this.params.variant[0].size] })}`;
+        const path = `${buildPath.productPathWithIDAndQuery(this.params.key, { size: [currentVariant?.size ?? this.params.variant[0].size] })}`;
         RouterModel.getInstance().navigateTo(path);
         modal.hide();
         this.currentVariant = currentVariant ?? this.params.variant[0];
         this.params.currentSize = currentVariant?.size ?? this.params.variant[0].size;
         this.view.updateParams(this.params);
         this.price.getHTML().remove();
-        this.price = new ProductPriceModel(this.currentVariant);
+        this.price = new ProductPriceModel({ new: this.currentVariant.discount, old: this.currentVariant.price });
         this.view.getRightWrapper().append(this.price.getHTML());
       });
     });

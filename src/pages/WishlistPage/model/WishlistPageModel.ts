@@ -5,7 +5,6 @@ import BreadcrumbsModel from '@/features/Breadcrumbs/model/BreadcrumbsModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-import { buildCatalogPathName, buildMainPathName, buildWishlistPathName } from '@/shared/utils/buildPathname.ts';
 
 import WishlistPageView from '../view/WishlistPageView.ts';
 
@@ -21,9 +20,9 @@ class WishlistPageModel implements Page {
 
   private createBreadcrumbLinksData(): BreadcrumbLink[] {
     return [
-      { link: buildMainPathName(), name: PAGE_ID.MAIN_PAGE.toString() },
-      { link: buildCatalogPathName(), name: PAGE_ID.CATALOG_PAGE.toString() },
-      { link: buildWishlistPathName(), name: PAGE_ID.WISHLIST_PAGE.toString() },
+      { link: PAGE_ID.MAIN_PAGE, name: PAGE_ID.MAIN_PAGE.toString() },
+      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_ID.CATALOG_PAGE.toString() },
+      { link: PAGE_ID.WISHLIST_PAGE, name: PAGE_ID.WISHLIST_PAGE.toString() },
     ];
   }
 

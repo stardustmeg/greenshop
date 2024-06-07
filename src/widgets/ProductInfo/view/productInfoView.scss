@@ -92,6 +92,7 @@
 .shortDescriptionWrapper {
   order: 3;
   font: var(--regular-font);
+  line-height: 170%;
   letter-spacing: var(--one);
   color: var(--steam-green-400);
 
@@ -103,6 +104,7 @@
 .shortDescription,
 .fullDescription {
   font: var(--regular-font);
+  line-height: 170%;
   color: var(--noble-gray-800);
 
   @media (max-width: 768px) {

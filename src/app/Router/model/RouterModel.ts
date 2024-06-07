@@ -102,7 +102,7 @@ class RouterModel {
 
     return {
       hasRoute,
-      params: { [currentPage.slice(PATH_SEGMENTS_TO_KEEP)]: { id } },
+      params: { [currentPage]: { id } },
     };
   }
 
