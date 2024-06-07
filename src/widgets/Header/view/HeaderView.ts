@@ -41,6 +41,8 @@ class HeaderView {
 
   private toProfileLink: LinkModel;
 
+  private toWishlistLink: LinkModel;
+
   private wrapper: HTMLDivElement;
 
   constructor() {
@@ -49,6 +51,8 @@ class HeaderView {
     this.toCartLink = this.createToCartLink();
     this.cartBadgeWrap = this.createBadgeWrap();
     this.cartBadge = this.createBadge();
+
+    this.toWishlistLink = this.createToWishlistLink();
 
     this.toProfileLink = this.createToProfileLink();
     this.switchThemeCheckbox = this.createSwitchThemeCheckbox();
@@ -174,6 +178,7 @@ class HeaderView {
       this.logoutButton.getHTML(),
       this.toCartLink.getHTML(),
       this.toProfileLink.getHTML(),
+      this.toWishlistLink.getHTML(),
       this.createSwitchThemeLabel(),
     );
 
@@ -310,6 +315,32 @@ class HeaderView {
     return this.toProfileLink;
   }
 
+  private createToWishlistLink(): LinkModel {
+    this.toWishlistLink = new LinkModel({
+      attrs: {
+        href: PAGE_ID.CART_PAGE,
+      },
+      classes: [styles.cartLink],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
+
+    this.toWishlistLink.getHTML().append(svg);
+
+    this.toWishlistLink
+      .getHTML()
+      .classList.toggle(styles.cartLinkActive, getStore().getState().currentPage === PAGE_ID.WISHLIST_PAGE);
+
+    observeStore(selectCurrentPage, () =>
+      this.toWishlistLink
+        .getHTML()
+        .classList.toggle(styles.cartLinkActive, getStore().getState().currentPage === PAGE_ID.WISHLIST_PAGE),
+    );
+
+    return this.toWishlistLink;
+  }
+
   private createWrapper(): HTMLDivElement {
     this.wrapper = createBaseElement({
       cssClasses: [styles.wrapper],
@@ -350,6 +381,10 @@ class HeaderView {
 
   public getToProfileLink(): LinkModel {
     return this.toProfileLink;
+  }
+
+  public getToWishlistLink(): LinkModel {
+    return this.toWishlistLink;
   }
 
   public getWrapper(): HTMLDivElement {

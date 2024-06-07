@@ -71,6 +71,10 @@ class AppModel {
         const { default: UserProfilePageModel } = await import('@/pages/UserProfilePage/model/UserProfilePageModel.ts');
         return new UserProfilePageModel(this.appView.getHTML());
       },
+      [PAGE_ID.WISHLIST_PAGE]: async (): Promise<Page> => {
+        const { default: WishlistPageModel } = await import('@/pages/WishlistPage/model/WishlistPageModel.ts');
+        return new WishlistPageModel(this.appView.getHTML());
+      },
     };
 
     const routes = new Map<string, (params: PageParams) => Promise<Page>>();
