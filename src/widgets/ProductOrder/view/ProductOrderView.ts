@@ -5,10 +5,9 @@ import type { languageVariants } from '@/shared/types/common';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE, TABLET_WIDTH } from '@/shared/constants/common.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import { CartActive } from '@/shared/types/cart.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
+import { buildProductPathName } from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import Hammer from 'hammerjs';
@@ -124,9 +123,7 @@ class ProductOrderView {
 
   private createImgCell(): HTMLTableCellElement {
     const tdImage = createBaseElement({ cssClasses: [styles.td, styles.imgCell], tag: 'td' });
-    const href = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.productItem.key, {
-      size: [this.productItem.size],
-    })}`;
+    const href = `${buildProductPathName(this.productItem.key, { size: [this.productItem.size] })}`;
     const link = new LinkModel({
       attrs: {
         href,

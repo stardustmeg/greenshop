@@ -7,11 +7,10 @@ import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { MORE_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { PRODUCT_INFO_TEXT } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
+import { buildProductPathName } from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
@@ -135,9 +134,7 @@ class ProductCardView {
   }
 
   private createGoDetailsPageLink(): LinkModel {
-    const href = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
-      size: [this.currentSize ?? this.params.variant[0].size],
-    })}`;
+    const href = `${buildProductPathName(this.params.key, { size: [this.currentSize ?? this.params.variant[0].size] })}`;
 
     this.goDetailsPageLink = new LinkModel({
       attrs: {
