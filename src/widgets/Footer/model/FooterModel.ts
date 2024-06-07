@@ -4,7 +4,7 @@ import type { Category } from '@/shared/types/product.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
+import { buildCatalogPathName } from '@/shared/utils/buildPathname.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import FooterView from '../view/FooterView.ts';
@@ -92,7 +92,7 @@ function generateRandomCategoryLink(categoriesArr: Category[]): Link[] {
     const category = subCategory[randomIndex];
     subCategory.splice(randomIndex, 1);
     result.push({
-      href: buildPathName(PAGE_ID.CATALOG_PAGE, null, { subcategory: [category.id] }),
+      href: buildCatalogPathName(null, { subcategory: [category.id] }),
       name: {
         en: category.name[0].value,
         ru: category.name[1].value,

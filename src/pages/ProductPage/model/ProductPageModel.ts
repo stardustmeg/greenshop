@@ -1,4 +1,4 @@
-import type { BreadCrumbLink } from '@/shared/types/link.ts';
+import type { BreadcrumbLink } from '@/shared/types/link.ts';
 import type { Page, PageParams } from '@/shared/types/page.ts';
 import type { Product, localization } from '@/shared/types/product.ts';
 
@@ -11,13 +11,15 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
+import { buildCatalogPathName, buildMainPathName } from '@/shared/utils/buildPathname.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
 import ProductPageView from '../view/ProductPageView.ts';
 
 class ProductPageModel implements Page {
+  private breadcrumbs = new BreadcrumbsModel();
+
   private view: ProductPageView;
 
   constructor(parent: HTMLDivElement, params: PageParams) {
@@ -25,31 +27,21 @@ class ProductPageModel implements Page {
     this.init(params);
   }
 
-  private createNavigationLinks(currentProduct: Product): BreadCrumbLink[] {
+  private createBreadcrumbLinks(currentProduct: Product): BreadcrumbLink[] {
     const category = currentProduct.category[0].parent;
     const subcategory = currentProduct.category[0];
     const links = [
-      {
-        link: buildPathName(PAGE_ID.MAIN_PAGE, null, null),
-        name: PAGE_ID.MAIN_PAGE.toString(),
-      },
-      {
-        link: buildPathName(PAGE_ID.CATALOG_PAGE, null, null),
-        name: PAGE_ID.CATALOG_PAGE.toString(),
-      },
+      { link: buildMainPathName(), name: PAGE_ID.MAIN_PAGE.toString() },
+      { link: buildCatalogPathName(), name: PAGE_ID.CATALOG_PAGE.toString() },
     ];
 
     if (category) {
-      links.push({
-        link: buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [category.id] }),
-
-        name: category.name[0].value,
-      });
+      links.push({ link: buildCatalogPathName(null, { category: [category.id] }), name: category.name[0].value });
     }
 
     if (subcategory && category) {
       links.push({
-        link: buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [category.id], subcategory: [subcategory.id] }),
+        link: buildCatalogPathName(null, { category: [category.id], subcategory: [subcategory.id] }),
         name: subcategory.name[0].value,
       });
     }
@@ -82,8 +74,8 @@ class ProductPageModel implements Page {
   }
 
   private initBreadcrumbs(currentProduct: Product): void {
-    const links = this.createNavigationLinks(currentProduct);
-    this.getHTML().append(new BreadcrumbsModel(links).getHTML());
+    this.breadcrumbs.addBreadcrumbLinks(this.createBreadcrumbLinks(currentProduct));
+    this.getHTML().append(this.breadcrumbs.getHTML());
   }
 
   private observeLanguage(fullDescription: localization[]): void {

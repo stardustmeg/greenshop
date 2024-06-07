@@ -12,9 +12,8 @@ import modal from '@/shared/Modal/model/ModalModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
+import { buildProductPathName } from '@/shared/utils/buildPathname.ts';
 import { productAddedToCartMessage, productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import Swiper from 'swiper';
@@ -135,10 +134,7 @@ class ProductInfoModel {
     this.view.getSizeButtons().forEach((sizeButton) => {
       sizeButton.getHTML().addEventListener('click', () => {
         const currentVariant = this.params.variant.find(({ size }) => size === sizeButton.getHTML().textContent);
-
-        const path = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
-          size: [currentVariant?.size ?? this.params.variant[0].size],
-        })}`;
+        const path = `${buildProductPathName(this.params.key, { size: [currentVariant?.size ?? this.params.variant[0].size] })}`;
         RouterModel.getInstance().navigateTo(path);
         modal.hide();
         this.currentVariant = currentVariant ?? this.params.variant[0];
