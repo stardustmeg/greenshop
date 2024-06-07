@@ -16,7 +16,7 @@ import HeaderView from '../view/HeaderView.ts';
 
 class HeaderModel {
   private cartChangeHandler = (cart: Cart): boolean => {
-    this.view.updateCartCount(cart.products.length);
+    this.view.updateCartCount(cart.products.reduce((acc, item) => acc + item.quantity, 0));
     return true;
   };
 

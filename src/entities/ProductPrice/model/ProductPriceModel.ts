@@ -13,6 +13,10 @@ class ProductPriceModel {
   public getHTML(): HTMLDivElement {
     return this.view.getHTML();
   }
+
+  public updatePrice(params: { new: number; old: number }): void {
+    this.view.updatesPrice(params);
+  }
 }
 
 export default ProductPriceModel;

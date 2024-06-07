@@ -1,4 +1,3 @@
-import type { Cart } from '@/shared/types/cart.ts';
 import type { Page } from '@/shared/types/page.ts';
 
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
@@ -9,6 +8,7 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import { type Cart, CartActive } from '@/shared/types/cart.ts';
 import { promoCodeAppliedMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel.ts';
@@ -38,6 +38,14 @@ class CartPageModel implements Page {
           if (cart) {
             showSuccessMessage(promoCodeAppliedMessage(discountCode));
             this.cart = cart;
+            this.productsItem.forEach((productItem) => {
+              const idLine = productItem.getProduct().lineItemId;
+              const updateLine = this.cart?.products.find((item) => item.lineItemId === idLine);
+              if (updateLine) {
+                productItem.setProduct(updateLine);
+                productItem.updateProductHandler(CartActive.UPDATE).catch(showErrorMessage);
+              }
+            });
             this.view.updateTotal(this.cart);
           }
         })

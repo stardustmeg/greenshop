@@ -1,4 +1,4 @@
-import type { AddCartItem, Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
+import type { AddCartItem, Cart, CartCoupon, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 import type {
   CartPagedQueryResponse,
   Cart as CartResponse,
@@ -15,6 +15,7 @@ import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import type { OptionsRequest } from '../../types/type.ts';
 
+import getDiscountModel from '../../discount/model/DiscountModel.ts';
 import getProductModel from '../../product/model/ProductModel.ts';
 import FilterProduct from '../../product/utils/filter.ts';
 import { Attribute, FilterFields } from '../../types/type.ts';
@@ -23,6 +24,7 @@ import getCartApi, { type CartApi } from '../CartApi.ts';
 
 enum ACTIONS {
   addDiscountCode = 'addDiscountCode',
+  removeDiscountCode = 'removeDiscountCode',
   removeLineItem = 'removeLineItem',
   setAnonymousId = 'setAnonymousId',
 }
@@ -55,10 +57,22 @@ export class CartModel {
     if (data.anonymousId && !authToken && !anonymousId) {
       getStore().dispatch(setAnonymousId(data.anonymousId));
     }
-    const discount = data.discountOnTotalPrice?.discountedAmount?.centAmount;
+    const discounts: CartCoupon[] = [];
+    if (data.discountOnTotalPrice && data.discountOnTotalPrice.includedDiscounts.length) {
+      const allDiscounts = getDiscountModel().getAllCoupons();
+      data.discountOnTotalPrice.includedDiscounts.forEach((discount) => {
+        const findDiscount = allDiscounts.find((el) => el.id === discount.discount.id);
+        if (findDiscount && discount.discountedAmount.centAmount > 0) {
+          discounts.push({
+            coupon: findDiscount,
+            value: discount.discountedAmount.centAmount / PRICE_FRACTIONS || 0,
+          });
+        }
+      });
+    }
     return {
       anonymousId: data.anonymousId || null,
-      discounts: discount ? discount / PRICE_FRACTIONS : 0,
+      discounts,
       id: data.id,
       products: data.lineItems.map((lineItem) => this.adaptLineItem(lineItem)),
       total: data.totalPrice.centAmount / PRICE_FRACTIONS || 0,
@@ -70,16 +84,25 @@ export class CartModel {
     const price = product.price.discounted?.value.centAmount
       ? product.price.discounted?.value.centAmount
       : product.price.value.centAmount;
+    const priceCoupon =
+      product.discountedPricePerQuantity.length &&
+      product.discountedPricePerQuantity[0].discountedPrice.value.centAmount
+        ? product.discountedPricePerQuantity[0].discountedPrice.value.centAmount
+        : 0;
     const result: CartProduct = {
       images: product.variant.images?.length ? product.variant.images[0].url : '',
       key: product.productKey || '',
       lineItemId: product.id,
       name: [],
       price: price / PRICE_FRACTIONS || 0,
+      priceCouponDiscount: priceCoupon / PRICE_FRACTIONS || 0,
       productId: product.productId || '',
       quantity: product.quantity || 0,
       size: null,
-      totalPrice: product.totalPrice.centAmount / PRICE_FRACTIONS || 0,
+      totalPrice: priceCoupon
+        ? (price * product.quantity) / PRICE_FRACTIONS || 0
+        : product.totalPrice.centAmount / PRICE_FRACTIONS || 0,
+      totalPriceCouponDiscount: priceCoupon ? product.totalPrice.centAmount / PRICE_FRACTIONS || 0 : 0,
     };
     result.name.push(...getProductModel().adaptLocalizationValue(product.name));
     if (product.variant.attributes) {
@@ -118,7 +141,7 @@ export class CartModel {
   private getCartFromData(data: CartResponse | ClientResponse<CartPagedQueryResponse | CartResponse>): Cart {
     let cart: Cart = {
       anonymousId: null,
-      discounts: 0,
+      discounts: [],
       id: '',
       products: [],
       total: 0,
@@ -247,6 +270,24 @@ export class CartModel {
         showErrorMessage(error);
         return this.cart;
       });
+  }
+
+  public async deleteCoupon(id: string): Promise<Cart> {
+    if (!this.cart) {
+      this.cart = await this.getCart();
+    }
+    const action: MyCartUpdateAction[] = [
+      {
+        action: ACTIONS.removeDiscountCode,
+        discountCode: {
+          id,
+          typeId: 'discount-code',
+        },
+      },
+    ];
+    const data = await this.root.updateCart(this.cart, action);
+    this.cart = this.getCartFromData(data);
+    return this.cart;
   }
 
   public async deleteProductFromCart(products: CartProduct): Promise<Cart | null> {
