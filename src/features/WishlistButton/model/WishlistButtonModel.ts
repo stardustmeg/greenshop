@@ -3,8 +3,10 @@ import type { Product } from '@/shared/types/product.ts';
 import type { ShoppingList, ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 
 import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { productAddedToWishListMessage, productRemovedFromWishListMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
@@ -30,6 +32,7 @@ class WishlistButtonModel {
           ),
         );
         this.view.switchStateWishListButton(true);
+        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_WISHLIST, '');
       })
       .catch(showErrorMessage);
   }
@@ -44,6 +47,7 @@ class WishlistButtonModel {
           ),
         );
         this.view.switchStateWishListButton(false);
+        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_WISHLIST, '');
       })
       .catch(showErrorMessage);
   }
