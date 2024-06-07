@@ -1,5 +1,3 @@
-import type { Variant } from '@/shared/types/product';
-
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 import './productPriceView.scss';
@@ -7,30 +5,28 @@ import './productPriceView.scss';
 class ProductPriceView {
   private basicPrice: HTMLSpanElement;
 
-  private currentVariant: Variant;
-
   private oldPrice: HTMLSpanElement;
+
+  private params: { new: number; old: number };
 
   private view: HTMLDivElement;
 
-  constructor(currentVariant: Variant) {
-    this.currentVariant = currentVariant;
+  constructor(params: { new: number; old: number }) {
+    this.params = params;
     this.basicPrice = this.createBasicPrice();
     this.oldPrice = this.createOldPrice();
     this.view = this.createHTML();
   }
 
   private createBasicPrice(): HTMLSpanElement {
-    const innerContent = this.currentVariant.discount
-      ? `$${this.currentVariant.discount.toFixed(2)}`
-      : `$${this.currentVariant.price?.toFixed(2)}`;
+    const innerContent = this.getBasePrice(); // this.params.new ? `$${this.params.new.toFixed(2)}` : `$${this.params.old?.toFixed(2)}`;
     this.basicPrice = createBaseElement({
       cssClasses: ['basicPrice'],
       innerContent,
       tag: 'span',
     });
 
-    if (!this.currentVariant.discount) {
+    if (!this.params.new) {
       this.basicPrice.classList.add('gray');
     }
 
@@ -48,7 +44,7 @@ class ProductPriceView {
   }
 
   private createOldPrice(): HTMLSpanElement {
-    const innerContent = this.currentVariant.discount ? `$${this.currentVariant.price?.toFixed(2)}` : '';
+    const innerContent = this.getOldPrice(); // this.params.new ? `$${this.params.old.toFixed(2)}` : '';
     this.oldPrice = createBaseElement({
       cssClasses: ['oldPrice'],
       innerContent,
@@ -58,8 +54,27 @@ class ProductPriceView {
     return this.oldPrice;
   }
 
+  private getBasePrice(): string {
+    return this.params.new ? `$${this.params.new.toFixed(2)}` : `$${this.params.old?.toFixed(2)}`;
+  }
+
+  private getOldPrice(): string {
+    return this.params.new ? `$${this.params.old.toFixed(2)}` : '';
+  }
+
   public getHTML(): HTMLDivElement {
     return this.view;
+  }
+
+  public updatesPrice(params: { new: number; old: number }): void {
+    this.params = params;
+    this.basicPrice.textContent = this.getBasePrice();
+    this.oldPrice.textContent = this.getOldPrice();
+    if (!this.params.new) {
+      this.basicPrice.classList.add('gray');
+    } else {
+      this.basicPrice.classList.remove('gray');
+    }
   }
 }
 

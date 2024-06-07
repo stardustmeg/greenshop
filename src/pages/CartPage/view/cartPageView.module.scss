@@ -111,6 +111,7 @@
   padding: var(--tiny-offset) 0;
   font: var(--regular-font);
   color: var(--noble-gray-800);
+  transition: all 0.2s;
 }
 
 .totalWrap {
@@ -123,6 +124,24 @@
     width: 100%;
     max-width: 100%;
   }
+}
+
+.couponsWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+
+  &:hover p {
+    color: var(--steam-green-800);
+  }
+}
+
+.couponWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .totalPrice {
@@ -211,4 +230,13 @@ $color: var(--steam-green-800);
 
 .hide {
   display: none;
+}
+
+.couponsWrap:not(:empty)::after {
+  content: '';
+  display: inline-block;
+  width: var(--tiny-offset);
+  height: var(--tiny-offset);
+  background: url('/img/png/expand-arrow.png') no-repeat center center;
+  background-size: contain;
 }

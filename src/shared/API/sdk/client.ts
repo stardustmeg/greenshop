@@ -119,7 +119,6 @@ export class ApiClient {
         anonymousId,
       },
     };
-
     client.withAnonymousSessionFlow(anonymOptions);
     getStore().dispatch(setAnonymousId(anonymousId));
     this.anonymConnection = this.getConnection(client.build());

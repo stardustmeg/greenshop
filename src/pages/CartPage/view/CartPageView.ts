@@ -52,7 +52,9 @@ class CartPageView {
 
   private couponButton: HTMLButtonElement;
 
-  private discount: HTMLParagraphElement;
+  private discountList: HTMLUListElement;
+
+  private discountTotal: HTMLElement;
 
   private empty: HTMLDivElement;
 
@@ -76,6 +78,8 @@ class CartPageView {
 
   private total: HTMLParagraphElement;
 
+  private totalDiscountTitle: HTMLParagraphElement;
+
   private totalWrap: HTMLDivElement;
 
   constructor(parent: HTMLDivElement, clearCallback: ClearCallback, addDiscountCallback: DiscountCallback) {
@@ -89,13 +93,19 @@ class CartPageView {
     this.productWrap.classList.add(styles.products);
     this.subTotal = createBaseElement({ cssClasses: [styles.totalTitle], tag: 'p' });
     this.total = createBaseElement({ cssClasses: [styles.totalPrice], tag: 'p' });
-    this.discount = createBaseElement({ cssClasses: [styles.title], tag: 'p' });
+    this.discountTotal = createBaseElement({ cssClasses: [styles.couponsWrap], tag: 'summary' });
+    this.discountList = createBaseElement({ cssClasses: [styles.couponsList], tag: 'ul' });
     this.couponButton = createBaseElement({
       cssClasses: [styles.button, styles.applyBtn],
       innerContent: TITLE.BUTTON_COUPON[this.language],
       tag: 'button',
     });
-    this.clear = new ButtonModel({ classes: [styles.clear], text: TITLE.CLEAR[this.language] });
+    this.totalDiscountTitle = createBaseElement({
+      cssClasses: [styles.title],
+      innerContent: TITLE.COUPON_DISCOUNT[this.language],
+      tag: 'p',
+    });
+    this.clear = new ButtonModel({ classes: [styles.continue, styles.clear], text: TITLE.CLEAR[this.language] });
     this.totalWrap = this.createWrapHTML();
     this.totalWrap.classList.add(styles.total);
     this.page.append(this.productWrap);
@@ -230,15 +240,10 @@ class CartPageView {
     return tdDelete;
   }
 
-  private createDiscountHTML(): HTMLDivElement {
-    const discountWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
-    const discountTitle = createBaseElement({
-      cssClasses: [styles.title],
-      innerContent: TITLE.COUPON_DISCOUNT[this.language],
-      tag: 'p',
-    });
-    discountWrap.append(discountTitle, this.discount);
-    this.textElement.push({ element: discountTitle, textItem: TITLE.COUPON_DISCOUNT });
+  private createDiscountHTML(): HTMLDetailsElement {
+    const discountWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'details' });
+    discountWrap.append(this.discountTotal, this.discountList);
+    this.textElement.push({ element: this.totalDiscountTitle, textItem: TITLE.COUPON_DISCOUNT });
     return discountWrap;
   }
 
@@ -311,6 +316,8 @@ class CartPageView {
   public renderCart(productsItem: ProductOrderModel[]): void {
     this.productWrap.innerHTML = '';
     this.totalWrap.innerHTML = '';
+    this.discountTotal.innerHTML = '';
+    this.discountList.innerHTML = '';
     this.productWrap.classList.remove(styles.hide);
     this.totalWrap.classList.remove(styles.hide);
     this.empty.classList.add(styles.hide);
@@ -324,6 +331,8 @@ class CartPageView {
   public renderEmpty(): void {
     this.productWrap.innerHTML = '';
     this.totalWrap.innerHTML = '';
+    this.discountTotal.innerHTML = '';
+    this.discountList.innerHTML = '';
     this.productWrap.classList.add(styles.hide);
     this.totalWrap.classList.add(styles.hide);
     this.empty.classList.remove(styles.hide);
@@ -342,8 +351,37 @@ class CartPageView {
   }
 
   public updateTotal(cart: Cart): void {
-    this.subTotal.innerHTML = cartPrice((cart.total + cart.discounts).toFixed(2));
-    this.discount.innerHTML = cartPrice(cart.discounts.toFixed(2));
+    this.discountTotal.innerHTML = '';
+    this.discountList.innerHTML = '';
+    let totalDiscount = 0;
+    cart.discounts.forEach((discount) => {
+      const couponItem = createBaseElement({ cssClasses: [styles.couponWrap], tag: 'li' });
+      const couponTitle = createBaseElement({
+        cssClasses: [styles.title],
+        innerContent: discount.coupon.code,
+        tag: 'p',
+      });
+      const couponValue = createBaseElement({
+        cssClasses: [styles.title],
+        innerContent: `-$ ${discount.value.toFixed(2)}`,
+        tag: 'p',
+      });
+      couponItem.append(couponTitle, couponValue);
+      this.discountList.append(couponItem);
+      totalDiscount += discount.value;
+    });
+    if (totalDiscount) {
+      const totalDiscountWrap = createBaseElement({ cssClasses: [styles.couponWrap], tag: 'div' });
+      const totalDiscountValue = createBaseElement({
+        cssClasses: [styles.title, styles.totalDiscount],
+        innerContent: cartPrice(totalDiscount.toFixed(2)),
+        tag: 'p',
+      });
+      totalDiscountWrap.append(this.totalDiscountTitle, totalDiscountValue);
+      this.discountTotal.append(totalDiscountWrap);
+    }
+    const subTotal = cart.total + totalDiscount;
+    this.subTotal.innerHTML = cartPrice(subTotal.toFixed(2));
     this.total.innerHTML = cartPrice(cart.total.toFixed(2));
   }
 }

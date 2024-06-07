@@ -22,10 +22,10 @@
 
   @media (hover: hover) {
     &:hover {
-      outline: calc(var(--one) * 1.5) solid var(--red-power-600);
+      outline: calc(var(--one) * 1.5) solid var(--steam-green-800);
 
       svg {
-        fill: var(--red-power-600);
+        fill: var(--steam-green-800);
       }
     }
   }
@@ -44,9 +44,9 @@
 }
 
 .inWishList {
-  outline: calc(var(--one) * 1.5) solid var(--red-power-600);
+  outline: calc(var(--one) * 1.5) solid var(--steam-green-800);
 
   svg {
-    fill: var(--red-power-600);
+    fill: var(--steam-green-800);
   }
 }

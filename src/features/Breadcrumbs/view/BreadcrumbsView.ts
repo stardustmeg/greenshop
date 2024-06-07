@@ -1,4 +1,4 @@
-import type { BreadCrumbLink } from '@/shared/types/link';
+import type { BreadcrumbLink } from '@/shared/types/link';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
@@ -10,52 +10,53 @@ import styles from './breadcrumbsView.module.scss';
 const DELIMITER = '>';
 
 class BreadcrumbsView {
+  private breadcrumbLinkData: BreadcrumbLink[] = [];
+
   private view: HTMLDivElement;
 
-  constructor(navigationLinks: BreadCrumbLink[]) {
-    this.view = this.createHTML(navigationLinks);
+  constructor(breadcrumbLinkData: BreadcrumbLink[]) {
+    this.breadcrumbLinkData = breadcrumbLinkData;
+    this.view = this.createHTML();
   }
 
-  private createHTML(navigationLinks: BreadCrumbLink[]): HTMLDivElement {
+  private createHTML(): HTMLDivElement {
     this.view = createBaseElement({
       cssClasses: [styles.breadcrumbs],
       tag: 'div',
     });
 
-    navigationLinks.forEach((linkParams) => {
-      this.createLink(linkParams).getHTML();
-    });
-
-    this.view.lastChild?.remove();
-    this.view.lastElementChild?.classList.add(styles.active);
+    this.drawLinks();
 
     return this.view;
   }
 
-  private createLink(linkParams: BreadCrumbLink): LinkModel {
-    const link = new LinkModel({
-      attrs: {
-        href: linkParams.link,
-      },
-      classes: [styles.link],
-      text: formattedText(linkParams.name),
+  public drawLinks(): void {
+    this.view.innerHTML = '';
+    this.breadcrumbLinkData.forEach((linkParams) => {
+      const link = new LinkModel({
+        attrs: {
+          href: linkParams.link,
+        },
+        classes: [styles.link],
+        text: formattedText(linkParams.name),
+      });
+
+      link.getHTML().addEventListener('click', (event) => {
+        event.preventDefault();
+        RouterModel.getInstance().navigateTo(linkParams.link);
+      });
+
+      const delimiter = createBaseElement({
+        cssClasses: [styles.delimiter],
+        innerContent: DELIMITER,
+        tag: 'span',
+      });
+
+      this.view.append(link.getHTML(), delimiter);
     });
 
-    link.getHTML().addEventListener('click', (event) => {
-      event.preventDefault();
-      RouterModel.getInstance().navigateTo(linkParams.link);
-    });
-
-    const delimiter = createBaseElement({
-      cssClasses: [styles.delimiter],
-      innerContent: DELIMITER,
-      tag: 'span',
-    });
-
-    this.view.append(link.getHTML());
-    this.view.append(delimiter);
-
-    return link;
+    this.view.lastChild?.remove();
+    this.view.lastElementChild?.classList.add(styles.active);
   }
 
   public getHTML(): HTMLDivElement {

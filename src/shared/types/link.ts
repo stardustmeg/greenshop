@@ -4,7 +4,7 @@ export interface LinkAttributes {
   text?: string;
 }
 
-export interface BreadCrumbLink {
+export interface BreadcrumbLink {
   link: string;
   name: string;
 }
