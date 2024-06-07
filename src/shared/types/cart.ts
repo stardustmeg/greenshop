@@ -20,6 +20,7 @@ export interface CartProduct {
   quantity: number;
   size: SizeType | null;
   totalPrice: number;
+  totalPriceCouponDiscount: number;
 }
 
 export interface AddCartItem {

@@ -19,7 +19,7 @@ class ProductPriceView {
   }
 
   private createBasicPrice(): HTMLSpanElement {
-    const innerContent = this.params.new ? `$${this.params.new.toFixed(2)}` : `$${this.params.old?.toFixed(2)}`;
+    const innerContent = this.getBasePrice(); // this.params.new ? `$${this.params.new.toFixed(2)}` : `$${this.params.old?.toFixed(2)}`;
     this.basicPrice = createBaseElement({
       cssClasses: ['basicPrice'],
       innerContent,
@@ -44,7 +44,7 @@ class ProductPriceView {
   }
 
   private createOldPrice(): HTMLSpanElement {
-    const innerContent = this.params.new ? `$${this.params.old.toFixed(2)}` : '';
+    const innerContent = this.getOldPrice(); // this.params.new ? `$${this.params.old.toFixed(2)}` : '';
     this.oldPrice = createBaseElement({
       cssClasses: ['oldPrice'],
       innerContent,
@@ -54,8 +54,27 @@ class ProductPriceView {
     return this.oldPrice;
   }
 
+  private getBasePrice(): string {
+    return this.params.new ? `$${this.params.new.toFixed(2)}` : `$${this.params.old?.toFixed(2)}`;
+  }
+
+  private getOldPrice(): string {
+    return this.params.new ? `$${this.params.old.toFixed(2)}` : '';
+  }
+
   public getHTML(): HTMLDivElement {
     return this.view;
+  }
+
+  public updatesPrice(params: { new: number; old: number }): void {
+    this.params = params;
+    this.basicPrice.textContent = this.getBasePrice();
+    this.oldPrice.textContent = this.getOldPrice();
+    if (!this.params.new) {
+      this.basicPrice.classList.add('gray');
+    } else {
+      this.basicPrice.classList.remove('gray');
+    }
   }
 }
 

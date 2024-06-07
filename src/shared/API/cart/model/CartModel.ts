@@ -99,7 +99,10 @@ export class CartModel {
       productId: product.productId || '',
       quantity: product.quantity || 0,
       size: null,
-      totalPrice: product.totalPrice.centAmount / PRICE_FRACTIONS || 0,
+      totalPrice: priceCoupon
+        ? (price * product.quantity) / PRICE_FRACTIONS || 0
+        : product.totalPrice.centAmount / PRICE_FRACTIONS || 0,
+      totalPriceCouponDiscount: priceCoupon ? product.totalPrice.centAmount / PRICE_FRACTIONS || 0 : 0,
     };
     result.name.push(...getProductModel().adaptLocalizationValue(product.name));
     if (product.variant.attributes) {

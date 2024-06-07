@@ -172,8 +172,9 @@
 
 .quantityText {
   padding: var(--tiny-offset);
-  font: var(--regular-font);
-  color: var(--noble-gray-800);
+  font: var(--medium-font);
+  letter-spacing: var(--one);
+  color: var(--noble-gray-700);
 }
 
 .totalText {
@@ -212,10 +213,11 @@
   @include green-btn;
 
   border-radius: 50%;
-  padding: 0;
+  padding: var(--tiny-offset);
   width: calc(var(--tiny-offset) * 2.5);
   height: calc(var(--tiny-offset) * 2.5);
-  font: var(--regular-font);
+  font: var(--medium-font);
+  letter-spacing: var(--one);
 }
 
 .mobileHide {
@@ -226,4 +228,18 @@
 
 .discount {
   text-decoration: line-through;
+}
+
+.priceElement {
+  flex-direction: column;
+  margin: 0;
+
+  span:empty {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+    justify-content: start;
+  }
 }

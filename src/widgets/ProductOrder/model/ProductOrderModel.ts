@@ -1,5 +1,6 @@
 import type { Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 
+import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
@@ -17,14 +18,26 @@ type Callback = (cart: Cart) => void;
 class ProductOrderModel {
   private callback: Callback;
 
+  private price: ProductPriceModel;
+
   private productItem: CartProduct;
+
+  private total: ProductPriceModel;
 
   private view: ProductOrderView;
 
   constructor(productItem: CartProduct, callback: Callback) {
     this.callback = callback;
     this.productItem = productItem;
-    this.view = new ProductOrderView(this.productItem, this.updateProductHandler.bind(this));
+    this.price = new ProductPriceModel({ new: this.productItem.priceCouponDiscount, old: this.productItem.price });
+    this.total = new ProductPriceModel({
+      new:
+        this.productItem.totalPrice === this.productItem.totalPriceCouponDiscount
+          ? 0
+          : this.productItem.totalPriceCouponDiscount,
+      old: this.productItem.totalPrice,
+    });
+    this.view = new ProductOrderView(this.productItem, this.price, this.total, this.updateProductHandler.bind(this));
     this.init();
   }
 

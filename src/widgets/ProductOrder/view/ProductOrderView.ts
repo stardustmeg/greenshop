@@ -1,3 +1,4 @@
+import type ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel';
 import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 import type { CartProduct } from '@/shared/types/cart';
 import type { languageVariants } from '@/shared/types/common';
@@ -40,9 +41,7 @@ class ProductOrderView {
 
   private language: LanguageChoiceType;
 
-  private price: HTMLParagraphElement;
-
-  private priceCoupon: HTMLParagraphElement;
+  private priceElement: ProductPriceModel;
 
   private productItem: CartProduct;
 
@@ -50,36 +49,27 @@ class ProductOrderView {
 
   private textElement: textElementsType[] = [];
 
-  private total: HTMLTableCellElement;
+  private totalElement: ProductPriceModel;
 
   private view: HTMLTableRowElement;
 
-  constructor(productItem: CartProduct, callback: CallbackActive) {
+  constructor(
+    productItem: CartProduct,
+    priceElement: ProductPriceModel,
+    totalElement: ProductPriceModel,
+    callback: CallbackActive,
+  ) {
     this.productItem = productItem;
+    this.priceElement = priceElement;
+    this.totalElement = totalElement;
+    this.totalElement.getHTML().classList.add(styles.priceElement);
+    this.priceElement.getHTML().classList.add(styles.priceElement);
     this.language = getStore().getState().currentLanguage;
     this.callback = callback;
     this.quantity = createBaseElement({
       cssClasses: [styles.quantityCell, styles.quantityText],
       innerContent: this.productItem.quantity.toString(),
       tag: 'p',
-    });
-    this.price = createBaseElement({
-      cssClasses: [styles.priceText],
-      innerContent: `$${this.productItem.price.toFixed(2)}`,
-      tag: 'p',
-    });
-    this.priceCoupon = createBaseElement({
-      cssClasses: [styles.priceDiscountText],
-      innerContent: this.productItem.priceCouponDiscount ? `$${this.productItem.priceCouponDiscount.toFixed(2)}` : '',
-      tag: 'p',
-    });
-    if (this.productItem.priceCouponDiscount) {
-      this.price.classList.add(styles.discount);
-    }
-    this.total = createBaseElement({
-      cssClasses: [styles.td, styles.totalCell, styles.totalText],
-      innerContent: `$${this.productItem.totalPrice.toFixed(2)}`,
-      tag: 'td',
     });
     this.deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], tag: 'button' });
     this.view = this.createHTML();
@@ -98,26 +88,15 @@ class ProductOrderView {
   private createHTML(): HTMLTableRowElement {
     this.view = createBaseElement({ cssClasses: [styles.tr, styles.trProduct], tag: 'tr' });
     const imgCell = this.createImgCell();
-    const tdProduct = createBaseElement({
-      cssClasses: [styles.td, styles.nameCell, styles.mainText],
-      innerContent: this.productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-      tag: 'td',
-    });
-    const tdSize = createBaseElement({
-      cssClasses: [styles.td, styles.sizeCell, styles.sizeText],
-      innerContent: this.productItem.size ? `${TITLE.SIZE[this.language]}: ${this.productItem.size}` : '',
-      tag: 'td',
-    });
-    const tdPrice = createBaseElement({
-      cssClasses: [styles.td, styles.priceCell, styles.priceText],
-      tag: 'td',
-    });
-    tdPrice.append(this.price, this.priceCoupon);
+    const tdProduct = this.createTdProduct();
+    const tdSize = this.createTdSize();
+    const tdPrice = this.createTdPrice();
     this.textElement.push({ element: tdSize, textItem: TITLE.SIZE });
     this.textElement.push({ element: tdProduct, textItem: TITLE.NAME });
+    const tdTotal = this.createTdTotal();
     const quantityCell = this.createQuantityCell();
     const deleteCell = this.createDeleCell();
-    this.view.append(imgCell, tdProduct, tdSize, tdPrice, quantityCell, this.total, deleteCell);
+    this.view.append(imgCell, tdProduct, tdSize, tdPrice, quantityCell, tdTotal, deleteCell);
     const animation = new Hammer(this.view);
     animation.on('swipeleft', () => {
       if (window.innerWidth <= TABLET_WIDTH) {
@@ -174,6 +153,40 @@ class ProductOrderView {
     return tdQuantity;
   }
 
+  private createTdPrice(): HTMLTableCellElement {
+    const td = createBaseElement({
+      cssClasses: [styles.td, styles.priceCell, styles.priceText],
+      tag: 'td',
+    });
+    td.append(this.priceElement.getHTML());
+    return td;
+  }
+
+  private createTdProduct(): HTMLTableCellElement {
+    return createBaseElement({
+      cssClasses: [styles.td, styles.nameCell, styles.mainText],
+      innerContent: this.productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      tag: 'td',
+    });
+  }
+
+  private createTdSize(): HTMLTableCellElement {
+    return createBaseElement({
+      cssClasses: [styles.td, styles.sizeCell, styles.sizeText],
+      innerContent: this.productItem.size ? `${TITLE.SIZE[this.language]}: ${this.productItem.size}` : '',
+      tag: 'td',
+    });
+  }
+
+  private createTdTotal(): HTMLTableCellElement {
+    const td = createBaseElement({
+      cssClasses: [styles.td, styles.totalCell, styles.totalText],
+      tag: 'td',
+    });
+    td.append(this.totalElement.getHTML());
+    return td;
+  }
+
   public getDeleteButton(): HTMLButtonElement {
     return this.deleteButton;
   }
@@ -185,16 +198,15 @@ class ProductOrderView {
   public updateInfo(productItem: CartProduct): void {
     this.productItem = productItem;
     this.quantity.textContent = this.productItem.quantity.toString();
-    this.price.textContent = `$${this.productItem.price.toFixed(2)}`;
-    this.priceCoupon.textContent = this.productItem.priceCouponDiscount
-      ? `$${this.productItem.priceCouponDiscount.toFixed(2)}`
-      : '';
-    this.total.textContent = `$${this.productItem.totalPrice.toFixed(2)}`;
-    if (this.productItem.priceCouponDiscount) {
-      this.price.classList.add(styles.discount);
-    } else {
-      this.price.classList.remove(styles.discount);
-    }
+
+    this.priceElement.updatePrice({ new: this.productItem.priceCouponDiscount, old: this.productItem.price });
+    this.totalElement.updatePrice({
+      new:
+        this.productItem.totalPrice === this.productItem.totalPriceCouponDiscount
+          ? 0
+          : this.productItem.totalPriceCouponDiscount,
+      old: this.productItem.totalPrice,
+    });
   }
 
   public updateLanguage(): void {
