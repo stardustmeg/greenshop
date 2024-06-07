@@ -11,6 +11,7 @@ const SVG_DETAILS = {
   EDIT: 'edit',
   FILL_HEART: 'heartFill',
   GO_DETAILS: 'arrow',
+  HEART_OUTLINE: 'heartOutline',
   KEY: 'key',
   LEAVES: 'leaves',
   LIGHT: 'light',
