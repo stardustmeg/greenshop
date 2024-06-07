@@ -34,10 +34,6 @@ class WishlistPageModel implements Page {
 
   private initBreadcrumbs(): void {
     const breadcrumbsContainer = this.view.getBreadcrumbsContainer();
-    if (!breadcrumbsContainer) {
-      return;
-    }
-
     const breadcrumbs = new BreadcrumbsModel();
     breadcrumbs.addBreadcrumbLinks(this.createBreadcrumbLinksData());
 
