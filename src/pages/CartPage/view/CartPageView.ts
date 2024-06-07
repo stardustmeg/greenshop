@@ -13,7 +13,7 @@ import getStore from '@/shared/Store/Store.ts';
 import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-import { cartPrice } from '@/shared/utils/messageTemplates.ts';
+import { cartPrice, minusCartPrice } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './cartPageView.module.scss';
 
@@ -363,7 +363,7 @@ class CartPageView {
       });
       const couponValue = createBaseElement({
         cssClasses: [styles.title],
-        innerContent: `-$ ${discount.value.toFixed(2)}`,
+        innerContent: minusCartPrice(discount.value.toFixed(2)),
         tag: 'p',
       });
       couponItem.append(couponTitle, couponValue);
@@ -374,7 +374,7 @@ class CartPageView {
       const totalDiscountWrap = createBaseElement({ cssClasses: [styles.couponWrap], tag: 'div' });
       const totalDiscountValue = createBaseElement({
         cssClasses: [styles.title, styles.totalDiscount],
-        innerContent: cartPrice(totalDiscount.toFixed(2)),
+        innerContent: minusCartPrice(totalDiscount.toFixed(2)),
         tag: 'p',
       });
       totalDiscountWrap.append(this.totalDiscountTitle, totalDiscountValue);
