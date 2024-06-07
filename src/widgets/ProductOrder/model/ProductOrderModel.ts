@@ -94,6 +94,11 @@ class ProductOrderModel {
     return this.productItem;
   }
 
+  public setProduct(product: CartProduct): CartProduct {
+    this.productItem = product;
+    return this.productItem;
+  }
+
   public async updateProductHandler(active: CartActive): Promise<void> {
     switch (active) {
       case CartActive.DELETE: {
@@ -106,6 +111,10 @@ class ProductOrderModel {
       }
       case CartActive.PLUS: {
         await this.activePlus();
+        break;
+      }
+      case CartActive.UPDATE: {
+        this.updateView(this.productItem);
         break;
       }
       default:

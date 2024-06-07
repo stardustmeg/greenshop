@@ -41,7 +41,9 @@ class ProductOrderView {
 
   private language: LanguageChoiceType;
 
-  private price: HTMLTableCellElement;
+  private price: HTMLParagraphElement;
+
+  private priceCoupon: HTMLParagraphElement;
 
   private productItem: CartProduct;
 
@@ -63,10 +65,18 @@ class ProductOrderView {
       tag: 'p',
     });
     this.price = createBaseElement({
-      cssClasses: [styles.td, styles.priceCell, styles.priceText],
+      cssClasses: [styles.priceText],
       innerContent: `$${this.productItem.price.toFixed(2)}`,
-      tag: 'td',
+      tag: 'p',
     });
+    this.priceCoupon = createBaseElement({
+      cssClasses: [styles.priceDiscountText],
+      innerContent: this.productItem.priceCouponDiscount ? `$${this.productItem.priceCouponDiscount.toFixed(2)}` : '',
+      tag: 'p',
+    });
+    if (this.productItem.priceCouponDiscount) {
+      this.price.classList.add(styles.discount);
+    }
     this.total = createBaseElement({
       cssClasses: [styles.td, styles.totalCell, styles.totalText],
       innerContent: `$${this.productItem.totalPrice.toFixed(2)}`,
@@ -99,11 +109,16 @@ class ProductOrderView {
       innerContent: this.productItem.size ? `${TITLE.SIZE[this.language]}: ${this.productItem.size}` : '',
       tag: 'td',
     });
+    const tdPrice = createBaseElement({
+      cssClasses: [styles.td, styles.priceCell, styles.priceText],
+      tag: 'td',
+    });
+    tdPrice.append(this.price, this.priceCoupon);
     this.textElement.push({ element: tdSize, textItem: TITLE.SIZE });
     this.textElement.push({ element: tdProduct, textItem: TITLE.NAME });
     const quantityCell = this.createQuantityCell();
     const deleteCell = this.createDeleCell();
-    this.view.append(imgCell, tdProduct, tdSize, this.price, quantityCell, this.total, deleteCell);
+    this.view.append(imgCell, tdProduct, tdSize, tdPrice, quantityCell, this.total, deleteCell);
     const animation = new Hammer(this.view);
     animation.on('swipeleft', () => {
       if (window.innerWidth <= TABLET_WIDTH) {
@@ -174,7 +189,15 @@ class ProductOrderView {
     this.productItem = productItem;
     this.quantity.textContent = this.productItem.quantity.toString();
     this.price.textContent = `$${this.productItem.price.toFixed(2)}`;
+    this.priceCoupon.textContent = this.productItem.priceCouponDiscount
+      ? `$${this.productItem.priceCouponDiscount.toFixed(2)}`
+      : '';
     this.total.textContent = `$${this.productItem.totalPrice.toFixed(2)}`;
+    if (this.productItem.priceCouponDiscount) {
+      this.price.classList.add(styles.discount);
+    } else {
+      this.price.classList.remove(styles.discount);
+    }
   }
 
   public updateLanguage(): void {

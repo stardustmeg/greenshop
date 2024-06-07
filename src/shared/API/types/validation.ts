@@ -7,6 +7,7 @@ import type {
   Customer,
   CustomerPagedQueryResponse,
   CustomerSignInResult,
+  DiscountCodePagedQueryResponse,
   ErrorResponse,
   FacetRange,
   FacetTerm,
@@ -285,6 +286,21 @@ export function isShoppingList(data: unknown): data is ShoppingList {
 }
 
 export function isShoppingListPagedQueryResponse(data: unknown): data is ShoppingListPagedQueryResponse {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'count' in data &&
+      typeof data.count === 'number' &&
+      'limit' in data &&
+      typeof data.limit === 'number' &&
+      'total' in data &&
+      typeof data.total === 'number' &&
+      'results' in data &&
+      Array.isArray(data.results),
+  );
+}
+
+export function isDiscountCodePagedQueryResponse(data: unknown): data is DiscountCodePagedQueryResponse {
   return Boolean(
     typeof data === 'object' &&
       data &&

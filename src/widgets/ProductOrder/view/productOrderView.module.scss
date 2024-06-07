@@ -141,6 +141,10 @@
 }
 
 .priceCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   grid-area: 2 / 3 / 4 / 4;
 
   @media (max-width: 768px) {
@@ -178,10 +182,19 @@
   color: var(--steam-green-800);
 }
 
+.priceDiscountText,
 .priceText {
   padding: var(--tiny-offset) 0;
   font: var(--regular-font);
   color: var(--noble-gray-700);
+}
+
+.priceDiscountText {
+  color: var(--steam-green-700);
+}
+
+.priceDiscountText:empty {
+  display: none;
 }
 
 .sizeText {
@@ -209,4 +222,8 @@
   @media (max-width: 768px) {
     display: none;
   }
+}
+
+.discount {
+  text-decoration: line-through;
 }
