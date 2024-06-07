@@ -33,34 +33,6 @@ export const PAGE_TITLE: Record<LanguageChoiceType, Record<string, string>> = {
   },
 } as const;
 
-export const PAGE_LINK_TEXT = {
-  en: {
-    ABOUT: 'About us',
-    BLOG: 'Blog',
-    CATALOG: 'Catalog',
-    LOGIN: 'Login',
-    MAIN: 'Main',
-    REGISTRATION: 'Register',
-  },
-  ru: {
-    ABOUT: 'О нас',
-    BLOG: 'Блог',
-    CATALOG: 'Каталог',
-    LOGIN: 'Вход',
-    MAIN: 'Главная',
-    REGISTRATION: 'Регистрация',
-  },
-} as const;
-
-export const PAGE_LINK_TEXT_KEYS = {
-  ABOUT: 'ABOUT',
-  BLOG: 'BLOG',
-  CATALOG: 'CATALOG',
-  LOGIN: 'LOGIN',
-  MAIN: 'MAIN',
-  REGISTRATION: 'REGISTRATION',
-} as const;
-
 export const PAGE_DESCRIPTION = {
   en: {
     404: 'This is not the page you are looking for. Please go back to the main page.',

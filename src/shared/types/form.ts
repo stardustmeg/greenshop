@@ -1,13 +1,13 @@
 export interface InputParams {
-  autocomplete: 'off' | 'on';
+  autocomplete?: 'off' | 'on';
   data?: Record<string, string>;
   id?: string;
   lang?: string;
   max?: null | number;
   min?: null | number;
-  placeholder: null | string;
+  placeholder?: null | string;
   step?: null | number;
-  type: 'checkbox' | 'color' | 'date' | 'email' | 'number' | 'password' | 'search' | 'tel' | 'text';
+  type?: 'checkbox' | 'color' | 'date' | 'email' | 'number' | 'password' | 'search' | 'tel' | 'text';
   value?: null | string;
 }
 

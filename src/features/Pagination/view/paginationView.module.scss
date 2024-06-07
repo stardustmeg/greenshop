@@ -2,7 +2,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--tiny-offset);
+  margin-top: auto;
+  margin-left: var(--tiny-offset);
+  max-width: max-content;
+  gap: 0 var(--tiny-offset);
 }
 
 .pageButton {
@@ -39,10 +42,6 @@
   &:disabled {
     opacity: 0.5;
     pointer-events: none;
-  }
-
-  &:nth-child(1) {
-    margin-left: var(--tiny-offset);
   }
 }
 

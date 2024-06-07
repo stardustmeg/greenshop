@@ -10,7 +10,6 @@ import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
-import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
@@ -207,10 +206,8 @@ class CartPageView {
   private createCouponHTML(): HTMLDivElement {
     const couponWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
     const couponInput = new InputModel({
-      autocomplete: 'off',
       id: 'coupon',
       placeholder: TITLE.INPUT_COUPON[this.language],
-      type: INPUT_TYPE.TEXT,
     });
     couponInput.getHTML().classList.add(styles.couponInput);
 

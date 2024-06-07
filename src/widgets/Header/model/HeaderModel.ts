@@ -51,7 +51,7 @@ class HeaderModel {
     this.setLogoHandler();
     this.observeCurrentUser();
     this.setLogoutButtonHandler();
-    this.setCartLinkHandler();
+    this.setLinksHandler();
     this.observeCartChange();
     this.setChangeLanguageCheckboxHandler();
   }
@@ -77,14 +77,6 @@ class HeaderModel {
     });
   }
 
-  private setCartLinkHandler(): void {
-    const logo = this.view.getToCartLink().getHTML();
-    logo.addEventListener('click', (event) => {
-      event.preventDefault();
-      RouterModel.getInstance().navigateTo(PAGE_ID.CART_PAGE);
-    });
-  }
-
   private setChangeLanguageCheckboxHandler(): void {
     const switchLanguageCheckbox = this.view.getSwitchLanguageCheckbox().getHTML();
     switchLanguageCheckbox.addEventListener('click', async () => {
@@ -107,6 +99,23 @@ class HeaderModel {
         showSuccessMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED);
       }
     });
+  }
+
+  private setLinksHandler(): void {
+    this.view
+      .getToCartLink()
+      .getHTML()
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        RouterModel.getInstance().navigateTo(PAGE_ID.CART_PAGE);
+      });
+    this.view
+      .getToWishlistLink()
+      .getHTML()
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        RouterModel.getInstance().navigateTo(PAGE_ID.WISHLIST_PAGE);
+      });
   }
 
   private setLogoHandler(): void {

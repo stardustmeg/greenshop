@@ -7,11 +7,10 @@ import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { MORE_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { PRODUCT_INFO_TEXT } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
+import * as buildPath from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
@@ -44,13 +43,10 @@ class ProductCardView {
 
   private productShortDescription: HTMLParagraphElement;
 
-  private switchToWishListButton: ButtonModel;
-
   constructor(params: ProductCardParams, currentSize: null | string) {
     this.params = params;
     this.currentSize = currentSize;
     this.addToCartButton = this.createAddToCartButton();
-    this.switchToWishListButton = this.createSwitchToWishListButton();
     this.goDetailsPageLink = this.createGoDetailsPageLink();
     this.buttonsWrapper = this.createButtonsWrapper();
     this.productImage = this.createProductImage();
@@ -108,11 +104,7 @@ class ProductCardView {
       tag: 'div',
     });
 
-    this.buttonsWrapper.append(
-      this.addToCartButton.getHTML(),
-      this.switchToWishListButton.getHTML(),
-      this.goDetailsPageLink.getHTML(),
-    );
+    this.buttonsWrapper.append(this.addToCartButton.getHTML(), this.goDetailsPageLink.getHTML());
 
     return this.buttonsWrapper;
   }
@@ -142,9 +134,7 @@ class ProductCardView {
   }
 
   private createGoDetailsPageLink(): LinkModel {
-    const href = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
-      size: [this.currentSize ?? this.params.variant[0].size],
-    })}`;
+    const href = `${buildPath.productPathWithIDAndQuery(this.params.key, { size: [this.currentSize ?? this.params.variant[0].size] })}`;
 
     this.goDetailsPageLink = new LinkModel({
       attrs: {
@@ -249,18 +239,6 @@ class ProductCardView {
     return this.productShortDescription;
   }
 
-  private createSwitchToWishListButton(): ButtonModel {
-    this.switchToWishListButton = new ButtonModel({
-      classes: [styles.switchToWishListButton],
-    });
-
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
-    this.switchToWishListButton.getHTML().append(svg);
-
-    return this.switchToWishListButton;
-  }
-
   private updateMoreButtonText(moreButton: HTMLButtonElement): void {
     const { currentLanguage } = getStore().getState();
     const moreText = MORE_TEXT[currentLanguage];
@@ -292,14 +270,6 @@ class ProductCardView {
 
   public getMoreButton(): ButtonModel {
     return this.moreButton;
-  }
-
-  public getSwitchToWishListButton(): ButtonModel {
-    return this.switchToWishListButton;
-  }
-
-  public switchStateWishListButton(hasProductInWishList: boolean): void {
-    this.switchToWishListButton.getHTML().classList.toggle(styles.inWishList, hasProductInWishList);
   }
 }
 

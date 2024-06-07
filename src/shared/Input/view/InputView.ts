@@ -1,5 +1,7 @@
 import type { InputParams } from '@/shared/types/form';
 
+import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
+import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
 class InputView {
@@ -12,14 +14,14 @@ class InputView {
   private createHTML(attrs: InputParams): HTMLInputElement {
     this.input = createBaseElement({
       attributes: {
-        autocomplete: attrs.autocomplete,
+        autocomplete: attrs.autocomplete ?? AUTOCOMPLETE_OPTION.ON,
         id: attrs.id || '',
         lang: attrs.lang || '',
         max: String(attrs.max || 0),
         min: String(attrs.min || 0),
         placeholder: attrs.placeholder || '',
         step: String(attrs.step || 1),
-        type: attrs.type,
+        type: attrs.type ?? INPUT_TYPE.TEXT,
         value: attrs.value || '',
       },
       tag: 'input',

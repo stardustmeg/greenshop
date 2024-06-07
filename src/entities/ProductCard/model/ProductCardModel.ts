@@ -1,21 +1,15 @@
 import type { AddCartItem, Cart } from '@/shared/types/cart.ts';
 import type { Product, ProductInfoParams, Variant } from '@/shared/types/product.ts';
-import type { ShoppingList, ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
+import WishlistButtonModel from '@/features/WishlistButton/model/WishlistButtonModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
-import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
-import {
-  productAddedToCartMessage,
-  productAddedToWishListMessage,
-  productRemovedFromWishListMessage,
-} from '@/shared/utils/messageTemplates.ts';
+import * as buildPath from '@/shared/utils/buildPathname.ts';
+import { productAddedToCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
@@ -32,13 +26,16 @@ class ProductCardModel {
 
   private view: ProductCardView;
 
-  constructor(params: Product, currentSize: null | string, shoppingList: ShoppingList, cart: Cart) {
+  private wishlistButton: WishlistButtonModel;
+
+  constructor(params: Product, currentSize: null | string, cart: Cart) {
     this.params = params;
-    this.currentSize = currentSize;
+    this.currentSize = currentSize ?? this.params.variant[0].size;
     this.currentVariant = this.params.variant.find(({ size }) => size === currentSize) ?? this.params.variant[0];
     this.view = new ProductCardView(params, currentSize);
-    this.price = new ProductPriceModel(this.currentVariant);
-    this.init(shoppingList, cart);
+    this.price = new ProductPriceModel({ new: this.currentVariant.discount, old: this.currentVariant.price });
+    this.wishlistButton = new WishlistButtonModel(this.params);
+    this.init(cart);
   }
 
   private addProductToCartHandler(): void {
@@ -47,34 +44,6 @@ class ProductCardModel {
       .then(() => {
         showSuccessMessage(productAddedToCartMessage(this.getProductMeta().name));
         this.view.getAddToCartButton().setDisabled();
-      })
-      .catch(showErrorMessage);
-  }
-
-  private addProductToWishListHandler(): void {
-    getShoppingListModel()
-      .addProduct(this.params.id)
-      .then(() => {
-        showSuccessMessage(
-          productAddedToWishListMessage(
-            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-          ),
-        );
-        this.view.switchStateWishListButton(true);
-      })
-      .catch(showErrorMessage);
-  }
-
-  private deleteProductToWishListHandler(productInWishList: ShoppingListProduct): void {
-    getShoppingListModel()
-      .deleteProduct(productInWishList)
-      .then(() => {
-        showSuccessMessage(
-          productRemovedFromWishListMessage(
-            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-          ),
-        );
-        this.view.switchStateWishListButton(false);
       })
       .catch(showErrorMessage);
   }
@@ -92,10 +61,9 @@ class ProductCardModel {
     const goDetailsPageLink = this.view.getGoDetailsPageLink();
     goDetailsPageLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      const path = buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
+      const path = buildPath.productPathWithIDAndQuery(this.params.key, {
         size: [this.currentSize ?? this.params.variant[0].size],
       });
-
       RouterModel.getInstance().navigateTo(path);
     });
   }
@@ -107,33 +75,20 @@ class ProductCardModel {
     }
   }
 
-  private hasProductInWishList(shoppingList: ShoppingList): void {
-    const result = shoppingList.products.find((product) => product.productId === this.params.id);
-    this.view.switchStateWishListButton(Boolean(result));
-  }
-
-  private init(shoppingList: ShoppingList, cart: Cart): void {
-    this.setButtonHandlers();
-    this.hasProductInWishList(shoppingList);
+  private init(cart: Cart): void {
+    this.setAddToCartButtonHandler();
     this.hasProductInCart(cart);
     this.goDetailsPageHandler();
-    this.view.getBottomWrapper().append(this.price.getHTML());
     this.setCardHandler();
+    this.view.getBottomWrapper().append(this.price.getHTML());
+    this.view.getButtonsWrapper().append(this.wishlistButton.getHTML().getHTML());
   }
 
-  private setButtonHandlers(): void {
-    const addToCartButton = this.view.getAddToCartButton();
-    const switchToWishListButton = this.view.getSwitchToWishListButton();
-    addToCartButton.getHTML().addEventListener('click', () => this.addProductToCartHandler());
-    switchToWishListButton.getHTML().addEventListener('click', async () => {
-      const shoppingList = await getShoppingListModel().getShoppingList();
-      const productInWishList = shoppingList.products.find((product) => product.productId === this.params.id);
-      if (productInWishList) {
-        this.deleteProductToWishListHandler(productInWishList);
-      } else {
-        this.addProductToWishListHandler();
-      }
-    });
+  private setAddToCartButtonHandler(): void {
+    this.view
+      .getAddToCartButton()
+      .getHTML()
+      .addEventListener('click', () => this.addProductToCartHandler());
   }
 
   private setCardHandler(): void {
