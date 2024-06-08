@@ -1,4 +1,5 @@
 export interface ShoppingList {
+  anonymousId: null | string;
   id: string;
   products: ShoppingListProduct[];
   version: number;
