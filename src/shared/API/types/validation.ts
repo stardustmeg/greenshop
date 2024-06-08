@@ -13,6 +13,7 @@ import type {
   FacetTerm,
   LocalizedString,
   Product,
+  ProductDiscountPagedQueryResponse,
   ProductPagedQueryResponse,
   ProductProjection,
   ProductProjectionPagedQueryResponse,
@@ -301,6 +302,21 @@ export function isShoppingListPagedQueryResponse(data: unknown): data is Shoppin
 }
 
 export function isDiscountCodePagedQueryResponse(data: unknown): data is DiscountCodePagedQueryResponse {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'count' in data &&
+      typeof data.count === 'number' &&
+      'limit' in data &&
+      typeof data.limit === 'number' &&
+      'total' in data &&
+      typeof data.total === 'number' &&
+      'results' in data &&
+      Array.isArray(data.results),
+  );
+}
+
+export function isProductDiscountPagedQueryResponse(data: unknown): data is ProductDiscountPagedQueryResponse {
   return Boolean(
     typeof data === 'object' &&
       data &&

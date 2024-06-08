@@ -1,9 +1,20 @@
 import type { Coupon } from '@/shared/types/cart.ts';
-import type { ClientResponse, DiscountCode, DiscountCodePagedQueryResponse } from '@commercetools/platform-sdk';
+import type { Category } from '@/shared/types/product.ts';
+import type {
+  ClientResponse,
+  DiscountCode,
+  DiscountCodePagedQueryResponse,
+  ProductDiscountPagedQueryResponse,
+} from '@commercetools/platform-sdk';
 
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
-import { isClientResponse, isDiscountCodePagedQueryResponse } from '../../types/validation.ts';
+import getProductModel from '../../product/model/ProductModel.ts';
+import {
+  isClientResponse,
+  isDiscountCodePagedQueryResponse,
+  isProductDiscountPagedQueryResponse,
+} from '../../types/validation.ts';
 import getDiscountApi, { type DiscountApi } from '../DiscountApi.ts';
 
 export class DiscountModel {
@@ -21,6 +32,25 @@ export class DiscountModel {
       code: data.code,
       id: data.cartDiscounts[0].id,
     };
+  }
+
+  private getCategorySaleFromData(
+    data: ClientResponse<ProductDiscountPagedQueryResponse>,
+    categories: Category[],
+  ): Category[] {
+    const result: Category[] = [];
+    if (isClientResponse(data) && isProductDiscountPagedQueryResponse(data.body)) {
+      const allReferences = data.body.results.flatMap((result) => result.references);
+      allReferences.forEach((rule) => {
+        if (rule.typeId === 'category') {
+          const categorySale = categories.find((category) => category.id === rule.id);
+          if (categorySale) {
+            result.push(categorySale);
+          }
+        }
+      });
+    }
+    return result;
   }
 
   private getCouponsFromData(data: ClientResponse<DiscountCodePagedQueryResponse>): Coupon[] {
@@ -41,6 +71,12 @@ export class DiscountModel {
 
   public getAllCoupons(): Coupon[] {
     return this.coupons;
+  }
+
+  public async getCategorySales(): Promise<Category[]> {
+    const data = await this.root.getDiscounts();
+    const categories = await getProductModel().getCategories();
+    return this.getCategorySaleFromData(data, categories);
   }
 }
 
