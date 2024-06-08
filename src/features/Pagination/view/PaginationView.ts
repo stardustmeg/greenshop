@@ -56,7 +56,6 @@ class PaginationView {
       } else {
         this.callback(String(DEFAULT_PAGE + DEFAULT_PAGE));
       }
-      this.scrollToTop();
     });
 
     return this.nextPageButton;
@@ -68,10 +67,7 @@ class PaginationView {
       text: page.toString(),
     });
 
-    btn.getHTML().addEventListener('click', () => {
-      this.callback(page.toString());
-      this.scrollToTop();
-    });
+    btn.getHTML().addEventListener('click', () => this.callback(page.toString()));
 
     this.pageButtons.push(btn);
 
@@ -89,7 +85,6 @@ class PaginationView {
       if (currentPage) {
         this.callback(String(Number(currentPage) - DEFAULT_PAGE));
       }
-      this.scrollToTop();
     });
     return this.prevPageButton;
   }
@@ -102,12 +97,6 @@ class PaginationView {
         .map((_, index) => index + DEFAULT_PAGE)
         .map(this.createPageButton.bind(this));
       this.view.append(this.prevPageButton.getHTML(), ...pages, this.nextPageButton.getHTML());
-    }
-  }
-
-  private scrollToTop(): void {
-    if (window.scrollY !== 0) {
-      window.scrollTo({ top: 0 });
     }
   }
 

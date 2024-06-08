@@ -115,7 +115,10 @@ class CatalogModel {
       );
       this.paginationBottom = new PaginationModel(
         { productTotalCount: productsInfo?.totalProductCount, productsPerPageCount: PRODUCT_LIMIT },
-        this.setCurrentPage.bind(this),
+        (page) => {
+          this.setCurrentPage(page);
+          scrollTo(0, 0);
+        },
       );
       this.paginationTop.getView().setSelectedButton(options.page ?? DEFAULT_PAGE);
       this.paginationBottom.getView().setSelectedButton(options.page ?? DEFAULT_PAGE);

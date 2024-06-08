@@ -2,7 +2,10 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 0 var(--small-offset);
+  min-height: 40rem;
   animation: show 0.2s ease-out forwards;
 }
 

@@ -6,8 +6,6 @@ import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import styles from './productPageView.module.scss';
 
 class ProductPageView {
-  private breadcrumbsContainer: HTMLDivElement;
-
   private fullDescription: HTMLParagraphElement;
 
   private fullDescriptionWrapper: HTMLDivElement;
@@ -19,19 +17,10 @@ class ProductPageView {
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
     this.parent.innerHTML = '';
-    this.breadcrumbsContainer = this.createBreadcrumbsContainer();
     this.fullDescription = this.createFullDescription();
     this.fullDescriptionWrapper = this.createFullDescriptionWrapper();
     this.page = this.createHTML();
     window.scrollTo(0, 0);
-  }
-
-  private createBreadcrumbsContainer(): HTMLDivElement {
-    this.breadcrumbsContainer = createBaseElement({
-      cssClasses: [styles.breadcrumbsContainer],
-      tag: 'div',
-    });
-    return this.breadcrumbsContainer;
   }
 
   private createFullDescription(): HTMLParagraphElement {
@@ -67,14 +56,9 @@ class ProductPageView {
       tag: 'div',
     });
 
-    this.page.prepend(this.breadcrumbsContainer);
     this.parent.append(this.page);
 
     return this.page;
-  }
-
-  public getBreadcrumbsContainer(): HTMLDivElement {
-    return this.breadcrumbsContainer;
   }
 
   public getFullDescriptionWrapper(): HTMLDivElement {
