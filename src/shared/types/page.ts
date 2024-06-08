@@ -4,6 +4,7 @@ export interface Page {
 
 export interface PageParams {
   catalog?: {
+    id: string;
     searchParams: string;
   };
   product?: {
@@ -12,4 +13,4 @@ export interface PageParams {
   };
 }
 
-export type PagesType = Map<string, (params: PageParams) => Promise<Page>>;
+export type PagesType = Map<string, () => Promise<Page>>;

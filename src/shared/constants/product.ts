@@ -24,6 +24,7 @@ export const SEARCH_PARAMS_FIELD = {
   PAGE: 'page',
   SEARCH: 'search',
   SIZE: 'size',
+  SLIDE: 'slide',
   SUBCATEGORY: 'subcategory',
 } as const;
 

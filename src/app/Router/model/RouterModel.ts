@@ -1,4 +1,4 @@
-import type { PageParams, PagesType } from '@/shared/types/page';
+import type { PagesType } from '@/shared/types/page';
 
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
@@ -69,8 +69,29 @@ class RouterModel {
     window.history.pushState({ path: path.slice(NEXT_SEGMENT) }, '', path);
   }
 
+  public static getCurrentPage(): string {
+    return window.location.pathname.slice(PATH_SEGMENTS_TO_KEEP).split(DEFAULT_SEGMENT)[NEXT_SEGMENT];
+  }
+
   public static getInstance(): RouterModel {
     return RouterModel.router;
+  }
+
+  public static getPageID(): null | string {
+    return (
+      (window.location.pathname + window.location.search)
+        .slice(NEXT_SEGMENT)
+        .split(DEFAULT_SEGMENT)
+        .join(DEFAULT_SEGMENT)
+        .split(DEFAULT_SEGMENT)
+        [NEXT_SEGMENT]?.split(SEARCH_SEGMENT)[PATH_SEGMENTS_TO_KEEP] || null
+    );
+  }
+
+  public static getSavedPath(): string {
+    const path =
+      window.location.pathname.slice(NEXT_SEGMENT).split(DEFAULT_SEGMENT).join(DEFAULT_SEGMENT) || PAGE_ID.DEFAULT_PAGE;
+    return path + window.location.search;
   }
 
   public static getSearchParams(): URLSearchParams {
@@ -85,32 +106,25 @@ class RouterModel {
     window.history.pushState({ path: path.slice(NEXT_SEGMENT) }, '', path);
   }
 
-  private async checkPageAndParams(
-    currentPage: string,
-    path: string,
-  ): Promise<{ hasRoute: boolean; params: PageParams } | null> {
+  private async checkPageAndParams(currentPage: string, path: string): Promise<boolean | null> {
     const hasRoute = this.routes.has(currentPage);
-    const id = path.split(DEFAULT_SEGMENT)[NEXT_SEGMENT]?.split(SEARCH_SEGMENT)[PATH_SEGMENTS_TO_KEEP] || null;
 
     setPageTitle(currentPage, hasRoute);
     observeStore(selectCurrentLanguage, () => this.checkPageAndParams(currentPage, path));
 
     if (!hasRoute) {
-      await this.routes.get(PAGE_ID.NOT_FOUND_PAGE)?.({});
+      await this.routes.get(PAGE_ID.NOT_FOUND_PAGE)?.();
       return null;
     }
 
-    return {
-      hasRoute,
-      params: { [currentPage]: { id } },
-    };
+    return hasRoute;
   }
 
   private handleRequest(currentPage: string, path: string): void {
     this.checkPageAndParams(currentPage, path)
       .then((check) => {
         if (check) {
-          this.routes.get(currentPage)?.(check.params).catch(showErrorMessage);
+          this.routes.get(currentPage)?.().catch(showErrorMessage);
         }
       })
       .catch(showErrorMessage);

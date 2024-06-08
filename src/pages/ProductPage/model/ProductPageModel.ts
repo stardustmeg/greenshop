@@ -1,5 +1,5 @@
 import type { BreadcrumbLink } from '@/shared/types/link.ts';
-import type { Page, PageParams } from '@/shared/types/page.ts';
+import type { Page } from '@/shared/types/page.ts';
 import type { Product, localization } from '@/shared/types/product.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
@@ -22,9 +22,9 @@ class ProductPageModel implements Page {
 
   private view: ProductPageView;
 
-  constructor(parent: HTMLDivElement, params: PageParams) {
+  constructor(parent: HTMLDivElement) {
     this.view = new ProductPageView(parent);
-    this.init(params);
+    this.init();
   }
 
   private createBreadcrumbLinks(currentProduct: Product): BreadcrumbLink[] {
@@ -55,11 +55,11 @@ class ProductPageModel implements Page {
     return links;
   }
 
-  private init(params: PageParams): void {
+  private init(): void {
     const currentSize = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SIZE);
 
     getProductModel()
-      .getProductByKey(params.product?.id ?? '')
+      .getProductByKey(RouterModel.getPageID() ?? '')
       .then((productData) => {
         if (productData) {
           this.currentProduct = productData;
@@ -100,10 +100,21 @@ class ProductPageModel implements Page {
   private updatePageContent(productData: Product, currentSize: null | string): void {
     this.initBreadcrumbs(productData);
 
-    const productInfo = new ProductInfoModel({
-      currentSize: currentSize ?? productData.variant[0].size,
-      ...productData,
+    const productPath = buildPath.productPathWithIDAndQuery(RouterModel.getPageID(), {
+      size: [currentSize],
+      slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE) || '0'],
     });
+
+    const savedPath =
+      RouterModel.getSavedPath() === productPath ? RouterModel.getCurrentPage() : RouterModel.getSavedPath();
+
+    const productInfo = new ProductInfoModel(
+      {
+        currentSize: currentSize ?? productData.variant[0].size,
+        ...productData,
+      },
+      savedPath,
+    );
     this.getHTML().append(productInfo.getHTML(), this.view.getFullDescriptionWrapper());
     this.view.setFullDescription(
       productData.fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
