@@ -15,6 +15,7 @@ import FilterProduct from '@/shared/API/product/utils/filter.ts';
 import { FilterFields, SortDirection, SortFields } from '@/shared/API/types/type.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
+import modal from '@/shared/Modal/model/ModalModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { META_FILTERS } from '@/shared/constants/filters.ts';
@@ -33,6 +34,8 @@ class CatalogModel {
   private paginationBottom: PaginationModel | null = null;
 
   private paginationTop: PaginationModel | null = null;
+
+  private productCards: ProductCardModel[] = [];
 
   private productFilters: ProductFiltersModel | null = null;
 
@@ -64,7 +67,10 @@ class CatalogModel {
     searchValue: null | string;
     selectedFilters: SelectedFilters;
     selectedSorting?: SelectedSorting;
-  } {
+  } | null {
+    if (RouterModel.getPageID()) {
+      return null;
+    }
     const searchParams = RouterModel.getSearchParams();
     const searchCategory = searchParams.getAll(SEARCH_PARAMS_FIELD.CATEGORY);
     searchCategory.push(...searchParams.getAll(SEARCH_PARAMS_FIELD.SUBCATEGORY));
@@ -96,6 +102,7 @@ class CatalogModel {
   }
 
   private async drawProducts(): Promise<void> {
+    this.productCards = [];
     const productList = this.view.getItemsList();
     productList.innerHTML = '';
     const options = this.getOptions();
@@ -107,6 +114,7 @@ class CatalogModel {
       productsInfo.products.forEach((productData) => {
         const product = new ProductCardModel(productData, this.currentSize, cart);
         productList.append(product.getHTML());
+        this.productCards.push(product);
       });
       this.view.switchEmptyList(!productsInfo?.products?.length);
       this.paginationTop = new PaginationModel(
@@ -134,39 +142,43 @@ class CatalogModel {
   private getOptions(): OptionsRequest {
     let result = {};
 
-    const { page, searchValue, selectedFilters, selectedSorting } = this.decodeSearchParams();
+    const params = this.decodeSearchParams();
+    if (!params) {
+      return {};
+    }
     this.productFilters?.getView().setInitialActiveFilters({
-      categoryLinks: Array.from(selectedFilters.category),
-      metaLinks: selectedFilters.metaFilter ? [selectedFilters.metaFilter] : [],
-      sizeLinks: selectedFilters.size ? [selectedFilters.size] : [],
+      categoryLinks: Array.from(params.selectedFilters.category),
+      metaLinks: params.selectedFilters.metaFilter ? [params.selectedFilters.metaFilter] : [],
+      sizeLinks: params.selectedFilters.size ? [params.selectedFilters.size] : [],
     });
     const { currentLanguage } = getStore().getState();
     const filter = new FilterProduct();
-    selectedFilters.category.forEach((categoryID) => filter.addFilter(FilterFields.CATEGORY, categoryID));
+    params.selectedFilters.category.forEach((categoryID) => filter.addFilter(FilterFields.CATEGORY, categoryID));
 
-    if (selectedFilters.price && selectedFilters.price.max > selectedFilters.price.min) {
-      filter.addFilter(FilterFields.PRICE, selectedFilters.price);
+    if (params.selectedFilters.price && params.selectedFilters.price.max > params.selectedFilters.price.min) {
+      filter.addFilter(FilterFields.PRICE, params.selectedFilters.price);
     }
-    if (selectedFilters.size) {
-      this.currentSize = selectedFilters.size;
-      filter.addFilter(FilterFields.SIZE, selectedFilters.size);
+    if (params.selectedFilters.size) {
+      this.currentSize = params.selectedFilters.size;
+      filter.addFilter(FilterFields.SIZE, params.selectedFilters.size);
     }
 
-    this.addCurrentMetaFilter(filter, selectedFilters.metaFilter ?? META_FILTERS.en.ALL_PRODUCTS);
+    this.addCurrentMetaFilter(filter, params.selectedFilters.metaFilter ?? META_FILTERS.en.ALL_PRODUCTS);
 
-    const currentSort = this.getSelectedSorting(selectedSorting ?? null);
+    const currentSort = this.getSelectedSorting(params.selectedSorting ?? null);
     if (currentSort) {
       result = {
         filter,
-        page: Number(page),
-        search: searchValue ? { locale: currentLanguage, value: searchValue } : null,
+
+        page: Number(params.page),
+        search: params.searchValue ? { locale: currentLanguage, value: params.searchValue } : null,
         sort: currentSort ?? null,
       };
     } else {
       result = {
         filter,
-        page: Number(page),
-        search: searchValue ? { locale: currentLanguage, value: searchValue } : null,
+        page: Number(params.page),
+        search: params.searchValue ? { locale: currentLanguage, value: params.searchValue } : null,
       };
     }
 
@@ -214,11 +226,14 @@ class CatalogModel {
   }
 
   private init(): void {
+    modal.hide();
     EventMediatorModel.getInstance().subscribe(MEDIATOR_EVENT.REDRAW_PRODUCTS, this.drawProducts.bind(this));
     this.getProductsInfo({})
       .then((productsInfo) => {
         this.initSettingComponents(productsInfo);
-        this.drawProducts().catch(showErrorMessage);
+        this.drawProducts()
+          .then(() => this.openProductInfo())
+          .catch(showErrorMessage);
       })
       .catch(showErrorMessage);
   }
@@ -236,6 +251,12 @@ class CatalogModel {
         this.productSorting.getHTML(),
         this.productSearch.getHTML(),
       );
+  }
+
+  private openProductInfo(): void {
+    if (RouterModel.getPageID()) {
+      this.productCards.find((productCard) => productCard.getKey() === RouterModel.getPageID())?.openProductInfoModal();
+    }
   }
 
   private setCurrentPage(page: string): void {

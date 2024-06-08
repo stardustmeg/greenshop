@@ -8,6 +8,8 @@ import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import { productAddedToCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
@@ -98,18 +100,42 @@ class ProductCardModel {
         !this.view.getButtonsWrapper().contains(target) &&
         !this.view.getMoreButton().getHTML().contains(target)
       ) {
-        const params: ProductInfoParams = {
-          ...this.params,
-          currentSize: this.currentSize,
-        };
-        modal.show();
-        modal.setContent(new ProductInfoModel(params).getHTML());
+        this.openProductInfoModal();
       }
     });
   }
 
   public getHTML(): HTMLLIElement {
     return this.view.getHTML();
+  }
+
+  public getKey(): string {
+    return this.params.key;
+  }
+
+  public openProductInfoModal(): void {
+    const params: ProductInfoParams = {
+      ...this.params,
+      currentSize: this.currentSize,
+    };
+    const catalogPath = buildPath.catalogPathWithIDAndQuery(this.params.key, {
+      size: [this.currentSize ?? this.params.variant[0].size],
+      slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE) ?? '1'],
+    });
+
+    const wishlistPath = buildPath.wishlistPathWithIDAndQuery(this.params.key, {
+      size: [this.currentSize ?? this.params.variant[0].size],
+      slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE) ?? '1'],
+    });
+
+    const currentPath = RouterModel.getCurrentPage() === PAGE_ID.CATALOG_PAGE ? catalogPath : wishlistPath;
+
+    const router = RouterModel.getInstance();
+    const savedPath =
+      RouterModel.getSavedPath() === currentPath ? RouterModel.getCurrentPage() : RouterModel.getSavedPath();
+    router.navigateTo(currentPath);
+    modal.show(() => router.navigateTo(savedPath));
+    modal.setContent(new ProductInfoModel(params, savedPath).getHTML());
   }
 }
 

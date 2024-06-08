@@ -12,15 +12,16 @@ import modal from '@/shared/Modal/model/ModalModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import { productAddedToCartMessage, productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import Swiper from 'swiper';
 import 'swiper/css';
-import 'swiper/css/autoplay';
 import 'swiper/css/bundle';
-import { Autoplay, Thumbs } from 'swiper/modules';
+import { Autoplay, Keyboard, Thumbs } from 'swiper/modules';
 
 import ProductInfoView from '../view/ProductInfoView.ts';
 
@@ -36,14 +37,17 @@ class ProductInfoModel {
 
   private price: ProductPriceModel;
 
+  private savedPath?: string;
+
   private smallSlider: Swiper | null = null;
 
   private view: ProductInfoView;
 
   private wishlistButton: WishlistButtonModel;
 
-  constructor(params: ProductInfoParams) {
+  constructor(params: ProductInfoParams, savedPath?: string) {
     this.params = params;
+    this.savedPath = savedPath;
     this.view = new ProductInfoView(this.params);
     this.currentVariant =
       this.params.variant.find(({ size }) => size === this.params.currentSize) ?? this.params.variant[0];
@@ -73,6 +77,35 @@ class ProductInfoModel {
       })
       .catch(showErrorMessage)
       .finally(() => loader.remove());
+  }
+
+  private bigSliderHandler(): void {
+    this.view.getBigSliderSlides().forEach((slide, index) => {
+      slide.addEventListener('click', () => {
+        if (this.bigSlider) {
+          RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(this.bigSlider.activeIndex + 1));
+        }
+        const router = RouterModel.getInstance();
+        const modalSlider = new ProductModalSliderModel(this.params);
+        modal.show(() => router.navigateTo(this.checkPath(this.savedPath ?? '')));
+        modalSlider.getModalSlider()?.slideTo(index);
+        modal.setContent(modalSlider.getHTML());
+      });
+    });
+  }
+
+  private checkPath(savedPath: string): string {
+    let result = savedPath;
+
+    if (RouterModel.getCurrentPage() === PAGE_ID.CATALOG_PAGE) {
+      result = savedPath;
+    } else if (RouterModel.getCurrentPage() === PAGE_ID.PRODUCT_PAGE) {
+      result = buildPath.productPathWithIDAndQuery(this.params.key, {
+        size: [this.currentVariant.size],
+        slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE)],
+      });
+    }
+    return result;
   }
 
   private deleteProductFromCart(cart: Cart): void {
@@ -106,23 +139,21 @@ class ProductInfoModel {
         delay: SLIDER_DELAY,
       },
       direction: 'vertical',
+      keyboard: {
+        enabled: true,
+      },
       loop: true,
-      modules: [Autoplay, Thumbs],
+      modules: [Autoplay, Thumbs, Keyboard],
       slidesPerView: SLIDER_PER_VIEW,
       thumbs: {
         swiper: this.smallSlider,
       },
     });
-    this.bigSlider.autoplay.start();
+    this.bigSlider.enable();
+    this.bigSlider.slideTo(Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE)) - 1 || 0, 0, false);
 
-    this.view.getBigSliderSlides().forEach((slide, index) => {
-      slide.addEventListener('click', () => {
-        const modalSlider = new ProductModalSliderModel(this.params);
-        modal.show();
-        modalSlider.getModalSlider()?.slideTo(index);
-        modal.setContent(modalSlider.getHTML());
-      });
-    });
+    this.smallSliderHandler();
+    this.bigSliderHandler();
 
     this.view.getRightWrapper().append(this.price.getHTML());
     this.view.getButtonsWrapper().append(this.wishlistButton.getHTML().getHTML());
@@ -134,7 +165,7 @@ class ProductInfoModel {
     this.view.getSizeButtons().forEach((sizeButton) => {
       sizeButton.getHTML().addEventListener('click', () => {
         const currentVariant = this.params.variant.find(({ size }) => size === sizeButton.getHTML().textContent);
-        const path = `${buildPath.productPathWithIDAndQuery(this.params.key, { size: [currentVariant?.size ?? this.params.variant[0].size] })}`;
+        const path = `${buildPath.productPathWithIDAndQuery(this.params.key, { size: [currentVariant?.size ?? this.params.variant[0].size], slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE)] })}`;
         RouterModel.getInstance().navigateTo(path);
         modal.hide();
         this.currentVariant = currentVariant ?? this.params.variant[0];
@@ -143,6 +174,16 @@ class ProductInfoModel {
         this.price.getHTML().remove();
         this.price = new ProductPriceModel({ new: this.currentVariant.discount, old: this.currentVariant.price });
         this.view.getRightWrapper().append(this.price.getHTML());
+      });
+    });
+  }
+
+  private smallSliderHandler(): void {
+    this.view.getSmallSliderSlides().forEach((slide, index) => {
+      slide.addEventListener('click', () => {
+        if (this.bigSlider) {
+          RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(index + 1));
+        }
       });
     });
   }
