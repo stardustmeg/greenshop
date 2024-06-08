@@ -10,12 +10,9 @@ import styles from './breadcrumbsView.module.scss';
 const DELIMITER = '>';
 
 class BreadcrumbsView {
-  private breadcrumbLinkData: BreadcrumbLink[] = [];
-
   private view: HTMLDivElement;
 
-  constructor(breadcrumbLinkData: BreadcrumbLink[]) {
-    this.breadcrumbLinkData = breadcrumbLinkData;
+  constructor() {
     this.view = this.createHTML();
   }
 
@@ -25,14 +22,16 @@ class BreadcrumbsView {
       tag: 'div',
     });
 
-    this.drawLinks();
-
     return this.view;
   }
 
-  public drawLinks(): void {
+  public clearBreadcrumbLinks(): void {
     this.view.innerHTML = '';
-    this.breadcrumbLinkData.forEach((linkParams) => {
+  }
+
+  public drawLinks(linksData: BreadcrumbLink[]): void {
+    this.clearBreadcrumbLinks();
+    linksData.forEach((linkParams) => {
       const link = new LinkModel({
         attrs: {
           href: linkParams.link,
