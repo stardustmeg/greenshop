@@ -19,8 +19,12 @@ class ModalModel {
     this.view.setContent(content);
   }
 
-  public show(): void {
-    this.view.show();
+  public show(callback?: () => void): void {
+    if (callback) {
+      this.view.show(callback);
+    } else {
+      this.view.show();
+    }
   }
 }
 

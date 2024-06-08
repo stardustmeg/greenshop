@@ -44,6 +44,8 @@ class ProductInfoView {
 
   private smallSlider: HTMLDivElement;
 
+  private smallSliderSlides: HTMLDivElement[] = [];
+
   private switchToCartButton: ButtonModel;
 
   private title: HTMLHeadingElement;
@@ -386,6 +388,7 @@ class ProductInfoView {
         slide.classList.remove('hidden');
         loader.getHTML().remove();
       });
+      this.smallSliderSlides.push(slide);
       slideWrapper.append(slide);
       sliderWrapper.append(slideWrapper);
     });
@@ -447,6 +450,10 @@ class ProductInfoView {
 
   public getSmallSlider(): HTMLDivElement {
     return this.smallSlider;
+  }
+
+  public getSmallSliderSlides(): HTMLDivElement[] {
+    return this.smallSliderSlides;
   }
 
   public getSwitchToCartButton(): ButtonModel {

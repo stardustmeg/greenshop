@@ -17,6 +17,8 @@ class ProductModalSliderView {
 
   private modalSlider: HTMLDivElement;
 
+  private modalSliderSlides: HTMLDivElement[] = [];
+
   private nextSlideButton: ButtonModel;
 
   private params: ProductInfoParams;
@@ -88,12 +90,16 @@ class ProductModalSliderView {
       tag: 'div',
     });
 
-    this.params.images.forEach((image) => {
+    this.params.images.forEach((image, index) => {
       const slideWrapper = createBaseElement({
+        attributes: {
+          'data-history': index.toString(),
+        },
         cssClasses: ['swiper-slide', styles.modalSliderSlide],
         tag: 'div',
       });
       const slide = this.createModalSliderSlideContent(image, this.params.name[0].value);
+      this.modalSliderSlides.push(slide);
       const loader = new LoaderModel(LOADER_SIZE.LARGE);
       loader.setAbsolutePosition();
       slideWrapper.append(slide, loader.getHTML());
@@ -144,6 +150,10 @@ class ProductModalSliderView {
 
   public getModalSlider(): HTMLDivElement {
     return this.modalSlider;
+  }
+
+  public getModalSliderSlides(): HTMLDivElement[] {
+    return this.modalSliderSlides;
   }
 
   public getNextSlideButton(): ButtonModel {
