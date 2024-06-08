@@ -21,6 +21,8 @@ import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 import styles from './wishlistPageView.module.scss';
 
 class WishlistPageView {
+  private breadcrumbsContainer: HTMLDivElement;
+
   private page: HTMLDivElement;
 
   private parent: HTMLDivElement;
@@ -30,9 +32,18 @@ class WishlistPageView {
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
     this.parent.innerHTML = '';
+    this.breadcrumbsContainer = this.createBreadcrumbsContainer();
     this.wishlist = this.createWishlist();
     this.page = this.createHTML();
     window.scrollTo(0, 0);
+  }
+
+  private createBreadcrumbsContainer(): HTMLDivElement {
+    this.breadcrumbsContainer = createBaseElement({
+      cssClasses: [styles.breadcrumbsContainer],
+      tag: 'div',
+    });
+    return this.breadcrumbsContainer;
   }
 
   private createHTML(): HTMLDivElement {
@@ -41,6 +52,7 @@ class WishlistPageView {
       tag: 'div',
     });
 
+    this.page.prepend(this.breadcrumbsContainer);
     this.page.append(this.wishlist);
     this.parent.append(this.page);
 
@@ -95,6 +107,10 @@ class WishlistPageView {
     loader.getHTML().remove();
     this.drawWishlistItems(shoppingList, cart, products);
     this.switchEmptyList(!shoppingList.products.length);
+  }
+
+  public getBreadcrumbsContainer(): HTMLDivElement {
+    return this.breadcrumbsContainer;
   }
 
   public getHTML(): HTMLDivElement {

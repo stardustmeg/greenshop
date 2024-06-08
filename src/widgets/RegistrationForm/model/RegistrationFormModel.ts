@@ -83,8 +83,8 @@ class RegisterFormModel {
     this.getHTML().append(this.personalInfoWrapper.getHTML());
 
     this.inputFields.push(
-      ...this.personalInfoWrapper.getView().getInputFields(),
       ...this.credentialsWrapper.getView().getInputFields(),
+      ...this.personalInfoWrapper.getView().getInputFields(),
     );
 
     Object.values(this.addressWrappers)

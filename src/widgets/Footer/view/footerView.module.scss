@@ -20,11 +20,14 @@
 .navigateWrap,
 .goalsSubWrap {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   padding: var(--extra-small-offset);
   width: 100%;
   background-color: var(--white-tr);
+
+  @media (max-width: 587px) {
+    flex-direction: column;
+  }
 }
 
 .navigateWrap {
@@ -62,6 +65,7 @@
 .goalsWrap {
   display: flex;
   flex: 1 1 auto;
+  flex-shrink: 1;
   flex-basis: 70%;
   justify-content: space-around;
   gap: var(--tiny-offset);
@@ -75,6 +79,7 @@
 .goalTextWrap {
   display: flex;
   flex: 1 1 auto;
+  flex-shrink: 1;
   flex-direction: column;
 }
 

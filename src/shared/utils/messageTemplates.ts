@@ -10,6 +10,9 @@ const textTemplate = (beginning: string, variable: number | string, end?: string
   return `${start}${variable}${ending}`;
 };
 
+export const cartPrice = (price: string): string => `$${price}`;
+export const minusCartPrice = (price: string): string => `-$${price}`;
+
 export const productAddedToCartMessage = (name: string): string =>
   textTemplate(name, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_ADD_PRODUCT_TO_CART);
 

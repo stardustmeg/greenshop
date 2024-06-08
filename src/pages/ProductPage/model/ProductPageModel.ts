@@ -9,7 +9,7 @@ import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { PAGE_ID, PAGE_TITLE } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
@@ -18,7 +18,7 @@ import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 import ProductPageView from '../view/ProductPageView.ts';
 
 class ProductPageModel implements Page {
-  private breadcrumbs = new BreadcrumbsModel();
+  private currentProduct: Product | null = null;
 
   private view: ProductPageView;
 
@@ -28,24 +28,27 @@ class ProductPageModel implements Page {
   }
 
   private createBreadcrumbLinks(currentProduct: Product): BreadcrumbLink[] {
+    const { currentLanguage } = getStore().getState();
+    const isRuLanguage = currentLanguage === LANGUAGE_CHOICE.RU;
     const category = currentProduct.category[0].parent;
     const subcategory = currentProduct.category[0];
+
     const links: BreadcrumbLink[] = [
-      { link: PAGE_ID.MAIN_PAGE, name: PAGE_ID.MAIN_PAGE.toString() },
-      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_ID.CATALOG_PAGE.toString() },
+      { link: PAGE_ID.MAIN_PAGE, name: PAGE_TITLE[currentLanguage].main },
+      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_TITLE[currentLanguage].catalog },
     ];
 
     if (category) {
       links.push({
         link: buildPath.catalogPathWithIDAndQuery(null, { category: [category.id] }),
-        name: category.name[0].value,
+        name: category.name[Number(isRuLanguage)].value,
       });
     }
 
     if (subcategory && category) {
       links.push({
         link: buildPath.catalogPathWithIDAndQuery(null, { category: [category.id], subcategory: [subcategory.id] }),
-        name: subcategory.name[0].value,
+        name: subcategory.name[Number(isRuLanguage)].value,
       });
     }
 
@@ -59,16 +62,8 @@ class ProductPageModel implements Page {
       .getProductByKey(params.product?.id ?? '')
       .then((productData) => {
         if (productData) {
-          const productInfo = new ProductInfoModel({
-            currentSize: currentSize ?? productData.variant[0].size,
-            ...productData,
-          });
-          this.initBreadcrumbs(productData);
-          this.getHTML().append(productInfo.getHTML(), this.view.getFullDescriptionWrapper());
-          this.view.setFullDescription(
-            productData.fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-          );
-          this.observeLanguage(productData.fullDescription);
+          this.currentProduct = productData;
+          this.updatePageContent(productData, currentSize);
         }
       })
       .catch(showErrorMessage);
@@ -77,8 +72,18 @@ class ProductPageModel implements Page {
   }
 
   private initBreadcrumbs(currentProduct: Product): void {
-    this.breadcrumbs.addBreadcrumbLinks(this.createBreadcrumbLinks(currentProduct));
-    this.getHTML().append(this.breadcrumbs.getHTML());
+    const breadcrumbsContainer = this.view.getBreadcrumbsContainer();
+    if (!breadcrumbsContainer) {
+      return;
+    }
+
+    const breadcrumbs = new BreadcrumbsModel();
+    breadcrumbs.addBreadcrumbLinks(this.createBreadcrumbLinks(currentProduct));
+
+    while (breadcrumbsContainer.firstChild) {
+      breadcrumbsContainer.removeChild(breadcrumbsContainer.firstChild);
+    }
+    breadcrumbsContainer.appendChild(breadcrumbs.getHTML());
   }
 
   private observeLanguage(fullDescription: localization[]): void {
@@ -86,7 +91,24 @@ class ProductPageModel implements Page {
       this.view.setFullDescription(
         fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
       );
+      if (this.currentProduct) {
+        this.initBreadcrumbs(this.currentProduct);
+      }
     });
+  }
+
+  private updatePageContent(productData: Product, currentSize: null | string): void {
+    this.initBreadcrumbs(productData);
+
+    const productInfo = new ProductInfoModel({
+      currentSize: currentSize ?? productData.variant[0].size,
+      ...productData,
+    });
+    this.getHTML().append(productInfo.getHTML(), this.view.getFullDescriptionWrapper());
+    this.view.setFullDescription(
+      productData.fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+    );
+    this.observeLanguage(productData.fullDescription);
   }
 
   public getHTML(): HTMLDivElement {
