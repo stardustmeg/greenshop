@@ -32,7 +32,14 @@ export class ShoppingListModel {
 
   constructor() {
     this.root = getShoppingListApi();
-    this.getShoppingList().catch(showErrorMessage);
+    this.getShoppingList()
+      .then(() => {
+        const { anonymousId } = getStore().getState();
+        if (anonymousId && this.shoppingList?.anonymousId !== anonymousId) {
+          this.updateListCustomer(anonymousId).catch(showErrorMessage);
+        }
+      })
+      .catch(showErrorMessage);
   }
 
   private adaptLineItem(product: ShoppingListLineItem): ShoppingListProduct {
@@ -52,25 +59,18 @@ export class ShoppingListModel {
       getStore().dispatch(setAnonymousId(data.anonymousId));
     }
     return {
+      anonymousId: data.anonymousId || null,
       id: data.id,
       products: data.lineItems.map((lineItem) => this.adaptLineItem(lineItem)),
       version: data.version,
     };
   }
 
-  private async getAnonymousShoppingList(
-    anonymousShopListId: string,
-    anonymousId: string,
-  ): Promise<ShoppingList | null> {
+  private async getAnonymousShoppingList(anonymousShopListId: string): Promise<ShoppingList | null> {
     const dataAnonymList = await this.root.getAnonymList(anonymousShopListId);
     const anonymShoppingList = this.getShopListFromData(dataAnonymList);
     if (anonymShoppingList.id && !dataAnonymList.body.customer?.id) {
-      const actions: ShoppingListSetAnonymousIdAction = {
-        action: ACTIONS.setAnonymousId,
-        anonymousId,
-      };
-      const dataUserList = await this.root.setAnonymousId(anonymShoppingList, actions);
-      this.shoppingList = this.getShopListFromData(dataUserList);
+      this.shoppingList = anonymShoppingList;
     }
     return this.shoppingList;
   }
@@ -79,6 +79,7 @@ export class ShoppingListModel {
     data: ClientResponse<ShoppingListPagedQueryResponse | ShoppingListResponse> | ShoppingListResponse,
   ): ShoppingList {
     let cart: ShoppingList = {
+      anonymousId: null,
       id: '',
       products: [],
       version: 0,
@@ -133,6 +134,18 @@ export class ShoppingListModel {
     return this.shoppingList;
   }
 
+  private async updateListCustomer(anonymousId: string): Promise<ShoppingList | null> {
+    if (this.shoppingList) {
+      const actions: ShoppingListSetAnonymousIdAction = {
+        action: ACTIONS.setAnonymousId,
+        anonymousId,
+      };
+      const dataUserList = await this.root.setAnonymousId(this.shoppingList, actions);
+      this.shoppingList = this.getShopListFromData(dataUserList);
+    }
+    return this.shoppingList;
+  }
+
   public async addProduct(productId: string): Promise<ShoppingList> {
     if (!this.shoppingList) {
       this.shoppingList = await this.getShoppingList();
@@ -174,7 +187,7 @@ export class ShoppingListModel {
     if (!this.shoppingList) {
       const { anonymousId, anonymousShopListId } = getStore().getState();
       if (anonymousShopListId && anonymousId) {
-        this.shoppingList = await this.getAnonymousShoppingList(anonymousShopListId, anonymousId);
+        this.shoppingList = await this.getAnonymousShoppingList(anonymousShopListId);
       }
       if (!this.shoppingList) {
         this.shoppingList = await this.getUserShoppingLists();
