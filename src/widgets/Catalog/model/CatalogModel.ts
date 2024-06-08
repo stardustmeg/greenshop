@@ -159,14 +159,14 @@ class CatalogModel {
       result = {
         filter,
         page: Number(page),
-        search: { locale: currentLanguage, value: searchValue },
+        search: searchValue ? { locale: currentLanguage, value: searchValue } : null,
         sort: currentSort ?? null,
       };
     } else {
       result = {
         filter,
         page: Number(page),
-        search: { locale: currentLanguage, value: searchValue },
+        search: searchValue ? { locale: currentLanguage, value: searchValue } : null,
       };
     }
 

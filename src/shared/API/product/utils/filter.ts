@@ -12,8 +12,8 @@ export default class FilterProduct {
   private newArrival = '';
 
   private price: PriceRange = {
-    max: MAX_PRICE,
-    min: MIN_PRICE,
+    max: 0,
+    min: 0,
   };
 
   private sale = '';
@@ -55,7 +55,7 @@ export default class FilterProduct {
     return this.getFilter();
   }
 
-  public getFilter(): string[] {
+  public getFilter(productsPriceRange?: PriceRange): string[] {
     const result = [];
     if (this.id.length) {
       result.push(`${FilterFields.ID}:${this.id.map((id) => `"${id}"`).join(',')}`);
@@ -70,9 +70,7 @@ export default class FilterProduct {
       result.push(this.newArrival);
     }
     if (this.price) {
-      result.push(
-        `${FilterFields.PRICE}: range(${Math.round(this.price.min * PRICE_FRACTIONS)} to ${Math.round(this.price.max * PRICE_FRACTIONS)})`,
-      );
+      result.push(this.getPriceRange(productsPriceRange));
     }
     if (this.sale) {
       result.push(this.sale);
@@ -80,7 +78,17 @@ export default class FilterProduct {
     return result;
   }
 
-  public getPriceRange(): PriceRange {
-    return this.price;
+  public getPriceRange(productsPriceRange?: PriceRange): string {
+    const min = Math.round(this.price.min * PRICE_FRACTIONS);
+    const max =
+      this.price.max && productsPriceRange && this.price.max !== productsPriceRange.max
+        ? Math.round(this.price.max * PRICE_FRACTIONS)
+        : MAX_PRICE;
+
+    return `${FilterFields.PRICE}: range(${min} to ${max})`;
   }
+}
+
+export function getDefaultPriceRange(): string {
+  return `${FilterFields.PRICE}: range(${MIN_PRICE} to ${MAX_PRICE})`;
 }
