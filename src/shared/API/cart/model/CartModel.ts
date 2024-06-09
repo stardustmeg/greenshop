@@ -4,6 +4,7 @@ import type {
   Cart as CartResponse,
   CartSetAnonymousIdAction,
   ClientResponse,
+  DiscountedTotalPricePortion,
   LineItem,
   MyCartUpdateAction,
 } from '@commercetools/platform-sdk';
@@ -57,27 +58,33 @@ export class CartModel {
     if (data.anonymousId && !authToken && !anonymousId) {
       getStore().dispatch(setAnonymousId(data.anonymousId));
     }
-    const discounts: CartCoupon[] = [];
-    if (data.discountOnTotalPrice && data.discountOnTotalPrice.includedDiscounts.length) {
-      const allDiscounts = getDiscountModel().getAllCoupons();
-      data.discountOnTotalPrice.includedDiscounts.forEach((discount) => {
-        const findDiscount = allDiscounts.find((el) => el.id === discount.discount.id);
-        if (findDiscount && discount.discountedAmount.centAmount > 0) {
-          discounts.push({
-            coupon: findDiscount,
-            value: discount.discountedAmount.centAmount / PRICE_FRACTIONS || 0,
-          });
-        }
-      });
-    }
     return {
       anonymousId: data.anonymousId || null,
-      discounts,
+      discountsCart: data.discountOnTotalPrice?.includedDiscounts.length
+        ? this.adaptCartDiscount(data.discountOnTotalPrice?.includedDiscounts)
+        : [],
+      discountsProduct: this.adaptProductDiscount(data.lineItems) || [],
       id: data.id,
       products: data.lineItems.map((lineItem) => this.adaptLineItem(lineItem)),
       total: data.totalPrice.centAmount / PRICE_FRACTIONS || 0,
       version: data.version,
     };
+  }
+
+  private adaptCartDiscount(discounts: DiscountedTotalPricePortion[]): CartCoupon[] {
+    const result: CartCoupon[] = [];
+    const allDiscounts = getDiscountModel().getAllCoupons();
+    discounts.forEach((discount) => {
+      const findDiscount = allDiscounts.find((el) => el.id === discount.discount.id);
+      if (findDiscount) {
+        result.push({
+          coupon: findDiscount,
+          value: discount.discountedAmount.centAmount / PRICE_FRACTIONS || 0,
+        });
+      }
+    });
+
+    return result;
   }
 
   private adaptLineItem(product: LineItem): CartProduct {
@@ -114,6 +121,39 @@ export class CartModel {
     return result;
   }
 
+  private adaptProductDiscount(lineItems: LineItem[]): CartCoupon[] {
+    const result: CartCoupon[] = [];
+    const allDiscounts = getDiscountModel().getAllCoupons();
+    lineItems.forEach((lineItem) => {
+      lineItem.discountedPricePerQuantity.forEach((discountItem) => {
+        const { quantity } = discountItem;
+        discountItem.discountedPrice.includedDiscounts.forEach((discount) => {
+          const findDiscount = allDiscounts.find((el) => el.id === discount.discount.id);
+          if (findDiscount) {
+            result.push({
+              coupon: findDiscount,
+              value: (discount.discountedAmount.centAmount * quantity) / PRICE_FRACTIONS || 0,
+            });
+          }
+        });
+      });
+    });
+
+    const uniqueCoupons: CartCoupon[] = result.reduce((acc: CartCoupon[], curr: CartCoupon) => {
+      const existingCoupon = acc.find((coupon) => coupon.coupon.id === curr.coupon.id);
+
+      if (existingCoupon) {
+        existingCoupon.value += curr.value;
+      } else {
+        acc.push(curr);
+      }
+
+      return acc;
+    }, []);
+
+    return uniqueCoupons;
+  }
+
   private async deleteOtherCarts(data: ClientResponse<CartPagedQueryResponse>): Promise<void> {
     if (this.cart) {
       const carts: Cart[] = [];
@@ -141,7 +181,8 @@ export class CartModel {
   private getCartFromData(data: CartResponse | ClientResponse<CartPagedQueryResponse | CartResponse>): Cart {
     let cart: Cart = {
       anonymousId: null,
-      discounts: [],
+      discountsCart: [],
+      discountsProduct: [],
       id: '',
       products: [],
       total: 0,

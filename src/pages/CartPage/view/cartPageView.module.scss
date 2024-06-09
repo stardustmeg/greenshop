@@ -240,3 +240,27 @@ $color: var(--steam-green-800);
   background: url('/img/png/expand-arrow.png') no-repeat center center;
   background-size: contain;
 }
+
+.deleteCoupon {
+  border-radius: var(--small-br);
+  padding: calc(var(--extra-small-offset) / 8);
+  width: calc(var(--extra-small-offset) * 1.2); // 24px
+  height: calc(var(--extra-small-offset) * 1.2); // 24px
+  background-image: url('../../../shared/img/svg/coupon-delete.svg');
+  background-position: center;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.coupon {
+  display: flex;
+  align-items: center;
+}

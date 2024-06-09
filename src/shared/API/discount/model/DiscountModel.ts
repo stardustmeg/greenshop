@@ -18,7 +18,8 @@ export class DiscountModel {
 
   private adaptCoupon(data: DiscountCode): Coupon {
     return {
-      code: data.code,
+      cartDiscount: data.id,
+      discountCode: data.code,
       id: data.cartDiscounts[0].id,
     };
   }

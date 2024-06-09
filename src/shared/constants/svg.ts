@@ -3,6 +3,7 @@ const SVG_DETAILS = {
   BILL: 'bill',
   BIN: 'bin',
   CART: 'cart',
+  CLOSE: 'close',
   CLOSE_EYE: 'closeEye',
   COPY: 'copy',
   DARK: 'dark',
