@@ -2,6 +2,7 @@ import type { OptionsRequest, ProductWithCount } from '@/shared/API/types/type.t
 import type { Cart } from '@/shared/types/cart.ts';
 import type { ShoppingList } from '@/shared/types/shopping-list';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ProductCardModel from '@/entities/ProductCard/model/ProductCardModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
@@ -26,6 +27,8 @@ class WishlistPageView {
   private page: HTMLDivElement;
 
   private parent: HTMLDivElement;
+
+  private productCards: ProductCardModel[] = [];
 
   private wishlist: HTMLUListElement;
 
@@ -80,9 +83,17 @@ class WishlistPageView {
     shoppingList.products.forEach((product) => {
       const currentProduct = products.products.find((item) => item.id === product.productId);
       if (currentProduct) {
-        this.wishlist.append(new ProductCardModel(currentProduct, null, cart).getHTML());
+        const productCard = new ProductCardModel(currentProduct, null, cart);
+        this.productCards.push(productCard);
+        this.wishlist.append(productCard.getHTML());
       }
     });
+  }
+
+  private openProductInfo(): void {
+    if (RouterModel.getPageID()) {
+      this.productCards.find((productCard) => productCard.getKey() === RouterModel.getPageID())?.openProductInfoModal();
+    }
   }
 
   public async drawWishlist(): Promise<void> {
@@ -106,6 +117,7 @@ class WishlistPageView {
     const products = await getProductModel().getProducts(options);
     loader.getHTML().remove();
     this.drawWishlistItems(shoppingList, cart, products);
+    this.openProductInfo();
     this.switchEmptyList(!shoppingList.products.length);
   }
 

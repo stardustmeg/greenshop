@@ -25,6 +25,11 @@
   line-height: 170%;
   letter-spacing: var(--one);
   color: var(--steam-green-400);
+
+  @media (max-width: 768px) {
+    margin: 0 auto;
+    width: 95%;
+  }
 }
 
 .fullDescription {

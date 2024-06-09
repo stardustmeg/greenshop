@@ -38,7 +38,7 @@ class ProductModalSliderView {
 
   private createHTML(): HTMLDivElement {
     this.view = createBaseElement({
-      cssClasses: [styles.modalSlidersWrapper],
+      cssClasses: [styles.modalSliderWrapper],
       tag: 'div',
     });
 

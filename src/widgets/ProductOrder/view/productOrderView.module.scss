@@ -213,11 +213,12 @@
   @include green-btn;
 
   border-radius: 50%;
-  padding: var(--tiny-offset);
+  padding: 0;
+  padding-bottom: var(--one);
   width: calc(var(--tiny-offset) * 2.5);
   height: calc(var(--tiny-offset) * 2.5);
   font: var(--medium-font);
-  letter-spacing: var(--one);
+  letter-spacing: 0;
 }
 
 .mobileHide {

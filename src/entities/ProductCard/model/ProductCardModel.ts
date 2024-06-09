@@ -65,6 +65,7 @@ class ProductCardModel {
       event.preventDefault();
       const path = buildPath.productPathWithIDAndQuery(this.params.key, {
         size: [this.currentSize ?? this.params.variant[0].size],
+        slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE) ?? '1'],
       });
       RouterModel.getInstance().navigateTo(path);
     });

@@ -21,7 +21,7 @@ import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage
 import Swiper from 'swiper';
 import 'swiper/css';
 import 'swiper/css/bundle';
-import { Autoplay, Keyboard, Thumbs } from 'swiper/modules';
+import { Autoplay, Keyboard, Navigation } from 'swiper/modules';
 
 import ProductInfoView from '../view/ProductInfoView.ts';
 
@@ -29,8 +29,6 @@ const SLIDER_DELAY = 5000;
 const SLIDER_PER_VIEW = 1;
 
 class ProductInfoModel {
-  private bigSlider: Swiper | null = null;
-
   private currentVariant: Variant;
 
   private params: ProductInfoParams;
@@ -39,7 +37,7 @@ class ProductInfoModel {
 
   private savedPath?: string;
 
-  private smallSlider: Swiper | null = null;
+  private slider: Swiper | null = null;
 
   private view: ProductInfoView;
 
@@ -79,21 +77,6 @@ class ProductInfoModel {
       .finally(() => loader.remove());
   }
 
-  private bigSliderHandler(): void {
-    this.view.getBigSliderSlides().forEach((slide, index) => {
-      slide.addEventListener('click', () => {
-        if (this.bigSlider) {
-          RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(this.bigSlider.activeIndex + 1));
-        }
-        const router = RouterModel.getInstance();
-        const modalSlider = new ProductModalSliderModel(this.params);
-        modal.show(() => router.navigateTo(this.checkPath(this.savedPath ?? '')));
-        modalSlider.getModalSlider()?.slideTo(index);
-        modal.setContent(modalSlider.getHTML());
-      });
-    });
-  }
-
   private checkPath(savedPath: string): string {
     let result = savedPath;
 
@@ -130,35 +113,57 @@ class ProductInfoModel {
   }
 
   private init(): void {
-    this.smallSlider = new Swiper(this.view.getSmallSlider(), {
-      direction: 'vertical',
-      slidesPerView: this.params.images.length,
-    });
-    this.bigSlider = new Swiper(this.view.getBigSlider(), {
+    this.slider = new Swiper(this.view.getSlider(), {
       autoplay: {
         delay: SLIDER_DELAY,
       },
-      direction: 'vertical',
       keyboard: {
         enabled: true,
       },
       loop: true,
-      modules: [Autoplay, Thumbs, Keyboard],
-      slidesPerView: SLIDER_PER_VIEW,
-      thumbs: {
-        swiper: this.smallSlider,
+      modules: [Autoplay, Keyboard, Navigation],
+      navigation: {
+        nextEl: this.view.getNextSlideButton().getHTML(),
+        prevEl: this.view.getPrevSlideButton().getHTML(),
       },
+      slidesPerView: SLIDER_PER_VIEW,
     });
-    this.bigSlider.enable();
-    this.bigSlider.slideTo(Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE)) - 1 || 0, 0, false);
-
-    this.smallSliderHandler();
-    this.bigSliderHandler();
+    this.slider.enable();
+    this.slider.slideTo(Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE)) - 1 || 0, 0, false);
+    this.sliderHandler();
+    this.nextSlideButtonHandler();
+    this.prevSlideButtonHandler();
 
     this.view.getRightWrapper().append(this.price.getHTML());
     this.view.getButtonsWrapper().append(this.wishlistButton.getHTML().getHTML());
     this.switchToCartButtonHandler();
     this.setSizeButtonHandler();
+  }
+
+  private nextSlideButtonHandler(): void {
+    const nextSlideButton = this.view.getNextSlideButton();
+    nextSlideButton.getHTML().addEventListener('click', () => {
+      const slideInSearch = Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE));
+
+      if (slideInSearch < this.view.getSliderSlides().length) {
+        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch + 1));
+      } else {
+        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(1));
+      }
+    });
+  }
+
+  private prevSlideButtonHandler(): void {
+    const prevSlideButton = this.view.getPrevSlideButton();
+    prevSlideButton.getHTML().addEventListener('click', () => {
+      const slideInSearch = Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE));
+
+      if (slideInSearch > 1) {
+        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch - 1));
+      } else {
+        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(this.view.getSliderSlides().length));
+      }
+    });
   }
 
   private setSizeButtonHandler(): void {
@@ -178,12 +183,17 @@ class ProductInfoModel {
     });
   }
 
-  private smallSliderHandler(): void {
-    this.view.getSmallSliderSlides().forEach((slide, index) => {
+  private sliderHandler(): void {
+    this.view.getSliderSlides().forEach((slide, index) => {
       slide.addEventListener('click', () => {
-        if (this.bigSlider) {
-          RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(index + 1));
+        if (this.slider) {
+          RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(this.slider.activeIndex + 1));
         }
+        const router = RouterModel.getInstance();
+        const modalSlider = new ProductModalSliderModel(this.params);
+        modal.show(() => router.navigateTo(this.checkPath(this.savedPath ?? '')));
+        modalSlider.getModalSlider()?.slideTo(index);
+        modal.setContent(modalSlider.getHTML());
       });
     });
   }

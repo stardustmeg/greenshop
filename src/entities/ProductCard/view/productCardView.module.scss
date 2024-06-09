@@ -92,10 +92,10 @@
 
   @media (hover: hover) {
     &:hover {
-      outline: calc(var(--one) * 1.5) solid var(--steam-green-400);
+      outline: calc(var(--one) * 1.5) solid var(--steam-green-1200);
 
       svg {
-        fill: var(--steam-green-400);
+        fill: var(--steam-green-1200);
       }
     }
   }
