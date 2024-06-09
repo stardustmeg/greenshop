@@ -28,6 +28,9 @@ export const productRemovedFromWishListMessage = (name: string): string =>
 export const promoCodeAppliedMessage = (promocode: string): string =>
   textTemplate(promocode, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_ADD_COUPON_TO_CART);
 
+export const promoCodeDeleteMessage = (promocode: string): string =>
+  textTemplate(promocode, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_DELETE_COUPON_FROM_CART);
+
 export const promoCodeCopiedMessage = (promocode: string): string =>
   textTemplate(
     promocode,

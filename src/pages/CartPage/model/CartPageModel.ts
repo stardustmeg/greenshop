@@ -11,7 +11,7 @@ import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { CartActive } from '@/shared/types/cart.ts';
-import { promoCodeAppliedMessage } from '@/shared/utils/messageTemplates.ts';
+import { promoCodeAppliedMessage, promoCodeDeleteMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel.ts';
 
@@ -123,7 +123,7 @@ class CartPageModel implements Page {
       .deleteCoupon(coupon.cartDiscount)
       .then((cart) => {
         if (cart) {
-          showSuccessMessage(promoCodeAppliedMessage(coupon.discountCode));
+          showSuccessMessage(promoCodeDeleteMessage(coupon.discountCode));
           this.cart = cart;
           this.productsItem.forEach((productItem) => {
             const idLine = productItem.getProduct().lineItemId;
