@@ -11,6 +11,7 @@
 }
 
 .modalSliderWrapper {
+  position: relative;
   height: auto;
   min-height: 40rem;
 
@@ -67,12 +68,11 @@
 
 .navigationWrapper {
   position: absolute;
-  left: -3.5rem;
-  right: -3.5rem;
   top: 50%;
   z-index: 1;
   display: flex;
   justify-content: space-between;
+  width: 100%;
   transform: translateY(-50%);
 }
 

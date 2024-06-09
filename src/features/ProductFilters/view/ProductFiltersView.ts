@@ -452,7 +452,16 @@ class ProductFiltersView {
 
     this.sizesList = filtersList;
 
-    this.params?.sizes?.forEach((size) => {
+    const sortedSizes = this.params?.sizes?.sort((a, b) => {
+      const lastA = a.size.at(-1);
+      const lastB = b.size.at(-1);
+      if (lastA && lastB) {
+        return lastB.localeCompare(lastA, LANGUAGE_CHOICE.EN, { numeric: true, sensitivity: 'base' });
+      }
+      return 0;
+    });
+
+    sortedSizes?.forEach((size) => {
       const li = createBaseElement({
         cssClasses: [styles.sizeItem],
         tag: 'li',

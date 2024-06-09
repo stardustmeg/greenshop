@@ -12,8 +12,12 @@
   svg {
     width: var(--extra-small-offset);
     height: var(--extra-small-offset);
-    fill: var(--noble-gray-800);
-    transition: fill 0.2s;
+    fill: transparent;
+    stroke: var(--noble-gray-700);
+    stroke-width: 4.5px;
+    transition:
+      fill 0.2s,
+      stroke 0.2s;
   }
 
   &:active {
@@ -22,10 +26,11 @@
 
   @media (hover: hover) {
     &:hover {
-      outline: calc(var(--one) * 1.5) solid var(--steam-green-800);
+      outline: calc(var(--one) * 1.5) solid var(--steam-green-1200);
 
       svg {
-        fill: var(--steam-green-800);
+        fill: var(--steam-green-1200);
+        stroke: var(--steam-green-1200);
       }
     }
   }
@@ -36,7 +41,8 @@
         outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
 
         svg {
-          fill: var(--noble-gray-700);
+          fill: transparent;
+          stroke: var(--noble-gray-700);
         }
       }
     }
@@ -44,9 +50,10 @@
 }
 
 .inWishList {
-  outline: calc(var(--one) * 1.5) solid var(--steam-green-800);
+  outline: calc(var(--one) * 1.5) solid var(--steam-green-1200);
 
   svg {
-    fill: var(--steam-green-800);
+    fill: var(--steam-green-1200);
+    stroke: var(--steam-green-1200);
   }
 }

@@ -41,9 +41,11 @@
   position: absolute;
   left: 50%;
   top: 50%;
+  overflow: hidden scroll;
   border: var(--two) solid var(--noble-black-500);
   border-radius: var(--border-radius);
   max-width: 95%;
+  max-height: 80vh;
   font: var(--small-font);
   letter-spacing: var(--one);
   color: var(--steam-green-500);
@@ -58,6 +60,20 @@
   &_hidden {
     opacity: 0;
     visibility: hidden;
+  }
+
+  &::-webkit-scrollbar {
+    width: var(--five);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--white-tr);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: var(--small-br);
+    background-color: var(--steam-green-800);
+    cursor: pointer;
   }
 }
 

@@ -19,22 +19,20 @@ import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage
 
 import './productInfoView.scss';
 
-const SLIDER_WIDTH = 8;
-const SLIDER_WIDTH_PART = 2;
 const DELIMITER = '>';
 
 class ProductInfoView {
   private SKUSpan: HTMLSpanElement;
 
-  private bigSlider: HTMLDivElement;
-
-  private bigSliderSlides: HTMLDivElement[] = [];
-
   private buttonsWrapper: HTMLDivElement;
 
   private categoriesSpan: HTMLSpanElement;
 
+  private nextSlideButton: ButtonModel;
+
   private params: ProductInfoParams;
+
+  private prevSlideButton: ButtonModel;
 
   private rightWrapper: HTMLDivElement;
 
@@ -42,9 +40,9 @@ class ProductInfoView {
 
   private sizeButtons: ButtonModel[] = [];
 
-  private smallSlider: HTMLDivElement;
+  private slider: HTMLDivElement;
 
-  private smallSliderSlides: HTMLDivElement[] = [];
+  private sliderSlides: HTMLDivElement[] = [];
 
   private switchToCartButton: ButtonModel;
 
@@ -56,67 +54,15 @@ class ProductInfoView {
     this.params = params;
     this.title = this.createProductTitle();
     this.shortDescription = this.createShortDescription();
-    this.smallSlider = this.createSmallSlider();
-    this.bigSlider = this.createBigSlider();
+    this.nextSlideButton = this.createNextSlideButton();
+    this.prevSlideButton = this.createPrevSlideButton();
+    this.slider = this.createSlider();
     this.SKUSpan = this.createSKUSpan();
     this.categoriesSpan = this.createCategoriesSpan();
     this.switchToCartButton = this.createSwitchToCartButton();
     this.buttonsWrapper = this.createButtonsWrapper();
     this.rightWrapper = this.createRightWrapper();
     this.view = this.createHTML();
-  }
-
-  private createBigSlider(): HTMLDivElement {
-    const slider = createBaseElement({
-      cssClasses: ['swiper', 'bigSlider'],
-      tag: 'div',
-    });
-
-    const width = this.params.images.length * SLIDER_WIDTH + SLIDER_WIDTH_PART;
-    slider.style.width = `${width}rem`;
-    slider.append(this.createBigSliderWrapper());
-    return slider;
-  }
-
-  private createBigSliderSlideContent(src: string, alt: string): HTMLImageElement {
-    const slide = createBaseElement({
-      attributes: {
-        alt,
-        src,
-      },
-      cssClasses: ['bigSliderImage'],
-      tag: 'img',
-    });
-
-    return slide;
-  }
-
-  private createBigSliderWrapper(): HTMLDivElement {
-    const sliderWrapper = createBaseElement({
-      cssClasses: ['swiper-wrapper', 'bigSliderWrapper'],
-      tag: 'div',
-    });
-
-    this.params.images.forEach((image) => {
-      const slideWrapper = createBaseElement({
-        cssClasses: ['swiper-slide', 'bigSliderSlide'],
-        tag: 'div',
-      });
-      const slide = this.createBigSliderSlideContent(image, this.params.name[0].value);
-      const loader = new LoaderModel(LOADER_SIZE.MEDIUM);
-      loader.setAbsolutePosition();
-      slideWrapper.append(slide, loader.getHTML());
-      slide.classList.add('hidden');
-      slide.addEventListener('load', () => {
-        slide.classList.remove('hidden');
-        loader.getHTML().remove();
-      });
-      this.bigSliderSlides.push(slide);
-      slideWrapper.append(slide);
-      sliderWrapper.append(slideWrapper);
-    });
-
-    return sliderWrapper;
   }
 
   private createButtonsWrapper(): HTMLDivElement {
@@ -193,10 +139,45 @@ class ProductInfoView {
       tag: 'div',
     });
 
-    leftWrapper.append(this.smallSlider, this.bigSlider);
+    if (this.params.images.length > 1) {
+      const navigationWrapper = this.createNavigationWrapper();
+      navigationWrapper.append(this.prevSlideButton.getHTML(), this.nextSlideButton.getHTML());
+      leftWrapper.append(navigationWrapper);
+    }
+
+    leftWrapper.append(this.slider);
 
     this.view.append(leftWrapper, this.rightWrapper);
     return this.view;
+  }
+
+  private createNavigationWrapper(): HTMLDivElement {
+    const navigationWrapper = createBaseElement({
+      cssClasses: ['navigationWrapper'],
+      tag: 'div',
+    });
+    return navigationWrapper;
+  }
+
+  private createNextSlideButton(): ButtonModel {
+    this.nextSlideButton = new ButtonModel({
+      classes: ['nextSlideButton'],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.ARROW_UP));
+    this.nextSlideButton.getHTML().append(svg);
+    return this.nextSlideButton;
+  }
+
+  private createPrevSlideButton(): ButtonModel {
+    this.prevSlideButton = new ButtonModel({
+      classes: ['prevSlideButton'],
+    });
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.ARROW_UP));
+    this.prevSlideButton.getHTML().append(svg);
+    return this.prevSlideButton;
   }
 
   private createProductTitle(): HTMLHeadingElement {
@@ -216,7 +197,7 @@ class ProductInfoView {
 
   private createRightWrapper(): HTMLDivElement {
     this.rightWrapper = createBaseElement({
-      cssClasses: ['rightWrapper', 'productDetailsPriceWrapper'],
+      cssClasses: ['rightWrapper', 'productDetailsPriceWrapper', 'modalContent'],
       tag: 'div',
     });
 
@@ -345,42 +326,42 @@ class ProductInfoView {
     return sizesWrapper;
   }
 
-  private createSmallSlider(): HTMLDivElement {
+  private createSlider(): HTMLDivElement {
     const slider = createBaseElement({
-      cssClasses: ['swiper', 'smallSlider'],
+      cssClasses: ['swiper', 'slider'],
       tag: 'div',
     });
 
-    slider.append(this.createSmallSliderWrapper());
+    slider.append(this.createSliderWrapper());
     return slider;
   }
 
-  private createSmallSliderSlideContent(src: string, alt: string): HTMLImageElement {
+  private createSliderSlideContent(src: string, alt: string): HTMLImageElement {
     const slide = createBaseElement({
       attributes: {
         alt,
         src,
       },
-      cssClasses: ['smallSliderImage'],
+      cssClasses: ['sliderImage'],
       tag: 'img',
     });
+
     return slide;
   }
 
-  private createSmallSliderWrapper(): HTMLDivElement {
+  private createSliderWrapper(): HTMLDivElement {
     const sliderWrapper = createBaseElement({
-      cssClasses: ['swiper-wrapper', 'smallSliderWrapper'],
+      cssClasses: ['swiper-wrapper', 'sliderWrapper'],
       tag: 'div',
     });
 
     this.params.images.forEach((image) => {
       const slideWrapper = createBaseElement({
-        cssClasses: ['swiper-slide', 'smallSliderSlide'],
+        cssClasses: ['swiper-slide', 'sliderSlide'],
         tag: 'div',
       });
-
-      const slide = this.createSmallSliderSlideContent(image, this.params.name[0].value);
-      const loader = new LoaderModel(LOADER_SIZE.SMALL);
+      const slide = this.createSliderSlideContent(image, this.params.name[0].value);
+      const loader = new LoaderModel(LOADER_SIZE.MEDIUM);
       loader.setAbsolutePosition();
       slideWrapper.append(slide, loader.getHTML());
       slide.classList.add('hidden');
@@ -388,7 +369,7 @@ class ProductInfoView {
         slide.classList.remove('hidden');
         loader.getHTML().remove();
       });
-      this.smallSliderSlides.push(slide);
+      this.sliderSlides.push(slide);
       slideWrapper.append(slide);
       sliderWrapper.append(slideWrapper);
     });
@@ -424,20 +405,20 @@ class ProductInfoView {
       .catch(showErrorMessage);
   }
 
-  public getBigSlider(): HTMLDivElement {
-    return this.bigSlider;
-  }
-
-  public getBigSliderSlides(): HTMLDivElement[] {
-    return this.bigSliderSlides;
-  }
-
   public getButtonsWrapper(): HTMLDivElement {
     return this.buttonsWrapper;
   }
 
   public getHTML(): HTMLDivElement {
     return this.view;
+  }
+
+  public getNextSlideButton(): ButtonModel {
+    return this.nextSlideButton;
+  }
+
+  public getPrevSlideButton(): ButtonModel {
+    return this.prevSlideButton;
   }
 
   public getRightWrapper(): HTMLDivElement {
@@ -448,12 +429,12 @@ class ProductInfoView {
     return this.sizeButtons;
   }
 
-  public getSmallSlider(): HTMLDivElement {
-    return this.smallSlider;
+  public getSlider(): HTMLDivElement {
+    return this.slider;
   }
 
-  public getSmallSliderSlides(): HTMLDivElement[] {
-    return this.smallSliderSlides;
+  public getSliderSlides(): HTMLDivElement[] {
+    return this.sliderSlides;
   }
 
   public getSwitchToCartButton(): ButtonModel {

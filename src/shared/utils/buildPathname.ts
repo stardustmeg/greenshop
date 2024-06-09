@@ -7,6 +7,7 @@ type QueryParamsType = {
 type BuildQuery = (queryParams: QueryParamsType | null) => string;
 
 type BuildPathWithID = (endpoint: null | string, id: null | string) => string;
+type BuildPathWithQuery = (endpoint: null | string, queryParams: QueryParamsType | null) => string;
 type BuildPathWithIDAndQuery = (
   endpoint: null | string,
   id: null | string,
@@ -35,6 +36,11 @@ export const buildQuery: BuildQuery = (queryParams) => {
   return queryString ? `?${queryString}` : '';
 };
 
+export const buildPathWithQuery: BuildPathWithQuery = (endpoint, queryParams = null) => {
+  const queryPart = buildQuery(queryParams);
+  return `${endpoint}${queryPart}`;
+};
+
 export const buildPathWithIDAndQuery: BuildPathWithIDAndQuery = (endpoint, id = null, queryParams = null) => {
   const pathWithID = buildPathWithID(endpoint, id);
   const queryPart = buildQuery(queryParams);
@@ -57,6 +63,12 @@ export const catalogPathWithID = buildPathWithID.bind(null, PAGE_ID.CATALOG_PAGE
 export const productPathWithID = buildPathWithID.bind(null, PAGE_ID.PRODUCT_PAGE);
 export const wishlistPathWithID = buildPathWithID.bind(null, PAGE_ID.WISHLIST_PAGE);
 export const cartPathWithID = buildPathWithID.bind(null, PAGE_ID.CART_PAGE);
+
+export const mainPathWithQuery = buildPathWithQuery.bind(null, PAGE_ID.MAIN_PAGE);
+export const catalogPathWithQuery = buildPathWithQuery.bind(null, PAGE_ID.CATALOG_PAGE);
+export const productPathWithQuery = buildPathWithQuery.bind(null, PAGE_ID.PRODUCT_PAGE);
+export const wishlistPathWithQuery = buildPathWithQuery.bind(null, PAGE_ID.WISHLIST_PAGE);
+export const cartPathWithQuery = buildPathWithQuery.bind(null, PAGE_ID.CART_PAGE);
 
 export const mainPathWithIDAndQuery = buildPathWithIDAndQuery.bind(null, PAGE_ID.MAIN_PAGE);
 export const catalogPathWithIDAndQuery = buildPathWithIDAndQuery.bind(null, PAGE_ID.CATALOG_PAGE);

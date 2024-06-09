@@ -92,7 +92,7 @@ function generateRandomCategoryLink(categoriesArr: Category[]): Link[] {
     const category = subCategory[randomIndex];
     subCategory.splice(randomIndex, 1);
     result.push({
-      href: buildPath.catalogPathWithIDAndQuery(null, { subcategory: [category.id] }),
+      href: buildPath.catalogPathWithQuery({ subcategory: [category.id] }),
       name: {
         en: category.name[0].value,
         ru: category.name[1].value,
