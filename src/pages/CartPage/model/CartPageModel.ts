@@ -1,5 +1,7 @@
+import type { Cart, Coupon } from '@/shared/types/cart.ts';
 import type { Page } from '@/shared/types/page.ts';
 
+import SummaryModel from '@/entities/Summary/model/SummaryModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
@@ -8,22 +10,39 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import { type Cart, CartActive } from '@/shared/types/cart.ts';
+import { CartActive } from '@/shared/types/cart.ts';
 import { promoCodeAppliedMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel.ts';
 
 import CartPageView from '../view/CartPageView.ts';
 
+const TITLE_SUMMARY = {
+  cart: { en: 'Cart Discount', ru: 'Скидка на корзину' },
+  product: { en: 'Product Discount', ru: 'Скидка на продукты' },
+};
+
 class CartPageModel implements Page {
   private cart: Cart | null = null;
+
+  private cartCouponSummary: SummaryModel;
+
+  private productCouponSummary: SummaryModel;
 
   private productsItem: ProductOrderModel[] = [];
 
   private view: CartPageView;
 
   constructor(parent: HTMLDivElement) {
-    this.view = new CartPageView(parent, this.clearCart.bind(this), this.addDiscountHandler.bind(this));
+    this.cartCouponSummary = new SummaryModel(TITLE_SUMMARY.cart, this.deleteDiscountHandler.bind(this));
+    this.productCouponSummary = new SummaryModel(TITLE_SUMMARY.product, this.deleteDiscountHandler.bind(this));
+    this.view = new CartPageView(
+      parent,
+      this.cartCouponSummary,
+      this.productCouponSummary,
+      this.clearCart.bind(this),
+      this.addDiscountHandler.bind(this),
+    );
 
     this.init().catch(showErrorMessage);
   }
@@ -46,6 +65,8 @@ class CartPageModel implements Page {
                 productItem.updateProductHandler(CartActive.UPDATE).catch(showErrorMessage);
               }
             });
+            this.cartCouponSummary.update(this.cart.discountsCart);
+            this.productCouponSummary.update(this.cart.discountsProduct);
             this.view.updateTotal(this.cart);
           }
         })
@@ -68,6 +89,8 @@ class CartPageModel implements Page {
     if (!this.productsItem.length) {
       this.view.renderEmpty();
     }
+    this.cartCouponSummary.update(this.cart.discountsCart);
+    this.productCouponSummary.update(this.cart.discountsProduct);
     this.view.updateTotal(this.cart);
   }
 
@@ -93,6 +116,32 @@ class CartPageModel implements Page {
       });
   }
 
+  private async deleteDiscountHandler(coupon: Coupon): Promise<void> {
+    const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
+    this.view.getCouponButton().append(loader);
+    await getCartModel()
+      .deleteCoupon(coupon.cartDiscount)
+      .then((cart) => {
+        if (cart) {
+          showSuccessMessage(promoCodeAppliedMessage(coupon.discountCode));
+          this.cart = cart;
+          this.productsItem.forEach((productItem) => {
+            const idLine = productItem.getProduct().lineItemId;
+            const updateLine = this.cart?.products.find((item) => item.lineItemId === idLine);
+            if (updateLine) {
+              productItem.setProduct(updateLine);
+              productItem.updateProductHandler(CartActive.UPDATE).catch(showErrorMessage);
+            }
+          });
+          this.cartCouponSummary.update(this.cart.discountsCart);
+          this.productCouponSummary.update(this.cart.discountsProduct);
+          this.view.updateTotal(this.cart);
+        }
+      })
+      .catch(showErrorMessage)
+      .finally(() => loader.remove());
+  }
+
   private async init(): Promise<void> {
     getStore().dispatch(setCurrentPage(PAGE_ID.CART_PAGE));
     this.cart = await getCartModel().addProductInfo();
@@ -106,11 +155,19 @@ class CartPageModel implements Page {
         this.productsItem.push(new ProductOrderModel(product, this.changeProductHandler.bind(this)));
       });
 
+      this.cart.discountsCart.forEach((discount) => {
+        this.cartCouponSummary.addCoupon(discount);
+      });
+      this.cart.discountsProduct.forEach((discount) => {
+        this.productCouponSummary.addCoupon(discount);
+      });
       if (this.productsItem.length) {
         this.view.renderCart(this.productsItem);
       } else {
         this.view.renderEmpty();
       }
+      this.cartCouponSummary.update(this.cart.discountsCart);
+      this.productCouponSummary.update(this.cart.discountsProduct);
       this.view.updateTotal(this.cart);
     }
   }

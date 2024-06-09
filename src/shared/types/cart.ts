@@ -2,7 +2,8 @@ import type { SizeType, localization } from './product.ts';
 
 export interface Cart {
   anonymousId: null | string;
-  discounts: CartCoupon[];
+  discountsCart: CartCoupon[];
+  discountsProduct: CartCoupon[];
   id: string;
   products: CartProduct[];
   total: number;
@@ -43,7 +44,8 @@ export enum CartActive {
 }
 
 export interface Coupon {
-  code: string;
+  cartDiscount: string;
+  discountCode: string;
   id: string;
 }
 

@@ -1,3 +1,4 @@
+import type SummaryModel from '@/entities/Summary/model/SummaryModel';
 import type { LanguageChoiceType } from '@/shared/constants/common';
 import type { Cart } from '@/shared/types/cart';
 import type { languageVariants } from '@/shared/types/common';
@@ -13,7 +14,7 @@ import getStore from '@/shared/Store/Store.ts';
 import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
-import { cartPrice, minusCartPrice } from '@/shared/utils/messageTemplates.ts';
+import { cartPrice } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './cartPageView.module.scss';
 
@@ -46,6 +47,8 @@ const TITLE = {
 class CartPageView {
   private addDiscountCallback: DiscountCallback;
 
+  private cartCouponSummary: SummaryModel;
+
   private clear: ButtonModel;
 
   private clearCallback: ClearCallback;
@@ -63,6 +66,8 @@ class CartPageView {
   private page: HTMLDivElement;
 
   private parent: HTMLDivElement;
+
+  private productCouponSummary: SummaryModel;
 
   private productRow: HTMLTableRowElement[] = [];
 
@@ -82,10 +87,18 @@ class CartPageView {
 
   private totalWrap: HTMLDivElement;
 
-  constructor(parent: HTMLDivElement, clearCallback: ClearCallback, addDiscountCallback: DiscountCallback) {
+  constructor(
+    parent: HTMLDivElement,
+    cartCouponSummary: SummaryModel,
+    productCouponSummary: SummaryModel,
+    clearCallback: ClearCallback,
+    addDiscountCallback: DiscountCallback,
+  ) {
     this.language = getStore().getState().currentLanguage;
     this.parent = parent;
     this.parent.innerHTML = '';
+    this.cartCouponSummary = cartCouponSummary;
+    this.productCouponSummary = productCouponSummary;
     this.clearCallback = clearCallback;
     this.addDiscountCallback = addDiscountCallback;
     this.page = this.createPageHTML();
@@ -180,7 +193,10 @@ class CartPageView {
       title,
       couponTitle,
       couponWrap,
+      this.productCouponSummary.getHTML(),
       subtotalWrap,
+
+      this.cartCouponSummary.getHTML(),
       discountWrap,
       totalWrap,
       finalButton,
@@ -353,33 +369,7 @@ class CartPageView {
   public updateTotal(cart: Cart): void {
     this.discountTotal.innerHTML = '';
     this.discountList.innerHTML = '';
-    let totalDiscount = 0;
-    cart.discounts.forEach((discount) => {
-      const couponItem = createBaseElement({ cssClasses: [styles.couponWrap], tag: 'li' });
-      const couponTitle = createBaseElement({
-        cssClasses: [styles.title],
-        innerContent: discount.coupon.code,
-        tag: 'p',
-      });
-      const couponValue = createBaseElement({
-        cssClasses: [styles.title],
-        innerContent: minusCartPrice(discount.value.toFixed(2)),
-        tag: 'p',
-      });
-      couponItem.append(couponTitle, couponValue);
-      this.discountList.append(couponItem);
-      totalDiscount += discount.value;
-    });
-    if (totalDiscount) {
-      const totalDiscountWrap = createBaseElement({ cssClasses: [styles.couponWrap], tag: 'div' });
-      const totalDiscountValue = createBaseElement({
-        cssClasses: [styles.title, styles.totalDiscount],
-        innerContent: minusCartPrice(totalDiscount.toFixed(2)),
-        tag: 'p',
-      });
-      totalDiscountWrap.append(this.totalDiscountTitle, totalDiscountValue);
-      this.discountTotal.append(totalDiscountWrap);
-    }
+    const totalDiscount = cart.discountsCart.reduce((acc, discount) => acc + discount.value, 0);
     const subTotal = cart.total + totalDiscount;
     this.subTotal.innerHTML = cartPrice(subTotal.toFixed(2));
     this.total.innerHTML = cartPrice(cart.total.toFixed(2));
