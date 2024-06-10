@@ -12,6 +12,8 @@ import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousId, setAnonymousShopListId } from '@/shared/Store/actions.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
+import type { OptionsRequest } from '../../types/type.ts';
+
 import {
   isClientResponse,
   isErrorResponse,
@@ -66,8 +68,11 @@ export class ShoppingListModel {
     };
   }
 
-  private async getAnonymousShoppingList(anonymousShopListId: string): Promise<ShoppingList | null> {
-    const dataAnonymList = await this.root.getAnonymList(anonymousShopListId);
+  private async getAnonymousShoppingList(
+    anonymousShopListId: string,
+    options?: OptionsRequest,
+  ): Promise<ShoppingList | null> {
+    const dataAnonymList = await this.root.getAnonymList(anonymousShopListId, options);
     const anonymShoppingList = this.getShopListFromData(dataAnonymList);
     if (anonymShoppingList.id && !dataAnonymList.body.customer?.id) {
       this.shoppingList = anonymShoppingList;
@@ -94,8 +99,8 @@ export class ShoppingListModel {
     return cart;
   }
 
-  private async getUserShoppingLists(): Promise<ShoppingList> {
-    const data = await this.root.get();
+  private async getUserShoppingLists(options?: OptionsRequest): Promise<ShoppingList> {
+    const data = await this.root.get(options);
     if (data.body.count === 0) {
       const newShopList = await this.root.create();
       this.shoppingList = this.getShopListFromData(newShopList);
@@ -183,14 +188,14 @@ export class ShoppingListModel {
     return this.shoppingList;
   }
 
-  public async getShoppingList(): Promise<ShoppingList> {
+  public async getShoppingList(options?: OptionsRequest): Promise<ShoppingList> {
     if (!this.shoppingList) {
       const { anonymousId, anonymousShopListId } = getStore().getState();
       if (anonymousShopListId && anonymousId) {
-        this.shoppingList = await this.getAnonymousShoppingList(anonymousShopListId);
+        this.shoppingList = await this.getAnonymousShoppingList(anonymousShopListId, options);
       }
       if (!this.shoppingList) {
-        this.shoppingList = await this.getUserShoppingLists();
+        this.shoppingList = await this.getUserShoppingLists(options);
       }
     }
     return this.shoppingList;

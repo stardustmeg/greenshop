@@ -5,14 +5,15 @@ import type {
   ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
 
-import { DEFAULT_PAGE, MAX_PRICE, MIN_PRICE, PRICE_FRACTIONS, PRODUCT_LIMIT } from '@/shared/constants/product.ts';
+import { DEFAULT_PAGE, MAX_PRICE, MIN_PRICE, PRODUCT_LIMIT } from '@/shared/constants/product.ts';
+
+import type { OptionsRequest, PriceRange } from '../types/type.ts';
 
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
-import { type OptionsRequest } from '../types/type.ts';
+import { getDefaultPriceRange } from './utils/filter.ts';
 import makeSortRequest from './utils/sort.ts';
 
 const Search = 'text';
-const FACET_ADD = 1;
 enum Facets {
   category = 'categories.id counting products',
   price = 'variants.price.centAmount',
@@ -63,25 +64,25 @@ export class ProductApi {
     return data;
   }
 
-  public async getProducts(options?: OptionsRequest): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
+  public async getProducts(
+    options?: OptionsRequest,
+    productsPriceRange?: PriceRange,
+  ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> {
     const { filter, limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, search, sort } = options || {};
-    const filterQuery = filter?.getFilter();
-    const priceRange = filter?.getPriceRange();
-    const min = Math.round((priceRange?.min ?? MIN_PRICE) * PRICE_FRACTIONS - FACET_ADD);
-    const max = Math.round((priceRange?.max ?? MAX_PRICE) * PRICE_FRACTIONS + FACET_ADD);
+    const filterQuery = filter?.getFilter(productsPriceRange);
+    const priceRange = filter ? filter.getPriceRange(productsPriceRange) : getDefaultPriceRange();
     const fuzzyLevel = this.getFuzzyLevel(search?.value ? search?.value : '');
-
     const data = await this.client
       .apiRoot()
       .productProjections()
       .search()
       .get({
         queryArgs: {
-          facet: [Facets.category, Facets.size, `${Facets.price}:${QueryParams.range}(${min} to ${max})`],
+          facet: [Facets.category, Facets.size, priceRange],
           limit,
           markMatchingVariants: true,
           offset: (page - 1) * PRODUCT_LIMIT,
-          ...(search && { [`${Search}.${search.locale}`]: search.value }),
+          ...(search && { [`${Search}.${search.locale}`]: `*${search.value}*` }),
           ...(search && { fuzzy: true }),
           ...(search?.value && { fuzzyLevel }),
           ...(sort && { sort: makeSortRequest(sort) }),

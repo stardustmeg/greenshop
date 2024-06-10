@@ -52,6 +52,11 @@ enum ProductConstant {
 export class ProductModel {
   private categories: Category[] = [];
 
+  private priceRange: PriceRange = {
+    max: 0,
+    min: 0,
+  };
+
   private root: ProductApi;
 
   constructor() {
@@ -268,6 +273,9 @@ export class ProductModel {
         });
       }
     }
+    if (this.priceRange.min === 0 && this.priceRange.max === 0) {
+      this.priceRange = priceRange;
+    }
     return priceRange;
   }
 
@@ -395,7 +403,7 @@ export class ProductModel {
 
   public async getProducts(options?: OptionsRequest): Promise<ProductWithCount> {
     await getProductModel().getCategories();
-    const data = await this.root.getProducts(options);
+    const data = await this.root.getProducts(options, this.priceRange);
     const products = this.getProductsFromData(data);
     if (options?.sort) {
       this.sortVariants(products, options?.sort);
@@ -412,6 +420,10 @@ export class ProductModel {
       total,
     };
     return result;
+  }
+
+  public getProductsPriceRange(): PriceRange {
+    return this.priceRange;
   }
 }
 

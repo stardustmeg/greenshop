@@ -1,4 +1,8 @@
-import type { ClientResponse, DiscountCodePagedQueryResponse } from '@commercetools/platform-sdk';
+import type {
+  ClientResponse,
+  DiscountCodePagedQueryResponse,
+  ProductDiscountPagedQueryResponse,
+} from '@commercetools/platform-sdk';
 
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
 
@@ -11,6 +15,11 @@ export class DiscountApi {
 
   public async getCoupons(): Promise<ClientResponse<DiscountCodePagedQueryResponse>> {
     const data = await this.client.apiRoot().discountCodes().get().execute();
+    return data;
+  }
+
+  public async getDiscounts(): Promise<ClientResponse<ProductDiscountPagedQueryResponse>> {
+    const data = await this.client.apiRoot().productDiscounts().get().execute();
     return data;
   }
 }

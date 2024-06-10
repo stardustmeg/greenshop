@@ -174,6 +174,7 @@ class CatalogModel {
     if (currentSort) {
       result = {
         filter,
+
         page: Number(params.page),
         search: params.searchValue ? { locale: currentLanguage, value: params.searchValue } : null,
         sort: currentSort ?? null,
