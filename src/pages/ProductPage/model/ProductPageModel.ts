@@ -44,14 +44,14 @@ class ProductPageModel implements Page {
 
     if (category) {
       links.push({
-        link: buildPath.catalogPathWithQuery({ category: [category.id] }),
+        link: buildPath.catalogPathWithQuery({ category: [category.key] }),
         name: category.name[Number(isRuLanguage)].value,
       });
     }
 
     if (subcategory && category) {
       links.push({
-        link: buildPath.catalogPathWithQuery({ subcategory: [subcategory.id] }),
+        link: buildPath.catalogPathWithQuery({ subcategory: [subcategory.key] }),
         name: subcategory.name[Number(isRuLanguage)].value,
       });
     }

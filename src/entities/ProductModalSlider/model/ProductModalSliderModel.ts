@@ -1,5 +1,6 @@
 import type { ProductInfoParams } from '@/shared/types/product.ts';
 
+import { set } from '@/app/Router/helpers/helpers.ts';
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import Swiper from 'swiper';
@@ -53,9 +54,9 @@ class ProductModalSliderModel {
       const slideInSearch = Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE));
 
       if (slideInSearch < this.view.getModalSliderSlides().length) {
-        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch + 1));
+        RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch + 1)));
       } else {
-        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(1));
+        RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(1)));
       }
     });
   }
@@ -66,9 +67,11 @@ class ProductModalSliderModel {
       const slideInSearch = Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE));
 
       if (slideInSearch > 1) {
-        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch - 1));
+        RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch - 1)));
       } else {
-        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(this.view.getModalSliderSlides().length));
+        RouterModel.changeSearchParams((url) =>
+          set(url, SEARCH_PARAMS_FIELD.SLIDE, String(this.view.getModalSliderSlides().length)),
+        );
       }
     });
   }

@@ -1,3 +1,4 @@
+import { set } from '@/app/Router/helpers/helpers.ts';
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import { SortDirection } from '@/shared/API/types/type.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
@@ -99,12 +100,10 @@ class ProductSortsView {
       link.getHTML().classList.add(styles.activeLink);
 
       this.currentSortingSpan.innerText = text;
-
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.FIELD, link.getHTML().id);
-      RouterModel.setSearchParams(
-        SEARCH_PARAMS_FIELD.DIRECTION,
-        String(link.getHTML().getAttribute(DATA_KEYS.DIRECTION)),
-      );
+      RouterModel.changeSearchParams((url) => {
+        set(url, SEARCH_PARAMS_FIELD.FIELD, link.getHTML().id);
+        set(url, SEARCH_PARAMS_FIELD.DIRECTION, String(link.getHTML().getAttribute(DATA_KEYS.DIRECTION)));
+      });
       this.callback();
     });
 

@@ -1,6 +1,7 @@
 import type { Cart } from '@/shared/types/cart.ts';
 import type { ProductInfoParams, Variant } from '@/shared/types/product.ts';
 
+import { set } from '@/app/Router/helpers/helpers.ts';
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ProductModalSliderModel from '@/entities/ProductModalSlider/model/ProductModalSliderModel.ts';
 import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
@@ -146,9 +147,9 @@ class ProductInfoModel {
       const slideInSearch = Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE));
 
       if (slideInSearch < this.view.getSliderSlides().length) {
-        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch + 1));
+        RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch + 1)));
       } else {
-        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(1));
+        RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(1)));
       }
     });
   }
@@ -159,9 +160,11 @@ class ProductInfoModel {
       const slideInSearch = Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE));
 
       if (slideInSearch > 1) {
-        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch - 1));
+        RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch - 1)));
       } else {
-        RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(this.view.getSliderSlides().length));
+        RouterModel.changeSearchParams((url) =>
+          set(url, SEARCH_PARAMS_FIELD.SLIDE, String(this.view.getSliderSlides().length)),
+        );
       }
     });
   }
@@ -186,8 +189,9 @@ class ProductInfoModel {
   private sliderHandler(): void {
     this.view.getSliderSlides().forEach((slide, index) => {
       slide.addEventListener('click', () => {
-        if (this.slider) {
-          RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SLIDE, String(this.slider.activeIndex + 1));
+        const { slider } = this;
+        if (slider) {
+          RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(slider.activeIndex + 1)));
         }
         const router = RouterModel.getInstance();
         const modalSlider = new ProductModalSliderModel(this.params);

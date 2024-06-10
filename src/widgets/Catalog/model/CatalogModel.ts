@@ -1,8 +1,10 @@
 import type { OptionsRequest, SortOptions } from '@/shared/API/types/type.ts';
+import type { Category } from '@/shared/types/product.ts';
 import type ProductFiltersParams from '@/shared/types/productFilters.ts';
 import type { SelectedFilters } from '@/shared/types/productFilters.ts';
 import type { SelectedSorting } from '@/shared/types/productSorting.ts';
 
+import { set } from '@/app/Router/helpers/helpers.ts';
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ProductCardModel from '@/entities/ProductCard/model/ProductCardModel.ts';
 import PaginationModel from '@/features/Pagination/model/PaginationModel.ts';
@@ -62,19 +64,22 @@ class CatalogModel {
     }
   }
 
-  private decodeSearchParams(): {
+  private async decodeSearchParams(): Promise<{
     page: string;
     searchValue: null | string;
     selectedFilters: SelectedFilters;
-    selectedSorting?: SelectedSorting;
-  } | null {
+    selectedSorting?: SelectedSorting | undefined;
+  } | null> {
     if (RouterModel.getPageID()) {
       return null;
     }
     const searchParams = RouterModel.getSearchParams();
     const searchCategory = searchParams.getAll(SEARCH_PARAMS_FIELD.CATEGORY);
     searchCategory.push(...searchParams.getAll(SEARCH_PARAMS_FIELD.SUBCATEGORY));
-    const category = new Set(searchCategory);
+    const categorySetWithKey = new Set(searchCategory);
+    const categories = await getProductModel().getCategories();
+    const categorySetWithID: Set<string> = this.replaceCategoryKeyWithID(categories, categorySetWithKey);
+
     const metaFilter = searchParams.get(SEARCH_PARAMS_FIELD.META) ?? META_FILTERS.en.ALL_PRODUCTS;
     const size = searchParams.get(SEARCH_PARAMS_FIELD.SIZE) ?? null;
     const price = {
@@ -87,7 +92,7 @@ class CatalogModel {
     const searchValue = searchParams.get(SEARCH_PARAMS_FIELD.SEARCH) ?? null;
     const page = searchParams.get(SEARCH_PARAMS_FIELD.PAGE) ?? DEFAULT_PAGE.toString();
     const selectedFilters = {
-      category,
+      category: categorySetWithID,
       metaFilter,
       price,
       size,
@@ -105,7 +110,7 @@ class CatalogModel {
     this.productCards = [];
     const productList = this.view.getItemsList();
     productList.innerHTML = '';
-    const options = this.getOptions();
+    const options = await this.getOptions();
     const productsInfo = await this.getProductsInfo(options);
     this.paginationTop?.getHTML().remove();
     this.paginationBottom?.getHTML().remove();
@@ -139,10 +144,10 @@ class CatalogModel {
     this.view.switchEmptyList(!productsInfo?.products?.length);
   }
 
-  private getOptions(): OptionsRequest {
+  private async getOptions(): Promise<OptionsRequest> {
     let result = {};
 
-    const params = this.decodeSearchParams();
+    const params = await this.decodeSearchParams();
     if (!params) {
       return {};
     }
@@ -170,14 +175,14 @@ class CatalogModel {
       result = {
         filter,
         page: Number(params.page),
-        search: { locale: currentLanguage, value: params.searchValue },
+        search: params.searchValue ? { locale: currentLanguage, value: params.searchValue } : null,
         sort: currentSort ?? null,
       };
     } else {
       result = {
         filter,
         page: Number(params.page),
-        search: { locale: currentLanguage, value: params.searchValue },
+        search: params.searchValue ? { locale: currentLanguage, value: params.searchValue } : null,
       };
     }
 
@@ -258,8 +263,23 @@ class CatalogModel {
     }
   }
 
+  private replaceCategoryKeyWithID(categories: Category[], categorySet: Set<string>): Set<string> {
+    const categoriesWithID: Set<string> = new Set();
+    categories.forEach((category) => {
+      categorySet.forEach((item) => {
+        if (category.key === item) {
+          categoriesWithID.add(category.id);
+        } else if (category.parent?.key === item) {
+          categoriesWithID.add(category.parent.id);
+        }
+      });
+    });
+
+    return categoriesWithID;
+  }
+
   private setCurrentPage(page: string): void {
-    RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.PAGE, page);
+    RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.PAGE, page));
     this.drawProducts().catch(showErrorMessage);
   }
 

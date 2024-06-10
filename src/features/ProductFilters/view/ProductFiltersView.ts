@@ -2,6 +2,7 @@ import type { SizeProductCount } from '@/shared/API/types/type';
 import type { Category } from '@/shared/types/product';
 import type ProductFiltersParams from '@/shared/types/productFilters';
 
+import { append, remove, set } from '@/app/Router/helpers/helpers.ts';
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
@@ -14,6 +15,7 @@ import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { META_FILTERS, META_FILTERS_ID, PRICE_RANGE_LABEL, TITLE } from '@/shared/constants/filters.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import * as noUiSlider from 'nouislider';
@@ -66,16 +68,17 @@ class ProductFiltersView {
 
   private categoryClickHandler(parentCategory: { category: Category; count: number } | null): void {
     const searchParams = RouterModel.getSearchParams();
-    if (
-      searchParams.has(SEARCH_PARAMS_FIELD.CATEGORY) &&
-      searchParams.get(SEARCH_PARAMS_FIELD.CATEGORY) === parentCategory?.category.parent?.id
-    ) {
-      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.CATEGORY);
-    } else {
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.CATEGORY, parentCategory?.category.parent?.id ?? '');
-    }
-
-    RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
+    const handleCategoryChange = (url: URL, key: string, value: string): void => {
+      if (searchParams.has(key) && searchParams.get(key) === value) {
+        remove(url, key);
+      } else {
+        set(url, key, value);
+      }
+    };
+    RouterModel.changeSearchParams((url) => {
+      handleCategoryChange(url, SEARCH_PARAMS_FIELD.CATEGORY, parentCategory?.category.parent?.key ?? '');
+      remove(url, SEARCH_PARAMS_FIELD.PAGE);
+    });
 
     this.callback();
   }
@@ -132,7 +135,7 @@ class ProductFiltersView {
 
     const span = createBaseElement({
       attributes: {
-        id: category.category.id,
+        id: category.category.key,
       },
       cssClasses: [styles.categoryLinkCount],
       innerContent,
@@ -264,8 +267,10 @@ class ProductFiltersView {
     link.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
 
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.META, id);
-      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
+      RouterModel.changeSearchParams((url) => {
+        set(url, SEARCH_PARAMS_FIELD.META, id);
+        remove(url, SEARCH_PARAMS_FIELD.PAGE);
+      });
       this.metaLinks.forEach((link) => this.switchSelectedFilter(link, false));
       this.switchSelectedFilter(link, true);
       this.callback();
@@ -335,10 +340,11 @@ class ProductFiltersView {
       const [min, max] = values;
       this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM)?.setValue(String(min));
       this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO)?.setValue(String(max));
-      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.MIN_PRICE);
-      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.MAX_PRICE);
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MIN_PRICE, String(min));
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MAX_PRICE, String(max));
+      RouterModel.changeSearchParams((url) => {
+        remove(url, [SEARCH_PARAMS_FIELD.MIN_PRICE, SEARCH_PARAMS_FIELD.MAX_PRICE]);
+        set(url, SEARCH_PARAMS_FIELD.MIN_PRICE, String(min));
+        set(url, SEARCH_PARAMS_FIELD.MAX_PRICE, String(max));
+      });
       this.callback();
     });
 
@@ -394,7 +400,7 @@ class ProductFiltersView {
         }
       });
 
-      RouterModel.clearSearchParams();
+      RouterModel.getInstance().navigateTo(PAGE_ID.CATALOG_PAGE);
       EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.CLEAR_CATALOG_SEARCH, '');
       this.callback();
     });
@@ -418,8 +424,10 @@ class ProductFiltersView {
 
     sizeLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SIZE, size.size);
+      RouterModel.changeSearchParams((url) => {
+        remove(url, SEARCH_PARAMS_FIELD.PAGE);
+        set(url, SEARCH_PARAMS_FIELD.SIZE, size.size);
+      });
       this.sizeLinks.forEach((link) => this.switchSelectedFilter(link, false));
       this.switchSelectedFilter(sizeLink, true);
       this.callback();
@@ -516,7 +524,7 @@ class ProductFiltersView {
 
   private redrawProductsCount(): void {
     this.params?.categoriesProductCount?.forEach((categoryCount) => {
-      const currentSpan = this.categoryCountSpan.find((span) => span.id === categoryCount.category.id) ?? null;
+      const currentSpan = this.categoryCountSpan.find((span) => span.id === categoryCount.category.key) ?? null;
       if (currentSpan) {
         currentSpan.innerText = `(${categoryCount.count})`;
       }
@@ -539,30 +547,32 @@ class ProductFiltersView {
   }
 
   private subcategoryClickHandler(subcategory: { category: Category; count: number }): void {
-    const currentSubcategories = RouterModel.getSearchParams().getAll(SEARCH_PARAMS_FIELD.SUBCATEGORY);
-    const currentSubcategory = currentSubcategories?.find((id) => id === subcategory.category.id);
-    const currentLink = this.categoryLinks.find((link) => link.getHTML().id === subcategory.category.id);
-    RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
+    const subcategories = RouterModel.getSearchParams().getAll(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+    const currentSubcategory = subcategories?.find((key) => key === subcategory.category.key);
+    const currentLink = this.categoryLinks.find((link) => link.getHTML().id === subcategory.category.key);
+    RouterModel.changeSearchParams((url) => remove(url, SEARCH_PARAMS_FIELD.PAGE));
 
     if (currentSubcategory) {
-      const filteredSubcategories = currentSubcategories.filter((id) => id !== currentSubcategory);
-      if (!filteredSubcategories.length) {
-        RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+      const filteredSubcategory = subcategories.filter((key) => key !== currentSubcategory);
+      if (!filteredSubcategory.length) {
+        RouterModel.changeSearchParams((url) => remove(url, SEARCH_PARAMS_FIELD.SUBCATEGORY));
         if (currentLink) {
           this.switchSelectedFilter(currentLink, false);
         }
       } else {
-        RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY);
-        filteredSubcategories.forEach((id) => RouterModel.appendSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY, id));
-        filteredSubcategories.forEach((id) => {
-          const currentLink = this.categoryLinks.find((link) => link.getHTML().id === id);
+        RouterModel.changeSearchParams((url) => remove(url, SEARCH_PARAMS_FIELD.SUBCATEGORY));
+        filteredSubcategory.forEach((key) =>
+          RouterModel.changeSearchParams((url) => append(url, SEARCH_PARAMS_FIELD.SUBCATEGORY, key)),
+        );
+        filteredSubcategory.forEach((key) => {
+          const currentLink = this.categoryLinks.find((link) => link.getHTML().id === key);
           if (currentLink) {
             this.switchSelectedFilter(currentLink, true);
           }
         });
       }
     } else {
-      RouterModel.appendSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY, subcategory.category.id);
+      RouterModel.changeSearchParams((url) => append(url, SEARCH_PARAMS_FIELD.SUBCATEGORY, subcategory.category.key));
       if (currentLink) {
         this.switchSelectedFilter(currentLink, true);
       }
@@ -584,8 +594,10 @@ class ProductFiltersView {
   }
 
   private updateSelectedPrice(from: InputModel | null = null, to: InputModel | null = null): void {
-    RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MIN_PRICE, from?.getValue() ?? '0');
-    RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MAX_PRICE, to?.getValue() ?? '0');
+    RouterModel.changeSearchParams((url) => {
+      set(url, SEARCH_PARAMS_FIELD.MIN_PRICE, from?.getValue() ?? '0');
+      set(url, SEARCH_PARAMS_FIELD.MAX_PRICE, to?.getValue() ?? '0');
+    });
     this.callback();
   }
 
@@ -630,8 +642,8 @@ class ProductFiltersView {
     this.categoryLinks.forEach((link) => this.switchSelectedFilter(link, false));
     this.metaLinks.forEach((link) => this.switchSelectedFilter(link, false));
 
-    activeFilters.categoryLinks.forEach((id) => {
-      const currentLink = this.categoryLinks.find((link) => link.getHTML().id === id);
+    activeFilters.categoryLinks.forEach((key) => {
+      const currentLink = this.categoryLinks.find((link) => link.getHTML().id === key);
       if (currentLink) {
         this.switchSelectedFilter(currentLink, true);
       }
