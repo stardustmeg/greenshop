@@ -45,13 +45,13 @@ class RouterModel {
         return;
       }
 
-      this.handleRequest(currentPage, currentPath);
+      this.handleRequest(currentPage, currentPath).catch(showErrorMessage);
     });
   }
 
-  public static appendSearchParams(key: string, value: string): void {
+  public static changeSearchParams(callback: (url: URL) => void): void {
     const url = new URL(decodeURIComponent(window.location.href));
-    url.searchParams.append(key, value);
+    callback(url);
     const path = url.pathname + url.search.toString();
     window.history.pushState({ path: path.slice(NEXT_SEGMENT) }, '', path);
   }
@@ -59,13 +59,6 @@ class RouterModel {
   public static clearSearchParams(): void {
     const url = new URL(decodeURIComponent(window.location.href));
     const path = `${DEFAULT_SEGMENT}${url.pathname.split(DEFAULT_SEGMENT)[NEXT_SEGMENT]}${DEFAULT_SEGMENT}`;
-    window.history.pushState({ path: path.slice(NEXT_SEGMENT) }, '', path);
-  }
-
-  public static deleteSearchParams(key: string): void {
-    const url = new URL(decodeURIComponent(window.location.href));
-    url.searchParams.delete(key);
-    const path = url.pathname + url.search.toString();
     window.history.pushState({ path: path.slice(NEXT_SEGMENT) }, '', path);
   }
 
@@ -98,14 +91,6 @@ class RouterModel {
     return new URL(decodeURIComponent(window.location.href)).searchParams;
   }
 
-  public static setSearchParams(key: string, value: string): void {
-    const url = new URL(decodeURIComponent(window.location.href));
-    url.searchParams.delete(key);
-    url.searchParams.set(key, value);
-    const path = url.pathname + url.search.toString();
-    window.history.pushState({ path: path.slice(NEXT_SEGMENT) }, '', path);
-  }
-
   private async checkPageAndParams(currentPage: string, path: string): Promise<boolean | null> {
     const hasRoute = this.routes.has(currentPage);
 
@@ -120,14 +105,13 @@ class RouterModel {
     return hasRoute;
   }
 
-  private handleRequest(currentPage: string, path: string): void {
-    this.checkPageAndParams(currentPage, path)
-      .then((check) => {
-        if (check) {
-          this.routes.get(currentPage)?.().catch(showErrorMessage);
-        }
-      })
-      .catch(showErrorMessage);
+  private async handleRequest(currentPage: string, path: string): Promise<void> {
+    try {
+      await this.checkPageAndParams(currentPage, path);
+      this.routes.get(currentPage)?.().catch(showErrorMessage);
+    } catch (error) {
+      showErrorMessage(error);
+    }
   }
 
   public navigateTo(path: string): void {
@@ -136,7 +120,7 @@ class RouterModel {
       PAGE_ID.DEFAULT_PAGE;
 
     if (currentPage !== getStore().getState().currentPage || currentPage === PAGE_ID.DEFAULT_PAGE) {
-      this.handleRequest(currentPage, path);
+      this.handleRequest(currentPage, path).catch(showErrorMessage);
     }
     history.pushState({ path }, '', `/${path}`);
   }
