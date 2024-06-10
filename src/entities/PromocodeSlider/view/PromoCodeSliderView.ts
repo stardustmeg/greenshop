@@ -126,24 +126,23 @@ class PromoCodeSliderView {
     return this.slider;
   }
 
-  private async createSliderSlideContent(index: number, slideWrapper: HTMLDivElement): Promise<HTMLDivElement> {
+  private async createSliderSlideContent(index: number): Promise<HTMLDivElement> {
     const slide = createBaseElement({
       cssClasses: [styles.sliderContent],
       tag: 'div',
     });
-
-    const { description, img, title } = this.createSliderSlideInfo(index);
+    slide.classList.add(styles[PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].style]);
+    const { description, title } = this.createSliderSlideInfo(index);
 
     slide.append(
       title,
       description,
       this.createPromoCodeSpan(PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].promoCode),
     );
-    slideWrapper.append(img);
 
     observeStore(selectCurrentLanguage, () => {
-      title.textContent = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].title;
-      description.textContent = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].description;
+      title.innerHTML = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].title;
+      description.innerHTML = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].description;
     });
 
     if (PROMO_SLIDER_CONTENT[index].en.date.end === null && getStore().getState().isUserLoggedIn) {
@@ -160,17 +159,8 @@ class PromoCodeSliderView {
 
   private createSliderSlideInfo(index: number): {
     description: HTMLParagraphElement;
-    img: HTMLImageElement;
     title: HTMLHeadingElement;
   } {
-    const img = createBaseElement({
-      attributes: {
-        src: PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].img,
-      },
-      cssClasses: [styles.sliderImage],
-      tag: 'img',
-    });
-
     const title = createBaseElement({
       cssClasses: [styles.sliderTitle],
       innerContent: PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].title,
@@ -183,7 +173,7 @@ class PromoCodeSliderView {
       tag: 'p',
     });
 
-    return { description, img, title };
+    return { description, title };
   }
 
   private createSliderWrapper(): HTMLDivElement {
@@ -197,7 +187,7 @@ class PromoCodeSliderView {
         cssClasses: ['swiper-slide', styles.sliderSlide],
         tag: 'div',
       });
-      this.createSliderSlideContent(index, slideWrapper)
+      this.createSliderSlideContent(index)
         .then((slide) => slideWrapper.append(slide))
         .catch(showErrorMessage);
 
