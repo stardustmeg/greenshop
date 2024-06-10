@@ -11,38 +11,24 @@
 
 .sliderTitle {
   margin-bottom: var(--tiny-offset);
-  max-width: 55%;
-  font: var(--extra-black-font);
+  max-width: 80%;
+  font: var(--super-large-font);
   letter-spacing: var(--one);
   color: var(--steam-green-800);
 
   @media (max-width: 768px) {
     max-width: 100%;
+  }
+
+  @media (max-width: 600px) {
     font: var(--black-font);
-  }
-}
-
-.sliderImage {
-  position: absolute;
-  right: var(--medium-offset);
-  top: 55%;
-  width: 40%;
-  height: auto;
-  transform: translateY(-45%);
-
-  @media (max-width: 950px) {
-    width: 35%;
-  }
-
-  @media (max-width: 768px) {
-    display: none;
   }
 }
 
 .sliderDescription {
   margin-bottom: var(--extra-small-offset);
   max-width: 55%;
-  font: var(--black-font);
+  font: var(--medium-font);
   letter-spacing: var(--one);
   color: var(--noble-gray-800);
 
@@ -78,12 +64,14 @@
 .currentPromoCode {
   font: var(--medium-font);
   letter-spacing: var(--one);
-  color: var(--steam-green-400);
+  color: var(--steam-green-800);
   background-color: transparent;
   pointer-events: none;
 }
 
 .paginationWrapper {
+  position: absolute;
+  right: 0;
   z-index: 2;
   display: flex;
   margin: 0 auto;
@@ -123,4 +111,65 @@
   font: var(--regular-font);
   letter-spacing: var(--one);
   color: var(--noble-gray-800);
+}
+
+.birthday {
+  height: 100%;
+  background-image: linear-gradient(to right, var(--white) 0%, var(--white) 20%, transparent 100%),
+    url('/img/webp/promo-slider-2_1.webp');
+  background-position: right center;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+
+  @media (max-width: 768px) {
+    background-image: linear-gradient(to right, var(--white) 0%, var(--white) 50%, transparent 100%),
+      url('/img/webp/promo-slider-2_2.webp');
+  }
+}
+
+.succulent {
+  height: 100%;
+  background-image: linear-gradient(to right, var(--white) 0%, var(--white) 20%, transparent 100%),
+    url('/img/webp/promo-slider-3_1.webp');
+  background-position: right center;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+
+  @media (max-width: 768px) {
+    background-image: linear-gradient(to right, var(--white) 0%, var(--white) 50%, transparent 100%),
+      url('/img/webp/promo-slider-3_2.webp');
+  }
+}
+
+.garden {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-image: radial-gradient(circle at center, var(--white) 40%, transparent 40.1%),
+    url('/img/webp/promo-slider-1_2.webp');
+  background-position:
+    center center,
+    right center;
+  background-size: cover, cover;
+  background-repeat: no-repeat;
+
+  h3,
+  p {
+    text-align: center;
+  }
+
+  input {
+    width: 11rem;
+  }
+
+  @media (max-width: 768px) {
+    background-image: radial-gradient(circle at center, var(--white) 55%, transparent 55.1%),
+      url('/img/webp/promo-slider-1_2.webp');
+  }
+}
+
+.sliderSlide {
+  height: auto;
 }
