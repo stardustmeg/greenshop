@@ -5,20 +5,20 @@ const PROMO_SLIDER_CONTENT = [
         end: '2024-06-30',
         start: '2024-06-01',
       },
-      description: `<span style="color: #000">Everything for garden and<br> plants care with 10% discount</span>`,
+      description: `<span style="color: var(--black)">Everything for garden and<br> plants care with 10% discount</span>`,
       promoCode: 'SUMMER-SALE-10',
       style: 'garden',
-      title: `<span style="color: #46a358;">SUMMER</span><br> <span style="color: #000;">SALE</span>`,
+      title: `<span style="color: var(--steam-green-800);">SUMMER</span><br> <span style="color: var(--black);">SALE</span>`,
     },
     ru: {
       date: {
         end: '2024-06-30',
         start: '2024-06-01',
       },
-      description: `<span style="color: #000">Все для сада и ухода за<br> растениями со скидкой в 10%</span>`,
+      description: `<span style="color: var(--black)">Все для сада и ухода за<br> растениями со скидкой в 10%</span>`,
       promoCode: 'SUMMER-SALE-10',
       style: 'garden',
-      title: `<span style="color: #46a358;">ЛЕТНЯЯ</span><br> <span style="color: #000;">АКЦИЯ</span>`,
+      title: `<span style="color: var(--steam-green-800);">ЛЕТНЯЯ</span><br> <span style="color: var(--black);">АКЦИЯ</span>`,
     },
   },
   {
@@ -30,7 +30,7 @@ const PROMO_SLIDER_CONTENT = [
       description: 'For your birthday 10% discount<br> off the entire cart',
       promoCode: 'HAPPY-BIRTHDAY-10',
       style: 'birthday',
-      title: `<span style="color: #000;">BIRTHDAY</span><br> <span style="color: #46a358;">PRESENT</span>`,
+      title: `<span style="color: var(--black);">BIRTHDAY</span><br> <span style="color: #46a358;">PRESENT</span>`,
     },
     ru: {
       date: {
@@ -40,7 +40,7 @@ const PROMO_SLIDER_CONTENT = [
       description: 'В честь вашего дня рождения скидка 10%<br> от общей суммы товаров',
       promoCode: 'HAPPY-BIRTHDAY-10',
       style: 'birthday',
-      title: `<span style="color: #46a358;">ПОДАРОК</span><br> <span style="color: #000;">НА ДЕНЬ РОЖДЕНИЯ</span>`,
+      title: `<span style="color: var(--steam-green-800);">ПОДАРОК</span><br> <span style="color: var(--black);">ИМЕНИННИКУ</span>`,
     },
   },
   {
@@ -52,7 +52,7 @@ const PROMO_SLIDER_CONTENT = [
       description: 'For all products from the<br> Succulents category',
       promoCode: 'SUCCULENT-SALE-15',
       style: 'succulent',
-      title: `<span style="color: #46a358;">SUCCULENTS</span><br> <span style="color: #000;">FOR EVERYONE!</span>`,
+      title: `<span style="color: var(--steam-green-800);">SUCCULENTS</span><br> <span style="color: var(--black);">FOR EVERYONE!</span>`,
     },
     ru: {
       date: {
@@ -62,7 +62,7 @@ const PROMO_SLIDER_CONTENT = [
       description: 'На все товары из<br> категории Суккуленты',
       promoCode: 'SUCCULENT-SALE-15',
       style: 'succulent',
-      title: `<span style="color: #000;">КАЖДОМУ ПО</span><br> <span style="color: ##46a358;">СУККУЛЕНТУ!</span>`,
+      title: `<span style="color: var(--black);">КАЖДОМУ ПО</span><br> <span style="color: var(--steam-green-800);">СУККУЛЕНТУ!</span>`,
     },
   },
 ];
