@@ -1,5 +1,6 @@
 import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
@@ -271,12 +272,12 @@ class HeaderView {
 
     this.toCartLink
       .getHTML()
-      .classList.toggle(styles.cartLinkActive, getStore().getState().currentPage === PAGE_ID.CART_PAGE);
+      .classList.toggle(styles.cartLinkActive, RouterModel.getCurrentPage() === PAGE_ID.CART_PAGE);
 
     observeStore(selectCurrentPage, () =>
       this.toCartLink
         .getHTML()
-        .classList.toggle(styles.cartLinkActive, getStore().getState().currentPage === PAGE_ID.CART_PAGE),
+        .classList.toggle(styles.cartLinkActive, RouterModel.getCurrentPage() === PAGE_ID.CART_PAGE),
     );
 
     return this.toCartLink;
@@ -304,12 +305,12 @@ class HeaderView {
 
     this.toProfileLink
       .getHTML()
-      .classList.toggle(styles.profileLinkActive, getStore().getState().currentPage === PAGE_ID.USER_PROFILE_PAGE);
+      .classList.toggle(styles.profileLinkActive, RouterModel.getCurrentPage() === PAGE_ID.USER_PROFILE_PAGE);
 
     observeStore(selectCurrentPage, () =>
       this.toProfileLink
         .getHTML()
-        .classList.toggle(styles.profileLinkActive, getStore().getState().currentPage === PAGE_ID.USER_PROFILE_PAGE),
+        .classList.toggle(styles.profileLinkActive, RouterModel.getCurrentPage() === PAGE_ID.USER_PROFILE_PAGE),
     );
 
     return this.toProfileLink;
@@ -330,12 +331,12 @@ class HeaderView {
 
     this.toWishlistLink
       .getHTML()
-      .classList.toggle(styles.cartLinkActive, getStore().getState().currentPage === PAGE_ID.WISHLIST_PAGE);
+      .classList.toggle(styles.cartLinkActive, RouterModel.getCurrentPage() === PAGE_ID.WISHLIST_PAGE);
 
     observeStore(selectCurrentPage, () =>
       this.toWishlistLink
         .getHTML()
-        .classList.toggle(styles.cartLinkActive, getStore().getState().currentPage === PAGE_ID.WISHLIST_PAGE),
+        .classList.toggle(styles.cartLinkActive, RouterModel.getCurrentPage() === PAGE_ID.WISHLIST_PAGE),
     );
 
     return this.toWishlistLink;

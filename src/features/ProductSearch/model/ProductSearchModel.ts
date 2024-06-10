@@ -1,3 +1,4 @@
+import { remove, set } from '@/app/Router/helpers/helpers.ts';
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
@@ -19,8 +20,10 @@ class ProductSearchModel {
   }
 
   private handleSearchInput(): void {
-    RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
-    RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SEARCH, this.view.getSearchField().getValue());
+    RouterModel.changeSearchParams((url) => {
+      remove(url, SEARCH_PARAMS_FIELD.PAGE);
+      set(url, SEARCH_PARAMS_FIELD.SEARCH, this.view.getSearchField().getValue());
+    });
     this.callback();
   }
 
