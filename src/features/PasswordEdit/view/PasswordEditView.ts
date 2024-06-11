@@ -1,7 +1,6 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
@@ -9,6 +8,7 @@ import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './passwordEditView.module.scss';
 
@@ -42,7 +42,7 @@ class PasswordEditView {
   private createCancelButton(): ButtonModel {
     this.cancelButton = new ButtonModel({
       classes: [styles.cancelButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].CANCEL,
+      text: BUTTON_TEXT[getCurrentLanguage()].CANCEL,
     });
     return this.cancelButton;
   }
@@ -110,7 +110,7 @@ class PasswordEditView {
   private createSubmitButton(): ButtonModel {
     this.submitButton = new ButtonModel({
       classes: [styles.submitButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].SAVE_CHANGES,
+      text: BUTTON_TEXT[getCurrentLanguage()].SAVE_CHANGES,
     });
     this.submitButton.setDisabled();
     return this.submitButton;

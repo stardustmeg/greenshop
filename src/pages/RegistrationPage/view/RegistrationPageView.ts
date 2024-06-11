@@ -1,5 +1,4 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/links.ts';
 import {
   PAGE_ANSWER,
@@ -9,6 +8,7 @@ import {
   PAGE_ID,
 } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './registrationPageView.module.scss';
@@ -49,7 +49,7 @@ class RegistrationPageView {
   private createAuthDescription(): HTMLHeadingElement {
     this.authDescription = createBaseElement({
       cssClasses: [styles.authDescription],
-      innerContent: PAGE_DESCRIPTION[getStore().getState().currentLanguage].REGISTRATION,
+      innerContent: PAGE_DESCRIPTION[getCurrentLanguage()].REGISTRATION,
       tag: 'h3',
     });
 
@@ -104,7 +104,7 @@ class RegistrationPageView {
         href: PAGE_ID.LOGIN_PAGE,
       },
       classes: [styles.loginLink],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].LOGIN,
+      text: PAGE_LINK_TEXT[getCurrentLanguage()].LOGIN,
     });
 
     observeCurrentLanguage(this.loginLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.LOGIN);
@@ -115,7 +115,7 @@ class RegistrationPageView {
   private createRegisterSpan(): HTMLSpanElement {
     this.registerSpan = createBaseElement({
       cssClasses: [styles.registerSpan],
-      innerContent: PAGE_LINK_TEXT[getStore().getState().currentLanguage].REGISTRATION,
+      innerContent: PAGE_LINK_TEXT[getCurrentLanguage()].REGISTRATION,
       tag: 'span',
     });
 
@@ -127,7 +127,7 @@ class RegistrationPageView {
   private createToLoginPageWrapper(): HTMLSpanElement {
     this.toLoginPageWrapper = createBaseElement({
       cssClasses: [styles.toLoginPageWrapper],
-      innerContent: PAGE_ANSWER[getStore().getState().currentLanguage].REGISTRATION,
+      innerContent: PAGE_ANSWER[getCurrentLanguage()].REGISTRATION,
       tag: 'span',
     });
 

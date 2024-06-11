@@ -6,6 +6,7 @@ import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { PAGE_ID, PAGE_TITLE } from '@/shared/constants/pages.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import WishlistPageView from '../view/WishlistPageView.ts';
 
@@ -21,9 +22,9 @@ class WishlistPageModel implements Page {
 
   private createBreadcrumbLinksData(): BreadcrumbLink[] {
     return [
-      { link: PAGE_ID.MAIN_PAGE, name: PAGE_TITLE[getStore().getState().currentLanguage].main },
-      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_TITLE[getStore().getState().currentLanguage].catalog },
-      { link: PAGE_ID.WISHLIST_PAGE, name: PAGE_TITLE[getStore().getState().currentLanguage].wishlist },
+      { link: PAGE_ID.MAIN_PAGE, name: PAGE_TITLE[getCurrentLanguage()].main },
+      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_TITLE[getCurrentLanguage()].catalog },
+      { link: PAGE_ID.WISHLIST_PAGE, name: PAGE_TITLE[getCurrentLanguage()].wishlist },
     ];
   }
 

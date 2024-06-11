@@ -15,6 +15,7 @@ import APP_THEME from '@/shared/constants/styles.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './headerView.module.scss';
@@ -161,7 +162,7 @@ class HeaderView {
   private createLogoutButton(): ButtonModel {
     this.logoutButton = new ButtonModel({
       classes: [styles.logoutButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].LOG_OUT,
+      text: BUTTON_TEXT[getCurrentLanguage()].LOG_OUT,
     });
 
     observeCurrentLanguage(this.logoutButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.LOG_OUT);
@@ -190,7 +191,7 @@ class HeaderView {
       type: INPUT_TYPE.CHECK_BOX,
     });
     this.switchLanguageCheckbox.getHTML().classList.add(styles.switchLanguageCheckbox);
-    this.switchLanguageCheckbox.getHTML().checked = getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN;
+    this.switchLanguageCheckbox.getHTML().checked = getCurrentLanguage() === LANGUAGE_CHOICE.EN;
 
     return this.switchLanguageCheckbox;
   }

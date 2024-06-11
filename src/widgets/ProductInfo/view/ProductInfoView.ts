@@ -4,7 +4,6 @@ import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
@@ -13,6 +12,7 @@ import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { SKUCopiedMessage } from '@/shared/utils/messageTemplates.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
@@ -79,16 +79,14 @@ class ProductInfoView {
   private createCategoriesSpan(): HTMLSpanElement {
     this.categoriesSpan = createBaseElement({
       cssClasses: ['categoriesSpan'],
-      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].CATEGORY,
+      innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].CATEGORY,
       tag: 'span',
     });
 
     observeCurrentLanguage(this.categoriesSpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS.CATEGORY);
 
-    const category =
-      this.params.category[0].parent?.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
-    const subcategory =
-      this.params.category[0].name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const category = this.params.category[0].parent?.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+    const subcategory = this.params.category[0].name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
     const currentCategoriesText = `${category ? `${category} ${DELIMITER} ` : ''}${subcategory}`;
 
     const currentCategories = createBaseElement({
@@ -99,11 +97,8 @@ class ProductInfoView {
     this.categoriesSpan.append(currentCategories);
 
     observeStore(selectCurrentLanguage, () => {
-      const category =
-        this.params.category[0].parent?.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)]
-          .value;
-      const subcategory =
-        this.params.category[0].name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const category = this.params.category[0].parent?.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+      const subcategory = this.params.category[0].name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       const currentCategoriesText = `${category ? `${category} ${DELIMITER} ` : ''}${subcategory}`;
 
       currentCategories.textContent = currentCategoriesText;
@@ -183,12 +178,12 @@ class ProductInfoView {
   private createProductTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: ['productTitle'],
-      innerContent: this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      innerContent: this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
       tag: 'h3',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const textContent = this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       this.title.textContent = textContent;
     });
 
@@ -203,12 +198,12 @@ class ProductInfoView {
 
     const shortDescriptionWrapper = createBaseElement({
       cssClasses: ['shortDescriptionWrapper'],
-      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].SHORT_DESCRIPTION,
+      innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].SHORT_DESCRIPTION,
       tag: 'div',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const text = PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].SHORT_DESCRIPTION;
+      const text = PRODUCT_INFO_TEXT[getCurrentLanguage()].SHORT_DESCRIPTION;
       const textNode = [...shortDescriptionWrapper.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -218,7 +213,7 @@ class ProductInfoView {
     if (this.params.level) {
       const difficultySpan = createBaseElement({
         cssClasses: ['difficultySpan'],
-        innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].DIFFICULTY,
+        innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].DIFFICULTY,
         tag: 'span',
       });
 
@@ -267,13 +262,12 @@ class ProductInfoView {
   private createShortDescription(): HTMLParagraphElement {
     this.shortDescription = createBaseElement({
       cssClasses: ['shortDescription'],
-      innerContent: this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      innerContent: this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
       tag: 'p',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent =
-        this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const textContent = this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       this.shortDescription.textContent = textContent;
     });
     return this.shortDescription;
@@ -305,7 +299,7 @@ class ProductInfoView {
   private createSizesWrapper(): HTMLDivElement {
     const sizesWrapper = createBaseElement({
       cssClasses: ['sizesWrapper'],
-      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].SIZE,
+      innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].SIZE,
       tag: 'div',
     });
 
@@ -316,7 +310,7 @@ class ProductInfoView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const text = PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].SIZE;
+      const text = PRODUCT_INFO_TEXT[getCurrentLanguage()].SIZE;
       const textNode = [...sizesWrapper.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -395,11 +389,9 @@ class ProductInfoView {
         if (
           cart.products.find((product) => product.key === this.params.key && product.size === this.params.currentSize)
         ) {
-          this.switchToCartButton.getHTML().textContent =
-            BUTTON_TEXT[getStore().getState().currentLanguage].DELETE_PRODUCT;
+          this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getCurrentLanguage()].DELETE_PRODUCT;
         } else {
-          this.switchToCartButton.getHTML().textContent =
-            BUTTON_TEXT[getStore().getState().currentLanguage].ADD_PRODUCT;
+          this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getCurrentLanguage()].ADD_PRODUCT;
         }
       })
       .catch(showErrorMessage);
@@ -443,9 +435,9 @@ class ProductInfoView {
 
   public switchToCartButtonText(hasCart: boolean): void {
     if (hasCart) {
-      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].DELETE_PRODUCT;
+      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getCurrentLanguage()].DELETE_PRODUCT;
     } else {
-      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].ADD_PRODUCT;
+      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getCurrentLanguage()].ADD_PRODUCT;
     }
   }
 

@@ -1,5 +1,5 @@
-import getStore from '../Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '../Store/observer.ts';
+import getCurrentLanguage from './getCurrentLanguage.ts';
 
 const observeCurrentLanguage = (
   el: HTMLElement | Node,
@@ -11,7 +11,7 @@ const observeCurrentLanguage = (
 
   if (textNode) {
     observeStore(selectCurrentLanguage, () => {
-      textNode.textContent = map[getStore().getState().currentLanguage][text];
+      textNode.textContent = map[getCurrentLanguage()][text];
     });
   }
   return true;

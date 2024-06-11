@@ -13,6 +13,7 @@ import SVG_DETAILS from '@/shared/constants/svg.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './productCardView.module.scss';
 
@@ -120,12 +121,12 @@ class ProductCardView {
 
     const discountSpan = createBaseElement({
       cssClasses: [styles.discountSpan],
-      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].DISCOUNT_LABEL,
+      innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].DISCOUNT_LABEL,
       tag: 'span',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      discountSpan.textContent = PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].DISCOUNT_LABEL;
+      discountSpan.textContent = PRODUCT_INFO_TEXT[getCurrentLanguage()].DISCOUNT_LABEL;
     });
 
     this.discountLabel.append(discountSpan);
@@ -167,7 +168,7 @@ class ProductCardView {
   private createMoreButton(): ButtonModel {
     this.moreButton = new ButtonModel({
       classes: [styles.moreButton],
-      text: MORE_TEXT[getStore().getState().currentLanguage].MORE,
+      text: MORE_TEXT[getCurrentLanguage()].MORE,
     });
 
     return this.moreButton;
@@ -207,7 +208,7 @@ class ProductCardView {
   }
 
   private createProductName(): HTMLHeadingElement {
-    const innerContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const innerContent = this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
     const productName = createBaseElement({
       cssClasses: [styles.productName],
       innerContent,
@@ -215,15 +216,14 @@ class ProductCardView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const textContent = this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       productName.textContent = textContent;
     });
     return productName;
   }
 
   private createProductShortDescription(): HTMLParagraphElement {
-    const innerContent =
-      this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const innerContent = this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
     this.productShortDescription = createBaseElement({
       cssClasses: [styles.productShortDescription],
       innerContent,
@@ -231,8 +231,7 @@ class ProductCardView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent =
-        this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const textContent = this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       this.productShortDescription.textContent = textContent;
     });
 

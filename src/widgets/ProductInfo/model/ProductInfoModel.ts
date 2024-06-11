@@ -10,13 +10,13 @@ import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { productAddedToCartMessage, productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import Swiper from 'swiper';
@@ -60,7 +60,7 @@ class ProductInfoModel {
     this.view.getSwitchToCartButton().getHTML().append(loader);
     getCartModel()
       .addProductToCart({
-        name: this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+        name: this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
         productId: this.params.id,
         quantity: 1,
         variantId: this.currentVariant.id,
@@ -68,9 +68,7 @@ class ProductInfoModel {
       .then(() => {
         this.view.switchToCartButtonText(true);
         showSuccessMessage(
-          productAddedToCartMessage(
-            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-          ),
+          productAddedToCartMessage(this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value),
         );
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
       })
@@ -102,9 +100,7 @@ class ProductInfoModel {
         .then(() => {
           this.view.switchToCartButtonText(false);
           showSuccessMessage(
-            productRemovedFromCartMessage(
-              this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-            ),
+            productRemovedFromCartMessage(this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value),
           );
           EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
         })

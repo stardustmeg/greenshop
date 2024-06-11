@@ -6,6 +6,7 @@ import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
 import getCountryIndex from '@/shared/utils/getCountryIndex.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import CountryChoiceView from '../view/CountryChoiceView.ts';
 
@@ -21,7 +22,7 @@ class CountryChoiceModel {
   private observeCurrentLanguage(item: HTMLDivElement): boolean {
     observeStore(selectCurrentLanguage, () => {
       const currentItem = item;
-      const currentCountriesList = COUNTRIES_LIST[getStore().getState().currentLanguage];
+      const currentCountriesList = COUNTRIES_LIST[getCurrentLanguage()];
       Object.entries(currentCountriesList).forEach(([countryName, countryCode]) => {
         if (countryCode === currentItem.id) {
           currentItem.textContent = countryName;

@@ -2,12 +2,12 @@ import { set } from '@/app/Router/helpers/helpers.ts';
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import { SortDirection } from '@/shared/API/types/type.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { DATA_KEYS } from '@/shared/constants/common.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { SORTING_ID, TEXT } from '@/shared/constants/sorting.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './productSortsView.module.scss';
 
@@ -49,9 +49,7 @@ class ProductSortsView {
 
     this.currentSortingSpan = createBaseElement({
       cssClasses: [styles.currentSortingSpan],
-      innerContent: selectedSorting
-        ? selectedSorting.toUpperCase()
-        : TEXT[getStore().getState().currentLanguage].DEFAULT.toUpperCase(),
+      innerContent: selectedSorting ? selectedSorting.toUpperCase() : TEXT[getCurrentLanguage()].DEFAULT.toUpperCase(),
       tag: 'span',
     });
 
@@ -60,7 +58,7 @@ class ProductSortsView {
 
       this.currentSortingSpan.innerText = selectedSorting
         ? selectedSorting.toUpperCase()
-        : TEXT[getStore().getState().currentLanguage].DEFAULT.toUpperCase();
+        : TEXT[getCurrentLanguage()].DEFAULT.toUpperCase();
     });
 
     return this.currentSortingSpan;
@@ -118,14 +116,10 @@ class ProductSortsView {
       tag: 'ul',
     });
 
-    const defaultSortingLink = this.createSortingLink(
-      '',
-      TEXT[getStore().getState().currentLanguage].DEFAULT,
-      SORTING_ID.DEFAULT,
-    );
+    const defaultSortingLink = this.createSortingLink('', TEXT[getCurrentLanguage()].DEFAULT, SORTING_ID.DEFAULT);
 
-    const priceLink = this.createSortingLink('', TEXT[getStore().getState().currentLanguage].PRICE, SORTING_ID.PRICE);
-    const nameLink = this.createSortingLink('', TEXT[getStore().getState().currentLanguage].NAME, SORTING_ID.NAME);
+    const priceLink = this.createSortingLink('', TEXT[getCurrentLanguage()].PRICE, SORTING_ID.PRICE);
+    const nameLink = this.createSortingLink('', TEXT[getCurrentLanguage()].NAME, SORTING_ID.NAME);
 
     const initialField = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.FIELD);
     const initialDirection = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.DIRECTION);
@@ -139,9 +133,9 @@ class ProductSortsView {
     }
 
     observeStore(selectCurrentLanguage, () => {
-      defaultSortingLink.getHTML().innerText = TEXT[getStore().getState().currentLanguage].DEFAULT;
-      priceLink.getHTML().innerText = TEXT[getStore().getState().currentLanguage].PRICE;
-      nameLink.getHTML().innerText = TEXT[getStore().getState().currentLanguage].NAME;
+      defaultSortingLink.getHTML().innerText = TEXT[getCurrentLanguage()].DEFAULT;
+      priceLink.getHTML().innerText = TEXT[getCurrentLanguage()].PRICE;
+      nameLink.getHTML().innerText = TEXT[getCurrentLanguage()].NAME;
     });
 
     this.sortingList.append(defaultSortingLink.getHTML(), priceLink.getHTML(), nameLink.getHTML());
@@ -157,12 +151,12 @@ class ProductSortsView {
 
     const span = createBaseElement({
       cssClasses: [styles.sortingListTitleSpan],
-      innerContent: TEXT[getStore().getState().currentLanguage].SORT_BY,
+      innerContent: TEXT[getCurrentLanguage()].SORT_BY,
       tag: 'span',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      span.innerText = TEXT[getStore().getState().currentLanguage].SORT_BY;
+      span.innerText = TEXT[getCurrentLanguage()].SORT_BY;
     });
 
     this.sortingListTitle.addEventListener('click', () => {

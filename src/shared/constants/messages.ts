@@ -35,7 +35,7 @@ export const SERVER_MESSAGE: Record<LanguageChoiceType, Record<string, string>> 
     SUCCESSFUL_CLEAR_CART: 'Cart has been cleared successfully',
     SUCCESSFUL_COPY_PROMO_CODE_TO_CLIPBOARD: ' has been copied to clipboard',
     SUCCESSFUL_COPY_TO_CLIPBOARD: ' has been copied to clipboard',
-    SUCCESSFUL_DELETE_COUPON_FROM_CART: ' has been remove from your cart successfully',
+    SUCCESSFUL_DELETE_COUPON_FROM_CART: ' has been removed from your cart successfully',
     SUCCESSFUL_DELETE_PRODUCT_FROM_CART: ' has been deleted from your cart',
     SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST: ' has been deleted from your wishlist',
     SUCCESSFUL_LOGIN: 'Welcome to our store. Enjoy shopping!',

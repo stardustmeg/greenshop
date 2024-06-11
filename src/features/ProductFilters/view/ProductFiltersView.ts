@@ -8,7 +8,6 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
@@ -18,6 +17,7 @@ import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import * as noUiSlider from 'nouislider';
 
 import styles from './productFiltersView.module.scss';
@@ -116,7 +116,7 @@ class ProductFiltersView {
   }
 
   private createCategoryLink(category: { category: Category; count: number }): LinkModel {
-    const text = category.category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const text = category.category.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
     const categoryLink = new LinkModel({
       attrs: {
         href: category.category.key,
@@ -150,7 +150,7 @@ class ProductFiltersView {
     this.categoryLinks.push(categoryLink);
 
     observeStore(selectCurrentLanguage, () => {
-      const text = category.category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const text = category.category.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       const textNode = [...categoryLink.getHTML().childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -166,7 +166,7 @@ class ProductFiltersView {
         list: [styles.categoryList],
         title: [styles.categoryTitle],
       },
-      TITLE[getStore().getState().currentLanguage].CATEGORY,
+      TITLE[getCurrentLanguage()].CATEGORY,
     );
 
     this.categoryList = filtersList;
@@ -177,7 +177,7 @@ class ProductFiltersView {
     this.createCategoryItems(subcategories);
 
     observeStore(selectCurrentLanguage, () => {
-      filtersListTitle.textContent = TITLE[getStore().getState().currentLanguage].CATEGORY;
+      filtersListTitle.textContent = TITLE[getCurrentLanguage()].CATEGORY;
     });
 
     return this.categoryList;
@@ -228,17 +228,17 @@ class ProductFiltersView {
     });
 
     const allProductsLink = this.createMetaLink(
-      META_FILTERS[getStore().getState().currentLanguage].ALL_PRODUCTS,
+      META_FILTERS[getCurrentLanguage()].ALL_PRODUCTS,
       META_FILTERS_ID.ALL_PRODUCTS,
       META_FILTERS.en.ALL_PRODUCTS,
     );
     const newArrivalsLink = this.createMetaLink(
-      META_FILTERS[getStore().getState().currentLanguage].NEW_ARRIVALS,
+      META_FILTERS[getCurrentLanguage()].NEW_ARRIVALS,
       META_FILTERS_ID.NEW_ARRIVALS,
       META_FILTERS.en.NEW_ARRIVALS,
     );
     const saleLink = this.createMetaLink(
-      META_FILTERS[getStore().getState().currentLanguage].SALE,
+      META_FILTERS[getCurrentLanguage()].SALE,
       META_FILTERS_ID.SALE,
       META_FILTERS.en.SALE,
     );
@@ -246,9 +246,9 @@ class ProductFiltersView {
     this.metaFilters.append(allProductsLink.getHTML(), newArrivalsLink.getHTML(), saleLink.getHTML());
 
     observeStore(selectCurrentLanguage, () => {
-      allProductsLink.getHTML().textContent = META_FILTERS[getStore().getState().currentLanguage].ALL_PRODUCTS;
-      newArrivalsLink.getHTML().textContent = META_FILTERS[getStore().getState().currentLanguage].NEW_ARRIVALS;
-      saleLink.getHTML().textContent = META_FILTERS[getStore().getState().currentLanguage].SALE;
+      allProductsLink.getHTML().textContent = META_FILTERS[getCurrentLanguage()].ALL_PRODUCTS;
+      newArrivalsLink.getHTML().textContent = META_FILTERS[getCurrentLanguage()].NEW_ARRIVALS;
+      saleLink.getHTML().textContent = META_FILTERS[getCurrentLanguage()].SALE;
     });
 
     return this.metaFilters;
@@ -301,8 +301,8 @@ class ProductFiltersView {
 
     const minPrice = this.params?.priceRange?.min.toFixed(2) ?? '';
     const maxPrice = this.params?.priceRange?.max.toFixed(2) ?? '';
-    const from = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
-    const to = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO;
+    const from = PRICE_RANGE_LABEL[getCurrentLanguage()].FROM;
+    const to = PRICE_RANGE_LABEL[getCurrentLanguage()].TO;
 
     const priceInput = new InputModel({
       autocomplete: AUTOCOMPLETE_OPTION.OFF,
@@ -338,8 +338,8 @@ class ProductFiltersView {
 
     this.priceSlider.on('change', (values) => {
       const [min, max] = values;
-      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM)?.setValue(String(min));
-      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO)?.setValue(String(max));
+      this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].FROM)?.setValue(String(min));
+      this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].TO)?.setValue(String(max));
       RouterModel.changeSearchParams((url) => {
         remove(url, [SEARCH_PARAMS_FIELD.MIN_PRICE, SEARCH_PARAMS_FIELD.MAX_PRICE]);
         set(url, SEARCH_PARAMS_FIELD.MIN_PRICE, String(min));
@@ -350,8 +350,8 @@ class ProductFiltersView {
 
     this.priceSlider.on('slide', (values) => {
       const [min, max] = values;
-      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM)?.setValue(String(min));
-      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO)?.setValue(String(max));
+      this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].FROM)?.setValue(String(min));
+      this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].TO)?.setValue(String(max));
     });
 
     return this.priceSlider;
@@ -365,21 +365,21 @@ class ProductFiltersView {
 
     const title = createBaseElement({
       cssClasses: [styles.priceTitle],
-      innerContent: TITLE[getStore().getState().currentLanguage].PRICE,
+      innerContent: TITLE[getCurrentLanguage()].PRICE,
       tag: 'h3',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      title.textContent = TITLE[getStore().getState().currentLanguage].PRICE;
+      title.textContent = TITLE[getCurrentLanguage()].PRICE;
     });
 
-    const from = this.createPriceLabel(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
-    const to = this.createPriceLabel(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    const from = this.createPriceLabel(PRICE_RANGE_LABEL[getCurrentLanguage()].FROM);
+    const to = this.createPriceLabel(PRICE_RANGE_LABEL[getCurrentLanguage()].TO);
     priceWrapper.append(title, from.priceLabel, this.priceSlider.target, to.priceLabel);
 
     observeStore(selectCurrentLanguage, () => {
-      from.priceSpan.textContent = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
-      to.priceSpan.textContent = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO;
+      from.priceSpan.textContent = PRICE_RANGE_LABEL[getCurrentLanguage()].FROM;
+      to.priceSpan.textContent = PRICE_RANGE_LABEL[getCurrentLanguage()].TO;
     });
     return priceWrapper;
   }
@@ -387,7 +387,7 @@ class ProductFiltersView {
   private createResetFiltersButton(): ButtonModel {
     this.resetFiltersButton = new ButtonModel({
       classes: [styles.resetFiltersButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].RESET,
+      text: BUTTON_TEXT[getCurrentLanguage()].RESET,
     });
 
     this.resetFiltersButton.getHTML().addEventListener('click', () => {
@@ -406,7 +406,7 @@ class ProductFiltersView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      this.resetFiltersButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].RESET;
+      this.resetFiltersButton.getHTML().textContent = BUTTON_TEXT[getCurrentLanguage()].RESET;
     });
 
     return this.resetFiltersButton;
@@ -455,7 +455,7 @@ class ProductFiltersView {
         list: [styles.sizesList],
         title: [styles.sizesTitle],
       },
-      TITLE[getStore().getState().currentLanguage].SIZE,
+      TITLE[getCurrentLanguage()].SIZE,
     );
 
     this.sizesList = filtersList;
@@ -480,7 +480,7 @@ class ProductFiltersView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      filtersListTitle.textContent = TITLE[getStore().getState().currentLanguage].SIZE;
+      filtersListTitle.textContent = TITLE[getCurrentLanguage()].SIZE;
     });
 
     return this.sizesList;
@@ -539,8 +539,8 @@ class ProductFiltersView {
   }
 
   private setPriceSliderHandlers(): void {
-    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
-    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].FROM);
+    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].TO);
 
     fromInput?.getHTML().addEventListener('change', () => this.updateSelectedPrice(fromInput, toInput));
     toInput?.getHTML().addEventListener('change', () => this.updateSelectedPrice(fromInput, toInput));
@@ -587,8 +587,8 @@ class ProductFiltersView {
       },
       true,
     );
-    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
-    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].FROM);
+    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].TO);
     fromInput?.setValue((this.params?.priceRange?.min ?? 0).toFixed(2));
     toInput?.setValue((this.params?.priceRange?.max ?? 0).toFixed(2));
   }

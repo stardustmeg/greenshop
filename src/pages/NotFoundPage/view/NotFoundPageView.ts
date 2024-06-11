@@ -1,10 +1,10 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEYS } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './notFoundPageView.module.scss';
@@ -48,7 +48,7 @@ class NotFoundPageView {
   private createPageDescription(): HTMLParagraphElement {
     this.description = createBaseElement({
       cssClasses: [styles.pageDescription],
-      innerContent: PAGE_DESCRIPTION[getStore().getState().currentLanguage][404],
+      innerContent: PAGE_DESCRIPTION[getCurrentLanguage()][404],
       tag: 'p',
     });
 
@@ -77,7 +77,7 @@ class NotFoundPageView {
   private createToMainButton(): ButtonModel {
     this.toMainButton = new ButtonModel({
       classes: [styles.toMainButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].BACK_TO_MAIN,
+      text: BUTTON_TEXT[getCurrentLanguage()].BACK_TO_MAIN,
     });
     observeCurrentLanguage(this.toMainButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.BACK_TO_MAIN);
     return this.toMainButton;

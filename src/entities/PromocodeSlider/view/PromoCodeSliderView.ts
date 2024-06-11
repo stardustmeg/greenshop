@@ -9,6 +9,7 @@ import SVG_DETAILS from '@/shared/constants/svg.ts';
 import calcUserBirthDayRange from '@/shared/utils/calcUserBirthDayRange.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { promoCodeCopiedMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
@@ -36,7 +37,7 @@ class PromoCodeSliderView {
     const start = createBaseElement({
       cssClasses: [styles.sliderDateStart],
       innerContent: ((): string => {
-        const promoContent = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date;
+        const promoContent = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date;
         if (currentUser) {
           return `${calcUserBirthDayRange(currentUser.birthDate).start} &mdash;`;
         }
@@ -52,7 +53,7 @@ class PromoCodeSliderView {
       cssClasses: [styles.sliderDateEnd],
       innerContent: currentUser
         ? calcUserBirthDayRange(currentUser.birthDate).end
-        : PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.end ?? '',
+        : PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date.end ?? '',
       tag: 'span',
     });
 
@@ -60,11 +61,11 @@ class PromoCodeSliderView {
       if (currentUser) {
         start.innerHTML = getStore().getState().isUserLoggedIn
           ? `${calcUserBirthDayRange(currentUser.birthDate).start} &mdash;`
-          : PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start;
+          : PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date.start;
         end.textContent = getStore().getState().isUserLoggedIn ? calcUserBirthDayRange(currentUser.birthDate).end : '';
       } else {
-        start.innerHTML = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.start;
-        end.textContent = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].date.end ?? '';
+        start.innerHTML = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date.start;
+        end.textContent = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date.end ?? '';
       }
     });
 
@@ -131,18 +132,18 @@ class PromoCodeSliderView {
       cssClasses: [styles.sliderContent],
       tag: 'div',
     });
-    slide.classList.add(styles[PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].style]);
+    slide.classList.add(styles[PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].style]);
     const { description, title } = this.createSliderSlideInfo(index);
 
     slide.append(
       title,
       description,
-      this.createPromoCodeSpan(PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].promoCode),
+      this.createPromoCodeSpan(PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].promoCode),
     );
 
     observeStore(selectCurrentLanguage, () => {
-      title.innerHTML = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].title;
-      description.innerHTML = PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].description;
+      title.innerHTML = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].title;
+      description.innerHTML = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].description;
     });
 
     if (PROMO_SLIDER_CONTENT[index].en.date.end === null && getStore().getState().isUserLoggedIn) {
@@ -163,13 +164,13 @@ class PromoCodeSliderView {
   } {
     const title = createBaseElement({
       cssClasses: [styles.sliderTitle],
-      innerContent: PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].title,
+      innerContent: PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].title,
       tag: 'h3',
     });
 
     const description = createBaseElement({
       cssClasses: [styles.sliderDescription],
-      innerContent: PROMO_SLIDER_CONTENT[index][getStore().getState().currentLanguage].description,
+      innerContent: PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].description,
       tag: 'p',
     });
 

@@ -1,8 +1,8 @@
 import type BlogPostView from '@/entities/Post/view/PostView';
 
-import getStore from '@/shared/Store/Store.ts';
 import { BLOG_DESCRIPTION } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './blogPageView.module.scss';
 
@@ -51,7 +51,7 @@ export default class BlogPageView {
   private createPageDescription(): HTMLParagraphElement {
     this.description = createBaseElement({
       cssClasses: [styles.pageDescription],
-      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].LIST_DESCRIPTION,
+      innerContent: BLOG_DESCRIPTION[getCurrentLanguage()].LIST_DESCRIPTION,
       tag: 'p',
     });
     return this.description;
@@ -60,7 +60,7 @@ export default class BlogPageView {
   private createPageTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: [styles.pageTitle],
-      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].LIST_TITLE,
+      innerContent: BLOG_DESCRIPTION[getCurrentLanguage()].LIST_TITLE,
       tag: 'h1',
     });
     return this.title;
@@ -86,7 +86,7 @@ export default class BlogPageView {
   }
 
   public updateLanguage(): boolean {
-    const ln = getStore().getState().currentLanguage;
+    const ln = getCurrentLanguage();
     this.title.innerText = BLOG_DESCRIPTION[ln].LIST_TITLE;
     this.description.innerText = BLOG_DESCRIPTION[ln].LIST_DESCRIPTION;
     return true;

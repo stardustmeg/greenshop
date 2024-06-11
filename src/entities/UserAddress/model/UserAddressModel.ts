@@ -13,6 +13,7 @@ import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
 import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import UserAddressView from '../view/UserAddressView.ts';
@@ -111,7 +112,7 @@ class UserAddressModel {
       .addEventListener('click', () => {
         const confirmModel = new ConfirmModel(
           () => this.deleteAddress(address),
-          USER_MESSAGE[getStore().getState().currentLanguage].DELETE_ADDRESS,
+          USER_MESSAGE[getCurrentLanguage()].DELETE_ADDRESS,
         );
         modal.setContent(confirmModel.getHTML());
         modal.show();
