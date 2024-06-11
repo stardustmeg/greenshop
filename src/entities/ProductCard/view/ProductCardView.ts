@@ -3,18 +3,16 @@ import type ProductCardParams from '@/shared/types/productCard.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { MORE_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { PRODUCT_INFO_TEXT } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
-import { discountText } from '@/shared/utils/messageTemplates.ts';
+import { discountPercent, discountText } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './productCardView.module.scss';
 
@@ -62,8 +60,7 @@ class ProductCardView {
   }
 
   private changeButtonText(productShortDescription: HTMLParagraphElement, moreButton: HTMLButtonElement): void {
-    const { currentLanguage } = getStore().getState();
-    const moreText = MORE_TEXT[currentLanguage];
+    const moreText = MORE_TEXT[getCurrentLanguage()];
     const button = moreButton;
 
     productShortDescription.classList.toggle(styles.active);
@@ -113,7 +110,7 @@ class ProductCardView {
 
   private createDiscountLabel(): HTMLSpanElement {
     const currentVariant = this.params.variant.find(({ size }) => size === this.currentSize) ?? this.params.variant[0];
-    const innerContent = discountText(currentVariant);
+    const innerContent = discountPercent(currentVariant);
     this.discountLabel = createBaseElement({
       cssClasses: [styles.discountLabel],
       innerContent,
@@ -122,12 +119,12 @@ class ProductCardView {
 
     const discountSpan = createBaseElement({
       cssClasses: [styles.discountSpan],
-      innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].DISCOUNT_LABEL,
+      innerContent: discountText(),
       tag: 'span',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      discountSpan.textContent = PRODUCT_INFO_TEXT[getCurrentLanguage()].DISCOUNT_LABEL;
+      discountSpan.textContent = discountText();
     });
 
     this.discountLabel.append(discountSpan);
@@ -240,8 +237,7 @@ class ProductCardView {
   }
 
   private updateMoreButtonText(moreButton: HTMLButtonElement): void {
-    const { currentLanguage } = getStore().getState();
-    const moreText = MORE_TEXT[currentLanguage];
+    const moreText = MORE_TEXT[getCurrentLanguage()];
     const isActive = this.productShortDescription.classList.contains(styles.active);
     const button = moreButton;
 

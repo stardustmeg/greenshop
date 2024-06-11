@@ -33,7 +33,7 @@ class ProductPageModel implements Page {
   }
 
   private createBreadcrumbLinks(currentProduct: Product | null): BreadcrumbLink[] {
-    const { currentLanguage } = getStore().getState();
+    const currentLanguage = getCurrentLanguage();
     const isRuLanguage = currentLanguage === LANGUAGE_CHOICE.RU;
     const category = currentProduct?.category[0].parent;
     const subcategory = currentProduct?.category[0];

@@ -3,6 +3,7 @@ import type { Variant } from '../types/product.ts';
 import { LANGUAGE_CHOICE } from '../constants/common.ts';
 import { SERVER_MESSAGE } from '../constants/messages.ts';
 import { PAGE_DESCRIPTION, USER_INFO_TEXT } from '../constants/pages.ts';
+import { PRODUCT_INFO_TEXT } from '../constants/product.ts';
 import { ADDRESS_TYPE } from '../types/address.ts';
 import getCurrentLanguage from './getCurrentLanguage.ts';
 
@@ -16,7 +17,9 @@ export const cartPrice = (price: string): string => `$${price}`;
 
 export const minusCartPrice = (price: string): string => `-$${price}`;
 
-export const discountText = (currentVariant: Variant): string =>
+export const discountText = (): string => PRODUCT_INFO_TEXT[getCurrentLanguage()].DISCOUNT_LABEL;
+
+export const discountPercent = (currentVariant: Variant): string =>
   `${Math.round((1 - currentVariant.discount / currentVariant.price) * 100)}%`;
 export const productAddedToCartMessage = (name: string): string =>
   textTemplate(name, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_ADD_PRODUCT_TO_CART);

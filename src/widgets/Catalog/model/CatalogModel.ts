@@ -18,7 +18,6 @@ import { FilterFields, SortDirection, SortFields } from '@/shared/API/types/type
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { META_FILTERS } from '@/shared/constants/filters.ts';
 import { DEFAULT_PAGE, PRODUCT_LIMIT, SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
@@ -157,7 +156,7 @@ class CatalogModel {
       metaLinks: params.selectedFilters.metaFilter ? [params.selectedFilters.metaFilter] : [],
       sizeLinks: params.selectedFilters.size ? [params.selectedFilters.size] : [],
     });
-    const { currentLanguage } = getStore().getState();
+    const currentLanguage = getCurrentLanguage();
     const filter = new FilterProduct();
     params.selectedFilters.category.forEach((categoryID) => filter.addFilter(FilterFields.CATEGORY, categoryID));
 
