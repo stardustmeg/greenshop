@@ -14,6 +14,7 @@ import * as buildPath from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { discountText } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './productCardView.module.scss';
 
@@ -112,8 +113,7 @@ class ProductCardView {
 
   private createDiscountLabel(): HTMLSpanElement {
     const currentVariant = this.params.variant.find(({ size }) => size === this.currentSize) ?? this.params.variant[0];
-    // TBD replace template
-    const innerContent = `${Math.round((1 - currentVariant.discount / currentVariant.price) * 100)}%`;
+    const innerContent = discountText(currentVariant);
     this.discountLabel = createBaseElement({
       cssClasses: [styles.discountLabel],
       innerContent,

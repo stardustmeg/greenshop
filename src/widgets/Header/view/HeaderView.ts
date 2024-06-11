@@ -1,6 +1,7 @@
 import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
+import CountBadgeModel from '@/entities/CountBadge/model/CountBadgeModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
@@ -23,9 +24,7 @@ import styles from './headerView.module.scss';
 class HeaderView {
   private burgerButton: ButtonModel;
 
-  private cartBadge: HTMLSpanElement;
-
-  private cartBadgeWrap: HTMLDivElement;
+  private countBadge = new CountBadgeModel();
 
   private header: HTMLElement;
 
@@ -51,11 +50,7 @@ class HeaderView {
     this.logoutButton = this.createLogoutButton();
     this.linkLogo = this.createLinkLogo();
     this.toCartLink = this.createToCartLink();
-    this.cartBadgeWrap = this.createBadgeWrap();
-    this.cartBadge = this.createBadge();
-
     this.toWishlistLink = this.createToWishlistLink();
-
     this.toProfileLink = this.createToProfileLink();
     this.switchThemeCheckbox = this.createSwitchThemeCheckbox();
     this.switchLanguageCheckbox = this.createSwitchLanguageCheckbox();
@@ -77,27 +72,6 @@ class HeaderView {
         document.body.classList.toggle(styles.stopScroll);
       }
     });
-  }
-
-  private createBadge(): HTMLSpanElement {
-    this.cartBadge = createBaseElement({
-      cssClasses: [styles.badge],
-      tag: 'span',
-    });
-    this.cartBadgeWrap.append(this.cartBadge);
-
-    return this.cartBadge;
-  }
-
-  private createBadgeWrap(): HTMLDivElement {
-    this.cartBadgeWrap = createBaseElement({
-      cssClasses: [styles.badgeWrap],
-      tag: 'div',
-    });
-
-    this.toCartLink.getHTML().append(this.cartBadgeWrap);
-
-    return this.cartBadgeWrap;
   }
 
   private createBurgerButton(): ButtonModel {
@@ -279,6 +253,8 @@ class HeaderView {
         .classList.toggle(styles.cartLinkActive, RouterModel.getCurrentPage() === PAGE_ID.CART_PAGE),
     );
 
+    this.toCartLink.getHTML().append(this.countBadge.getHTML());
+
     return this.toCartLink;
   }
 
@@ -402,16 +378,6 @@ class HeaderView {
 
   public showNavigationWrapper(): void {
     this.navigationWrapper.classList.remove(styles.hidden);
-  }
-
-  public updateCartCount(count?: number): void {
-    if (!count) {
-      this.cartBadgeWrap.classList.add(styles.hide);
-    } else {
-      this.cartBadgeWrap.classList.remove(styles.hide);
-    }
-
-    this.cartBadge.textContent = count ? count.toString() : '';
   }
 }
 

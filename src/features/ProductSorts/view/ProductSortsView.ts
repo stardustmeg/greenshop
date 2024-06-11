@@ -134,7 +134,7 @@ class ProductSortsView {
     if (currentLink && initialField) {
       currentLink?.getHTML().classList.toggle(styles.pass, initialDirection === SortDirection.DESC);
       // TBD check hight
-      currentLink?.getHTML().classList.toggle(styles.hight, initialDirection === SortDirection.DESC);
+      // currentLink?.getHTML().classList.toggle(styles.hight, initialDirection === SortDirection.DESC);
       currentLink.getHTML().dataset.field = initialField;
     }
 

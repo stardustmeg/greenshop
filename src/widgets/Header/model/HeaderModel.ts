@@ -1,8 +1,5 @@
-import type { Cart } from '@/shared/types/cart.ts';
-
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
-import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setAuthToken, setCurrentLanguage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
@@ -15,11 +12,6 @@ import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage
 import HeaderView from '../view/HeaderView.ts';
 
 class HeaderModel {
-  private cartChangeHandler = (cart: Cart): boolean => {
-    this.view.updateCartCount(cart.products.reduce((acc, item) => acc + item.quantity, 0));
-    return true;
-  };
-
   private navigation: NavigationModel;
 
   private parent: HTMLDivElement;
@@ -52,7 +44,6 @@ class HeaderModel {
     this.observeCurrentUser();
     this.setLogoutButtonHandler();
     this.setLinksHandler();
-    this.observeCartChange();
     this.setChangeLanguageCheckboxHandler();
   }
 
@@ -65,10 +56,6 @@ class HeaderModel {
 
     RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
     return true;
-  }
-
-  private observeCartChange(): boolean {
-    return getCartModel().observeCartChange(this.cartChangeHandler);
   }
 
   private observeCurrentUser(): void {
