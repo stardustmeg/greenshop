@@ -77,16 +77,17 @@ class ProductInfoView {
   }
 
   private createCategoriesSpan(): HTMLSpanElement {
+    const currentLanguage = getCurrentLanguage();
     this.categoriesSpan = createBaseElement({
       cssClasses: ['categoriesSpan'],
-      innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].CATEGORY,
+      innerContent: PRODUCT_INFO_TEXT[currentLanguage].CATEGORY,
       tag: 'span',
     });
 
     observeCurrentLanguage(this.categoriesSpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS.CATEGORY);
 
-    const category = this.params.category[0].parent?.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
-    const subcategory = this.params.category[0].name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+    const category = this.params.category[0].parent?.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const subcategory = this.params.category[0].name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
     const currentCategoriesText = `${category ? `${category} ${DELIMITER} ` : ''}${subcategory}`;
 
     const currentCategories = createBaseElement({
@@ -97,8 +98,9 @@ class ProductInfoView {
     this.categoriesSpan.append(currentCategories);
 
     observeStore(selectCurrentLanguage, () => {
-      const category = this.params.category[0].parent?.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
-      const subcategory = this.params.category[0].name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+      const currentLanguage = getCurrentLanguage();
+      const category = this.params.category[0].parent?.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const subcategory = this.params.category[0].name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
       const currentCategoriesText = `${category ? `${category} ${DELIMITER} ` : ''}${subcategory}`;
 
       currentCategories.textContent = currentCategoriesText;
@@ -191,6 +193,8 @@ class ProductInfoView {
   }
 
   private createRightWrapper(): HTMLDivElement {
+    const currentLanguage = getCurrentLanguage();
+
     this.rightWrapper = createBaseElement({
       cssClasses: ['rightWrapper', 'productDetailsPriceWrapper', 'modalContent'],
       tag: 'div',
@@ -198,7 +202,7 @@ class ProductInfoView {
 
     const shortDescriptionWrapper = createBaseElement({
       cssClasses: ['shortDescriptionWrapper'],
-      innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].SHORT_DESCRIPTION,
+      innerContent: PRODUCT_INFO_TEXT[currentLanguage].SHORT_DESCRIPTION,
       tag: 'div',
     });
 
@@ -213,7 +217,7 @@ class ProductInfoView {
     if (this.params.level) {
       const difficultySpan = createBaseElement({
         cssClasses: ['difficultySpan'],
-        innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].DIFFICULTY,
+        innerContent: PRODUCT_INFO_TEXT[currentLanguage].DIFFICULTY,
         tag: 'span',
       });
 
@@ -386,12 +390,13 @@ class ProductInfoView {
     getCartModel()
       .getCart()
       .then((cart) => {
+        const currentLanguage = getCurrentLanguage();
         if (
           cart.products.find((product) => product.key === this.params.key && product.size === this.params.currentSize)
         ) {
-          this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getCurrentLanguage()].DELETE_PRODUCT;
+          this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[currentLanguage].DELETE_PRODUCT;
         } else {
-          this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getCurrentLanguage()].ADD_PRODUCT;
+          this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[currentLanguage].ADD_PRODUCT;
         }
       })
       .catch(showErrorMessage);
@@ -434,10 +439,11 @@ class ProductInfoView {
   }
 
   public switchToCartButtonText(hasCart: boolean): void {
+    const currentLanguage = getCurrentLanguage();
     if (hasCart) {
-      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getCurrentLanguage()].DELETE_PRODUCT;
+      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[currentLanguage].DELETE_PRODUCT;
     } else {
-      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getCurrentLanguage()].ADD_PRODUCT;
+      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[currentLanguage].ADD_PRODUCT;
     }
   }
 

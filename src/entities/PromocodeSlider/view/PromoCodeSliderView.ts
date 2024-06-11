@@ -29,6 +29,7 @@ class PromoCodeSliderView {
   }
 
   private createDateSpan(index: number, currentUser?: User): HTMLSpanElement {
+    const currentLanguage = getCurrentLanguage();
     const date = createBaseElement({
       cssClasses: [styles.sliderDate],
       tag: 'span',
@@ -37,12 +38,12 @@ class PromoCodeSliderView {
     const start = createBaseElement({
       cssClasses: [styles.sliderDateStart],
       innerContent: ((): string => {
-        const promoContent = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date;
+        const promoContent = PROMO_SLIDER_CONTENT[index][currentLanguage].date;
         if (currentUser) {
-          return `${calcUserBirthDayRange(currentUser.birthDate).start} &mdash;`;
+          return `${calcUserBirthDayRange(currentUser.birthDate).start} —`;
         }
         if (promoContent.end) {
-          return `${promoContent.start} &mdash;`;
+          return `${promoContent.start} —`;
         }
         return promoContent.start;
       })(),
@@ -53,21 +54,11 @@ class PromoCodeSliderView {
       cssClasses: [styles.sliderDateEnd],
       innerContent: currentUser
         ? calcUserBirthDayRange(currentUser.birthDate).end
-        : PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date.end ?? '',
+        : PROMO_SLIDER_CONTENT[index][currentLanguage].date.end ?? '',
       tag: 'span',
     });
 
-    observeStore(selectCurrentLanguage, () => {
-      if (currentUser) {
-        start.innerHTML = getStore().getState().isUserLoggedIn
-          ? `${calcUserBirthDayRange(currentUser.birthDate).start} &mdash;`
-          : PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date.start;
-        end.textContent = getStore().getState().isUserLoggedIn ? calcUserBirthDayRange(currentUser.birthDate).end : '';
-      } else {
-        start.innerHTML = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date.start;
-        end.textContent = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date.end ?? '';
-      }
-    });
+    this.observeLanguageChanges(start, end, index, currentUser);
 
     date.append(start, end);
     return date;
@@ -128,22 +119,20 @@ class PromoCodeSliderView {
   }
 
   private async createSliderSlideContent(index: number): Promise<HTMLDivElement> {
+    const currentLanguage = getCurrentLanguage();
     const slide = createBaseElement({
       cssClasses: [styles.sliderContent],
       tag: 'div',
     });
-    slide.classList.add(styles[PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].style]);
+    slide.classList.add(styles[PROMO_SLIDER_CONTENT[index][currentLanguage].style]);
     const { description, title } = this.createSliderSlideInfo(index);
 
-    slide.append(
-      title,
-      description,
-      this.createPromoCodeSpan(PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].promoCode),
-    );
+    slide.append(title, description, this.createPromoCodeSpan(PROMO_SLIDER_CONTENT[index][currentLanguage].promoCode));
 
     observeStore(selectCurrentLanguage, () => {
-      title.innerHTML = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].title;
-      description.innerHTML = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].description;
+      const currentLanguage = getCurrentLanguage();
+      title.innerHTML = PROMO_SLIDER_CONTENT[index][currentLanguage].title;
+      description.innerHTML = PROMO_SLIDER_CONTENT[index][currentLanguage].description;
     });
 
     if (PROMO_SLIDER_CONTENT[index].en.date.end === null && getStore().getState().isUserLoggedIn) {
@@ -162,15 +151,16 @@ class PromoCodeSliderView {
     description: HTMLParagraphElement;
     title: HTMLHeadingElement;
   } {
+    const currentLanguage = getCurrentLanguage();
     const title = createBaseElement({
       cssClasses: [styles.sliderTitle],
-      innerContent: PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].title,
+      innerContent: PROMO_SLIDER_CONTENT[index][currentLanguage].title,
       tag: 'h3',
     });
 
     const description = createBaseElement({
       cssClasses: [styles.sliderDescription],
-      innerContent: PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].description,
+      innerContent: PROMO_SLIDER_CONTENT[index][currentLanguage].description,
       tag: 'p',
     });
 
@@ -196,6 +186,29 @@ class PromoCodeSliderView {
     });
 
     return sliderWrapper;
+  }
+
+  private observeLanguageChanges(
+    startSpan: HTMLSpanElement,
+    endSpan: HTMLSpanElement,
+    index: number,
+    currentUser?: User,
+  ): void {
+    const start = startSpan;
+    const end = endSpan;
+
+    observeStore(selectCurrentLanguage, () => {
+      const promoContent = PROMO_SLIDER_CONTENT[index][getCurrentLanguage()].date;
+      if (currentUser) {
+        start.innerHTML = getStore().getState().isUserLoggedIn
+          ? `${calcUserBirthDayRange(currentUser.birthDate).start} —`
+          : promoContent.start;
+        end.textContent = getStore().getState().isUserLoggedIn ? calcUserBirthDayRange(currentUser.birthDate).end : '';
+      } else {
+        start.innerHTML = `${promoContent.start}`;
+        end.textContent = promoContent.end ? ` — ${promoContent.end}` : '';
+      }
+    });
   }
 
   public getHTML(): HTMLDivElement {

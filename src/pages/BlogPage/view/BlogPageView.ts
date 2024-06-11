@@ -86,9 +86,9 @@ export default class BlogPageView {
   }
 
   public updateLanguage(): boolean {
-    const ln = getCurrentLanguage();
-    this.title.innerText = BLOG_DESCRIPTION[ln].LIST_TITLE;
-    this.description.innerText = BLOG_DESCRIPTION[ln].LIST_DESCRIPTION;
+    const currentLanguage = getCurrentLanguage();
+    this.title.innerText = BLOG_DESCRIPTION[currentLanguage].LIST_TITLE;
+    this.description.innerText = BLOG_DESCRIPTION[currentLanguage].LIST_DESCRIPTION;
     return true;
   }
 }

@@ -85,8 +85,9 @@ export default class BlogWidgetView {
   }
 
   public updateLanguage(): boolean {
-    this.title.innerText = BLOG_DESCRIPTION[getCurrentLanguage()].WIDGET_TITLE;
-    this.description.innerText = BLOG_DESCRIPTION[getCurrentLanguage()].WIDGET_DESCRIPTIONS;
+    const currentLanguage = getCurrentLanguage();
+    this.title.innerText = BLOG_DESCRIPTION[currentLanguage].WIDGET_TITLE;
+    this.description.innerText = BLOG_DESCRIPTION[currentLanguage].WIDGET_DESCRIPTIONS;
     return true;
   }
 }

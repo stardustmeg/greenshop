@@ -86,15 +86,16 @@ class CooperationPageView {
   }
 
   public drawCooperationInfo(data: CooperationData[]): void {
+    const currentLanguage = getCurrentLanguage();
     data.forEach((item) => {
       const section = createBaseElement({
         cssClasses: [styles.cooperationSection],
         tag: 'div',
       });
-      const currentTitle = item[getCurrentLanguage()].title;
-      const currentDescription = item[getCurrentLanguage()].description;
-      const currentSubtitle = item[getCurrentLanguage()].subtitle;
-      const currentItems = item[getCurrentLanguage()].items;
+      const currentTitle = item[currentLanguage].title;
+      const currentDescription = item[currentLanguage].description;
+      const currentSubtitle = item[currentLanguage].subtitle;
+      const currentItems = item[currentLanguage].items;
       if (currentTitle) {
         const title = this.createTitle(currentTitle);
         section.append(title);

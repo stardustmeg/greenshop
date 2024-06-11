@@ -58,9 +58,10 @@ class ProductInfoModel {
   private addProductToCart(): void {
     const loader = new LoaderModel(LOADER_SIZE.EXTRA_SMALL).getHTML();
     this.view.getSwitchToCartButton().getHTML().append(loader);
+    const currentLanguage = getCurrentLanguage();
     getCartModel()
       .addProductToCart({
-        name: this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
+        name: this.params.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value,
         productId: this.params.id,
         quantity: 1,
         variantId: this.currentVariant.id,
@@ -68,7 +69,7 @@ class ProductInfoModel {
       .then(() => {
         this.view.switchToCartButtonText(true);
         showSuccessMessage(
-          productAddedToCartMessage(this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value),
+          productAddedToCartMessage(this.params.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value),
         );
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
       })

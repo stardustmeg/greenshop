@@ -227,18 +227,20 @@ class ProductFiltersView {
       tag: 'div',
     });
 
+    const currentLanguage = getCurrentLanguage();
+
     const allProductsLink = this.createMetaLink(
-      META_FILTERS[getCurrentLanguage()].ALL_PRODUCTS,
+      META_FILTERS[currentLanguage].ALL_PRODUCTS,
       META_FILTERS_ID.ALL_PRODUCTS,
       META_FILTERS.en.ALL_PRODUCTS,
     );
     const newArrivalsLink = this.createMetaLink(
-      META_FILTERS[getCurrentLanguage()].NEW_ARRIVALS,
+      META_FILTERS[currentLanguage].NEW_ARRIVALS,
       META_FILTERS_ID.NEW_ARRIVALS,
       META_FILTERS.en.NEW_ARRIVALS,
     );
     const saleLink = this.createMetaLink(
-      META_FILTERS[getCurrentLanguage()].SALE,
+      META_FILTERS[currentLanguage].SALE,
       META_FILTERS_ID.SALE,
       META_FILTERS.en.SALE,
     );
@@ -246,9 +248,10 @@ class ProductFiltersView {
     this.metaFilters.append(allProductsLink.getHTML(), newArrivalsLink.getHTML(), saleLink.getHTML());
 
     observeStore(selectCurrentLanguage, () => {
-      allProductsLink.getHTML().textContent = META_FILTERS[getCurrentLanguage()].ALL_PRODUCTS;
-      newArrivalsLink.getHTML().textContent = META_FILTERS[getCurrentLanguage()].NEW_ARRIVALS;
-      saleLink.getHTML().textContent = META_FILTERS[getCurrentLanguage()].SALE;
+      const currentLanguage = getCurrentLanguage();
+      allProductsLink.getHTML().textContent = META_FILTERS[currentLanguage].ALL_PRODUCTS;
+      newArrivalsLink.getHTML().textContent = META_FILTERS[currentLanguage].NEW_ARRIVALS;
+      saleLink.getHTML().textContent = META_FILTERS[currentLanguage].SALE;
     });
 
     return this.metaFilters;
@@ -299,10 +302,12 @@ class ProductFiltersView {
       tag: 'span',
     });
 
+    const currentLanguage = getCurrentLanguage();
+
     const minPrice = this.params?.priceRange?.min.toFixed(2) ?? '';
     const maxPrice = this.params?.priceRange?.max.toFixed(2) ?? '';
-    const from = PRICE_RANGE_LABEL[getCurrentLanguage()].FROM;
-    const to = PRICE_RANGE_LABEL[getCurrentLanguage()].TO;
+    const from = PRICE_RANGE_LABEL[currentLanguage].FROM;
+    const to = PRICE_RANGE_LABEL[currentLanguage].TO;
 
     const priceInput = new InputModel({
       autocomplete: AUTOCOMPLETE_OPTION.OFF,
@@ -336,10 +341,12 @@ class ProductFiltersView {
       start: [min, max],
     });
 
+    const currentLanguage = getCurrentLanguage();
+
     this.priceSlider.on('change', (values) => {
       const [min, max] = values;
-      this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].FROM)?.setValue(String(min));
-      this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].TO)?.setValue(String(max));
+      this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].FROM)?.setValue(String(min));
+      this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].TO)?.setValue(String(max));
       RouterModel.changeSearchParams((url) => {
         remove(url, [SEARCH_PARAMS_FIELD.MIN_PRICE, SEARCH_PARAMS_FIELD.MAX_PRICE]);
         set(url, SEARCH_PARAMS_FIELD.MIN_PRICE, String(min));
@@ -350,8 +357,8 @@ class ProductFiltersView {
 
     this.priceSlider.on('slide', (values) => {
       const [min, max] = values;
-      this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].FROM)?.setValue(String(min));
-      this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].TO)?.setValue(String(max));
+      this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].FROM)?.setValue(String(min));
+      this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].TO)?.setValue(String(max));
     });
 
     return this.priceSlider;
@@ -373,13 +380,16 @@ class ProductFiltersView {
       title.textContent = TITLE[getCurrentLanguage()].PRICE;
     });
 
-    const from = this.createPriceLabel(PRICE_RANGE_LABEL[getCurrentLanguage()].FROM);
-    const to = this.createPriceLabel(PRICE_RANGE_LABEL[getCurrentLanguage()].TO);
+    const currentLanguage = getCurrentLanguage();
+
+    const from = this.createPriceLabel(PRICE_RANGE_LABEL[currentLanguage].FROM);
+    const to = this.createPriceLabel(PRICE_RANGE_LABEL[currentLanguage].TO);
     priceWrapper.append(title, from.priceLabel, this.priceSlider.target, to.priceLabel);
 
     observeStore(selectCurrentLanguage, () => {
-      from.priceSpan.textContent = PRICE_RANGE_LABEL[getCurrentLanguage()].FROM;
-      to.priceSpan.textContent = PRICE_RANGE_LABEL[getCurrentLanguage()].TO;
+      const currentLanguage = getCurrentLanguage();
+      from.priceSpan.textContent = PRICE_RANGE_LABEL[currentLanguage].FROM;
+      to.priceSpan.textContent = PRICE_RANGE_LABEL[currentLanguage].TO;
     });
     return priceWrapper;
   }
@@ -539,8 +549,9 @@ class ProductFiltersView {
   }
 
   private setPriceSliderHandlers(): void {
-    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].FROM);
-    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].TO);
+    const currentLanguage = getCurrentLanguage();
+    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].FROM);
+    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].TO);
 
     fromInput?.getHTML().addEventListener('change', () => this.updateSelectedPrice(fromInput, toInput));
     toInput?.getHTML().addEventListener('change', () => this.updateSelectedPrice(fromInput, toInput));
@@ -587,8 +598,9 @@ class ProductFiltersView {
       },
       true,
     );
-    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].FROM);
-    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getCurrentLanguage()].TO);
+    const currentLanguage = getCurrentLanguage();
+    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].FROM);
+    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].TO);
     fromInput?.setValue((this.params?.priceRange?.min ?? 0).toFixed(2));
     toInput?.setValue((this.params?.priceRange?.max ?? 0).toFixed(2));
   }

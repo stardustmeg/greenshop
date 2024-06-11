@@ -73,23 +73,25 @@ class UserAddressView {
   }
 
   private createCountrySpan(): HTMLSpanElement {
+    const currentLanguage = getCurrentLanguage();
     this.countrySpan = createBaseElement({
       cssClasses: [styles.countrySpan],
-      innerContent: ADDRESS_TEXT[getCurrentLanguage()].COUNTRY,
+      innerContent: ADDRESS_TEXT[currentLanguage].COUNTRY,
       tag: 'span',
     });
 
     const accentSpan = createBaseElement({
       cssClasses: [styles.accentSpan],
-      innerContent: findKeyByValue(COUNTRIES_LIST[getCurrentLanguage()], this.currentAddress.country) ?? '',
+      innerContent: findKeyByValue(COUNTRIES_LIST[currentLanguage], this.currentAddress.country) ?? '',
       tag: 'span',
     });
 
     this.countrySpan.append(accentSpan);
     observeStore(selectCurrentLanguage, () => {
-      accentSpan.innerText = findKeyByValue(COUNTRIES_LIST[getCurrentLanguage()], this.currentAddress.country) ?? '';
+      const currentLanguage = getCurrentLanguage();
+      accentSpan.innerText = findKeyByValue(COUNTRIES_LIST[currentLanguage], this.currentAddress.country) ?? '';
 
-      const text = ADDRESS_TEXT[getCurrentLanguage()].COUNTRY;
+      const text = ADDRESS_TEXT[currentLanguage].COUNTRY;
       const textNode = [...this.countrySpan.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;

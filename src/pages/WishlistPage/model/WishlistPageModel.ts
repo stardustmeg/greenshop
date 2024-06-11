@@ -21,10 +21,11 @@ class WishlistPageModel implements Page {
   }
 
   private createBreadcrumbLinksData(): BreadcrumbLink[] {
+    const currentLanguage = getCurrentLanguage();
     return [
-      { link: PAGE_ID.MAIN_PAGE, name: PAGE_TITLE[getCurrentLanguage()].main },
-      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_TITLE[getCurrentLanguage()].catalog },
-      { link: PAGE_ID.WISHLIST_PAGE, name: PAGE_TITLE[getCurrentLanguage()].wishlist },
+      { link: PAGE_ID.MAIN_PAGE, name: PAGE_TITLE[currentLanguage].main },
+      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_TITLE[currentLanguage].catalog },
+      { link: PAGE_ID.WISHLIST_PAGE, name: PAGE_TITLE[currentLanguage].wishlist },
     ];
   }
 

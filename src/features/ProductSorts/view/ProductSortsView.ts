@@ -5,7 +5,7 @@ import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { DATA_KEYS } from '@/shared/constants/common.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
-import { SORTING_ID, TEXT } from '@/shared/constants/sorting.ts';
+import { SORTING_ID, TEXT, TEXT_KEYS } from '@/shared/constants/sorting.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
@@ -46,19 +46,25 @@ class ProductSortsView {
 
   private createCurrentSortingSpan(): HTMLSpanElement {
     const selectedSorting = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.FIELD);
+    const currentLanguage = getCurrentLanguage();
 
     this.currentSortingSpan = createBaseElement({
       cssClasses: [styles.currentSortingSpan],
-      innerContent: selectedSorting ? selectedSorting.toUpperCase() : TEXT[getCurrentLanguage()].DEFAULT.toUpperCase(),
+      innerContent:
+        selectedSorting && selectedSorting in TEXT
+          ? TEXT[currentLanguage][selectedSorting.toUpperCase()]
+          : TEXT[currentLanguage].DEFAULT.toUpperCase(),
       tag: 'span',
     });
 
     observeStore(selectCurrentLanguage, () => {
       const selectedSorting = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.FIELD);
+      const currentLanguage = getCurrentLanguage();
 
-      this.currentSortingSpan.innerText = selectedSorting
-        ? selectedSorting.toUpperCase()
-        : TEXT[getCurrentLanguage()].DEFAULT.toUpperCase();
+      this.currentSortingSpan.innerText =
+        selectedSorting && selectedSorting in TEXT
+          ? TEXT[currentLanguage][selectedSorting.toUpperCase()]
+          : TEXT[currentLanguage].DEFAULT.toUpperCase();
     });
 
     return this.currentSortingSpan;
@@ -74,7 +80,7 @@ class ProductSortsView {
     return this.sortingWrapper;
   }
 
-  private createSortingLink(href: string, text: string, id: string): LinkModel {
+  private createSortingLink(href: string, key: string, id: string): LinkModel {
     const link = new LinkModel({
       attrs: {
         [DATA_KEYS.DIRECTION]: SortDirection.ASC,
@@ -82,7 +88,7 @@ class ProductSortsView {
         id,
       },
       classes: [styles.sortingLink],
-      text,
+      text: TEXT[getCurrentLanguage()][key],
     });
     link.getHTML().classList.add(styles.hight);
 
@@ -97,7 +103,7 @@ class ProductSortsView {
       this.sortingListLinks.forEach((link) => link.getHTML().classList.remove(styles.activeLink));
       link.getHTML().classList.add(styles.activeLink);
 
-      this.currentSortingSpan.innerText = text;
+      this.currentSortingSpan.innerText = TEXT[getCurrentLanguage()][key];
       RouterModel.changeSearchParams((url) => {
         set(url, SEARCH_PARAMS_FIELD.FIELD, link.getHTML().id);
         set(url, SEARCH_PARAMS_FIELD.DIRECTION, String(link.getHTML().getAttribute(DATA_KEYS.DIRECTION)));
@@ -116,10 +122,9 @@ class ProductSortsView {
       tag: 'ul',
     });
 
-    const defaultSortingLink = this.createSortingLink('', TEXT[getCurrentLanguage()].DEFAULT, SORTING_ID.DEFAULT);
-
-    const priceLink = this.createSortingLink('', TEXT[getCurrentLanguage()].PRICE, SORTING_ID.PRICE);
-    const nameLink = this.createSortingLink('', TEXT[getCurrentLanguage()].NAME, SORTING_ID.NAME);
+    const defaultSortingLink = this.createSortingLink('', TEXT_KEYS.DEFAULT, SORTING_ID.DEFAULT);
+    const priceLink = this.createSortingLink('', TEXT_KEYS.PRICE, SORTING_ID.PRICE);
+    const nameLink = this.createSortingLink('', TEXT_KEYS.NAME, SORTING_ID.NAME);
 
     const initialField = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.FIELD);
     const initialDirection = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.DIRECTION);
@@ -128,14 +133,16 @@ class ProductSortsView {
 
     if (currentLink && initialField) {
       currentLink?.getHTML().classList.toggle(styles.pass, initialDirection === SortDirection.DESC);
+      // TBD check hight
       currentLink?.getHTML().classList.toggle(styles.hight, initialDirection === SortDirection.DESC);
       currentLink.getHTML().dataset.field = initialField;
     }
 
     observeStore(selectCurrentLanguage, () => {
-      defaultSortingLink.getHTML().innerText = TEXT[getCurrentLanguage()].DEFAULT;
-      priceLink.getHTML().innerText = TEXT[getCurrentLanguage()].PRICE;
-      nameLink.getHTML().innerText = TEXT[getCurrentLanguage()].NAME;
+      const currentLanguage = getCurrentLanguage();
+      defaultSortingLink.getHTML().innerText = TEXT[currentLanguage].DEFAULT;
+      priceLink.getHTML().innerText = TEXT[currentLanguage].PRICE;
+      nameLink.getHTML().innerText = TEXT[currentLanguage].NAME;
     });
 
     this.sortingList.append(defaultSortingLink.getHTML(), priceLink.getHTML(), nameLink.getHTML());

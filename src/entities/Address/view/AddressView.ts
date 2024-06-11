@@ -93,10 +93,12 @@ class AddressView {
       tag: 'label',
     });
 
+    const currentLanguage = getCurrentLanguage();
+
     const textContent =
       this.addressType === ADDRESS_TYPE.SHIPPING
-        ? FORM_TEXT[getCurrentLanguage()].DEFAULT_SHIPPING_ADDRESS
-        : FORM_TEXT[getCurrentLanguage()].DEFAULT_BILLING_ADDRESS;
+        ? FORM_TEXT[currentLanguage].DEFAULT_SHIPPING_ADDRESS
+        : FORM_TEXT[currentLanguage].DEFAULT_BILLING_ADDRESS;
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
       innerContent: textContent,
@@ -214,17 +216,20 @@ class AddressView {
   private createTitle(): HTMLHeadingElement {
     let titleText: string;
     let key: string;
+
+    const currentLanguage = getCurrentLanguage();
+
     switch (this.addressType) {
       case ADDRESS_TYPE.BILLING:
-        titleText = TITLE_TEXT[getCurrentLanguage()].BILLING_ADDRESS;
+        titleText = TITLE_TEXT[currentLanguage].BILLING_ADDRESS;
         key = TITLE_TEXT_KEYS.BILLING_ADDRESS;
         break;
       case ADDRESS_TYPE.SHIPPING:
-        titleText = TITLE_TEXT[getCurrentLanguage()].SHIPPING_ADDRESS;
+        titleText = TITLE_TEXT[currentLanguage].SHIPPING_ADDRESS;
         key = TITLE_TEXT_KEYS.SHIPPING_ADDRESS;
         break;
       default:
-        titleText = TITLE_TEXT[getCurrentLanguage()].ADDRESS;
+        titleText = TITLE_TEXT[currentLanguage].ADDRESS;
         key = TITLE_TEXT_KEYS.ADDRESS;
         break;
     }

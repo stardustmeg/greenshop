@@ -112,6 +112,7 @@ class ProductCardView {
 
   private createDiscountLabel(): HTMLSpanElement {
     const currentVariant = this.params.variant.find(({ size }) => size === this.currentSize) ?? this.params.variant[0];
+    // TBD replace template
     const innerContent = `${Math.round((1 - currentVariant.discount / currentVariant.price) * 100)}%`;
     this.discountLabel = createBaseElement({
       cssClasses: [styles.discountLabel],

@@ -135,6 +135,7 @@ class UserProfilePageView {
       USER_INFO_MENU_LINK,
       USER_INFO_MENU_LINK_KEYS.PERSONAL_INFO,
     );
+
     this.personalInfoLink.getHTML().classList.add(styles.active);
     this.personalInfoLink.setDisabled();
     return this.personalInfoLink;
