@@ -18,11 +18,11 @@
 }
 
 .swipeRow {
-  transform: translateX(calc(var(--extra-large-offset) * -1));
+  transform: translateX(-25%);
 }
 
 .swipeDelete {
-  transform: translateX(calc(var(--extra-large-offset) * 1.5));
+  transform: translateX(85%);
 }
 
 .deleteCell {
