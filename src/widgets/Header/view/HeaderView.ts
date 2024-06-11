@@ -177,9 +177,7 @@ class HeaderView {
     this.navigationWrapper.append(
       this.createSwitchLanguageLabel(),
       this.logoutButton.getHTML(),
-      this.toCartLink.getHTML(),
       this.toProfileLink.getHTML(),
-      this.toWishlistLink.getHTML(),
       this.createSwitchThemeLabel(),
     );
 
@@ -321,22 +319,22 @@ class HeaderView {
       attrs: {
         href: PAGE_ID.CART_PAGE,
       },
-      classes: [styles.cartLink],
+      classes: [styles.wishListLink],
     });
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.HEART_OUTLINE));
+    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
 
     this.toWishlistLink.getHTML().append(svg);
 
     this.toWishlistLink
       .getHTML()
-      .classList.toggle(styles.cartLinkActive, RouterModel.getCurrentPage() === PAGE_ID.WISHLIST_PAGE);
+      .classList.toggle(styles.wishListLinkActive, RouterModel.getCurrentPage() === PAGE_ID.WISHLIST_PAGE);
 
     observeStore(selectCurrentPage, () =>
       this.toWishlistLink
         .getHTML()
-        .classList.toggle(styles.cartLinkActive, RouterModel.getCurrentPage() === PAGE_ID.WISHLIST_PAGE),
+        .classList.toggle(styles.wishListLinkActive, RouterModel.getCurrentPage() === PAGE_ID.WISHLIST_PAGE),
     );
 
     return this.toWishlistLink;
@@ -348,7 +346,12 @@ class HeaderView {
       tag: 'div',
     });
 
-    this.wrapper.append(this.linkLogo.getHTML(), this.burgerButton.getHTML());
+    this.wrapper.append(
+      this.linkLogo.getHTML(),
+      this.toCartLink.getHTML(),
+      this.burgerButton.getHTML(),
+      this.toWishlistLink.getHTML(),
+    );
     return this.wrapper;
   }
 
