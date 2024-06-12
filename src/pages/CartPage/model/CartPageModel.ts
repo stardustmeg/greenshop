@@ -3,6 +3,7 @@ import type { Page } from '@/shared/types/page.ts';
 
 import SummaryModel from '@/entities/Summary/model/SummaryModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
+import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
@@ -17,6 +18,7 @@ import ProductOrderModel from '@/widgets/ProductOrder/model/ProductOrderModel.ts
 
 import CartPageView from '../view/CartPageView.ts';
 
+const HAPPY_BIRTHDAY = 'HAPPY-BIRTHDAY-10';
 const TITLE_SUMMARY = {
   cart: { en: 'Cart Discount', ru: 'Скидка на корзину' },
   product: { en: 'Product Discount', ru: 'Скидка на продукты' },
@@ -49,6 +51,9 @@ class CartPageModel implements Page {
 
   private async addDiscountHandler(discountCode: string): Promise<void> {
     if (discountCode.trim()) {
+      if (discountCode.trim() === HAPPY_BIRTHDAY) {
+        await this.checkBirthday();
+      }
       const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
       this.view.getCouponButton().append(loader);
       await getCartModel()
@@ -92,6 +97,31 @@ class CartPageModel implements Page {
     this.cartCouponSummary.update(this.cart.discountsCart);
     this.productCouponSummary.update(this.cart.discountsProduct);
     this.view.updateTotal(this.cart);
+  }
+
+  private async checkBirthday(): Promise<void> {
+    if (!getStore().getState().isUserLoggedIn) {
+      throw showErrorMessage(SERVER_MESSAGE_KEYS.COUPON_NEED_LOGIN);
+    }
+    const customer = await getCustomerModel().getCurrentUser();
+    if (customer?.birthDate) {
+      if (customer?.birthDate) {
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        const birthDate = new Date(customer.birthDate);
+        birthDate.setFullYear(currentDate.getFullYear());
+        birthDate.setHours(0, 0, 0, 0);
+        const startBirthdayPeriod = new Date(birthDate);
+        startBirthdayPeriod.setDate(birthDate.getDate() - 3);
+        const endBirthdayPeriod = new Date(birthDate);
+        endBirthdayPeriod.setDate(birthDate.getDate() + 3);
+
+        if (currentDate >= startBirthdayPeriod && currentDate <= endBirthdayPeriod) {
+          return;
+        }
+        throw showErrorMessage(SERVER_MESSAGE_KEYS.COUPON_WRONG_DATE);
+      }
+    }
   }
 
   private async clearCart(): Promise<void> {
