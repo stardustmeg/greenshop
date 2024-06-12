@@ -170,11 +170,21 @@ class ProductOrderView {
   }
 
   private createTdProduct(): HTMLTableCellElement {
-    return createBaseElement({
+    const td = createBaseElement({
       cssClasses: [styles.td, styles.nameCell, styles.mainText],
-      innerContent: this.productItem.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
+      // innerContent: this.productItem.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
       tag: 'td',
     });
+    const href = `${buildPath.productPathWithIDAndQuery(this.productItem.key, { size: [this.productItem.size] })}`;
+    const link = new LinkModel({
+      attrs: {
+        href,
+      },
+      classes: [styles.nameLink],
+      text: this.productItem.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
+    });
+    td.append(link.getHTML());
+    return td;
   }
 
   private createTdSize(): HTMLTableCellElement {
