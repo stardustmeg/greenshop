@@ -172,7 +172,6 @@ class ProductOrderView {
   private createTdProduct(): HTMLTableCellElement {
     const td = createBaseElement({
       cssClasses: [styles.td, styles.nameCell, styles.mainText],
-      // innerContent: this.productItem.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
       tag: 'td',
     });
     const href = `${buildPath.productPathWithIDAndQuery(this.productItem.key, { size: [this.productItem.size] })}`;
