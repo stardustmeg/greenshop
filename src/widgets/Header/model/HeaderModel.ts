@@ -1,6 +1,12 @@
+import type { Cart } from '@/shared/types/cart.ts';
+import type { ShoppingList } from '@/shared/types/shopping-list.ts';
+
 import RouterModel from '@/app/Router/model/RouterModel.ts';
+import CountBadgeModel from '@/entities/CountBadge/model/CountBadgeModel.ts';
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
+import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
+import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setAuthToken, setCurrentLanguage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
@@ -12,16 +18,25 @@ import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage
 import HeaderView from '../view/HeaderView.ts';
 
 class HeaderModel {
+  private cartCountBadge = new CountBadgeModel();
+
   private navigation: NavigationModel;
 
   private parent: HTMLDivElement;
 
   private view = new HeaderView();
 
+  private wishListCountBadge = new CountBadgeModel();
+
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
     this.navigation = new NavigationModel();
     this.init();
+  }
+
+  private cartChangeHandler(cart: Cart): boolean {
+    this.cartCountBadge.updateBadgeCount(cart.products.reduce((acc, item) => acc + item.quantity, 0));
+    return true;
   }
 
   private checkCurrentUser(): void {
@@ -38,6 +53,8 @@ class HeaderModel {
 
   private init(): void {
     this.view.getWrapper().append(this.navigation.getHTML());
+    this.view.getToCartLink().getHTML().append(this.cartCountBadge.getHTML());
+    this.view.getToWishlistLink().getHTML().append(this.wishListCountBadge.getHTML());
     this.parent.insertAdjacentElement('beforebegin', this.view.getNavigationWrapper());
     this.checkCurrentUser();
     this.setLogoHandler();
@@ -45,6 +62,8 @@ class HeaderModel {
     this.setLogoutButtonHandler();
     this.setLinksHandler();
     this.setChangeLanguageCheckboxHandler();
+    this.observeCartChange();
+    this.observeShoppingListChange();
   }
 
   private async logoutHandler(): Promise<boolean> {
@@ -58,10 +77,18 @@ class HeaderModel {
     return true;
   }
 
+  private observeCartChange(): boolean {
+    return getCartModel().observeCartChange(this.cartChangeHandler.bind(this));
+  }
+
   private observeCurrentUser(): void {
     observeStore(selectIsUserLoggedIn, () => {
       this.checkCurrentUser();
     });
+  }
+
+  private observeShoppingListChange(): void {
+    getShoppingListModel().subscribe(this.shoppingListChangeHandler.bind(this));
   }
 
   private setChangeLanguageCheckboxHandler(): void {
@@ -119,6 +146,10 @@ class HeaderModel {
       await this.logoutHandler();
       logoutButton.setDisabled();
     });
+  }
+
+  private shoppingListChangeHandler(shoppingList: ShoppingList): void {
+    this.wishListCountBadge.updateBadgeCount(shoppingList.products.length);
   }
 
   public getHTML(): HTMLElement {

@@ -35,14 +35,9 @@ class CountBadgeView {
     return this.countBadgeWrap;
   }
 
-  public updateBadgeCount(count?: number): void {
-    if (!count) {
-      this.countBadgeWrap.classList.add(styles.hidden);
-    } else {
-      this.countBadgeWrap.classList.remove(styles.hidden);
-    }
-
-    this.countBadge.textContent = count ? count.toString() : '';
+  public updateBadgeCount(count: number): void {
+    this.countBadgeWrap.classList.toggle(styles.hidden, !count);
+    this.countBadge.textContent = count.toString();
   }
 }
 

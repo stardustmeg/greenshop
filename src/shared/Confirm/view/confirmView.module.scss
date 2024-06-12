@@ -4,7 +4,6 @@
   display: grid;
   grid-column: 2 span;
   grid-template-rows: repeat((2, max-content));
-  margin: var(--small-offset) auto;
   border-bottom: var(--tiny-offset) solid var(--steam-green-800);
   padding: var(--small-offset);
   width: 100%;
