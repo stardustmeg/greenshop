@@ -112,6 +112,13 @@ class ProductOrderView {
         deleteCell.classList.add(styles.hide);
       }
     });
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > TABLET_WIDTH) {
+        this.view.classList.remove(styles.swipeRow);
+        deleteCell.classList.remove(styles.swipeDelete);
+        deleteCell.classList.add(styles.hide);
+      }
+    });
     return this.view;
   }
 

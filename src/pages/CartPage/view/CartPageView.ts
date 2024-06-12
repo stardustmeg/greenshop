@@ -128,6 +128,7 @@ class CartPageView {
   }
 
   private addTableHeader(): void {
+    const productsWrap = createBaseElement({ cssClasses: [styles.productsWrap], tag: 'div' });
     this.table = createBaseElement({ cssClasses: [styles.table], tag: 'table' });
     const thead = createBaseElement({ cssClasses: [styles.thead, styles.head], tag: 'thead' });
     const tr = createBaseElement({ cssClasses: [styles.tr, styles.head], tag: 'tr' });
@@ -161,10 +162,12 @@ class CartPageView {
     this.table.append(thead, this.tableBody);
     thead.append(tr);
     tr.append(thImage, thProduct, thPrice, thQuantity, thTotal, thDelete);
-    this.productWrap.append(this.table);
+    productsWrap.append(this.table);
+    this.productWrap.append(productsWrap);
   }
 
   private addTotalInfo(): void {
+    const totalBlockWrap = createBaseElement({ cssClasses: [styles.totalsWrap], tag: 'div' });
     const title = createBaseElement({
       cssClasses: [styles.totalTitle, styles.border, styles.mobileHide],
       innerContent: TITLE.CART_TOTAL[this.language],
@@ -189,19 +192,19 @@ class CartPageView {
     this.textElement.push({ element: finalButton, textItem: TITLE.BUTTON_CHECKOUT });
     const continueLink = this.createCatalogLinkHTML();
     continueLink.getHTML().classList.add(styles.mobileHide);
-    this.totalWrap.append(
+    totalBlockWrap.append(
       title,
       couponTitle,
       couponWrap,
       this.productCouponSummary.getHTML(),
       subtotalWrap,
-
       this.cartCouponSummary.getHTML(),
       discountWrap,
       totalWrap,
       finalButton,
       continueLink.getHTML(),
     );
+    this.totalWrap.append(totalBlockWrap);
   }
 
   private createCatalogLinkHTML(): LinkModel {
