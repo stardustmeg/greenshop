@@ -12,6 +12,7 @@ import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { PRODUCT_LIST } from '@/shared/constants/product.ts';
 import APP_THEME from '@/shared/constants/styles.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -23,8 +24,6 @@ import styles from './headerView.module.scss';
 
 class HeaderView {
   private burgerButton: ButtonModel;
-
-  private countBadge = new CountBadgeModel();
 
   private header: HTMLElement;
 
@@ -252,8 +251,8 @@ class HeaderView {
         .getHTML()
         .classList.toggle(styles.cartLinkActive, RouterModel.getCurrentPage() === PAGE_ID.CART_PAGE),
     );
-
-    this.toCartLink.getHTML().append(this.countBadge.getHTML());
+    const cartBadge = new CountBadgeModel(PRODUCT_LIST.CART);
+    this.toCartLink.getHTML().append(cartBadge.getHTML());
 
     return this.toCartLink;
   }
@@ -313,6 +312,9 @@ class HeaderView {
         .getHTML()
         .classList.toggle(styles.wishListLinkActive, RouterModel.getCurrentPage() === PAGE_ID.WISHLIST_PAGE),
     );
+
+    const wishlistBadge = new CountBadgeModel(PRODUCT_LIST.SHOPPING_LIST);
+    this.toWishlistLink.getHTML().append(wishlistBadge.getHTML());
 
     return this.toWishlistLink;
   }
