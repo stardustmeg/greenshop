@@ -1,7 +1,7 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './addressEditView.module.scss';
 
@@ -21,7 +21,7 @@ class AddressEditView {
   private createCancelButton(): ButtonModel {
     this.cancelButton = new ButtonModel({
       classes: [styles.cancelButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].CANCEL,
+      text: BUTTON_TEXT[getCurrentLanguage()].CANCEL,
     });
     return this.cancelButton;
   }
@@ -39,7 +39,7 @@ class AddressEditView {
   private createSaveChangesButton(): ButtonModel {
     this.saveChangesButton = new ButtonModel({
       classes: [styles.saveChangesButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].SAVE_CHANGES,
+      text: BUTTON_TEXT[getCurrentLanguage()].SAVE_CHANGES,
     });
     this.saveChangesButton.setDisabled();
     return this.saveChangesButton;

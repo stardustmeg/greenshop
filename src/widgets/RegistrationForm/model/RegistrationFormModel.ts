@@ -12,6 +12,7 @@ import { setBillingCountry, switchIsUserLoggedIn } from '@/shared/Store/actions.
 import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { ADDRESS_TYPE } from '@/shared/types/address.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
@@ -58,7 +59,7 @@ class RegisterFormModel {
       firstName,
       id: '',
       lastName,
-      locale: getStore().getState().currentLanguage,
+      locale: getCurrentLanguage(),
       password,
       shippingAddress: [],
       version: 0,

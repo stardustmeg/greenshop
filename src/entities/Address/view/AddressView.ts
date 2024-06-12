@@ -1,12 +1,12 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { FORM_TEXT, FORM_TEXT_KEYS, INPUT_TYPE } from '@/shared/constants/forms.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import { TITLE_TEXT, TITLE_TEXT_KEYS } from '@/shared/constants/forms/text.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
 import { ADDRESS_TYPE, type AddressOptions, type AddressType, SINGLE_ADDRESS } from '@/shared/types/address.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './addressView.module.scss';
@@ -67,7 +67,7 @@ class AddressView {
 
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
-      innerContent: FORM_TEXT[getStore().getState().currentLanguage].SINGLE_ADDRESS,
+      innerContent: FORM_TEXT[getCurrentLanguage()].SINGLE_ADDRESS,
       tag: 'span',
     });
     observeCurrentLanguage(checkBoxText, FORM_TEXT, FORM_TEXT_KEYS.SINGLE_ADDRESS);
@@ -93,10 +93,12 @@ class AddressView {
       tag: 'label',
     });
 
+    const currentLanguage = getCurrentLanguage();
+
     const textContent =
       this.addressType === ADDRESS_TYPE.SHIPPING
-        ? FORM_TEXT[getStore().getState().currentLanguage].DEFAULT_SHIPPING_ADDRESS
-        : FORM_TEXT[getStore().getState().currentLanguage].DEFAULT_BILLING_ADDRESS;
+        ? FORM_TEXT[currentLanguage].DEFAULT_SHIPPING_ADDRESS
+        : FORM_TEXT[currentLanguage].DEFAULT_BILLING_ADDRESS;
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
       innerContent: textContent,
@@ -214,17 +216,20 @@ class AddressView {
   private createTitle(): HTMLHeadingElement {
     let titleText: string;
     let key: string;
+
+    const currentLanguage = getCurrentLanguage();
+
     switch (this.addressType) {
       case ADDRESS_TYPE.BILLING:
-        titleText = TITLE_TEXT[getStore().getState().currentLanguage].BILLING_ADDRESS;
+        titleText = TITLE_TEXT[currentLanguage].BILLING_ADDRESS;
         key = TITLE_TEXT_KEYS.BILLING_ADDRESS;
         break;
       case ADDRESS_TYPE.SHIPPING:
-        titleText = TITLE_TEXT[getStore().getState().currentLanguage].SHIPPING_ADDRESS;
+        titleText = TITLE_TEXT[currentLanguage].SHIPPING_ADDRESS;
         key = TITLE_TEXT_KEYS.SHIPPING_ADDRESS;
         break;
       default:
-        titleText = TITLE_TEXT[getStore().getState().currentLanguage].ADDRESS;
+        titleText = TITLE_TEXT[currentLanguage].ADDRESS;
         key = TITLE_TEXT_KEYS.ADDRESS;
         break;
     }

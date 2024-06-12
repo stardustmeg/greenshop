@@ -10,10 +10,10 @@ import ConfirmModel from '@/shared/Confirm/model/ConfirmModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { cartPrice } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './cartPageView.module.scss';
@@ -94,7 +94,7 @@ class CartPageView {
     clearCallback: ClearCallback,
     addDiscountCallback: DiscountCallback,
   ) {
-    this.language = getStore().getState().currentLanguage;
+    this.language = getCurrentLanguage();
     this.parent = parent;
     this.parent.innerHTML = '';
     this.cartCouponSummary = cartCouponSummary;
@@ -248,10 +248,7 @@ class CartPageView {
 
     this.textElement.push({ element: this.clear.getHTML(), textItem: TITLE.CLEAR });
     this.clear.getHTML().addEventListener('click', () => {
-      const confirmModel = new ConfirmModel(
-        () => this.clearCallback(),
-        USER_MESSAGE[getStore().getState().currentLanguage].CLEAR_CART,
-      );
+      const confirmModel = new ConfirmModel(() => this.clearCallback(), USER_MESSAGE[getCurrentLanguage()].CLEAR_CART);
       modal.setContent(confirmModel.getHTML());
       modal.show();
     });
@@ -358,7 +355,7 @@ class CartPageView {
   }
 
   public updateLanguage(): void {
-    this.language = getStore().getState().currentLanguage;
+    this.language = getCurrentLanguage();
     this.textElement.forEach((textEl) => {
       const elHTML = textEl.element;
       if (elHTML instanceof HTMLInputElement) {

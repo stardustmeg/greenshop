@@ -1,11 +1,11 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import { USER_PROFILE_MENU_LINK } from '@/shared/constants/links.ts';
 import { USER_INFO_MENU_LINK, USER_INFO_MENU_LINK_KEYS } from '@/shared/constants/pages.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './userProfilePageView.module.scss';
@@ -73,7 +73,7 @@ class UserProfilePageView {
         href: USER_PROFILE_MENU_LINK.ADDRESSES,
       },
       classes: [styles.link],
-      text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].ADDRESSES,
+      text: USER_INFO_MENU_LINK[getCurrentLanguage()].ADDRESSES,
     });
     this.links.push(this.addressesLink);
 
@@ -97,7 +97,7 @@ class UserProfilePageView {
   private createLogoutButton(): ButtonModel {
     this.accountLogoutButton = new ButtonModel({
       classes: [styles.logoutButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].LOG_OUT,
+      text: BUTTON_TEXT[getCurrentLanguage()].LOG_OUT,
     });
 
     observeCurrentLanguage(this.accountLogoutButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.LOG_OUT);
@@ -111,7 +111,7 @@ class UserProfilePageView {
         href: USER_PROFILE_MENU_LINK.ORDERS,
       },
       classes: [styles.link],
-      text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].ORDERS,
+      text: USER_INFO_MENU_LINK[getCurrentLanguage()].ORDERS,
     });
     this.links.push(this.ordersLink);
 
@@ -126,7 +126,7 @@ class UserProfilePageView {
         href: USER_PROFILE_MENU_LINK.PERSONAL_INFO,
       },
       classes: [styles.link],
-      text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].PERSONAL_INFO,
+      text: USER_INFO_MENU_LINK[getCurrentLanguage()].PERSONAL_INFO,
     });
     this.links.push(this.personalInfoLink);
 
@@ -135,6 +135,7 @@ class UserProfilePageView {
       USER_INFO_MENU_LINK,
       USER_INFO_MENU_LINK_KEYS.PERSONAL_INFO,
     );
+
     this.personalInfoLink.getHTML().classList.add(styles.active);
     this.personalInfoLink.setDisabled();
     return this.personalInfoLink;
@@ -146,7 +147,7 @@ class UserProfilePageView {
         href: USER_PROFILE_MENU_LINK.SUPPORT,
       },
       classes: [styles.link],
-      text: USER_INFO_MENU_LINK[getStore().getState().currentLanguage].SUPPORT,
+      text: USER_INFO_MENU_LINK[getCurrentLanguage()].SUPPORT,
     });
     this.links.push(this.supportLink);
 

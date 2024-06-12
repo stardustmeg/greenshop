@@ -1,5 +1,4 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/links.ts';
 import {
   PAGE_ANSWER,
@@ -9,6 +8,7 @@ import {
   PAGE_ID,
 } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './loginPageView.module.scss';
@@ -49,7 +49,7 @@ class LoginPageView {
   private createAuthDescription(): HTMLHeadingElement {
     this.authDescription = createBaseElement({
       cssClasses: [styles.authDescription],
-      innerContent: PAGE_DESCRIPTION[getStore().getState().currentLanguage].LOGIN,
+      innerContent: PAGE_DESCRIPTION[getCurrentLanguage()].LOGIN,
       tag: 'h3',
     });
     observeCurrentLanguage(this.authDescription, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEYS.LOGIN);
@@ -99,7 +99,7 @@ class LoginPageView {
   private createLoginSpan(): HTMLSpanElement {
     this.loginSpan = createBaseElement({
       cssClasses: [styles.loginSpan],
-      innerContent: PAGE_LINK_TEXT[getStore().getState().currentLanguage].LOGIN,
+      innerContent: PAGE_LINK_TEXT[getCurrentLanguage()].LOGIN,
       tag: 'span',
     });
 
@@ -114,7 +114,7 @@ class LoginPageView {
         href: PAGE_ID.REGISTRATION_PAGE,
       },
       classes: [styles.registerLink],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].REGISTRATION,
+      text: PAGE_LINK_TEXT[getCurrentLanguage()].REGISTRATION,
     });
 
     observeCurrentLanguage(this.registerLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.REGISTRATION);
@@ -125,7 +125,7 @@ class LoginPageView {
   private createToRegisterPageWrapper(): HTMLSpanElement {
     this.toRegisterPageWrapper = createBaseElement({
       cssClasses: [styles.toRegisterPageWrapper],
-      innerContent: PAGE_ANSWER[getStore().getState().currentLanguage].LOGIN,
+      innerContent: PAGE_ANSWER[getCurrentLanguage()].LOGIN,
       tag: 'span',
     });
 

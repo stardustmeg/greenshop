@@ -3,11 +3,11 @@ import type { Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { CartActive } from '@/shared/types/cart.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
@@ -50,7 +50,7 @@ class ProductOrderModel {
         if (cart) {
           showSuccessMessage(
             productRemovedFromCartMessage(
-              this.productItem.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+              this.productItem.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
             ),
           );
           const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);

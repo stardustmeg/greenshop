@@ -476,27 +476,3 @@
     opacity: 1;
   }
 }
-
-.badgeWrap {
-  position: absolute;
-  right: -30%;
-  top: -20%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: var(--one) solid var(--noble-gray-1000);
-  border-radius: 100%;
-  width: calc(var(--tiny-offset) * 2);
-  height: calc(var(--tiny-offset) * 2);
-  font: var(--regular-font);
-  background-color: var(--steam-green-800);
-}
-
-.badge {
-  display: block;
-  color: var(--noble-gray-200);
-}
-
-.hide {
-  display: none;
-}

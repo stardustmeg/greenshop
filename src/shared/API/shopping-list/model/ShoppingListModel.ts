@@ -27,10 +27,14 @@ enum ACTIONS {
   setAnonymousId = 'setAnonymousId',
 }
 
+type ShoppingListChangeHandler = (shoppingList: ShoppingList) => void;
+
 export class ShoppingListModel {
   private root: ShoppingListApi;
 
   private shoppingList: ShoppingList | null = null;
+
+  private subscribers: ShoppingListChangeHandler[] = [];
 
   constructor() {
     this.root = getShoppingListApi();
@@ -76,6 +80,7 @@ export class ShoppingListModel {
     const anonymShoppingList = this.getShopListFromData(dataAnonymList);
     if (anonymShoppingList.id && !dataAnonymList.body.customer?.id) {
       this.shoppingList = anonymShoppingList;
+      this.notifySubscribers();
     }
     return this.shoppingList;
   }
@@ -109,6 +114,7 @@ export class ShoppingListModel {
     } else {
       this.shoppingList = this.getShopListFromData(data);
     }
+    this.notifySubscribers();
     return this.shoppingList;
   }
 
@@ -136,7 +142,18 @@ export class ShoppingListModel {
       await Promise.all(otherShopLists.map((id) => this.root.deleteShopList(id)));
     }
     this.shoppingList = this.getShopListFromData(lastShopList);
+    this.notifySubscribers();
     return this.shoppingList;
+  }
+
+  private notifySubscribers(): void {
+    if (this.shoppingList) {
+      this.subscribers.forEach((handler) => {
+        if (this.shoppingList) {
+          handler(this.shoppingList);
+        }
+      });
+    }
   }
 
   private async updateListCustomer(anonymousId: string): Promise<ShoppingList | null> {
@@ -147,6 +164,7 @@ export class ShoppingListModel {
       };
       const dataUserList = await this.root.setAnonymousId(this.shoppingList, actions);
       this.shoppingList = this.getShopListFromData(dataUserList);
+      this.notifySubscribers();
     }
     return this.shoppingList;
   }
@@ -164,6 +182,7 @@ export class ShoppingListModel {
 
     const data = await this.root.addProduct(this.shoppingList, actions);
     this.shoppingList = this.getShopListFromData(data);
+    this.notifySubscribers();
     return this.shoppingList;
   }
 
@@ -175,6 +194,7 @@ export class ShoppingListModel {
   public async create(): Promise<ShoppingList> {
     const newShoppingList = await this.root.create();
     this.shoppingList = this.getShopListFromData(newShoppingList);
+    this.notifySubscribers();
     return this.shoppingList;
   }
 
@@ -184,7 +204,7 @@ export class ShoppingListModel {
     }
     const data = await this.root.deleteProduct(this.shoppingList, products);
     this.shoppingList = this.getShopListFromData(data);
-
+    this.notifySubscribers();
     return this.shoppingList;
   }
 
@@ -197,8 +217,16 @@ export class ShoppingListModel {
       if (!this.shoppingList) {
         this.shoppingList = await this.getUserShoppingLists(options);
       }
+      this.notifySubscribers();
     }
     return this.shoppingList;
+  }
+
+  public subscribe(handler: ShoppingListChangeHandler): void {
+    this.subscribers.push(handler);
+    if (this.shoppingList) {
+      handler(this.shoppingList);
+    }
   }
 }
 

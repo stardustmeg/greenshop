@@ -7,12 +7,12 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
 import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import type { Link } from '../model/FooterModel';
@@ -224,7 +224,7 @@ class FooterView {
   private wrapper: HTMLDivElement;
 
   constructor() {
-    this.language = getStore().getState().currentLanguage;
+    this.language = getCurrentLanguage();
     this.wrapper = this.createWrapper();
     this.footer = this.createHTML();
     const blockGoals = this.createGoalsHTML();
@@ -608,7 +608,7 @@ class FooterView {
   }
 
   public updateLanguage(): void {
-    this.language = getStore().getState().currentLanguage;
+    this.language = getCurrentLanguage();
     this.goals.forEach((goalEl) => {
       const title = goalEl.goalTitle;
       const description = goalEl.goalDescription;

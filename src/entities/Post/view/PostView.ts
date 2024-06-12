@@ -1,10 +1,10 @@
 import type { Post } from '@/shared/constants/blog';
 
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import formattedMinutes from '@/shared/utils/formattedTime.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './post.module.scss';
 
@@ -40,7 +40,7 @@ export default class PostView {
   }
 
   private createCardInfoHTML(): string {
-    const ln = getStore().getState().currentLanguage;
+    const ln = getCurrentLanguage();
     const read =
       ln === LANGUAGE_CHOICE.EN
         ? `Read in ${this.post.time.toString()} minutes`
@@ -76,7 +76,7 @@ export default class PostView {
   }
 
   public createPostInfoHtml(): string {
-    const ln = getStore().getState().currentLanguage;
+    const ln = getCurrentLanguage();
     this.post.content[ln] = this.post.content[ln].replace(/<p>/g, `<p class=${styles.paragraph}>`);
     this.post.content[ln] = this.post.content[ln].replace(/<h2>/g, `<h4 class=${styles.headText}>`);
     this.post.content[ln] = this.post.content[ln].replace(/<h3>/g, `<h4 class=${styles.headText}>`);

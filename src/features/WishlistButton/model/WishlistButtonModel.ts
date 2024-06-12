@@ -4,9 +4,9 @@ import type { ShoppingList, ShoppingListProduct } from '@/shared/types/shopping-
 
 import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { productAddedToWishListMessage, productRemovedFromWishListMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
@@ -27,9 +27,7 @@ class WishlistButtonModel {
       .addProduct(this.params.id)
       .then(() => {
         showSuccessMessage(
-          productAddedToWishListMessage(
-            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-          ),
+          productAddedToWishListMessage(this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value),
         );
         this.view.switchStateWishListButton(true);
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_WISHLIST, '');
@@ -43,7 +41,7 @@ class WishlistButtonModel {
       .then(() => {
         showSuccessMessage(
           productRemovedFromWishListMessage(
-            this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+            this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
           ),
         );
         this.view.switchStateWishListButton(false);

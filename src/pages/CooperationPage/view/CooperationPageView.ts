@@ -1,7 +1,7 @@
 import type { CooperationData } from '@/shared/types/validation/cooperationData';
 
-import getStore from '@/shared/Store/Store.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './cooperationPageView.module.scss';
 
@@ -86,15 +86,16 @@ class CooperationPageView {
   }
 
   public drawCooperationInfo(data: CooperationData[]): void {
+    const currentLanguage = getCurrentLanguage();
     data.forEach((item) => {
       const section = createBaseElement({
         cssClasses: [styles.cooperationSection],
         tag: 'div',
       });
-      const currentTitle = item[getStore().getState().currentLanguage].title;
-      const currentDescription = item[getStore().getState().currentLanguage].description;
-      const currentSubtitle = item[getStore().getState().currentLanguage].subtitle;
-      const currentItems = item[getStore().getState().currentLanguage].items;
+      const currentTitle = item[currentLanguage].title;
+      const currentDescription = item[currentLanguage].description;
+      const currentSubtitle = item[currentLanguage].subtitle;
+      const currentItems = item[currentLanguage].items;
       if (currentTitle) {
         const title = this.createTitle(currentTitle);
         section.append(title);

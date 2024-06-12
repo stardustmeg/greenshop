@@ -6,6 +6,7 @@ import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
 import { ERROR_MESSAGE } from '@/shared/constants/messages.ts';
 import { checkInputLanguage } from '@/shared/utils/getCountryIndex.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { maxAgeMessage, maxLengthMessage, minAgeMessage, minLengthMessage } from '@/shared/utils/messageTemplates.ts';
 import { postcodeValidator } from 'postcode-validator';
 
@@ -45,28 +46,28 @@ export const checkMinLength = (value: string, validParams: InputFieldValidatorPa
 
 export const checkNotSpecialSymbols = (value: string, validParams: InputFieldValidatorParams): boolean | string => {
   if (validParams.notSpecialSymbols && !validParams.notSpecialSymbols.pattern.test(value)) {
-    return validParams.notSpecialSymbols.messages[getStore().getState().currentLanguage];
+    return validParams.notSpecialSymbols.messages[getCurrentLanguage()];
   }
   return true;
 };
 
 export const checkRequired = (value: string, validParams: InputFieldValidatorParams): boolean | string => {
   if (validParams.required && value.trim() === '') {
-    return ERROR_MESSAGE[getStore().getState().currentLanguage].REQUIRED_FIELD;
+    return ERROR_MESSAGE[getCurrentLanguage()].REQUIRED_FIELD;
   }
   return true;
 };
 
 export const checkRequiredSymbols = (value: string, validParams: InputFieldValidatorParams): boolean | string => {
   if (validParams.requiredSymbols && !validParams.requiredSymbols.pattern.test(value)) {
-    return validParams.requiredSymbols.messages[getStore().getState().currentLanguage];
+    return validParams.requiredSymbols.messages[getCurrentLanguage()];
   }
   return true;
 };
 
 export const checkValidAge = (value: string, validParams: InputFieldValidatorParams): boolean | string => {
   if (validParams.validBirthday && !validParams.validBirthday.pattern.test(value)) {
-    return validParams.validBirthday.messages[getStore().getState().currentLanguage];
+    return validParams.validBirthday.messages[getCurrentLanguage()];
   }
   return true;
 };
@@ -78,7 +79,7 @@ export const checkValidCountry = (value: string, validParams: InputFieldValidato
         (countryName) => countryName.toLowerCase() === value.toLowerCase(),
       )
     ) {
-      return ERROR_MESSAGE[getStore().getState().currentLanguage].INVALID_COUNTRY;
+      return ERROR_MESSAGE[getCurrentLanguage()].INVALID_COUNTRY;
     }
   }
   observeStore(selectCurrentLanguage, () => checkValidCountry(value, validParams));
@@ -87,7 +88,7 @@ export const checkValidCountry = (value: string, validParams: InputFieldValidato
 
 export const checkValidMail = (value: string, validParams: InputFieldValidatorParams): boolean | string => {
   if (validParams.validMail && !validParams.validMail.pattern.test(value)) {
-    return validParams.validMail.messages[getStore().getState().currentLanguage];
+    return validParams.validMail.messages[getCurrentLanguage()];
   }
   return true;
 };
@@ -104,10 +105,10 @@ export const checkValidPostalCode = (
     try {
       const result = postcodeValidator(value, currentCountry);
       if (!result) {
-        return ERROR_MESSAGE[getStore().getState().currentLanguage].INVALID_POSTAL_CODE;
+        return ERROR_MESSAGE[getCurrentLanguage()].INVALID_POSTAL_CODE;
       }
     } catch (error) {
-      return ERROR_MESSAGE[getStore().getState().currentLanguage].WRONG_REGION;
+      return ERROR_MESSAGE[getCurrentLanguage()].WRONG_REGION;
     }
   }
   return true;
@@ -115,7 +116,7 @@ export const checkValidPostalCode = (
 
 export const checkWhitespace = (value: string, validParams: InputFieldValidatorParams): boolean | string => {
   if (validParams.notWhitespace && !validParams.notWhitespace.pattern.test(value)) {
-    return validParams.notWhitespace.messages[getStore().getState().currentLanguage];
+    return validParams.notWhitespace.messages[getCurrentLanguage()];
   }
 
   return true;

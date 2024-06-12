@@ -1,6 +1,7 @@
 import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
+import CountBadgeModel from '@/entities/CountBadge/model/CountBadgeModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
@@ -15,16 +16,13 @@ import APP_THEME from '@/shared/constants/styles.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './headerView.module.scss';
 
 class HeaderView {
   private burgerButton: ButtonModel;
-
-  private cartBadge: HTMLSpanElement;
-
-  private cartBadgeWrap: HTMLDivElement;
 
   private header: HTMLElement;
 
@@ -50,11 +48,7 @@ class HeaderView {
     this.logoutButton = this.createLogoutButton();
     this.linkLogo = this.createLinkLogo();
     this.toCartLink = this.createToCartLink();
-    this.cartBadgeWrap = this.createBadgeWrap();
-    this.cartBadge = this.createBadge();
-
     this.toWishlistLink = this.createToWishlistLink();
-
     this.toProfileLink = this.createToProfileLink();
     this.switchThemeCheckbox = this.createSwitchThemeCheckbox();
     this.switchLanguageCheckbox = this.createSwitchLanguageCheckbox();
@@ -76,27 +70,6 @@ class HeaderView {
         document.body.classList.toggle(styles.stopScroll);
       }
     });
-  }
-
-  private createBadge(): HTMLSpanElement {
-    this.cartBadge = createBaseElement({
-      cssClasses: [styles.badge],
-      tag: 'span',
-    });
-    this.cartBadgeWrap.append(this.cartBadge);
-
-    return this.cartBadge;
-  }
-
-  private createBadgeWrap(): HTMLDivElement {
-    this.cartBadgeWrap = createBaseElement({
-      cssClasses: [styles.badgeWrap],
-      tag: 'div',
-    });
-
-    this.toCartLink.getHTML().append(this.cartBadgeWrap);
-
-    return this.cartBadgeWrap;
   }
 
   private createBurgerButton(): ButtonModel {
@@ -161,7 +134,7 @@ class HeaderView {
   private createLogoutButton(): ButtonModel {
     this.logoutButton = new ButtonModel({
       classes: [styles.logoutButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].LOG_OUT,
+      text: BUTTON_TEXT[getCurrentLanguage()].LOG_OUT,
     });
 
     observeCurrentLanguage(this.logoutButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.LOG_OUT);
@@ -190,7 +163,7 @@ class HeaderView {
       type: INPUT_TYPE.CHECK_BOX,
     });
     this.switchLanguageCheckbox.getHTML().classList.add(styles.switchLanguageCheckbox);
-    this.switchLanguageCheckbox.getHTML().checked = getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN;
+    this.switchLanguageCheckbox.getHTML().checked = getCurrentLanguage() === LANGUAGE_CHOICE.EN;
 
     return this.switchLanguageCheckbox;
   }
@@ -337,6 +310,9 @@ class HeaderView {
         .classList.toggle(styles.wishListLinkActive, RouterModel.getCurrentPage() === PAGE_ID.WISHLIST_PAGE),
     );
 
+    const wishlistBadge = new CountBadgeModel();
+    this.toWishlistLink.getHTML().append(wishlistBadge.getHTML());
+
     return this.toWishlistLink;
   }
 
@@ -401,16 +377,6 @@ class HeaderView {
 
   public showNavigationWrapper(): void {
     this.navigationWrapper.classList.remove(styles.hidden);
-  }
-
-  public updateCartCount(count?: number): void {
-    if (!count) {
-      this.cartBadgeWrap.classList.add(styles.hide);
-    } else {
-      this.cartBadgeWrap.classList.remove(styles.hide);
-    }
-
-    this.cartBadge.textContent = count ? count.toString() : '';
   }
 }
 

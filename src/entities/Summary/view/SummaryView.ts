@@ -2,8 +2,8 @@ import type CouponModel from '@/entities/Coupon/model/CouponModel';
 import type { LanguageChoiceType } from '@/shared/constants/common';
 import type { languageVariants } from '@/shared/types/common';
 
-import getStore from '@/shared/Store/Store.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { minusCartPrice } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './summaryView.module.scss';
@@ -23,7 +23,7 @@ class SummaryView {
 
   constructor(title: languageVariants) {
     this.title = title;
-    this.language = getStore().getState().currentLanguage;
+    this.language = getCurrentLanguage();
     this.discountTotal = this.createSummaryHTML();
     this.discountList = createBaseElement({ cssClasses: [styles.couponsList], tag: 'ul' });
     this.view = this.createHTML();
@@ -73,7 +73,7 @@ class SummaryView {
   }
 
   public updateLanguage(): void {
-    this.language = getStore().getState().currentLanguage;
+    this.language = getCurrentLanguage();
     this.updateTitle();
   }
 
