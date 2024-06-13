@@ -60,7 +60,7 @@ class NotFoundPageView {
   private createPageLogo(): HTMLDivElement {
     this.logo = createBaseElement({ cssClasses: [styles.pageLogo], tag: 'div' });
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.LOGO));
+    svg.append(createSVGUse(SVG_DETAILS.NOT_FOUND));
     this.logo.append(svg);
     return this.logo;
   }

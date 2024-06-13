@@ -1,3 +1,5 @@
+@import 'src/app/styles/mixins';
+
 .notFoundPage {
   position: relative;
   display: flex;
@@ -30,21 +32,22 @@
   margin: 0 auto;
 
   svg {
-    width: var(--large-offset);
-    height: var(--large-offset);
-    fill: var(--steam-green-800);
+    width: calc(var(--extra-large-offset) * 2);
+    height: calc(var(--extra-large-offset) * 2);
   }
 }
 
 .pageTitle {
   display: flex;
-  margin: 0 auto;
+  align-self: center;
   font: var(--extra-medium-font);
   letter-spacing: var(--one);
   color: var(--steam-green-800);
 }
 
 .pageDescription {
+  align-self: center;
+  padding: var(--extra-small-offset);
   font: var(--regular-font) '*' 1.5;
   letter-spacing: var(--one);
   text-align: center;
@@ -52,25 +55,7 @@
 }
 
 .toMainButton {
+  @include green-btn;
+
   align-self: center;
-  border-radius: var(--small-br);
-  padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
-  width: max-content;
-  font: var(--bold-font);
-  letter-spacing: var(--one);
-  color: var(--white);
-  background-color: var(--steam-green-800);
-  transition:
-    color 0.2s,
-    background-color 0.2s;
-
-  &:focus {
-    background-color: var(--steam-green-700);
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--steam-green-700);
-    }
-  }
 }
