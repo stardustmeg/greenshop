@@ -8,7 +8,6 @@ import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
-// import UserAddressesModel from '@/widgets/UserAddresses/model/UserAddressesModel.ts';
 import UserInfoModel from '@/widgets/UserInfo/model/UserInfoModel.ts';
 
 import UserProfilePageView from '../view/UserProfilePageView.ts';

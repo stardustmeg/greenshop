@@ -37,8 +37,12 @@
 
 .info {
   grid-column: 2 span;
+  border-radius: var(--medium-br);
+  padding: var(--extra-small-offset);
   max-width: 100%;
   word-break: break-all;
+  color: var(--steam-green-400);
+  background: var(--white-tr);
 }
 
 .editInfoButton {

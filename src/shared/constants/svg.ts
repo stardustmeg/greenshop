@@ -19,15 +19,12 @@ const SVG_DETAILS = {
   NOT_FOUND: 'notFound',
   OPEN_EYE: 'openEye',
   PROFILE: 'userCircle',
-  Plant: 'plant',
   SVG_URL: 'http://www.w3.org/2000/svg',
 
   SWITCH_LANGUAGE: {
     en: 'en',
     ru: 'ru',
   },
-  Search: 'search',
-  Settings: 'settings',
 } as const;
 
 export default SVG_DETAILS;
