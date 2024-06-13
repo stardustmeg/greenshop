@@ -4,20 +4,20 @@
   position: relative;
   display: grid;
   align-items: center;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(6, auto);
-  margin: 0 var(--small-offset);
+  grid-template-rows: 5.5rem auto auto auto auto 5.5rem;
+  margin: 0 auto;
   padding: var(--small-offset);
-  width: 60%;
-  font: var(--extra-regular-font);
+  width: 65%;
+  font: var(--basic-regular-font);
   line-break: break-all;
   letter-spacing: var(--one);
   color: var(--noble-gray-900);
   background-color: var(--steam-green-900);
-  gap: var(--small-offset);
+  gap: var(--extra-small-offset);
 
   @media (max-width: 768px) {
-    margin-left: 0;
+    margin: 0;
+    padding: var(--extra-small-offset);
     width: 100%;
   }
 }
@@ -29,14 +29,12 @@
 .editPasswordButton {
   @include round-btn;
 
-  grid-column: 2;
   grid-row: 1;
   margin-right: 0;
   margin-left: auto;
 }
 
 .info {
-  grid-column: 2 span;
   border-radius: var(--medium-br);
   padding: var(--extra-small-offset);
   max-width: 100%;
@@ -48,12 +46,5 @@
 .editInfoButton {
   @include green-btn;
 
-  grid-column: 2 span;
   grid-row: 6;
-}
-
-.hidden {
-  display: none;
-  opacity: 0;
-  visibility: hidden;
 }

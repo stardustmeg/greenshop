@@ -3,8 +3,15 @@
 .userAddressesPage {
   position: relative;
   display: block;
-  padding: 0 var(--small-offset);
+  margin: 0 auto;
+  width: 65%;
   animation: show 0.2s ease-out forwards;
+
+  @media (max-width: 768px) {
+    margin: 0;
+    padding: var(--extra-small-offset);
+    width: 100%;
+  }
 }
 
 @keyframes show {
