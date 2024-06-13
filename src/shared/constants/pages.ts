@@ -106,6 +106,7 @@ export const PAGE_ID = {
   NOT_FOUND_PAGE: '404',
   PRODUCT_PAGE: 'product',
   REGISTRATION_PAGE: 'register',
+  USER_ADDRESSES_PAGE: 'addresses',
   USER_PROFILE_PAGE: 'profile',
   WISHLIST_PAGE: 'wishlist',
 } as const;

@@ -36,6 +36,8 @@ class HeaderView {
 
   private switchThemeCheckbox: InputModel;
 
+  private toAddressesLink: LinkModel;
+
   private toCartLink: LinkModel;
 
   private toProfileLink: LinkModel;
@@ -50,6 +52,7 @@ class HeaderView {
     this.toCartLink = this.createToCartLink();
     this.toWishlistLink = this.createToWishlistLink();
     this.toProfileLink = this.createToProfileLink();
+    this.toAddressesLink = this.createToAddressesLink();
     this.switchThemeCheckbox = this.createSwitchThemeCheckbox();
     this.switchLanguageCheckbox = this.createSwitchLanguageCheckbox();
     this.navigationWrapper = this.createNavigationWrapper();
@@ -148,10 +151,11 @@ class HeaderView {
       tag: 'div',
     });
     this.navigationWrapper.append(
+      this.toProfileLink.getHTML(),
+      this.toAddressesLink.getHTML(),
+      this.createSwitchThemeLabel(),
       this.createSwitchLanguageLabel(),
       this.logoutButton.getHTML(),
-      this.toProfileLink.getHTML(),
-      this.createSwitchThemeLabel(),
     );
 
     return this.navigationWrapper;
@@ -228,6 +232,39 @@ class HeaderView {
     return label;
   }
 
+  private createToAddressesLink(): LinkModel {
+    this.toAddressesLink = new LinkModel({
+      attrs: {
+        href: PAGE_ID.USER_ADDRESSES_PAGE,
+      },
+      classes: [styles.addressesLink],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.HOUSE));
+    this.toAddressesLink.getHTML().append(svg);
+
+    if (!getStore().getState().isUserLoggedIn) {
+      this.toAddressesLink.getHTML().classList.add(styles.hidden);
+    }
+
+    observeStore(selectIsUserLoggedIn, () =>
+      this.toAddressesLink.getHTML().classList.toggle(styles.hidden, !getStore().getState().isUserLoggedIn),
+    );
+
+    this.toAddressesLink
+      .getHTML()
+      .classList.toggle(styles.addressesLinkActive, RouterModel.getCurrentPage() === PAGE_ID.USER_ADDRESSES_PAGE);
+
+    observeStore(selectCurrentPage, () =>
+      this.toAddressesLink
+        .getHTML()
+        .classList.toggle(styles.addressesLinkActive, RouterModel.getCurrentPage() === PAGE_ID.USER_ADDRESSES_PAGE),
+    );
+
+    return this.toAddressesLink;
+  }
+
   private createToCartLink(): LinkModel {
     this.toCartLink = new LinkModel({
       attrs: {
@@ -296,7 +333,7 @@ class HeaderView {
     });
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
+    svg.append(createSVGUse(SVG_DETAILS.HEART));
 
     this.toWishlistLink.getHTML().append(svg);
 
@@ -353,6 +390,10 @@ class HeaderView {
 
   public getSwitchLanguageCheckbox(): InputModel {
     return this.switchLanguageCheckbox;
+  }
+
+  public getToAddressesLink(): LinkModel {
+    return this.toAddressesLink;
   }
 
   public getToCartLink(): LinkModel {

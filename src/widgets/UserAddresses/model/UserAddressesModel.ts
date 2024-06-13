@@ -37,14 +37,7 @@ class UserAddressesModel {
       };
 
       const createAddress = (activeTypes: AddressTypeType[], inactiveTypes?: AddressTypeType[]): UserAddressModel =>
-        new UserAddressModel(
-          address,
-          activeTypes,
-          (isDisabled: boolean) => {
-            this.view.toggleState(isDisabled);
-          },
-          inactiveTypes,
-        );
+        new UserAddressModel(address, activeTypes, inactiveTypes);
 
       const newAddress = determineNewAddress(addressesContainsID, defaultContainsID, user, createAddress);
 
@@ -74,8 +67,6 @@ class UserAddressesModel {
       }
     } catch (error) {
       showErrorMessage(error);
-    } finally {
-      this.view.toggleState(false);
     }
   }
 
@@ -103,14 +94,6 @@ class UserAddressesModel {
 
   public getHTML(): HTMLElement {
     return this.view.getHTML();
-  }
-
-  public hide(): void {
-    this.view.hide();
-  }
-
-  public show(): void {
-    this.view.show();
   }
 }
 

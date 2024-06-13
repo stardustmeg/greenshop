@@ -18,6 +18,7 @@ export const BUTTON_TEXT = {
     REGISTRATION: 'Register',
     RESET: 'Reset',
     SAVE_CHANGES: 'Save changes',
+    TO_ADDRESSES: 'Addresses',
   },
   ru: {
     ADD_ADDRESS: 'Добавить адрес',
@@ -32,6 +33,7 @@ export const BUTTON_TEXT = {
     REGISTRATION: 'Регистрация',
     RESET: 'Сбросить',
     SAVE_CHANGES: 'Сохранить',
+    TO_ADDRESSES: 'Адреса',
   },
 } as const;
 
@@ -48,6 +50,7 @@ export const BUTTON_TEXT_KEYS = {
   REGISTRATION: 'REGISTRATION',
   RESET: 'RESET',
   SAVE_CHANGES: 'SAVE_CHANGES',
+  TO_ADDRESSES: 'TO_ADDRESSES',
 } as const;
 
 export type ButtonTextKeysType = (typeof BUTTON_TEXT_KEYS)[keyof typeof BUTTON_TEXT_KEYS];

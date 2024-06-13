@@ -1,7 +1,6 @@
 const SVG_DETAILS = {
   ARROW_UP: 'arrowUp',
   BILL: 'bill',
-  BIN: 'bin',
   CART: 'cart',
   CLOSE: 'close',
   CLOSE_EYE: 'closeEye',
@@ -10,9 +9,9 @@ const SVG_DETAILS = {
   DELETE: 'delete',
   DELIVERY: 'delivery',
   EDIT: 'edit',
-  FILL_HEART: 'heartFill',
   GO_DETAILS: 'arrow',
-  HEART_OUTLINE: 'heartOutline',
+  HEART: 'heart',
+  HOUSE: 'house',
   KEY: 'key',
   LEAVES: 'leaves',
   LIGHT: 'light',
@@ -20,13 +19,15 @@ const SVG_DETAILS = {
   NOT_FOUND: 'notFound',
   OPEN_EYE: 'openEye',
   PROFILE: 'userCircle',
+  Plant: 'plant',
   SVG_URL: 'http://www.w3.org/2000/svg',
+
   SWITCH_LANGUAGE: {
     en: 'en',
     ru: 'ru',
   },
-  TRUCK: 'truck',
-  WALLET: 'wallet',
+  Search: 'search',
+  Settings: 'settings',
 } as const;
 
 export default SVG_DETAILS;

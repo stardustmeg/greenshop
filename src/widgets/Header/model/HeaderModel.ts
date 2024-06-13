@@ -44,10 +44,12 @@ class HeaderModel {
     const logoutButton = this.view.getLogoutButton();
     if (isUserLoggedIn) {
       this.view.getToProfileLink().setEnabled();
+      this.view.getToAddressesLink().setEnabled();
       logoutButton.setEnabled();
     } else {
       logoutButton.setDisabled();
       this.view.getToProfileLink().setDisabled();
+      this.view.getToAddressesLink().setDisabled();
     }
   }
 
