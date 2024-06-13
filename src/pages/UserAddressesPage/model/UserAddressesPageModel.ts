@@ -8,14 +8,14 @@ import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
-import UserInfoModel from '@/widgets/UserInfo/model/UserInfoModel.ts';
+import UserAddressesModel from '@/widgets/UserAddresses/model/UserAddressesModel.ts';
 
-import UserProfilePageView from '../view/UserProfilePageView.ts';
+import UserAddressesPageView from '../view/UserAddressesPageView.ts';
 
-class UserProfilePageModel implements Page {
-  private userInfo: UserInfoModel | null = null;
+class UserAddressesPageModel implements Page {
+  private addresses: UserAddressesModel | null = null;
 
-  private view: UserProfilePageView | null = null;
+  private view: UserAddressesPageView | null = null;
 
   constructor(parent: HTMLDivElement) {
     const { isUserLoggedIn } = getStore().getState();
@@ -23,7 +23,7 @@ class UserProfilePageModel implements Page {
       RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
       showErrorMessage(SERVER_MESSAGE_KEYS.NEED_LOGIN);
     } else {
-      this.view = new UserProfilePageView(parent);
+      this.view = new UserAddressesPageView(parent);
       this.init().catch(showErrorMessage);
     }
   }
@@ -32,9 +32,9 @@ class UserProfilePageModel implements Page {
     try {
       const user = await getCustomerModel().getCurrentUser();
       if (user) {
-        this.userInfo = new UserInfoModel(user);
-        this.view?.getUserProfileWrapper().append(this.userInfo.getHTML());
-        getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
+        this.addresses = new UserAddressesModel(user);
+        this.view?.getHTML().append(this.addresses.getHTML());
+        getStore().dispatch(setCurrentPage(PAGE_ID.USER_ADDRESSES_PAGE));
       }
     } catch (error) {
       showErrorMessage(SERVER_MESSAGE_KEYS.NEED_LOGIN);
@@ -45,11 +45,10 @@ class UserProfilePageModel implements Page {
     if (this.view) {
       return this.view.getHTML();
     }
-
     return createBaseElement({
       tag: 'div',
     });
   }
 }
 
-export default UserProfilePageModel;
+export default UserAddressesPageModel;

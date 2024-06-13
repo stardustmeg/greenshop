@@ -78,7 +78,7 @@ class UserAddressView {
 
   private createHTML(): HTMLDivElement {
     this.addressesWrapper = createBaseElement({
-      cssClasses: [styles.addressesWrapper, styles.hidden],
+      cssClasses: [styles.addressesWrapper],
       tag: 'div',
     });
     this.addressesWrapper.append(
@@ -111,18 +111,6 @@ class UserAddressView {
 
   public getHTML(): HTMLDivElement {
     return this.addressesWrapper;
-  }
-
-  public hide(): void {
-    this.addressesWrapper.classList.add(styles.hidden);
-  }
-
-  public show(): void {
-    this.addressesWrapper.classList.remove(styles.hidden);
-  }
-
-  public toggleState(isDisabled: boolean): void {
-    this.addressesListWrapper.classList.toggle(styles.disabled, isDisabled);
   }
 }
 

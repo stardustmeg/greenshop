@@ -68,6 +68,12 @@ class AppModel {
         );
         return new RegistrationPageModel(this.appView.getHTML());
       },
+      [PAGE_ID.USER_ADDRESSES_PAGE]: async (): Promise<Page> => {
+        const { default: UserAddressesPageModel } = await import(
+          '@/pages/UserAddressesPage/model/UserAddressesPageModel.ts'
+        );
+        return new UserAddressesPageModel(this.appView.getHTML());
+      },
       [PAGE_ID.USER_PROFILE_PAGE]: async (): Promise<Page> => {
         const { default: UserProfilePageModel } = await import('@/pages/UserProfilePage/model/UserProfilePageModel.ts');
         return new UserProfilePageModel(this.appView.getHTML());

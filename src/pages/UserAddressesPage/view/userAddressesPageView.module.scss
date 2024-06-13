@@ -1,18 +1,16 @@
 @import 'src/app/styles/mixins';
 
-.userProfilePage {
+.userAddressesPage {
   position: relative;
   display: block;
-  padding: 0 var(--small-offset);
+  margin: 0 auto;
+  width: 65%;
   animation: show 0.2s ease-out forwards;
-}
-
-.userProfileWrapper {
-  display: flex;
-  justify-content: space-evenly;
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    margin: 0;
+    padding: var(--extra-small-offset);
+    width: 100%;
   }
 }
 
