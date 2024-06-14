@@ -1,4 +1,4 @@
-import { USER_ADDRESS_TYPE } from '../forms.ts';
+import { USER_ADDRESS } from '../forms.ts';
 
 export const EMAIL = {
   inputParams: {
@@ -145,7 +145,7 @@ export const SHIPPING_ADDRESS_COUNTRY = {
   inputParams: {
     autocomplete: 'off',
     data: {
-      addressType: USER_ADDRESS_TYPE.SHIPPING,
+      addressType: USER_ADDRESS.SHIPPING,
     },
     placeholder: 'Canada',
     type: 'text',
@@ -162,7 +162,7 @@ export const SHIPPING_ADDRESS_POSTAL_CODE = {
   inputParams: {
     autocomplete: 'off',
     data: {
-      addressType: USER_ADDRESS_TYPE.SHIPPING,
+      addressType: USER_ADDRESS.SHIPPING,
     },
     placeholder: 'A1B 2C3',
     type: 'text',
@@ -207,7 +207,7 @@ export const BILLING_ADDRESS_COUNTRY = {
   inputParams: {
     autocomplete: 'off',
     data: {
-      addressType: USER_ADDRESS_TYPE.BILLING,
+      addressType: USER_ADDRESS.BILLING,
     },
     placeholder: 'Canada',
     type: 'text',
@@ -224,7 +224,7 @@ export const BILLING_ADDRESS_POSTAL_CODE = {
   inputParams: {
     autocomplete: 'off',
     data: {
-      addressType: USER_ADDRESS_TYPE.BILLING,
+      addressType: USER_ADDRESS.BILLING,
     },
     placeholder: 'A1B 2C3',
     type: 'text',
@@ -236,23 +236,6 @@ export const BILLING_ADDRESS_POSTAL_CODE = {
     },
   },
 } as const;
-
-export const INPUT = [
-  EMAIL,
-  EMAIL_NOT_LABEL_TEXT,
-  PASSWORD,
-  FIRST_NAME,
-  LAST_NAME,
-  BIRTHDAY,
-  SHIPPING_ADDRESS_STREET,
-  SHIPPING_ADDRESS_CITY,
-  SHIPPING_ADDRESS_COUNTRY,
-  SHIPPING_ADDRESS_POSTAL_CODE,
-  BILLING_ADDRESS_STREET,
-  BILLING_ADDRESS_CITY,
-  BILLING_ADDRESS_COUNTRY,
-  BILLING_ADDRESS_POSTAL_CODE,
-];
 
 export const CHECKBOX = {
   AUTOCOMPLETE: 'off',

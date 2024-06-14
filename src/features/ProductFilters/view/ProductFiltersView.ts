@@ -12,7 +12,7 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { META_FILTERS, META_FILTERS_ID, PRICE_RANGE_LABEL, TITLE } from '@/shared/constants/filters.ts';
+import { META_FILTER, META_FILTER_ID, PRICE_RANGE_LABEL, TITLE } from '@/shared/constants/filters.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
@@ -230,28 +230,24 @@ class ProductFiltersView {
     const currentLanguage = getCurrentLanguage();
 
     const allProductsLink = this.createMetaLink(
-      META_FILTERS[currentLanguage].ALL_PRODUCTS,
-      META_FILTERS_ID.ALL_PRODUCTS,
-      META_FILTERS.en.ALL_PRODUCTS,
+      META_FILTER[currentLanguage].ALL_PRODUCTS,
+      META_FILTER_ID.ALL_PRODUCTS,
+      META_FILTER.en.ALL_PRODUCTS,
     );
     const newArrivalsLink = this.createMetaLink(
-      META_FILTERS[currentLanguage].NEW_ARRIVALS,
-      META_FILTERS_ID.NEW_ARRIVALS,
-      META_FILTERS.en.NEW_ARRIVALS,
+      META_FILTER[currentLanguage].NEW_ARRIVALS,
+      META_FILTER_ID.NEW_ARRIVALS,
+      META_FILTER.en.NEW_ARRIVALS,
     );
-    const saleLink = this.createMetaLink(
-      META_FILTERS[currentLanguage].SALE,
-      META_FILTERS_ID.SALE,
-      META_FILTERS.en.SALE,
-    );
+    const saleLink = this.createMetaLink(META_FILTER[currentLanguage].SALE, META_FILTER_ID.SALE, META_FILTER.en.SALE);
     allProductsLink.getHTML().classList.add(styles.activeLink);
     this.metaFilters.append(allProductsLink.getHTML(), newArrivalsLink.getHTML(), saleLink.getHTML());
 
     observeStore(selectCurrentLanguage, () => {
       const currentLanguage = getCurrentLanguage();
-      allProductsLink.getHTML().textContent = META_FILTERS[currentLanguage].ALL_PRODUCTS;
-      newArrivalsLink.getHTML().textContent = META_FILTERS[currentLanguage].NEW_ARRIVALS;
-      saleLink.getHTML().textContent = META_FILTERS[currentLanguage].SALE;
+      allProductsLink.getHTML().textContent = META_FILTER[currentLanguage].ALL_PRODUCTS;
+      newArrivalsLink.getHTML().textContent = META_FILTER[currentLanguage].NEW_ARRIVALS;
+      saleLink.getHTML().textContent = META_FILTER[currentLanguage].SALE;
     });
 
     return this.metaFilters;
@@ -405,7 +401,7 @@ class ProductFiltersView {
       this.categoryLinks.forEach((link) => this.switchSelectedFilter(link, false));
       this.metaLinks.forEach((link) => {
         this.switchSelectedFilter(link, false);
-        if (link.getHTML().id === META_FILTERS.en.ALL_PRODUCTS) {
+        if (link.getHTML().id === META_FILTER.en.ALL_PRODUCTS) {
           this.switchSelectedFilter(link, true);
         }
       });

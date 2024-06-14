@@ -47,7 +47,7 @@ export const PRODUCT_INFO_TEXT = {
   },
 } as const;
 
-export const PRODUCT_INFO_TEXT_KEYS = {
+export const PRODUCT_INFO_TEXT_KEY = {
   CATEGORY: 'CATEGORY',
   DIFFICULTY: 'DIFFICULTY',
   DISCOUNT_LABEL: 'DISCOUNT_LABEL',
@@ -55,10 +55,3 @@ export const PRODUCT_INFO_TEXT_KEYS = {
   SHORT_DESCRIPTION: 'SHORT_DESCRIPTION',
   SIZE: 'SIZE',
 } as const;
-
-export const PRODUCT_LIST = {
-  CART: 'cart',
-  SHOPPING_LIST: 'shoppingList',
-} as const;
-
-export type ProductListType = (typeof PRODUCT_LIST)[keyof typeof PRODUCT_LIST];

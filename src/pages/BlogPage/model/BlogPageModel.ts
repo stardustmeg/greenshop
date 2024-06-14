@@ -1,4 +1,4 @@
-import type { Post } from '@/shared/constants/blog.ts';
+import type { Post } from '@/shared/types/blog.ts';
 import type { Page } from '@/shared/types/page.ts';
 
 import PostView from '@/entities/Post/view/PostView.ts';

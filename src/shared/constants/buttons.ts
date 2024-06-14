@@ -1,6 +1,4 @@
 export const BUTTON_TYPE = {
-  BUTTON: 'button',
-  RESET: 'reset',
   SUBMIT: 'submit',
 } as const;
 
@@ -35,7 +33,7 @@ export const BUTTON_TEXT = {
   },
 } as const;
 
-export const BUTTON_TEXT_KEYS = {
+export const BUTTON_TEXT_KEY = {
   ADD_ADDRESS: 'ADD_ADDRESS',
   ADD_PRODUCT: 'ADD_PRODUCT',
   BACK_TO_MAIN: 'BACK_TO_MAIN',
@@ -50,8 +48,6 @@ export const BUTTON_TEXT_KEYS = {
   SAVE_CHANGES: 'SAVE_CHANGES',
 } as const;
 
-export type ButtonTextKeysType = (typeof BUTTON_TEXT_KEYS)[keyof typeof BUTTON_TEXT_KEYS];
-
 export const IS_DISABLED = {
   DISABLED: true,
   ENABLED: false,
@@ -60,11 +56,9 @@ export const IS_DISABLED = {
 export const MORE_TEXT = {
   en: { HIDE: 'Hide', MORE: 'More' },
   ru: { HIDE: 'Скрыть', MORE: 'Подробнее' },
-};
+} as const;
 
-export const MORE_TEXT_KEYS = {
+export const MORE_TEXT_KEY = {
   HIDE: 'HIDE',
   MORE: 'MORE',
-};
-
-export type MoreTextKeysType = (typeof MORE_TEXT_KEYS)[keyof typeof MORE_TEXT_KEYS];
+} as const;

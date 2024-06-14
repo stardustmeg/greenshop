@@ -7,9 +7,9 @@ import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS } from '@/shared/constants/product.ts';
+import { PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEY } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
@@ -84,7 +84,7 @@ class ProductInfoView {
       tag: 'span',
     });
 
-    observeCurrentLanguage(this.categoriesSpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS.CATEGORY);
+    observeCurrentLanguage(this.categoriesSpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEY.CATEGORY);
 
     const category = this.params.category[0].parent?.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
     const subcategory = this.params.category[0].name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
@@ -116,8 +116,8 @@ class ProductInfoView {
         tag: 'span',
       });
 
-      const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-      svg.append(createSVGUse(SVG_DETAILS.LEAVES));
+      const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+      svg.append(createSVGUse(SVG_DETAIL.LEAVES));
       difficultyPoint.append(svg);
 
       difficultyPoints.push(difficultyPoint);
@@ -161,8 +161,8 @@ class ProductInfoView {
       classes: ['nextSlideButton'],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.ARROW_UP));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.ARROW_UP));
     this.nextSlideButton.getHTML().append(svg);
     return this.nextSlideButton;
   }
@@ -171,8 +171,8 @@ class ProductInfoView {
     this.prevSlideButton = new ButtonModel({
       classes: ['prevSlideButton'],
     });
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.ARROW_UP));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.ARROW_UP));
     this.prevSlideButton.getHTML().append(svg);
     return this.prevSlideButton;
   }
@@ -221,7 +221,7 @@ class ProductInfoView {
         tag: 'span',
       });
 
-      observeCurrentLanguage(difficultySpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS.DIFFICULTY);
+      observeCurrentLanguage(difficultySpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEY.DIFFICULTY);
 
       difficultySpan.append(...this.createDifficultyPoints());
       this.rightWrapper.append(difficultySpan);
@@ -249,8 +249,8 @@ class ProductInfoView {
 
     currentSKU.getHTML().classList.add('currentSKU');
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.COPY));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.COPY));
 
     svg.addEventListener('click', () => {
       window.navigator.clipboard

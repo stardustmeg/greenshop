@@ -5,7 +5,7 @@ import type { languageVariants } from '@/shared/types/common';
 
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import { LANGUAGE_CHOICE, TABLET_WIDTH } from '@/shared/constants/common.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import { CartActive } from '@/shared/types/cart.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -79,8 +79,8 @@ class ProductOrderView {
     const tdDelete = createBaseElement({ cssClasses: [styles.td, styles.deleteCell, styles.hide], tag: 'td' });
     this.deleteButton.addEventListener('click', () => this.callback(CartActive.DELETE));
     tdDelete.append(this.deleteButton);
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.DELETE));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.DELETE));
     this.deleteButton.append(svg);
     return tdDelete;
   }

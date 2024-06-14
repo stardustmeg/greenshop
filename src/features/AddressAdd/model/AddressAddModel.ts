@@ -10,9 +10,9 @@ import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import { ADDRESS_TYPE } from '@/shared/types/address.ts';
+import { ADDRESS } from '@/shared/types/address.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
@@ -59,7 +59,7 @@ class AddressAddModel {
     const { city, postalCode, streetName } = this.getFormAddressData();
     return {
       city,
-      country: this.addressType === ADDRESS_TYPE.BILLING ? store.billingCountry : store.shippingCountry,
+      country: this.addressType === ADDRESS.BILLING ? store.billingCountry : store.shippingCountry,
       email,
       firstName,
       id: '',
@@ -91,7 +91,7 @@ class AddressAddModel {
 
   private getAddressActions(addressId: string): MyCustomerUpdateAction[] {
     const addAddressAction =
-      this.addressType === ADDRESS_TYPE.BILLING
+      this.addressType === ADDRESS.BILLING
         ? CustomerModel.actionAddBillingAddress(addressId)
         : CustomerModel.actionAddShippingAddress(addressId);
 
@@ -99,7 +99,7 @@ class AddressAddModel {
   }
 
   private getDefaultAddressAction(addressId: string): MyCustomerUpdateAction {
-    return this.addressType === ADDRESS_TYPE.BILLING
+    return this.addressType === ADDRESS.BILLING
       ? CustomerModel.actionEditDefaultBillingAddress(addressId)
       : CustomerModel.actionEditDefaultShippingAddress(addressId);
   }
@@ -119,7 +119,7 @@ class AddressAddModel {
 
   private handleSuccess(): void {
     EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_ADDRESSES, '');
-    showSuccessMessage(SERVER_MESSAGE_KEYS.ADDRESS_ADDED);
+    showSuccessMessage(SERVER_MESSAGE_KEY.ADDRESS_ADDED);
     modal.hide();
   }
 

@@ -3,7 +3,7 @@ import InputModel from '@/shared/Input/model/InputModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
-import { TEXT } from '@/shared/constants/sorting.ts';
+import { SORTING_TEXT } from '@/shared/constants/sorting.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
@@ -31,7 +31,7 @@ class ProductSearchView {
 
   private createSearchField(): InputModel {
     this.searchField = new InputModel({
-      placeholder: TEXT[getCurrentLanguage()].SEARCH,
+      placeholder: SORTING_TEXT[getCurrentLanguage()].SEARCH,
       type: INPUT_TYPE.SEARCH,
     });
 
@@ -41,7 +41,7 @@ class ProductSearchView {
     }
 
     observeStore(selectCurrentLanguage, () => {
-      this.searchField.getHTML().placeholder = TEXT[getCurrentLanguage()].SEARCH;
+      this.searchField.getHTML().placeholder = SORTING_TEXT[getCurrentLanguage()].SEARCH;
     });
 
     this.searchField.getHTML().classList.add(styles.searchField);

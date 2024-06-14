@@ -7,13 +7,6 @@ export const MESSAGE_STATUS = {
 
 export type MessageStatusType = (typeof MESSAGE_STATUS)[keyof typeof MESSAGE_STATUS];
 
-export const MESSAGE_STATUS_KEYS = {
-  ERROR: 'ERROR',
-  SUCCESS: 'SUCCESS',
-} as const;
-
-export type MessageStatusKeysType = (typeof MESSAGE_STATUS_KEYS)[keyof typeof MESSAGE_STATUS_KEYS];
-
 export const SERVER_MESSAGE: Record<LanguageChoiceType, Record<string, string>> = {
   en: {
     ADDRESS_ADDED: 'Address has been added successfully',
@@ -77,7 +70,7 @@ export const SERVER_MESSAGE: Record<LanguageChoiceType, Record<string, string>> 
   },
 } as const;
 
-export const SERVER_MESSAGE_KEYS: Record<string, string> = {
+export const SERVER_MESSAGE_KEY: Record<string, string> = {
   ADDRESS_ADDED: 'ADDRESS_ADDED',
   ADDRESS_CHANGED: 'ADDRESS_CHANGED',
   ADDRESS_DELETED: 'ADDRESS_DELETED',
@@ -108,7 +101,7 @@ export const SERVER_MESSAGE_KEYS: Record<string, string> = {
   USER_EXISTS: 'USER_EXISTS',
 } as const;
 
-export type ServerMessageKeysType = (typeof SERVER_MESSAGE_KEYS)[keyof typeof SERVER_MESSAGE_KEYS];
+export type ServerMessageKeyType = (typeof SERVER_MESSAGE_KEY)[keyof typeof SERVER_MESSAGE_KEY];
 
 export const ERROR_MESSAGE = {
   en: {
@@ -123,11 +116,4 @@ export const ERROR_MESSAGE = {
     REQUIRED_FIELD: 'Поле обязательно для заполнения',
     WRONG_REGION: 'Извините, но мы еще не доставляем в ваш регион',
   },
-} as const;
-
-export const ERROR_MESSAGE_KEYS = {
-  INVALID_COUNTRY: 'INVALID_COUNTRY',
-  INVALID_POSTAL_CODE: 'INVALID_POSTAL_CODE',
-  REQUIRED_FIELD: 'REQUIRED_FIELD',
-  WRONG_REGION: 'WRONG_REGION',
 } as const;

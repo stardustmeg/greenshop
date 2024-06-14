@@ -5,7 +5,7 @@ import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
@@ -150,9 +150,9 @@ class PasswordEditView {
 
   public switchPasswordElementSVG(type: string, el: HTMLDivElement): SVGSVGElement {
     const element = el;
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
     element.innerHTML = '';
-    svg.append(createSVGUse(type === INPUT_TYPE.PASSWORD ? SVG_DETAILS.CLOSE_EYE : SVG_DETAILS.OPEN_EYE));
+    svg.append(createSVGUse(type === INPUT_TYPE.PASSWORD ? SVG_DETAIL.CLOSE_EYE : SVG_DETAIL.OPEN_EYE));
     element.append(svg);
     return svg;
   }

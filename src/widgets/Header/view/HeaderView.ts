@@ -8,12 +8,12 @@ import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { switchAppTheme } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentPage, selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEY } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import APP_THEME from '@/shared/constants/styles.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
@@ -115,7 +115,7 @@ class HeaderView {
   }
 
   private createLanguageSVG(lang: LanguageChoiceType): SVGSVGElement {
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
     svg.append(createSVGUse(lang));
     return svg;
   }
@@ -128,8 +128,8 @@ class HeaderView {
       classes: [styles.logo],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.LOGO));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.LOGO));
     this.linkLogo.getHTML().append(svg);
     return this.linkLogo;
   }
@@ -140,7 +140,7 @@ class HeaderView {
       text: BUTTON_TEXT[getCurrentLanguage()].LOG_OUT,
     });
 
-    observeCurrentLanguage(this.logoutButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.LOG_OUT);
+    observeCurrentLanguage(this.logoutButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEY.LOG_OUT);
 
     return this.logoutButton;
   }
@@ -221,12 +221,12 @@ class HeaderView {
       cssClasses: [styles.switchThemeLabelSpan],
       tag: 'span',
     });
-    const darkSVG = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    const darkSVG = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
     darkSVG.classList.add(styles.darkSVG);
-    const lightSVG = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    const lightSVG = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
     lightSVG.classList.add(styles.lightSVG);
-    darkSVG.append(createSVGUse(SVG_DETAILS.DARK));
-    lightSVG.append(createSVGUse(SVG_DETAILS.LIGHT));
+    darkSVG.append(createSVGUse(SVG_DETAIL.DARK));
+    lightSVG.append(createSVGUse(SVG_DETAIL.LIGHT));
 
     label.append(darkSVG, lightSVG, this.switchThemeCheckbox.getHTML(), span);
     return label;
@@ -240,8 +240,8 @@ class HeaderView {
       classes: [styles.addressesLink],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.HOUSE));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.HOUSE));
     this.toAddressesLink.getHTML().append(svg);
 
     if (!getStore().getState().isUserLoggedIn) {
@@ -273,8 +273,8 @@ class HeaderView {
       classes: [styles.cartLink],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.CART));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.CART));
 
     this.toCartLink.getHTML().append(svg);
 
@@ -299,8 +299,8 @@ class HeaderView {
       classes: [styles.profileLink],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.PROFILE));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.PROFILE));
     this.toProfileLink.getHTML().append(svg);
 
     if (!getStore().getState().isUserLoggedIn) {
@@ -332,8 +332,8 @@ class HeaderView {
       classes: [styles.wishListLink],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.HEART));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.HEART));
 
     this.toWishlistLink.getHTML().append(svg);
 

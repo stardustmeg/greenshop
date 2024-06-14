@@ -1,4 +1,4 @@
-import type { Post } from '@/shared/constants/blog';
+import type { Post } from '../types/blog';
 
 const postsData: Post[] = [
   {

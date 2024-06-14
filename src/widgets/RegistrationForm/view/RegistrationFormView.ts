@@ -1,5 +1,5 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEY, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
@@ -34,7 +34,7 @@ class RegistrationFormView {
       classes: [styles.submitFormButton],
       text: BUTTON_TEXT[getCurrentLanguage()].REGISTRATION,
     });
-    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.REGISTRATION);
+    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEY.REGISTRATION);
     this.submitFormButton.setDisabled();
 
     return this.submitFormButton;

@@ -1,5 +1,5 @@
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { KEYBOARD_KEYS } from '@/shared/constants/keyboard.ts';
+import KEYBOARD_KEY from '@/shared/constants/keyboard.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
@@ -25,7 +25,7 @@ class CountryChoiceView {
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === KEYBOARD_KEYS.TAB && !this.getHTML().classList.contains(styles.hidden)) {
+      if (event.key === KEYBOARD_KEY.TAB && !this.getHTML().classList.contains(styles.hidden)) {
         this.hideCountryChoice();
       }
     });

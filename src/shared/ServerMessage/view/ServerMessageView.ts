@@ -1,4 +1,4 @@
-import type { MessageStatusType, ServerMessageKeysType } from '@/shared/constants/messages.ts';
+import type { MessageStatusType, ServerMessageKeyType } from '@/shared/constants/messages.ts';
 
 import SERVER_MESSAGE_ANIMATE_DETAILS, {
   SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_END,
@@ -78,7 +78,7 @@ class ServerMessageView {
     return this.serverWrapper;
   }
 
-  public setServerMessage(status: MessageStatusType, keyOrMessage?: ServerMessageKeysType, message?: string): boolean {
+  public setServerMessage(status: MessageStatusType, keyOrMessage?: ServerMessageKeyType, message?: string): boolean {
     const currentLanguage = getCurrentLanguage();
 
     this.serverWrapper.classList.toggle(styles.error, status === MESSAGE_STATUS.ERROR);

@@ -4,7 +4,7 @@ export const PAGE_TITLE: Record<LanguageChoiceType, Record<string, string>> = {
   en: {
     404: '404',
     about: 'About us',
-    address: 'Address',
+    addresses: 'Addresses',
     blog: 'Blog',
     cart: 'Cart',
     catalog: 'Catalog',
@@ -19,7 +19,7 @@ export const PAGE_TITLE: Record<LanguageChoiceType, Record<string, string>> = {
   ru: {
     404: '404',
     about: 'О нас',
-    address: 'Адрес',
+    addresses: 'Адреса',
     blog: 'Блог',
     cart: 'Корзина',
     catalog: 'Каталог',
@@ -38,7 +38,6 @@ export const PAGE_DESCRIPTION = {
     404: 'This is not the page you are looking for. Please go back to the main page.',
     ABOUT: 'Mad Wizards Team 🧙🏻🪄✨',
     BLOG: 'Blog',
-    GREETING: 'Hi, ',
     LOGIN: 'Enter your email and password to login.',
     REGISTRATION: 'Enter your information to register.',
   },
@@ -46,7 +45,6 @@ export const PAGE_DESCRIPTION = {
     404: 'Это не та страница, которую вы ищете. Пожалуйста, вернитесь на главную страницу.',
     ABOUT: 'Команда Бешеных Магов 🧙🏻🪄✨',
     BLOG: 'Блог',
-    GREETING: 'Привет, ',
     LOGIN: 'Введите свой адрес электронной почты и пароль для входа.',
     REGISTRATION: 'Введите свои данные для регистрации.',
   },
@@ -69,7 +67,7 @@ export const BLOG_DESCRIPTION = {
   },
 } as const;
 
-export const PAGE_DESCRIPTION_KEYS = {
+export const PAGE_DESCRIPTION_KEY = {
   404: '404',
   BLOG: 'BLOG',
   GREETING: 'GREETING',
@@ -77,27 +75,24 @@ export const PAGE_DESCRIPTION_KEYS = {
   REGISTRATION: 'REGISTRATION',
 } as const;
 
-export type PageDescriptionKeysType = (typeof PAGE_DESCRIPTION_KEYS)[keyof typeof PAGE_DESCRIPTION_KEYS];
-
 export const PAGE_ANSWER = {
   en: {
-    LOGIN: `Don't have an account yet?`,
-    REGISTRATION: `Already have an account?`,
+    LOGIN: "Don't have an account yet?",
+    REGISTRATION: 'Already have an account?',
   },
   ru: {
-    LOGIN: `Ещё нет аккаунта?`,
-    REGISTRATION: `Уже есть аккаунт?`,
+    LOGIN: 'Ещё нет аккаунта?',
+    REGISTRATION: 'Уже есть аккаунт?',
   },
 } as const;
 
-export const PAGE_ANSWER_KEYS = {
+export const PAGE_ANSWER_KEY = {
   LOGIN: 'LOGIN',
   REGISTRATION: 'REGISTRATION',
 } as const;
 
 export const PAGE_ID = {
   ABOUT_US_PAGE: 'about',
-  ADDRESS: 'address',
   BLOG: 'blog',
   CART_PAGE: 'cart',
   CATALOG_PAGE: 'catalog',
@@ -113,67 +108,19 @@ export const PAGE_ID = {
   WISHLIST_PAGE: 'wishlist',
 } as const;
 
+export type PageIdType = (typeof PAGE_ID)[keyof typeof PAGE_ID];
+
 export const USER_INFO_TEXT = {
   en: {
-    BILLING: ' (billing)',
     DATE_OF_BIRTH: 'Date of Birth: ',
-    DEFAULT_BILLING_ADDRESS: ' (default billing)',
-    DEFAULT_SHIPPING_ADDRESS: ' (default shipping)',
     EMAIL: 'Email: ',
     LAST_NAME: 'Last Name: ',
     NAME: 'First Name: ',
-    SHIPPING: ' (shipping)',
   },
   ru: {
-    BILLING: ' (оплата)',
     DATE_OF_BIRTH: 'Дата рождения: ',
-    DEFAULT_BILLING_ADDRESS: ' (по умолчанию - для оплаты)',
-    DEFAULT_SHIPPING_ADDRESS: ' (по умолчанию - для доставки)',
     EMAIL: 'Электронная почта: ',
     LAST_NAME: 'Фамилия: ',
     NAME: 'Имя: ',
-    SHIPPING: ' (доставка)',
   },
 } as const;
-
-export const USER_INFO_TEXT_KEYS = {
-  BILLING: 'BILLING',
-  DATE_OF_BIRTH: 'DATE_OF_BIRTH',
-  DEFAULT_BILLING_ADDRESS: 'DEFAULT_BILLING_ADDRESS',
-  DEFAULT_SHIPPING_ADDRESS: 'DEFAULT_SHIPPING_ADDRESS',
-  EMAIL: 'EMAIL',
-  LAST_NAME: 'LAST_NAME',
-  NAME: 'NAME',
-  SHIPPING: 'SHIPPING',
-} as const;
-
-export type UserInfoTextKeysType = (typeof USER_INFO_TEXT_KEYS)[keyof typeof USER_INFO_TEXT_KEYS];
-
-export const USER_INFO_MENU_LINK = {
-  en: {
-    ADDRESSES: 'Addresses',
-    ORDERS: 'Orders',
-    PERSONAL_INFO: 'Personal Info',
-    SUPPORT: 'Support',
-    WISHLIST: 'Wishlist',
-  },
-  ru: {
-    ADDRESSES: 'Адреса',
-    ORDERS: 'Заказы',
-    PERSONAL_INFO: 'Персональные данные',
-    SUPPORT: 'Поддержка',
-    WISHLIST: 'Избранное',
-  },
-} as const;
-
-export const USER_INFO_MENU_LINK_KEYS = {
-  ADDRESSES: 'ADDRESSES',
-  ORDERS: 'ORDERS',
-  PERSONAL_INFO: 'PERSONAL_INFO',
-  SUPPORT: 'SUPPORT',
-  WISHLIST: 'WISHLIST',
-} as const;
-
-export type UserInfoMenuLinkKeysType = (typeof USER_INFO_MENU_LINK_KEYS)[keyof typeof USER_INFO_MENU_LINK_KEYS];
-
-export type PageIdType = (typeof PAGE_ID)[keyof typeof PAGE_ID];

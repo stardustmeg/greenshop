@@ -1,5 +1,5 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEY, BUTTON_TYPE } from '@/shared/constants/buttons.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
@@ -35,7 +35,7 @@ class LoginFormView {
       text: BUTTON_TEXT[getCurrentLanguage()].LOGIN,
     });
 
-    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.LOGIN);
+    observeCurrentLanguage(this.submitFormButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEY.LOGIN);
 
     this.submitFormButton.setDisabled();
 

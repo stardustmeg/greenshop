@@ -4,7 +4,7 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
@@ -128,8 +128,8 @@ class ProductModalSliderView {
       classes: [styles.nextSlideButton],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.ARROW_UP));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.ARROW_UP));
     this.nextSlideButton.getHTML().append(svg);
     return this.nextSlideButton;
   }
@@ -138,8 +138,8 @@ class ProductModalSliderView {
     this.prevSlideButton = new ButtonModel({
       classes: [styles.prevSlideButton],
     });
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.ARROW_UP));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.ARROW_UP));
     this.prevSlideButton.getHTML().append(svg);
     return this.prevSlideButton;
   }

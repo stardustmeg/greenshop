@@ -28,7 +28,7 @@ const TOOLTIP_TEXT: Record<string, Record<string, string>> = {
   },
 } as const;
 
-export const TOOLTIP_TEXT_KEYS = {
+export const TOOLTIP_TEXT_KEY = {
   ADD_BILLING_ADDRESS: 'ADD_BILLING_ADDRESS',
   ADD_SHIPPING_ADDRESS: 'ADD_SHIPPING_ADDRESS',
   DELETE_ADDRESS: 'DELETE_ADDRESS',
@@ -42,6 +42,6 @@ export const TOOLTIP_TEXT_KEYS = {
   SWITCH_SHIPPING_ADDRESS: 'SWITCH_SHIPPING_ADDRESS',
 };
 
-export type TooltipTextKeysType = (typeof TOOLTIP_TEXT_KEYS)[keyof typeof TOOLTIP_TEXT_KEYS];
+export type TooltipTextKeyType = (typeof TOOLTIP_TEXT_KEY)[keyof typeof TOOLTIP_TEXT_KEY];
 
 export default TOOLTIP_TEXT;

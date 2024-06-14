@@ -10,7 +10,7 @@ import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
-import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { showSuccessMessage } from '@/shared/utils/userMessage.ts';
@@ -530,7 +530,7 @@ class FooterView {
 
     submit.getHTML().addEventListener('click', () => {
       email.getView().getInput().clear();
-      showSuccessMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_SUBSCRIBE);
+      showSuccessMessage(SERVER_MESSAGE_KEY.SUCCESSFUL_SUBSCRIBE);
       submit.setDisabled();
     });
 

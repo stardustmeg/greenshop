@@ -1,12 +1,12 @@
-import type { TooltipTextKeysType } from '@/shared/constants/tooltip.ts';
+import type { TooltipTextKeyType } from '@/shared/constants/tooltip.ts';
 import type { Address } from '@/shared/types/user';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { ADDRESS_TEXT, ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
-import TOOLTIP_TEXT, { TOOLTIP_TEXT_KEYS } from '@/shared/constants/tooltip.ts';
+import { ADDRESS, ADDRESS_TEXT, type AddressType } from '@/shared/constants/forms.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
+import TOOLTIP_TEXT, { TOOLTIP_TEXT_KEY } from '@/shared/constants/tooltip.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
@@ -25,7 +25,7 @@ class UserAddressView {
 
   private editButton: ButtonModel;
 
-  private labels: Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }> = new Map();
+  private labels: Map<HTMLDivElement, { inactive?: boolean; type: AddressType }> = new Map();
 
   private labelsWrapper: HTMLDivElement;
 
@@ -35,7 +35,7 @@ class UserAddressView {
 
   private view: HTMLLIElement;
 
-  constructor(address: Address, types: AddressTypeType[], inactiveTypes?: AddressTypeType[]) {
+  constructor(address: Address, types: AddressType[], inactiveTypes?: AddressType[]) {
     this.currentAddress = address;
     this.deleteButton = this.createDeleteButton();
     this.editButton = this.createEditButton();
@@ -106,8 +106,8 @@ class UserAddressView {
       title: TOOLTIP_TEXT[getCurrentLanguage()].DELETE_ADDRESS,
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.DELETE));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.DELETE));
     this.deleteButton.getHTML().append(svg);
 
     observeStore(selectCurrentLanguage, () => {
@@ -123,8 +123,8 @@ class UserAddressView {
       title: TOOLTIP_TEXT[getCurrentLanguage()].EDIT_ADDRESS,
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.EDIT));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.EDIT));
     this.editButton.getHTML().append(svg);
 
     observeStore(selectCurrentLanguage, () => {
@@ -134,7 +134,7 @@ class UserAddressView {
     return this.editButton;
   }
 
-  private createHTML(activeTypes: AddressTypeType[], inactiveTypes?: AddressTypeType[]): HTMLLIElement {
+  private createHTML(activeTypes: AddressType[], inactiveTypes?: AddressType[]): HTMLLIElement {
     this.view = createBaseElement({
       cssClasses: [styles.addressItem],
       tag: 'li',
@@ -167,7 +167,7 @@ class UserAddressView {
     return this.view;
   }
 
-  private createLabel(text: string, additionalStyles: string[], titleKey: TooltipTextKeysType): HTMLDivElement {
+  private createLabel(text: string, additionalStyles: string[], titleKey: TooltipTextKeyType): HTMLDivElement {
     const label = createBaseElement({
       cssClasses: [styles.addressType, ...additionalStyles],
       innerContent: text,
@@ -240,33 +240,33 @@ class UserAddressView {
     return this.streetNameSpan;
   }
 
-  private setActiveAddressLabel(ActiveType: AddressTypeType, inactive?: boolean): void {
+  private setActiveAddressLabel(ActiveType: AddressType, inactive?: boolean): void {
     let addressType = null;
     switch (ActiveType) {
-      case ADDRESS_TYPE.BILLING:
-        addressType = this.createLabel(ActiveType, [styles.billing], TOOLTIP_TEXT_KEYS.SWITCH_BILLING_ADDRESS);
+      case ADDRESS.BILLING:
+        addressType = this.createLabel(ActiveType, [styles.billing], TOOLTIP_TEXT_KEY.SWITCH_BILLING_ADDRESS);
         this.labelsWrapper.append(addressType);
         break;
 
-      case ADDRESS_TYPE.SHIPPING:
-        addressType = this.createLabel(ActiveType, [styles.shipping], TOOLTIP_TEXT_KEYS.SWITCH_SHIPPING_ADDRESS);
+      case ADDRESS.SHIPPING:
+        addressType = this.createLabel(ActiveType, [styles.shipping], TOOLTIP_TEXT_KEY.SWITCH_SHIPPING_ADDRESS);
         this.labelsWrapper.append(addressType);
         break;
 
-      case ADDRESS_TYPE.DEFAULT_BILLING:
+      case ADDRESS.DEFAULT_BILLING:
         addressType = this.createLabel(
           ActiveType,
           [styles.defaultBilling],
-          TOOLTIP_TEXT_KEYS.SWITCH_DEFAULT_BILLING_ADDRESS,
+          TOOLTIP_TEXT_KEY.SWITCH_DEFAULT_BILLING_ADDRESS,
         );
         this.labelsWrapper.append(addressType);
         break;
 
-      case ADDRESS_TYPE.DEFAULT_SHIPPING:
+      case ADDRESS.DEFAULT_SHIPPING:
         addressType = this.createLabel(
           ActiveType,
           [styles.defaultShipping],
-          TOOLTIP_TEXT_KEYS.SWITCH_DEFAULT_SHIPPING_ADDRESS,
+          TOOLTIP_TEXT_KEY.SWITCH_DEFAULT_SHIPPING_ADDRESS,
         );
         this.labelsWrapper.append(addressType);
         break;
@@ -302,7 +302,7 @@ class UserAddressView {
     return this.view;
   }
 
-  public getLabels(): Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }> {
+  public getLabels(): Map<HTMLDivElement, { inactive?: boolean; type: AddressType }> {
     return this.labels;
   }
 

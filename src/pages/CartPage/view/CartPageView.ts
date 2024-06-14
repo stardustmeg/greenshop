@@ -10,7 +10,7 @@ import ConfirmModel from '@/shared/Confirm/model/ConfirmModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
+import USER_MESSAGE from '@/shared/constants/confirmUserMessage.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';

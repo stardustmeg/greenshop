@@ -4,7 +4,7 @@ import PromoCodeSliderModel from '@/entities/PromocodeSlider/model/PromoCodeSlid
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-import BlogWidgetModel from '@/widgets/Blog/model/BogWidgetModel.ts';
+import BlogWidgetModel from '@/widgets/Blog/model/BlogWidgetModel.ts';
 
 import MainPageView from '../view/MainPageView.ts';
 

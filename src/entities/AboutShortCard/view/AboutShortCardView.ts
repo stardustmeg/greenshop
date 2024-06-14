@@ -3,8 +3,8 @@ import type { AboutData, AboutLabel } from '@/shared/types/validation/aboutData'
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage, selectCurrentTheme } from '@/shared/Store/observer.ts';
-import { LINK_DETAILS } from '@/shared/constants/links.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import { LINK_DETAIL } from '@/shared/constants/links.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import changeColor from '@/shared/utils/changeColor.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse, { changeFill, changeStroke } from '@/shared/utils/createSVGUse.ts';
@@ -25,7 +25,7 @@ class AboutShortCardView {
     const avatar = new LinkModel({
       attrs: {
         href: this.params.github.link,
-        target: LINK_DETAILS.BLANK,
+        target: LINK_DETAIL.BLANK,
       },
       classes: [styles.avatar],
     });
@@ -57,8 +57,8 @@ class AboutShortCardView {
       tag: 'span',
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.PROFILE));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.PROFILE));
     changeStroke(svg, this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
 
     observeStore(selectCurrentTheme, () => {
@@ -79,7 +79,7 @@ class AboutShortCardView {
     const githubName = new LinkModel({
       attrs: {
         href: this.params.github.link,
-        target: LINK_DETAILS.BLANK,
+        target: LINK_DETAIL.BLANK,
       },
       classes: [styles.githubName],
       text: this.params.github.name,
@@ -181,8 +181,8 @@ class AboutShortCardView {
       tag: 'span',
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.STAR));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.STAR));
     changeFill(svg, this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
 
     observeStore(selectCurrentTheme, () => {

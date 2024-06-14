@@ -1,6 +1,6 @@
 .serverMessageWrapper {
   position: fixed;
-  right: 0;
+  left: 0;
   top: 20%;
   z-index: 15;
   border: var(--two) solid var(--steam-green-800);
@@ -13,7 +13,7 @@
   word-break: break-word;
   text-align: center;
   background-color: var(--white);
-  transform: translate(110%, -80%);
+  transform: translateX(-110%);
 }
 
 .progressBar {

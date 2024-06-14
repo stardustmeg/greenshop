@@ -1,10 +1,10 @@
-export const ADDRESS_TYPE = {
+export const ADDRESS = {
   BILLING: 'billing',
   GENERAL: 'general',
   SHIPPING: 'shipping',
 } as const;
 
-export type AddressType = (typeof ADDRESS_TYPE)[keyof typeof ADDRESS_TYPE];
+export type AddressType = (typeof ADDRESS)[keyof typeof ADDRESS];
 
 export const SINGLE_ADDRESS = 'asBilling';
 

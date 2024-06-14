@@ -2,8 +2,8 @@ import type { User } from '@/shared/types/user';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEY } from '@/shared/constants/buttons.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import TOOLTIP_TEXT from '@/shared/constants/tooltip.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
@@ -63,7 +63,7 @@ class UserInfoView {
       text: BUTTON_TEXT[getCurrentLanguage()].EDIT_INFO,
     });
 
-    observeCurrentLanguage(this.editInfoButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.EDIT_INFO);
+    observeCurrentLanguage(this.editInfoButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEY.EDIT_INFO);
 
     return this.editInfoButton;
   }
@@ -124,8 +124,8 @@ class UserInfoView {
 
   private createLogo(): HTMLDivElement {
     this.logo = createBaseElement({ cssClasses: [styles.keyLogo], tag: 'div' });
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.KEY));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.KEY));
     this.logo.append(svg);
     return this.logo;
   }
