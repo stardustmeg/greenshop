@@ -1,5 +1,9 @@
 * {
   box-sizing: border-box;
+
+  &::selection {
+    background-color: var(--steam-green-1000);
+  }
 }
 
 html,
@@ -44,6 +48,7 @@ img {
   max-width: 100%;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .stop-scroll {
   overflow-y: hidden;
 }

@@ -68,7 +68,7 @@ class WishlistPageView {
       tag: 'ul',
     });
 
-    this.drawWishlist().catch(showErrorMessage);
+    this.drawWishlist().then(this.openProductInfo.bind(this)).catch(showErrorMessage);
     EventMediatorModel.getInstance().subscribe(MEDIATOR_EVENT.REDRAW_WISHLIST, this.drawWishlist.bind(this));
     observeStore(selectCurrentLanguage, () => {
       if (this.wishlist.classList.contains(styles.emptyList)) {
@@ -117,7 +117,6 @@ class WishlistPageView {
     const products = await getProductModel().getProducts(options);
     loader.getHTML().remove();
     this.drawWishlistItems(shoppingList, cart, products);
-    this.openProductInfo();
     this.switchEmptyList(!shoppingList.products.length);
   }
 
@@ -131,6 +130,15 @@ class WishlistPageView {
 
   public getWishlist(): HTMLUListElement {
     return this.wishlist;
+  }
+
+  public removeProductCard(key: string): void {
+    const currentProductCard = this.productCards.find((productCard) => productCard.getKey() === key);
+    if (currentProductCard) {
+      currentProductCard.getHTML().remove();
+      this.productCards = this.productCards.filter((productCard) => productCard.getKey() !== key);
+      this.switchEmptyList(!this.productCards.length);
+    }
   }
 
   public switchEmptyList(isEmpty: boolean): void {

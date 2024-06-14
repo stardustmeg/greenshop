@@ -58,4 +58,6 @@ export const selectIsUserLoggedIn = (state: State): boolean => state.isUserLogge
 
 export const selectCurrentPage = (state: State): null | string => state.currentPage;
 
+export const selectCurrentTheme = (state: State): boolean => state.isAppThemeLight;
+
 export default observeStore;

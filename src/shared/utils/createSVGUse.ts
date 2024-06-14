@@ -4,4 +4,12 @@ const createSVGUse = (id: string): SVGUseElement => {
   return use;
 };
 
+export const changeFill = (svg: SVGSVGElement, color: string): void => {
+  svg.setAttribute('fill', color);
+};
+
+export const changeStroke = (svg: SVGSVGElement, color: string): void => {
+  svg.setAttribute('stroke', color);
+};
+
 export default createSVGUse;

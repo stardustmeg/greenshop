@@ -8,8 +8,10 @@
   opacity: 1;
   visibility: visible;
   transition:
-    opacity 0.3s,
-    visibility 0.3s;
+    opacity 0.2s,
+    visibility 0.2s,
+    backdrop-filter 0.2s;
+  backdrop-filter: blur(5px);
 
   &_hidden {
     opacity: 0;
@@ -27,9 +29,8 @@
   opacity: 1;
   visibility: visible;
   transition:
-    opacity 0.3s,
-    visibility 0.3s;
-  backdrop-filter: blur(5px);
+    opacity 0.2s,
+    visibility 0.2s;
 
   &_hidden {
     opacity: 0;
@@ -54,8 +55,8 @@
   visibility: visible;
   transform: translate(-50%, -50%);
   transition:
-    opacity 0.3s,
-    visibility 0.3s;
+    opacity 0.2s,
+    visibility 0.2s;
 
   &_hidden {
     opacity: 0;
@@ -63,17 +64,23 @@
   }
 
   &::-webkit-scrollbar {
+    border-radius: var(--medium-br);
     width: var(--five);
   }
 
   &::-webkit-scrollbar-track {
+    border-radius: var(--medium-br);
     background: var(--white-tr);
   }
 
   &::-webkit-scrollbar-thumb {
-    border-radius: var(--small-br);
+    border-radius: var(--medium-br);
     background-color: var(--steam-green-800);
     cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    width: max-content;
   }
 }
 

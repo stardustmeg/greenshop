@@ -7,8 +7,16 @@ class ModalModel {
     return this.view.getHTML();
   }
 
-  public hide(): void {
-    this.view.hide();
+  public getView(): ModalView {
+    return this.view;
+  }
+
+  public hide(callback?: () => void): void {
+    if (callback) {
+      this.view.hide(callback);
+    } else {
+      this.view.hide();
+    }
   }
 
   public removeContent(): void {

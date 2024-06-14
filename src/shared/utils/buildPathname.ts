@@ -63,6 +63,7 @@ export const catalogPathWithID = buildPathWithID.bind(null, PAGE_ID.CATALOG_PAGE
 export const productPathWithID = buildPathWithID.bind(null, PAGE_ID.PRODUCT_PAGE);
 export const wishlistPathWithID = buildPathWithID.bind(null, PAGE_ID.WISHLIST_PAGE);
 export const cartPathWithID = buildPathWithID.bind(null, PAGE_ID.CART_PAGE);
+export const aboutUsPathWithID = buildPathWithID.bind(null, PAGE_ID.ABOUT_US_PAGE);
 
 export const mainPathWithQuery = buildPathWithQuery.bind(null, PAGE_ID.MAIN_PAGE);
 export const catalogPathWithQuery = buildPathWithQuery.bind(null, PAGE_ID.CATALOG_PAGE);
