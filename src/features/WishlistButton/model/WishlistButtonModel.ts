@@ -30,7 +30,7 @@ class WishlistButtonModel {
           productAddedToWishListMessage(this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value),
         );
         this.view.switchStateWishListButton(true);
-        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_WISHLIST, '');
+        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.CHANGE_WISHLIST_BUTTON, '');
       })
       .catch(showErrorMessage);
   }
@@ -45,7 +45,7 @@ class WishlistButtonModel {
           ),
         );
         this.view.switchStateWishListButton(false);
-        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_WISHLIST, '');
+        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.CHANGE_WISHLIST_BUTTON, this.params.key);
       })
       .catch(showErrorMessage);
   }

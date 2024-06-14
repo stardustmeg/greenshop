@@ -5,8 +5,10 @@ import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
 import WishlistButtonModel from '@/features/WishlistButton/model/WishlistButtonModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
@@ -85,6 +87,11 @@ class ProductCardModel {
     this.setCardHandler();
     this.view.getBottomWrapper().append(this.price.getHTML());
     this.view.getButtonsWrapper().append(this.wishlistButton.getHTML().getHTML());
+    EventMediatorModel.getInstance().subscribe(MEDIATOR_EVENT.CHANGE_WISHLIST_BUTTON, () => {
+      this.wishlistButton.getHTML().getHTML().remove();
+      this.wishlistButton = new WishlistButtonModel(this.params);
+      this.view.getButtonsWrapper().append(this.wishlistButton.getHTML().getHTML());
+    });
   }
 
   private setAddToCartButtonHandler(): void {

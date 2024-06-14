@@ -17,12 +17,8 @@ class ModalView {
     this.modalOverlay = this.createModalOverlay();
     this.modal = this.createHTML();
 
-    document.addEventListener('click', ({ target }) => {
-      if (
-        target instanceof HTMLDivElement &&
-        !this.modalContent.contains(target) &&
-        !this.modalContent.classList.contains(styles.modalContent_hidden)
-      ) {
+    document.addEventListener('click', (event) => {
+      if (event.target === this.modalOverlay && !this.modalContent.classList.contains(styles.modalContent_hidden)) {
         this.hide(this.callback);
       }
     });

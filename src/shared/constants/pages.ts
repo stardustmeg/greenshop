@@ -36,6 +36,7 @@ export const PAGE_TITLE: Record<LanguageChoiceType, Record<string, string>> = {
 export const PAGE_DESCRIPTION = {
   en: {
     404: 'This is not the page you are looking for. Please go back to the main page.',
+    ABOUT: 'Mad Wizards Team 🧙🏻🪄✨',
     BLOG: 'Blog',
     GREETING: 'Hi, ',
     LOGIN: 'Enter your email and password to login.',
@@ -43,6 +44,7 @@ export const PAGE_DESCRIPTION = {
   },
   ru: {
     404: 'Это не та страница, которую вы ищете. Пожалуйста, вернитесь на главную страницу.',
+    ABOUT: 'Команда Бешеных Магов 🧙🏻🪄✨',
     BLOG: 'Блог',
     GREETING: 'Привет, ',
     LOGIN: 'Введите свой адрес электронной почты и пароль для входа.',

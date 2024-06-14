@@ -1,10 +1,14 @@
 import type { BreadcrumbLink } from '@/shared/types/link.ts';
 import type { Page } from '@/shared/types/page.ts';
 
+import RouterModel from '@/app/Router/model/RouterModel.ts';
 import BreadcrumbsModel from '@/features/Breadcrumbs/model/BreadcrumbsModel.ts';
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
+import modal from '@/shared/Modal/model/ModalModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID, PAGE_TITLE } from '@/shared/constants/pages.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
@@ -16,8 +20,6 @@ class WishlistPageModel implements Page {
   constructor(parent: HTMLDivElement) {
     this.view = new WishlistPageView(parent);
     this.init();
-
-    this.observeLanguage();
   }
 
   private createBreadcrumbLinksData(): BreadcrumbLink[] {
@@ -30,8 +32,16 @@ class WishlistPageModel implements Page {
   }
 
   private init(): void {
+    this.observeLanguage();
     this.initBreadcrumbs();
+    modal.hide();
     getStore().dispatch(setCurrentPage(PAGE_ID.WISHLIST_PAGE));
+    EventMediatorModel.getInstance().subscribe(MEDIATOR_EVENT.CHANGE_WISHLIST_BUTTON, (key) => {
+      if (RouterModel.getCurrentPage() === PAGE_ID.WISHLIST_PAGE) {
+        this.view.removeProductCard(String(key));
+        modal.hide(() => RouterModel.getInstance().navigateTo(PAGE_ID.WISHLIST_PAGE));
+      }
+    });
   }
 
   private initBreadcrumbs(): void {

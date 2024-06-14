@@ -1,0 +1,103 @@
+@import 'src/app/styles/mixins';
+
+.aboutFullCard {
+  border-radius: 0;
+  box-shadow: none;
+  background-color: var(--noble-gray-1300);
+  cursor: auto;
+
+  &:active {
+    transform: none;
+    scale: none;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      box-shadow: none;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 840px) {
+    max-width: 100%;
+  }
+}
+
+.checklist,
+.feedbackList {
+  display: flex;
+  flex-direction: column;
+  padding: var(--extra-small-offset);
+  padding-top: 0;
+  font: var(--regular-font);
+  line-height: 170%;
+  letter-spacing: var(--one);
+  color: var(--noble-gray-700);
+  gap: var(--extra-small-offset);
+}
+
+.label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: var(--extra-small-offset);
+  gap: var(--tiny-offset);
+
+  &::after {
+    content: '✔';
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+
+.feedbackLabel {
+  border-radius: var(--medium-br);
+  border-top-left-radius: 0;
+  padding: var(--extra-small-offset);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -0.7rem;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 0.2rem;
+    border-bottom-right-radius: 100%;
+    width: 1.7rem;
+    height: 0.7rem;
+    background-color: inherit;
+  }
+}
+
+.from {
+  @include link;
+
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--tiny-offset);
+  padding: 0;
+  padding-bottom: var(--two);
+  width: max-content;
+  height: max-content;
+  max-width: max-content;
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  text-transform: uppercase;
+  color: var(--noble-gray-500);
+  gap: var(--tiny-offset);
+}
+
+.avatar {
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-size: cover;
+  transition: filter 0.2s;
+
+  @media (hover: hover) {
+    &:hover {
+      filter: brightness(1.15);
+    }
+  }
+}

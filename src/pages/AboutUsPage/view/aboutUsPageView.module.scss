@@ -15,3 +15,21 @@
     opacity: 1;
   }
 }
+
+.title {
+  margin-bottom: var(--small-offset);
+  font: var(--black-font);
+  letter-spacing: var(--one);
+  color: var(--steam-green-1200);
+}
+
+.cardsList {
+  display: flex;
+  justify-content: center;
+  gap: var(--small-offset);
+
+  @media (max-width: 840px) {
+    flex-direction: column;
+    justify-content: center;
+  }
+}
