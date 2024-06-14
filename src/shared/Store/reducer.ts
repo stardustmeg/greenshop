@@ -26,7 +26,7 @@ type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 export type Action = ReturnType<InferValueTypes<typeof actions>>;
 export const rootReducer: Reducer<State, Action> = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'setanonymousToken':
+    case 'setAnonymousToken':
       return {
         ...state,
         anonymousToken: action.payload,

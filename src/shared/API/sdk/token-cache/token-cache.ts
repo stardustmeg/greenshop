@@ -1,7 +1,7 @@
 import type { TokenCache, TokenStore } from '@commercetools/sdk-client-v2';
 
 import getStore from '@/shared/Store/Store.ts';
-import { setAuthToken, setanonymousToken } from '@/shared/Store/actions.ts';
+import { setAnonymousToken, setAuthToken } from '@/shared/Store/actions.ts';
 
 import type { TokenTypeType } from '../../types/type.ts';
 
@@ -29,7 +29,7 @@ export class MyTokenCache implements TokenCache {
   private saveToken(): void {
     if (this.myCache.token) {
       if (this.name === TokenType.ANONYM) {
-        getStore().dispatch(setanonymousToken(this.myCache));
+        getStore().dispatch(setAnonymousToken(this.myCache));
       } else if (this.name === TokenType.AUTH) {
         getStore().dispatch(setAuthToken(this.myCache));
       }
@@ -43,7 +43,7 @@ export class MyTokenCache implements TokenCache {
       token: '',
     };
     if (this.name === TokenType.ANONYM) {
-      getStore().dispatch(setanonymousToken(null));
+      getStore().dispatch(setAnonymousToken(null));
     } else if (this.name === TokenType.AUTH) {
       getStore().dispatch(setAuthToken(null));
     }

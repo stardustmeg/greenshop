@@ -4,7 +4,7 @@ import type { LanguageChoiceType } from '../constants/common.ts';
 import type { PageIdType } from '../constants/pages.ts';
 
 const ACTION = {
-  SET_ANONYM_TOKEN: 'setanonymousToken',
+  SET_ANONYM_TOKEN: 'setAnonymousToken',
   SET_ANONYMOUS_CART_ID: 'setAnonymousCartId',
   SET_ANONYMOUS_ID: 'setAnonymousId',
   SET_ANONYMOUS_SHOP_LIST_ID: 'setAnonymousShopListId',
@@ -36,7 +36,7 @@ export const setAnonymousShopListId = (
   type: ACTION.SET_ANONYMOUS_SHOP_LIST_ID,
 });
 
-export const setanonymousToken = (
+export const setAnonymousToken = (
   value: TokenStore | null,
 ): ActionWithPayload<TokenStore | null, typeof ACTION.SET_ANONYM_TOKEN> => ({
   payload: value,

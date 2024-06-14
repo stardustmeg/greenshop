@@ -15,7 +15,7 @@ export const BUTTON_TEXT = {
     LOGIN: 'Login',
     REGISTRATION: 'Register',
     RESET: 'Reset',
-    SAVE_CHANGES: 'Save changes',
+    SAVE_CHANGES: 'Save',
   },
   ru: {
     ADD_ADDRESS: 'Добавить адрес',
