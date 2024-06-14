@@ -1,9 +1,9 @@
-import getStore from '../Store/Store.ts';
 import { PAGE_ID, PAGE_TITLE } from '../constants/pages.ts';
+import getCurrentLanguage from './getCurrentLanguage.ts';
 import { keyExistsInPageTitle } from './isKeyOf.ts';
 
 const appTitle = (projectTitle: string, currentPageTitle: string): string => {
-  const { currentLanguage } = getStore().getState();
+  const currentLanguage = getCurrentLanguage();
   if (keyExistsInPageTitle(currentPageTitle)) {
     return `${projectTitle} | ${PAGE_TITLE[currentLanguage][currentPageTitle]}`;
   }

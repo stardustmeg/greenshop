@@ -110,6 +110,14 @@
   }
 }
 
+$color: var(--steam-green-800);
+
+.nameLink {
+  @include link(0 0, $color);
+
+  text-transform: none;
+}
+
 .nameCell {
   justify-content: flex-start;
   grid-area: 2 / 2 / 3 / 3;

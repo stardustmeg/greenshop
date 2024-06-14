@@ -1,8 +1,11 @@
-import getStore from '../Store/Store.ts';
+import type { Variant } from '../types/product.ts';
+
 import { LANGUAGE_CHOICE } from '../constants/common.ts';
 import { SERVER_MESSAGE } from '../constants/messages.ts';
 import { PAGE_DESCRIPTION, USER_INFO_TEXT } from '../constants/pages.ts';
+import { PRODUCT_INFO_TEXT } from '../constants/product.ts';
 import { ADDRESS_TYPE } from '../types/address.ts';
+import getCurrentLanguage from './getCurrentLanguage.ts';
 
 const textTemplate = (beginning: string, variable: number | string, end?: string): string => {
   const start = beginning ? `${beginning} ` : '';
@@ -11,55 +14,55 @@ const textTemplate = (beginning: string, variable: number | string, end?: string
 };
 
 export const cartPrice = (price: string): string => `$${price}`;
+
 export const minusCartPrice = (price: string): string => `-$${price}`;
 
+export const discountText = (): string => PRODUCT_INFO_TEXT[getCurrentLanguage()].DISCOUNT_LABEL;
+
+export const discountPercent = (currentVariant: Variant): string =>
+  `${Math.round((1 - currentVariant.discount / currentVariant.price) * 100)}%`;
 export const productAddedToCartMessage = (name: string): string =>
-  textTemplate(name, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_ADD_PRODUCT_TO_CART);
+  textTemplate(name, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_ADD_PRODUCT_TO_CART);
 
 export const productRemovedFromCartMessage = (name: string): string =>
-  textTemplate(name, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_DELETE_PRODUCT_FROM_CART);
+  textTemplate(name, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_DELETE_PRODUCT_FROM_CART);
 
 export const productAddedToWishListMessage = (name: string): string =>
-  textTemplate(name, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST);
+  textTemplate(name, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST);
 
 export const productRemovedFromWishListMessage = (name: string): string =>
-  textTemplate(name, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST);
+  textTemplate(name, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST);
 
 export const promoCodeAppliedMessage = (promocode: string): string =>
-  textTemplate(promocode, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_ADD_COUPON_TO_CART);
+  textTemplate(promocode, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_ADD_COUPON_TO_CART);
 
 export const promoCodeDeleteMessage = (promocode: string): string =>
-  textTemplate(promocode, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_DELETE_COUPON_FROM_CART);
+  textTemplate(promocode, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_DELETE_COUPON_FROM_CART);
 
 export const promoCodeCopiedMessage = (promocode: string): string =>
-  textTemplate(
-    promocode,
-    SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_COPY_PROMO_CODE_TO_CLIPBOARD,
-  );
+  textTemplate(promocode, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_COPY_PROMO_CODE_TO_CLIPBOARD);
 
 export const notFoundMessage = (name: string): string =>
-  textTemplate(`Hi, ${name}!`, PAGE_DESCRIPTION[getStore().getState().currentLanguage][404]);
+  textTemplate(`Hi, ${name}!`, PAGE_DESCRIPTION[getCurrentLanguage()][404]);
 
 export const SKUCopiedMessage = (key: string): string =>
-  textTemplate(`SKU ${key}`, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_COPY_TO_CLIPBOARD);
+  textTemplate(`SKU ${key}`, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_COPY_TO_CLIPBOARD);
 
 export const addressTemplate = (streetName = '', city = '', country: null | string = null, postalCode = ''): string =>
   `${streetName}, ${city}, ${country}, ${postalCode}`;
 
-export const userInfoName = (name: string): string =>
-  textTemplate(USER_INFO_TEXT[getStore().getState().currentLanguage].NAME, name);
+export const userInfoName = (name: string): string => textTemplate(USER_INFO_TEXT[getCurrentLanguage()].NAME, name);
 
 export const userInfoLastName = (name: string): string =>
-  textTemplate(USER_INFO_TEXT[getStore().getState().currentLanguage].LAST_NAME, name);
+  textTemplate(USER_INFO_TEXT[getCurrentLanguage()].LAST_NAME, name);
 
-export const userInfoEmail = (email: string): string =>
-  textTemplate(USER_INFO_TEXT[getStore().getState().currentLanguage].EMAIL, email);
+export const userInfoEmail = (email: string): string => textTemplate(USER_INFO_TEXT[getCurrentLanguage()].EMAIL, email);
 
 export const userInfoDateOfBirth = (date: string): string =>
-  textTemplate(USER_INFO_TEXT[getStore().getState().currentLanguage].DATE_OF_BIRTH, date);
+  textTemplate(USER_INFO_TEXT[getCurrentLanguage()].DATE_OF_BIRTH, date);
 
 export const createGreetingMessage = (name: string): string =>
-  textTemplate(`Hi, ${name}!`, SERVER_MESSAGE[getStore().getState().currentLanguage].SUCCESSFUL_LOGIN);
+  textTemplate(`Hi, ${name}!`, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_LOGIN);
 
 const maxLengthMessageRu = (maxLength: number): string =>
   textTemplate('Максимальная длина не должна превышать', maxLength, ' символов');
@@ -68,35 +71,33 @@ const maxLengthMessageEn = (maxLength: number): string =>
   textTemplate('Maximum length should not exceed', maxLength, ' characters');
 
 export const maxLengthMessage = (maxLength: number): string =>
-  getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN
-    ? maxLengthMessageEn(maxLength)
-    : maxLengthMessageRu(maxLength);
+  getCurrentLanguage() === LANGUAGE_CHOICE.EN ? maxLengthMessageEn(maxLength) : maxLengthMessageRu(maxLength);
 
 const maxAgeRu = (maxAge: number): string => textTemplate('Вам должно быть не более', maxAge, ' лет');
 
 export const defaultBillingAddress = (address: string): string =>
-  textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].DEFAULT_BILLING_ADDRESS);
+  textTemplate('', address, USER_INFO_TEXT[getCurrentLanguage()].DEFAULT_BILLING_ADDRESS);
 
 export const defaultShippingAddress = (address: string): string =>
-  textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].DEFAULT_SHIPPING_ADDRESS);
+  textTemplate('', address, USER_INFO_TEXT[getCurrentLanguage()].DEFAULT_SHIPPING_ADDRESS);
 
 export const billingAddressMessage = (address: string): string =>
-  textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].BILLING);
+  textTemplate('', address, USER_INFO_TEXT[getCurrentLanguage()].BILLING);
 
 export const shippingAddressMessage = (address: string): string =>
-  textTemplate('', address, USER_INFO_TEXT[getStore().getState().currentLanguage].SHIPPING);
+  textTemplate('', address, USER_INFO_TEXT[getCurrentLanguage()].SHIPPING);
 
 const maxAgeEn = (maxAge: number): string => textTemplate('You must be at most', maxAge, ' years old');
 
 export const maxAgeMessage = (maxAge: number): string =>
-  getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? maxAgeEn(maxAge) : maxAgeRu(maxAge);
+  getCurrentLanguage() === LANGUAGE_CHOICE.EN ? maxAgeEn(maxAge) : maxAgeRu(maxAge);
 
 const minAgeRu = (minAge: number): string => textTemplate('Вам должно быть не менее', minAge, ' лет');
 
 const minAgeEn = (minAge: number): string => textTemplate('You must be at least', minAge, ' years old');
 
 export const minAgeMessage = (minAge: number): string =>
-  getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN ? minAgeEn(minAge) : minAgeRu(minAge);
+  getCurrentLanguage() === LANGUAGE_CHOICE.EN ? minAgeEn(minAge) : minAgeRu(minAge);
 
 const minLengthMessageRu = (minLength: number): string =>
   textTemplate('Минимальная длина должна быть не менее', minLength, ' символов');
@@ -105,9 +106,7 @@ const minLengthMessageEn = (minLength: number): string =>
   textTemplate('Minimum length should be at least', minLength, ' characters');
 
 export const minLengthMessage = (minLength: number): string =>
-  getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN
-    ? minLengthMessageEn(minLength)
-    : minLengthMessageRu(minLength);
+  getCurrentLanguage() === LANGUAGE_CHOICE.EN ? minLengthMessageEn(minLength) : minLengthMessageRu(minLength);
 
 export function addressMessage(text: string, type?: string): string {
   switch (type) {

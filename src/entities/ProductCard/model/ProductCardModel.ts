@@ -7,12 +7,12 @@ import WishlistButtonModel from '@/features/WishlistButton/model/WishlistButtonM
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { productAddedToCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
@@ -54,7 +54,7 @@ class ProductCardModel {
 
   private getProductMeta(): AddCartItem {
     return {
-      name: this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      name: this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
       productId: this.params.id,
       quantity: 1,
       variantId: this.currentVariant.id,

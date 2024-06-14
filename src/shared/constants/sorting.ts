@@ -1,4 +1,4 @@
-export const TEXT = {
+export const TEXT: Record<string, Record<string, string>> = {
   en: {
     DEFAULT: 'Default',
     NAME: 'Name',
@@ -15,7 +15,7 @@ export const TEXT = {
   },
 } as const;
 
-export const TEXT_KEYS = {
+export const TEXT_KEYS: Record<string, string> = {
   DEFAULT: 'DEFAULT',
   NAME: 'NAME',
   PRICE: 'PRICE',

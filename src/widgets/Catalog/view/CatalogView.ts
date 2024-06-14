@@ -1,7 +1,7 @@
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { EMPTY_PRODUCT } from '@/shared/constants/product.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './catalogView.module.scss';
 
@@ -43,7 +43,7 @@ class CatalogView {
     });
     observeStore(selectCurrentLanguage, () => {
       if (this.itemsList.classList.contains(styles.emptyList)) {
-        this.itemsList.textContent = EMPTY_PRODUCT[getStore().getState().currentLanguage].EMPTY;
+        this.itemsList.textContent = EMPTY_PRODUCT[getCurrentLanguage()].EMPTY;
       }
     });
     return this.itemsList;
@@ -116,7 +116,7 @@ class CatalogView {
   public switchEmptyList(isEmpty: boolean): void {
     this.itemsList.classList.toggle(styles.emptyList, isEmpty);
     if (isEmpty) {
-      this.itemsList.textContent = EMPTY_PRODUCT[getStore().getState().currentLanguage].EMPTY;
+      this.itemsList.textContent = EMPTY_PRODUCT[getCurrentLanguage()].EMPTY;
     }
   }
 }

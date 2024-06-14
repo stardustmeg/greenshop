@@ -1,13 +1,13 @@
 import type { User } from '@/shared/types/user';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import TOOLTIP_TEXT from '@/shared/constants/tooltip.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { userInfoDateOfBirth, userInfoEmail, userInfoLastName, userInfoName } from '@/shared/utils/messageTemplates.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
@@ -60,7 +60,7 @@ class UserInfoView {
   private createEditInfoButton(): ButtonModel {
     this.editInfoButton = new ButtonModel({
       classes: [styles.editInfoButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].EDIT_INFO,
+      text: BUTTON_TEXT[getCurrentLanguage()].EDIT_INFO,
     });
 
     observeCurrentLanguage(this.editInfoButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.EDIT_INFO);
@@ -71,13 +71,13 @@ class UserInfoView {
   private createEditPasswordButton(): ButtonModel {
     this.editPasswordButton = new ButtonModel({
       classes: [styles.editPasswordButton],
-      title: TOOLTIP_TEXT[getStore().getState().currentLanguage].EDIT_PASSWORD,
+      title: TOOLTIP_TEXT[getCurrentLanguage()].EDIT_PASSWORD,
     });
 
     this.editPasswordButton.getHTML().append(this.logo);
 
     observeStore(selectCurrentLanguage, () => {
-      this.editPasswordButton.getHTML().title = TOOLTIP_TEXT[getStore().getState().currentLanguage].EDIT_PASSWORD;
+      this.editPasswordButton.getHTML().title = TOOLTIP_TEXT[getCurrentLanguage()].EDIT_PASSWORD;
     });
 
     return this.editPasswordButton;

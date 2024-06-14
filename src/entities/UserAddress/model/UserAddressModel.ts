@@ -13,26 +13,19 @@ import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
 import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import UserAddressView from '../view/UserAddressView.ts';
 
 class UserAddressModel {
-  private callback: (isDisabled: boolean) => void;
-
   private currentAddress: Address;
 
   private labels: Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }>;
 
   private view: UserAddressView;
 
-  constructor(
-    address: Address,
-    activeTypes: AddressTypeType[],
-    callback: (isDisabled: boolean) => void,
-    inactiveTypes?: AddressTypeType[],
-  ) {
-    this.callback = callback;
+  constructor(address: Address, activeTypes: AddressTypeType[], inactiveTypes?: AddressTypeType[]) {
     this.currentAddress = address;
     this.view = new UserAddressView(address, activeTypes, inactiveTypes);
     this.labels = this.view.getLabels();
@@ -86,7 +79,6 @@ class UserAddressModel {
   private async labelClickHandler(activeType: AddressTypeType, inactive?: boolean): Promise<void> {
     const loader = new LoaderModel(LOADER_SIZE.MEDIUM);
     loader.setAbsolutePosition();
-    this.callback(true);
     this.view.toggleState(true);
     this.getHTML().append(loader.getHTML());
     try {
@@ -111,7 +103,7 @@ class UserAddressModel {
       .addEventListener('click', () => {
         const confirmModel = new ConfirmModel(
           () => this.deleteAddress(address),
-          USER_MESSAGE[getStore().getState().currentLanguage].DELETE_ADDRESS,
+          USER_MESSAGE[getCurrentLanguage()].DELETE_ADDRESS,
         );
         modal.setContent(confirmModel.getHTML());
         modal.show();

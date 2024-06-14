@@ -44,7 +44,7 @@
   gap: var(--medium-offset);
 
   @media (max-width: 768px) {
-    top: calc(var(--extra-small-offset) * 6.1);
+    top: calc(var(--extra-small-offset) * 6);
     grid-row: 2;
     width: 45%;
   }
@@ -90,12 +90,13 @@
 .logoutButton {
   @include green-btn;
 
-  order: 4;
+  order: 5;
 }
 
 .cartLink,
 .wishListLink,
-.profileLink {
+.profileLink,
+.addressesLink {
   position: relative;
   display: flex;
   align-items: center;
@@ -178,7 +179,7 @@
 }
 
 .profileLink {
-  order: 2;
+  order: 1;
 
   svg {
     stroke: var(--noble-gray-1100);
@@ -194,10 +195,16 @@
   }
 }
 
-.profileLinkActive {
+.addressesLink {
+  order: 2;
+}
+
+.profileLinkActive,
+.addressesLinkActive {
   pointer-events: none;
 
   svg {
+    fill: var(--steam-green-800);
     stroke: var(--steam-green-800);
   }
 }
@@ -320,6 +327,7 @@
 .switchThemeLabel {
   position: relative;
   display: inline-block;
+  order: 3;
   width: var(--large-offset);
   height: calc(calc(var(--small-offset) / 1.5) + var(--extra-small-offset));
   cursor: pointer;
@@ -392,7 +400,7 @@
 .switchLanguageLabel {
   position: relative;
   display: inline-block;
-  order: 3;
+  order: 4;
   width: var(--large-offset);
   height: calc(calc(var(--small-offset) / 1.5) + var(--extra-small-offset));
   cursor: pointer;
@@ -475,28 +483,4 @@
     display: block;
     opacity: 1;
   }
-}
-
-.badgeWrap {
-  position: absolute;
-  right: -30%;
-  top: -20%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: var(--one) solid var(--noble-gray-1000);
-  border-radius: 100%;
-  width: calc(var(--tiny-offset) * 2);
-  height: calc(var(--tiny-offset) * 2);
-  font: var(--regular-font);
-  background-color: var(--steam-green-800);
-}
-
-.badge {
-  display: block;
-  color: var(--noble-gray-200);
-}
-
-.hide {
-  display: none;
 }

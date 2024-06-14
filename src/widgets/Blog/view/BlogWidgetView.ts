@@ -1,8 +1,8 @@
 import type BlogPostView from '@/entities/Post/view/PostView';
 
-import getStore from '@/shared/Store/Store.ts';
 import { BLOG_DESCRIPTION } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './blogWidgetView.module.scss';
 
@@ -50,7 +50,7 @@ export default class BlogWidgetView {
   private createPageDescription(): HTMLParagraphElement {
     this.description = createBaseElement({
       cssClasses: [styles.pageDescription],
-      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_DESCRIPTIONS,
+      innerContent: BLOG_DESCRIPTION[getCurrentLanguage()].WIDGET_DESCRIPTIONS,
       tag: 'p',
     });
     return this.description;
@@ -59,7 +59,7 @@ export default class BlogWidgetView {
   private createPageTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: [styles.pageTitle],
-      innerContent: BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITLE,
+      innerContent: BLOG_DESCRIPTION[getCurrentLanguage()].WIDGET_TITLE,
       tag: 'h3',
     });
     return this.title;
@@ -85,8 +85,9 @@ export default class BlogWidgetView {
   }
 
   public updateLanguage(): boolean {
-    this.title.innerText = BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_TITLE;
-    this.description.innerText = BLOG_DESCRIPTION[getStore().getState().currentLanguage].WIDGET_DESCRIPTIONS;
+    const currentLanguage = getCurrentLanguage();
+    this.title.innerText = BLOG_DESCRIPTION[currentLanguage].WIDGET_TITLE;
+    this.description.innerText = BLOG_DESCRIPTION[currentLanguage].WIDGET_DESCRIPTIONS;
     return true;
   }
 }

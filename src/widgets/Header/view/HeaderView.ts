@@ -1,6 +1,7 @@
 import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
+import CountBadgeModel from '@/entities/CountBadge/model/CountBadgeModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
@@ -15,16 +16,13 @@ import APP_THEME from '@/shared/constants/styles.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './headerView.module.scss';
 
 class HeaderView {
   private burgerButton: ButtonModel;
-
-  private cartBadge: HTMLSpanElement;
-
-  private cartBadgeWrap: HTMLDivElement;
 
   private header: HTMLElement;
 
@@ -38,6 +36,8 @@ class HeaderView {
 
   private switchThemeCheckbox: InputModel;
 
+  private toAddressesLink: LinkModel;
+
   private toCartLink: LinkModel;
 
   private toProfileLink: LinkModel;
@@ -50,12 +50,9 @@ class HeaderView {
     this.logoutButton = this.createLogoutButton();
     this.linkLogo = this.createLinkLogo();
     this.toCartLink = this.createToCartLink();
-    this.cartBadgeWrap = this.createBadgeWrap();
-    this.cartBadge = this.createBadge();
-
     this.toWishlistLink = this.createToWishlistLink();
-
     this.toProfileLink = this.createToProfileLink();
+    this.toAddressesLink = this.createToAddressesLink();
     this.switchThemeCheckbox = this.createSwitchThemeCheckbox();
     this.switchLanguageCheckbox = this.createSwitchLanguageCheckbox();
     this.navigationWrapper = this.createNavigationWrapper();
@@ -76,27 +73,6 @@ class HeaderView {
         document.body.classList.toggle(styles.stopScroll);
       }
     });
-  }
-
-  private createBadge(): HTMLSpanElement {
-    this.cartBadge = createBaseElement({
-      cssClasses: [styles.badge],
-      tag: 'span',
-    });
-    this.cartBadgeWrap.append(this.cartBadge);
-
-    return this.cartBadge;
-  }
-
-  private createBadgeWrap(): HTMLDivElement {
-    this.cartBadgeWrap = createBaseElement({
-      cssClasses: [styles.badgeWrap],
-      tag: 'div',
-    });
-
-    this.toCartLink.getHTML().append(this.cartBadgeWrap);
-
-    return this.cartBadgeWrap;
   }
 
   private createBurgerButton(): ButtonModel {
@@ -161,7 +137,7 @@ class HeaderView {
   private createLogoutButton(): ButtonModel {
     this.logoutButton = new ButtonModel({
       classes: [styles.logoutButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].LOG_OUT,
+      text: BUTTON_TEXT[getCurrentLanguage()].LOG_OUT,
     });
 
     observeCurrentLanguage(this.logoutButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.LOG_OUT);
@@ -175,10 +151,11 @@ class HeaderView {
       tag: 'div',
     });
     this.navigationWrapper.append(
+      this.toProfileLink.getHTML(),
+      this.toAddressesLink.getHTML(),
+      this.createSwitchThemeLabel(),
       this.createSwitchLanguageLabel(),
       this.logoutButton.getHTML(),
-      this.toProfileLink.getHTML(),
-      this.createSwitchThemeLabel(),
     );
 
     return this.navigationWrapper;
@@ -190,7 +167,7 @@ class HeaderView {
       type: INPUT_TYPE.CHECK_BOX,
     });
     this.switchLanguageCheckbox.getHTML().classList.add(styles.switchLanguageCheckbox);
-    this.switchLanguageCheckbox.getHTML().checked = getStore().getState().currentLanguage === LANGUAGE_CHOICE.EN;
+    this.switchLanguageCheckbox.getHTML().checked = getCurrentLanguage() === LANGUAGE_CHOICE.EN;
 
     return this.switchLanguageCheckbox;
   }
@@ -253,6 +230,39 @@ class HeaderView {
 
     label.append(darkSVG, lightSVG, this.switchThemeCheckbox.getHTML(), span);
     return label;
+  }
+
+  private createToAddressesLink(): LinkModel {
+    this.toAddressesLink = new LinkModel({
+      attrs: {
+        href: PAGE_ID.USER_ADDRESSES_PAGE,
+      },
+      classes: [styles.addressesLink],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.HOUSE));
+    this.toAddressesLink.getHTML().append(svg);
+
+    if (!getStore().getState().isUserLoggedIn) {
+      this.toAddressesLink.getHTML().classList.add(styles.hidden);
+    }
+
+    observeStore(selectIsUserLoggedIn, () =>
+      this.toAddressesLink.getHTML().classList.toggle(styles.hidden, !getStore().getState().isUserLoggedIn),
+    );
+
+    this.toAddressesLink
+      .getHTML()
+      .classList.toggle(styles.addressesLinkActive, RouterModel.getCurrentPage() === PAGE_ID.USER_ADDRESSES_PAGE);
+
+    observeStore(selectCurrentPage, () =>
+      this.toAddressesLink
+        .getHTML()
+        .classList.toggle(styles.addressesLinkActive, RouterModel.getCurrentPage() === PAGE_ID.USER_ADDRESSES_PAGE),
+    );
+
+    return this.toAddressesLink;
   }
 
   private createToCartLink(): LinkModel {
@@ -323,7 +333,7 @@ class HeaderView {
     });
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
+    svg.append(createSVGUse(SVG_DETAILS.HEART));
 
     this.toWishlistLink.getHTML().append(svg);
 
@@ -336,6 +346,9 @@ class HeaderView {
         .getHTML()
         .classList.toggle(styles.wishListLinkActive, RouterModel.getCurrentPage() === PAGE_ID.WISHLIST_PAGE),
     );
+
+    const wishlistBadge = new CountBadgeModel();
+    this.toWishlistLink.getHTML().append(wishlistBadge.getHTML());
 
     return this.toWishlistLink;
   }
@@ -379,6 +392,10 @@ class HeaderView {
     return this.switchLanguageCheckbox;
   }
 
+  public getToAddressesLink(): LinkModel {
+    return this.toAddressesLink;
+  }
+
   public getToCartLink(): LinkModel {
     return this.toCartLink;
   }
@@ -401,16 +418,6 @@ class HeaderView {
 
   public showNavigationWrapper(): void {
     this.navigationWrapper.classList.remove(styles.hidden);
-  }
-
-  public updateCartCount(count?: number): void {
-    if (!count) {
-      this.cartBadgeWrap.classList.add(styles.hide);
-    } else {
-      this.cartBadgeWrap.classList.remove(styles.hide);
-    }
-
-    this.cartBadge.textContent = count ? count.toString() : '';
   }
 }
 

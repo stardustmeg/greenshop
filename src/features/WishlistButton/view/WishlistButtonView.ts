@@ -17,7 +17,7 @@ class WishlistButtonView {
     });
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
+    svg.append(createSVGUse(SVG_DETAILS.HEART));
     this.switchToWishListButton.getHTML().append(svg);
 
     return this.switchToWishListButton;

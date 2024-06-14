@@ -14,6 +14,7 @@ import { PAGE_ID, PAGE_TITLE } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
@@ -32,7 +33,7 @@ class ProductPageModel implements Page {
   }
 
   private createBreadcrumbLinks(currentProduct: Product | null): BreadcrumbLink[] {
-    const { currentLanguage } = getStore().getState();
+    const currentLanguage = getCurrentLanguage();
     const isRuLanguage = currentLanguage === LANGUAGE_CHOICE.RU;
     const category = currentProduct?.category[0].parent;
     const subcategory = currentProduct?.category[0];
@@ -84,9 +85,7 @@ class ProductPageModel implements Page {
 
   private observeLanguage(fullDescription: localization[]): void {
     observeStore(selectCurrentLanguage, () => {
-      this.view.setFullDescription(
-        fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-      );
+      this.view.setFullDescription(fullDescription[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value);
       this.initBreadcrumbs();
     });
   }
@@ -112,7 +111,7 @@ class ProductPageModel implements Page {
     );
     this.getHTML().append(productInfo.getHTML(), this.view.getFullDescriptionWrapper());
     this.view.setFullDescription(
-      this.currentProduct.fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      this.currentProduct.fullDescription[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
     );
     this.observeLanguage(this.currentProduct.fullDescription);
   }

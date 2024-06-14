@@ -11,12 +11,12 @@ import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListM
 import { FilterFields } from '@/shared/API/types/type.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { EMPTY_PRODUCT } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import styles from './wishlistPageView.module.scss';
@@ -72,7 +72,7 @@ class WishlistPageView {
     EventMediatorModel.getInstance().subscribe(MEDIATOR_EVENT.REDRAW_WISHLIST, this.drawWishlist.bind(this));
     observeStore(selectCurrentLanguage, () => {
       if (this.wishlist.classList.contains(styles.emptyList)) {
-        this.wishlist.textContent = EMPTY_PRODUCT[getStore().getState().currentLanguage].EMPTY;
+        this.wishlist.textContent = EMPTY_PRODUCT[getCurrentLanguage()].EMPTY;
       }
     });
 
@@ -144,7 +144,7 @@ class WishlistPageView {
   public switchEmptyList(isEmpty: boolean): void {
     this.wishlist.classList.toggle(styles.emptyList, isEmpty);
     if (isEmpty) {
-      this.wishlist.textContent = EMPTY_PRODUCT[getStore().getState().currentLanguage].EMPTY;
+      this.wishlist.textContent = EMPTY_PRODUCT[getCurrentLanguage()].EMPTY;
     }
   }
 }

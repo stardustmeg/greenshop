@@ -2,7 +2,6 @@ import type { TooltipTextKeysType } from '@/shared/constants/tooltip.ts';
 import type { Address } from '@/shared/types/user';
 
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
 import { ADDRESS_TEXT, ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
@@ -11,6 +10,7 @@ import TOOLTIP_TEXT, { TOOLTIP_TEXT_KEYS } from '@/shared/constants/tooltip.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import findKeyByValue from '@/shared/utils/findKeyByValue.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './userAddressView.module.scss';
 
@@ -50,12 +50,12 @@ class UserAddressView {
   private createCitySpan(): HTMLSpanElement {
     this.citySpan = createBaseElement({
       cssClasses: [styles.citySpan],
-      innerContent: ADDRESS_TEXT[getStore().getState().currentLanguage].CITY,
+      innerContent: ADDRESS_TEXT[getCurrentLanguage()].CITY,
       tag: 'span',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const text = ADDRESS_TEXT[getStore().getState().currentLanguage].CITY;
+      const text = ADDRESS_TEXT[getCurrentLanguage()].CITY;
       const textNode = [...this.citySpan.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -73,25 +73,25 @@ class UserAddressView {
   }
 
   private createCountrySpan(): HTMLSpanElement {
+    const currentLanguage = getCurrentLanguage();
     this.countrySpan = createBaseElement({
       cssClasses: [styles.countrySpan],
-      innerContent: ADDRESS_TEXT[getStore().getState().currentLanguage].COUNTRY,
+      innerContent: ADDRESS_TEXT[currentLanguage].COUNTRY,
       tag: 'span',
     });
 
     const accentSpan = createBaseElement({
       cssClasses: [styles.accentSpan],
-      innerContent:
-        findKeyByValue(COUNTRIES_LIST[getStore().getState().currentLanguage], this.currentAddress.country) ?? '',
+      innerContent: findKeyByValue(COUNTRIES_LIST[currentLanguage], this.currentAddress.country) ?? '',
       tag: 'span',
     });
 
     this.countrySpan.append(accentSpan);
     observeStore(selectCurrentLanguage, () => {
-      accentSpan.innerText =
-        findKeyByValue(COUNTRIES_LIST[getStore().getState().currentLanguage], this.currentAddress.country) ?? '';
+      const currentLanguage = getCurrentLanguage();
+      accentSpan.innerText = findKeyByValue(COUNTRIES_LIST[currentLanguage], this.currentAddress.country) ?? '';
 
-      const text = ADDRESS_TEXT[getStore().getState().currentLanguage].COUNTRY;
+      const text = ADDRESS_TEXT[currentLanguage].COUNTRY;
       const textNode = [...this.countrySpan.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -103,7 +103,7 @@ class UserAddressView {
   private createDeleteButton(): ButtonModel {
     this.deleteButton = new ButtonModel({
       classes: [styles.deleteButton],
-      title: TOOLTIP_TEXT[getStore().getState().currentLanguage].DELETE_ADDRESS,
+      title: TOOLTIP_TEXT[getCurrentLanguage()].DELETE_ADDRESS,
     });
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
@@ -111,7 +111,7 @@ class UserAddressView {
     this.deleteButton.getHTML().append(svg);
 
     observeStore(selectCurrentLanguage, () => {
-      this.deleteButton.getHTML().title = TOOLTIP_TEXT[getStore().getState().currentLanguage].DELETE_ADDRESS;
+      this.deleteButton.getHTML().title = TOOLTIP_TEXT[getCurrentLanguage()].DELETE_ADDRESS;
     });
 
     return this.deleteButton;
@@ -120,7 +120,7 @@ class UserAddressView {
   private createEditButton(): ButtonModel {
     this.editButton = new ButtonModel({
       classes: [styles.editButton],
-      title: TOOLTIP_TEXT[getStore().getState().currentLanguage].EDIT_ADDRESS,
+      title: TOOLTIP_TEXT[getCurrentLanguage()].EDIT_ADDRESS,
     });
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
@@ -128,7 +128,7 @@ class UserAddressView {
     this.editButton.getHTML().append(svg);
 
     observeStore(selectCurrentLanguage, () => {
-      this.editButton.getHTML().title = TOOLTIP_TEXT[getStore().getState().currentLanguage].EDIT_ADDRESS;
+      this.editButton.getHTML().title = TOOLTIP_TEXT[getCurrentLanguage()].EDIT_ADDRESS;
     });
 
     return this.editButton;
@@ -172,11 +172,11 @@ class UserAddressView {
       cssClasses: [styles.addressType, ...additionalStyles],
       innerContent: text,
       tag: 'div',
-      title: TOOLTIP_TEXT[getStore().getState().currentLanguage][titleKey],
+      title: TOOLTIP_TEXT[getCurrentLanguage()][titleKey],
     });
 
     observeStore(selectCurrentLanguage, () => {
-      label.title = TOOLTIP_TEXT[getStore().getState().currentLanguage][titleKey];
+      label.title = TOOLTIP_TEXT[getCurrentLanguage()][titleKey];
     });
 
     return label;
@@ -193,12 +193,12 @@ class UserAddressView {
   private createPostalCodeSpan(): HTMLSpanElement {
     this.postalCodeSpan = createBaseElement({
       cssClasses: [styles.postalCodeSpan],
-      innerContent: ADDRESS_TEXT[getStore().getState().currentLanguage].POSTAL_CODE,
+      innerContent: ADDRESS_TEXT[getCurrentLanguage()].POSTAL_CODE,
       tag: 'span',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const text = ADDRESS_TEXT[getStore().getState().currentLanguage].POSTAL_CODE;
+      const text = ADDRESS_TEXT[getCurrentLanguage()].POSTAL_CODE;
       const textNode = [...this.postalCodeSpan.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -218,12 +218,12 @@ class UserAddressView {
   private createStreetNameSpan(): HTMLSpanElement {
     this.streetNameSpan = createBaseElement({
       cssClasses: [styles.streetNameSpan],
-      innerContent: ADDRESS_TEXT[getStore().getState().currentLanguage].STREET,
+      innerContent: ADDRESS_TEXT[getCurrentLanguage()].STREET,
       tag: 'span',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const text = ADDRESS_TEXT[getStore().getState().currentLanguage].STREET;
+      const text = ADDRESS_TEXT[getCurrentLanguage()].STREET;
       const textNode = [...this.streetNameSpan.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;

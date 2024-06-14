@@ -5,6 +5,7 @@ import RouterModel from '@/app/Router/model/RouterModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import ScrollToTopModel from '@/shared/ScrollToTop/model/ScrollToTopModel.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 import FooterModel from '@/widgets/Footer/model/FooterModel.ts';
 import HeaderModel from '@/widgets/Header/model/HeaderModel.ts';
 
@@ -14,8 +15,8 @@ class AppModel {
   private appView: AppView = new AppView();
 
   constructor() {
-    this.initialize().catch(() => {
-      throw new Error('AppModel initialization error');
+    this.initialize().catch((error) => {
+      showErrorMessage(error);
     });
   }
 
@@ -66,6 +67,12 @@ class AppModel {
           '@/pages/RegistrationPage/model/RegistrationPageModel.ts'
         );
         return new RegistrationPageModel(this.appView.getHTML());
+      },
+      [PAGE_ID.USER_ADDRESSES_PAGE]: async (): Promise<Page> => {
+        const { default: UserAddressesPageModel } = await import(
+          '@/pages/UserAddressesPage/model/UserAddressesPageModel.ts'
+        );
+        return new UserAddressesPageModel(this.appView.getHTML());
       },
       [PAGE_ID.USER_PROFILE_PAGE]: async (): Promise<Page> => {
         const { default: UserProfilePageModel } = await import('@/pages/UserProfilePage/model/UserProfilePageModel.ts');
