@@ -33,3 +33,28 @@
     justify-content: center;
   }
 }
+
+.logo {
+  display: flex;
+  margin: 0 auto;
+  margin-top: var(--small-offset);
+  width: max-content;
+
+  svg {
+    width: 11rem;
+    height: 4rem;
+    transition: fill 0.1s;
+
+    use {
+      transition: fill 0.1s;
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        fill: var(--steam-green-1200);
+      }
+    }
+  }
+}
