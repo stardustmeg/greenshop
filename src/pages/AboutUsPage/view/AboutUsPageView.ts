@@ -1,7 +1,11 @@
+import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import { LINK_DETAILS } from '@/shared/constants/links.ts';
 import { PAGE_DESCRIPTION } from '@/shared/constants/pages.ts';
+import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
 import styles from './aboutUsPageView.module.scss';
 
@@ -34,10 +38,25 @@ class AboutUsPageView {
       tag: 'div',
     });
 
-    this.page.append(this.createTitle(), this.cardsList);
+    this.page.append(this.createTitle(), this.cardsList, this.createRSSLogo().getHTML());
     this.parent.append(this.page);
 
     return this.page;
+  }
+
+  private createRSSLogo(): LinkModel {
+    const logo = new LinkModel({
+      attrs: {
+        href: 'https://rs.school',
+        target: LINK_DETAILS.BLANK,
+      },
+      classes: [styles.logo],
+    });
+
+    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAILS.RSS_LOGO));
+    logo.getHTML().append(svg);
+    return logo;
   }
 
   private createTitle(): HTMLHeadingElement {

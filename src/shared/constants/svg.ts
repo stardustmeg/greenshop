@@ -19,6 +19,7 @@ const SVG_DETAILS = {
   NOT_FOUND: 'notFound',
   OPEN_EYE: 'openEye',
   PROFILE: 'userCircle',
+  RSS_LOGO: 'rssLogo',
   STAR: 'star',
   SVG_URL: 'http://www.w3.org/2000/svg',
 
