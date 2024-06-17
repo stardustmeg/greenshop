@@ -15,7 +15,7 @@ import type { OptionsRequest } from '../types/type.ts';
 import makeSortRequest from '../product/utils/sort.ts';
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
 
-export class ShoppingListApi {
+export default class ShoppingListApi {
   private client: ApiClient;
 
   constructor() {
@@ -150,12 +150,4 @@ export class ShoppingListApi {
       .execute();
     return data;
   }
-}
-
-const createShoppingListApi = (): ShoppingListApi => new ShoppingListApi();
-
-const shoppingListApi = createShoppingListApi();
-
-export default function getShoppingListApi(): ShoppingListApi {
-  return shoppingListApi;
 }

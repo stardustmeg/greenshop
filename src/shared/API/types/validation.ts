@@ -12,7 +12,6 @@ import type {
   FacetRange,
   FacetTerm,
   LocalizedString,
-  Product,
   ProductDiscountPagedQueryResponse,
   ProductPagedQueryResponse,
   ProductProjection,
@@ -22,7 +21,6 @@ import type {
   ShoppingListPagedQueryResponse,
   TermFacetResult,
 } from '@commercetools/platform-sdk';
-import type { TokenStore } from '@commercetools/sdk-client-v2';
 
 export function isClientResponse(data: unknown): data is ClientResponse {
   return Boolean(
@@ -80,21 +78,6 @@ export function isCategoryPagedQueryResponse(data: unknown): data is CategoryPag
   );
 }
 
-export function isProductPagedQueryResponse(data: unknown): data is ProductPagedQueryResponse {
-  return Boolean(
-    typeof data === 'object' &&
-      data &&
-      'count' in data &&
-      typeof data.count === 'number' &&
-      'limit' in data &&
-      typeof data.limit === 'number' &&
-      'total' in data &&
-      typeof data.total === 'number' &&
-      'results' in data &&
-      typeof Array.isArray(data.results),
-  );
-}
-
 export function isLocalizationObj(data: unknown): data is LocalizedString {
   return Boolean(typeof data === 'object' && data && Object.keys(data).every((key) => typeof key === 'string'));
 }
@@ -107,27 +90,6 @@ export function isAttributePlainEnumValue(data: unknown): data is AttributePlain
       typeof data.key === 'string' &&
       'label' in data &&
       typeof data.label === 'string',
-  );
-}
-
-export function isProductResponse(data: unknown): data is Product {
-  return Boolean(
-    typeof data === 'object' &&
-      data &&
-      'id' in data &&
-      typeof data.id === 'string' &&
-      'key' in data &&
-      typeof data.id === 'string' &&
-      'masterData' in data &&
-      typeof data.masterData === 'object' &&
-      data.masterData !== null &&
-      'staged' in data.masterData &&
-      typeof data.masterData.staged === 'object' &&
-      data.masterData.staged !== null &&
-      'categories' in data.masterData.staged &&
-      'description' in data.masterData.staged &&
-      'name' in data.masterData.staged &&
-      'variants' in data.masterData.staged,
   );
 }
 
@@ -158,25 +120,6 @@ export function isProductProjection(data: unknown): data is ProductProjection {
       'description' in data &&
       'name' in data &&
       'key' in data,
-  );
-}
-
-export function isProductProjectionPagedQueryResponseWithFacet(
-  data: unknown,
-): data is ProductProjectionPagedQueryResponse {
-  return Boolean(
-    typeof data === 'object' &&
-      data &&
-      'count' in data &&
-      typeof data.count === 'number' &&
-      'limit' in data &&
-      typeof data.limit === 'number' &&
-      'total' in data &&
-      typeof data.total === 'number' &&
-      'facets' in data &&
-      typeof data.facets === 'object' &&
-      'results' in data &&
-      Array.isArray(data.results),
   );
 }
 
@@ -229,19 +172,6 @@ export function isErrorResponse(data: unknown): data is ErrorResponse {
       data.statusCode >= 400 &&
       'message' in data &&
       typeof data.message === 'string',
-  );
-}
-
-export function isTokenType(data: unknown): data is TokenStore {
-  return Boolean(
-    typeof data === 'object' &&
-      data &&
-      'expirationTime' in data &&
-      typeof data.expirationTime === 'string' &&
-      'refreshToken' in data &&
-      typeof data.refreshToken === 'string' &&
-      'token' in data &&
-      typeof data.token === 'string',
   );
 }
 

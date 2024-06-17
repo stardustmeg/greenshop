@@ -7,6 +7,10 @@ import formattedText from './formattedText.ts';
 import getCountryIndex from './getCountryIndex.ts';
 import observeCurrentLanguage from './observeCurrentLanguage.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 describe('Checking formattedText function', () => {
   it('should return formatted text for basic functionality', () => {
     expect(formattedText('test')).toBe('Test');

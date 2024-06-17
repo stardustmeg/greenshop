@@ -2,6 +2,10 @@ import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types
 
 import InputFieldValidatorModel from '../model/InputFieldValidatorModel.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 const validatorParams: InputFieldValidatorParams = {
   maxLength: 10,
   minLength: 2,
