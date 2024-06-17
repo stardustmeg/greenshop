@@ -1,13 +1,14 @@
 import type { AboutData, AboutLabel } from '@/shared/types/validation/aboutData';
 
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage, selectCurrentTheme } from '@/shared/Store/observer.ts';
 import { LINK_DETAILS } from '@/shared/constants/links.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import changeColor from '@/shared/utils/changeColor.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse, { changeFill, changeStroke } from '@/shared/utils/createSVGUse.ts';
+import getCurrentAppTheme from '@/shared/utils/getCurrentAppTheme.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './aboutShortCardView.module.scss';
 
@@ -40,12 +41,10 @@ class AboutShortCardView {
       tag: 'div',
     });
 
-    cover.style.backgroundColor =
-      this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color;
+    cover.style.backgroundColor = this.params.coverColor[getCurrentAppTheme()].color;
 
     observeStore(selectCurrentTheme, () => {
-      cover.style.backgroundColor =
-        this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color;
+      cover.style.backgroundColor = this.params.coverColor[getCurrentAppTheme()].color;
     });
     return cover;
   }
@@ -53,23 +52,23 @@ class AboutShortCardView {
   private createFullName(): HTMLSpanElement {
     const fullName = createBaseElement({
       cssClasses: [styles.fullName],
-      innerContent: this.params.userName[getStore().getState().currentLanguage].text,
+      innerContent: this.params.userName[getCurrentLanguage()].text,
       tag: 'span',
     });
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.PROFILE));
-    changeStroke(svg, this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
+    changeStroke(svg, this.params.coverColor[getCurrentAppTheme()].color);
 
     observeStore(selectCurrentTheme, () => {
-      changeStroke(svg, this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
+      changeStroke(svg, this.params.coverColor[getCurrentAppTheme()].color);
     });
     fullName.append(svg);
 
     observeStore(selectCurrentLanguage, () => {
       const textNode = [...fullName.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
-        textNode.textContent = this.params.userName[getStore().getState().currentLanguage].text;
+        textNode.textContent = this.params.userName[getCurrentLanguage()].text;
       }
     });
     return fullName;
@@ -85,16 +84,10 @@ class AboutShortCardView {
       text: this.params.github.name,
     });
 
-    changeColor(
-      githubName.getHTML(),
-      this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color,
-    );
+    changeColor(githubName.getHTML(), this.params.coverColor[getCurrentAppTheme()].color);
 
     observeStore(selectCurrentTheme, () => {
-      changeColor(
-        githubName.getHTML(),
-        this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color,
-      );
+      changeColor(githubName.getHTML(), this.params.coverColor[getCurrentAppTheme()].color);
     });
 
     return githubName;
@@ -142,14 +135,13 @@ class AboutShortCardView {
       tag: 'span',
     });
 
-    labelName.style.color = item.color[getStore().getState().isAppThemeLight ? 'true' : 'false'].color;
-    label.style.backgroundColor = item.backgroundColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color;
+    labelName.style.color = item.color[getCurrentAppTheme()].color;
+    label.style.backgroundColor = item.backgroundColor[getCurrentAppTheme()].color;
     label.append(labelName);
 
     observeStore(selectCurrentTheme, () => {
-      labelName.style.color = item.color[getStore().getState().isAppThemeLight ? 'true' : 'false'].color;
-      label.style.backgroundColor =
-        item.backgroundColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color;
+      labelName.style.color = item.color[getCurrentAppTheme()].color;
+      label.style.backgroundColor = item.backgroundColor[getCurrentAppTheme()].color;
     });
     return label;
   }
@@ -177,16 +169,16 @@ class AboutShortCardView {
   private createPosition(): HTMLSpanElement {
     const position = createBaseElement({
       cssClasses: [styles.position],
-      innerContent: this.params.position[getStore().getState().currentLanguage].text,
+      innerContent: this.params.position[getCurrentLanguage()].text,
       tag: 'span',
     });
 
     const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAILS.STAR));
-    changeFill(svg, this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
+    changeFill(svg, this.params.coverColor[getCurrentAppTheme()].color);
 
     observeStore(selectCurrentTheme, () => {
-      changeFill(svg, this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
+      changeFill(svg, this.params.coverColor[getCurrentAppTheme()].color);
     });
 
     position.append(svg);
@@ -194,7 +186,7 @@ class AboutShortCardView {
     observeStore(selectCurrentLanguage, () => {
       const textNode = [...position.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
-        textNode.textContent = this.params.position[getStore().getState().currentLanguage].text;
+        textNode.textContent = this.params.position[getCurrentLanguage()].text;
       }
     });
     return position;
@@ -203,12 +195,12 @@ class AboutShortCardView {
   private createShortDescription(): HTMLSpanElement {
     const shortDescription = createBaseElement({
       cssClasses: [styles.shortDescription],
-      innerContent: this.params.shortDescription[getStore().getState().currentLanguage].text,
+      innerContent: this.params.shortDescription[getCurrentLanguage()].text,
       tag: 'span',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      shortDescription.textContent = this.params.shortDescription[getStore().getState().currentLanguage].text;
+      shortDescription.textContent = this.params.shortDescription[getCurrentLanguage()].text;
     });
     return shortDescription;
   }

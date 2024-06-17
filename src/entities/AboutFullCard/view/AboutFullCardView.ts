@@ -2,12 +2,13 @@ import type { AboutData, AboutFeedback } from '@/shared/types/validation/aboutDa
 
 import AboutShortCardView from '@/entities/AboutShortCard/view/AboutShortCardView.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage, selectCurrentTheme } from '@/shared/Store/observer.ts';
 import ABOUT_TEXT from '@/shared/constants/about.ts';
 import { LINK_DETAILS } from '@/shared/constants/links.ts';
 import changeColor from '@/shared/utils/changeColor.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentAppTheme from '@/shared/utils/getCurrentAppTheme.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import hexToRgba from '@/shared/utils/hexToRgba.ts';
 
 import styles from './aboutFullCardView.module.scss';
@@ -42,27 +43,27 @@ class AboutFullCardView extends AboutShortCardView {
 
     const title = createBaseElement({
       cssClasses: [styles.title],
-      innerContent: ABOUT_TEXT[getStore().getState().currentLanguage].CHECKLIST,
+      innerContent: ABOUT_TEXT[getCurrentLanguage()].CHECKLIST,
       tag: 'h3',
     });
 
-    changeColor(title, this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
+    changeColor(title, this.params.coverColor[getCurrentAppTheme()].color);
     list.append(title);
-    this.params.checklist[getStore().getState().currentLanguage].forEach((item) => {
+    this.params.checklist[getCurrentLanguage()].forEach((item) => {
       list.append(this.createCheckItem(item));
     });
 
     observeStore(selectCurrentLanguage, () => {
       list.innerHTML = '';
-      title.innerText = ABOUT_TEXT[getStore().getState().currentLanguage].CHECKLIST;
+      title.innerText = ABOUT_TEXT[getCurrentLanguage()].CHECKLIST;
       list.append(title);
-      this.params.checklist[getStore().getState().currentLanguage].forEach((item) => {
+      this.params.checklist[getCurrentLanguage()].forEach((item) => {
         list.append(this.createCheckItem(item));
       });
     });
 
     observeStore(selectCurrentTheme, () => {
-      changeColor(title, this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
+      changeColor(title, this.params.coverColor[getCurrentAppTheme()].color);
     });
     return list;
   }
@@ -71,14 +72,11 @@ class AboutFullCardView extends AboutShortCardView {
     const listItem = createBaseElement({ cssClasses: [styles.feedbackListItem], tag: 'li' });
     const label = createBaseElement({
       cssClasses: [styles.label, styles.feedbackLabel],
-      innerContent: `— ${item.text[getStore().getState().currentLanguage].text}`,
+      innerContent: `— ${item.text[getCurrentLanguage()].text}`,
       tag: 'label',
     });
 
-    label.style.backgroundColor = hexToRgba(
-      this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color,
-      0.2,
-    );
+    label.style.backgroundColor = hexToRgba(this.params.coverColor[getCurrentAppTheme()].color, 0.2);
 
     const href = `https://github.com/${item.from}`;
     const background = `url(${`/img/png/${item.from}Avatar.png`})`;
@@ -93,21 +91,15 @@ class AboutFullCardView extends AboutShortCardView {
     avatar.getHTML().style.backgroundImage = background;
     from.getHTML().append(avatar.getHTML());
 
-    changeColor(from.getHTML(), this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
+    changeColor(from.getHTML(), this.params.coverColor[getCurrentAppTheme()].color);
 
     observeStore(selectCurrentLanguage, () => {
-      label.innerText = `— ${item.text[getStore().getState().currentLanguage].text}`;
+      label.innerText = `— ${item.text[getCurrentLanguage()].text}`;
     });
 
     observeStore(selectCurrentTheme, () => {
-      changeColor(
-        from.getHTML(),
-        this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color,
-      );
-      label.style.backgroundColor = hexToRgba(
-        this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color,
-        0.2,
-      );
+      changeColor(from.getHTML(), this.params.coverColor[getCurrentAppTheme()].color);
+      label.style.backgroundColor = hexToRgba(this.params.coverColor[getCurrentAppTheme()].color, 0.2);
     });
 
     listItem.append(from.getHTML(), label);
@@ -122,22 +114,22 @@ class AboutFullCardView extends AboutShortCardView {
 
     const title = createBaseElement({
       cssClasses: [styles.title],
-      innerContent: ABOUT_TEXT[getStore().getState().currentLanguage].FEEDBACK,
+      innerContent: ABOUT_TEXT[getCurrentLanguage()].FEEDBACK,
       tag: 'h3',
     });
 
-    changeColor(title, this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
+    changeColor(title, this.params.coverColor[getCurrentAppTheme()].color);
     list.append(title);
     this.params.feedback.forEach((item) => {
       list.append(this.createFeedbackItem(item));
     });
 
     observeStore(selectCurrentLanguage, () => {
-      title.innerText = ABOUT_TEXT[getStore().getState().currentLanguage].FEEDBACK;
+      title.innerText = ABOUT_TEXT[getCurrentLanguage()].FEEDBACK;
     });
 
     observeStore(selectCurrentTheme, () => {
-      changeColor(title, this.params.coverColor[getStore().getState().isAppThemeLight ? 'true' : 'false'].color);
+      changeColor(title, this.params.coverColor[getCurrentAppTheme()].color);
     });
     return list;
   }

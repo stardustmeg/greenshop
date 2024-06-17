@@ -1,11 +1,11 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { LINK_DETAILS } from '@/shared/constants/links.ts';
 import { PAGE_DESCRIPTION } from '@/shared/constants/pages.ts';
 import SVG_DETAILS from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './aboutUsPageView.module.scss';
 
@@ -62,12 +62,12 @@ class AboutUsPageView {
   private createTitle(): HTMLHeadingElement {
     const title = createBaseElement({
       cssClasses: [styles.title],
-      innerContent: PAGE_DESCRIPTION[getStore().getState().currentLanguage].ABOUT,
+      innerContent: PAGE_DESCRIPTION[getCurrentLanguage()].ABOUT,
       tag: 'h1',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      title.innerText = PAGE_DESCRIPTION[getStore().getState().currentLanguage].ABOUT;
+      title.innerText = PAGE_DESCRIPTION[getCurrentLanguage()].ABOUT;
     });
     return title;
   }
