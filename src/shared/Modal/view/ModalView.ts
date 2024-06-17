@@ -20,6 +20,7 @@ class ModalView {
     document.addEventListener('click', (event) => {
       if (event.target === this.modalOverlay && !this.modalContent.classList.contains(styles.modalContent_hidden)) {
         this.hide(this.callback);
+        this.callback = (): void => {};
       }
     });
 
@@ -30,6 +31,7 @@ class ModalView {
         !this.modalContent.classList.contains(styles.modalContent_hidden)
       ) {
         this.hide(this.callback);
+        this.callback = (): void => {};
       }
     });
   }
