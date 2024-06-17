@@ -6,7 +6,7 @@ import type {
 
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
 
-export class DiscountApi {
+export default class DiscountApi {
   private client: ApiClient;
 
   constructor() {
@@ -22,12 +22,4 @@ export class DiscountApi {
     const data = await this.client.apiRoot().productDiscounts().get().execute();
     return data;
   }
-}
-
-const createDiscountApi = (): DiscountApi => new DiscountApi();
-
-const discountApi = createDiscountApi();
-
-export default function getDiscountApi(): DiscountApi {
-  return discountApi;
 }

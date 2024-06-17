@@ -51,65 +51,6 @@ export default class CartApi {
     return data;
   }
 
-  // public async deleteProduct(cart: Cart, product: CartProduct): Promise<ClientResponse> {
-  //   const data = await this.client
-  //     .apiRoot()
-  //     .me()
-  //     .carts()
-  //     .withId({ ID: cart.id })
-  //     .post({
-  //       body: {
-  //         actions: [
-  //           {
-  //             action: Actions.removeLineItem,
-  //             lineItemId: product.lineItemId,
-  //           },
-  //         ],
-  //         version: cart.version,
-  //       },
-  //     })
-  //     .execute();
-  //   return data;
-  // }
-
-  // public async editCart(cart: Cart, action: MyCartUpdateAction): Promise<ClientResponse> {
-  //   const data = await this.client
-  //     .apiRoot()
-  //     .me()
-  //     .carts()
-  //     .withId({ ID: cart.id })
-  //     .post({
-  //       body: {
-  //         actions: [action],
-  //         version: cart.version,
-  //       },
-  //     })
-  //     .execute();
-  //   return data;
-  // }
-
-  // public async editProductCount(cart: Cart, editCartItem: EditCartItem): Promise<ClientResponse> {
-  //   const data = await this.client
-  //     .apiRoot()
-  //     .me()
-  //     .carts()
-  //     .withId({ ID: cart.id })
-  //     .post({
-  //       body: {
-  //         actions: [
-  //           {
-  //             action: Actions.changeLineItemQuantity,
-  //             lineItemId: editCartItem.lineId,
-  //             quantity: editCartItem.quantity,
-  //           },
-  //         ],
-  //         version: cart.version,
-  //       },
-  //     })
-  //     .execute();
-  //   return data;
-  // }
-
   public async getActiveCart(): Promise<ClientResponse<CartResponse>> {
     const data = await this.client.apiRoot().me().activeCart().get().execute();
     return data;
@@ -156,11 +97,3 @@ export default class CartApi {
     return data;
   }
 }
-
-// const createCartApi = (): CartApi => new CartApi();
-
-// const cartApi = createCartApi();
-
-// export default function getCartApi(): CartApi {
-//   return cartApi;
-// }

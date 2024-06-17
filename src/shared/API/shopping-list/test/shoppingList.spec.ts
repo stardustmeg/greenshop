@@ -1,6 +1,6 @@
 import type { ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 
-import { ShoppingListApi } from '../ShoppingListApi.ts';
+import ShoppingListApi from '../ShoppingListApi.ts';
 import getShoppingListModel, { ShoppingListModel } from '../model/ShoppingListModel.ts';
 
 /**

@@ -22,7 +22,7 @@ enum Facets {
 enum QueryParams {
   range = 'range',
 }
-export class ProductApi {
+export default class ProductApi {
   private client: ApiClient;
 
   constructor() {
@@ -94,12 +94,4 @@ export class ProductApi {
       .execute();
     return data;
   }
-}
-
-const createProductApi = (): ProductApi => new ProductApi();
-
-const productApi = createProductApi();
-
-export default function getProductApi(): ProductApi {
-  return productApi;
 }

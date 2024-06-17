@@ -1,10 +1,10 @@
-import getProductApi, { ProductApi } from '../ProductApi.ts';
+import ProductApi from '../ProductApi.ts';
 
 /**
  * @vitest-environment jsdom
  */
 
-const root = getProductApi();
+const root = new ProductApi();
 
 describe('Checking ProductApi', () => {
   it('should check if root is defined', () => {

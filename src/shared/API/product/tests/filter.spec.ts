@@ -1,4 +1,3 @@
-// import getProductApi, { ProductApi } from '../ProductApi.ts';
 import type { PriceRange } from '../../types/type.ts';
 
 import { FilterFields } from '../../types/type.ts';

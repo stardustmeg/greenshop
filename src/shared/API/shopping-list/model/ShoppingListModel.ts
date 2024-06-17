@@ -20,7 +20,7 @@ import {
   isShoppingList,
   isShoppingListPagedQueryResponse,
 } from '../../types/validation.ts';
-import getShoppingListApi, { type ShoppingListApi } from '../ShoppingListApi.ts';
+import ShoppingListApi from '../ShoppingListApi.ts';
 
 enum ACTIONS {
   addLineItem = 'addLineItem',
@@ -37,7 +37,7 @@ export class ShoppingListModel {
   private subscribers: ShoppingListChangeHandler[] = [];
 
   constructor() {
-    this.root = getShoppingListApi();
+    this.root = new ShoppingListApi();
     this.getShoppingList()
       .then(() => {
         const { anonymousId } = getStore().getState();
