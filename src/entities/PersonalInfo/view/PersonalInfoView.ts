@@ -1,10 +1,10 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import * as FORM_CONSTANT from '@/shared/constants/forms/text.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import './personalInfoView.scss';
@@ -52,7 +52,7 @@ class PersonalInfoView {
     });
     const titleElement = createBaseElement({
       cssClasses: ['title'],
-      innerContent: FORM_CONSTANT.TITLE_TEXT[getStore().getState().currentLanguage].PERSONAL,
+      innerContent: FORM_CONSTANT.TITLE_TEXT[getCurrentLanguage()].PERSONAL,
       tag: 'h3',
     });
     this.personalDataWrapper.append(titleElement);

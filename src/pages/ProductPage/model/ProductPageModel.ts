@@ -1,97 +1,119 @@
-import type { BreadCrumbLink } from '@/shared/types/link.ts';
-import type { Page, PageParams } from '@/shared/types/page.ts';
+import type { BreadcrumbLink } from '@/shared/types/link.ts';
+import type { Page } from '@/shared/types/page.ts';
 import type { Product, localization } from '@/shared/types/product.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import BreadcrumbsModel from '@/features/Breadcrumbs/model/BreadcrumbsModel.ts';
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
+import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { PAGE_ID, PAGE_TITLE } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
+import * as buildPath from '@/shared/utils/buildPathname.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
 import ProductPageView from '../view/ProductPageView.ts';
 
 class ProductPageModel implements Page {
+  private breadcrumbs = new BreadcrumbsModel();
+
+  private currentProduct: Product | null = null;
+
   private view: ProductPageView;
 
-  constructor(parent: HTMLDivElement, params: PageParams) {
+  constructor(parent: HTMLDivElement) {
     this.view = new ProductPageView(parent);
-    this.init(params);
+    this.init();
   }
 
-  private createNavigationLinks(currentProduct: Product): BreadCrumbLink[] {
-    const category = currentProduct.category[0].parent;
-    const subcategory = currentProduct.category[0];
-    const links = [
-      {
-        link: buildPathName(PAGE_ID.MAIN_PAGE, null, null),
-        name: PAGE_ID.MAIN_PAGE.slice(0, -1),
-      },
-      {
-        link: buildPathName(PAGE_ID.CATALOG_PAGE, null, null),
-        name: PAGE_ID.CATALOG_PAGE.slice(0, -1),
-      },
+  private createBreadcrumbLinks(currentProduct: Product | null): BreadcrumbLink[] {
+    const currentLanguage = getCurrentLanguage();
+    const isRuLanguage = currentLanguage === LANGUAGE_CHOICE.RU;
+    const category = currentProduct?.category[0].parent;
+    const subcategory = currentProduct?.category[0];
+
+    const links: BreadcrumbLink[] = [
+      { link: PAGE_ID.MAIN_PAGE, name: PAGE_TITLE[currentLanguage].main },
+      { link: PAGE_ID.CATALOG_PAGE, name: PAGE_TITLE[currentLanguage].catalog },
     ];
 
     if (category) {
       links.push({
-        link: buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [category.id] }),
-
-        name: category.name[0].value,
+        link: buildPath.catalogPathWithQuery({ category: [category.key] }),
+        name: category.name[Number(isRuLanguage)].value,
       });
     }
 
     if (subcategory && category) {
       links.push({
-        link: buildPathName(PAGE_ID.CATALOG_PAGE, null, { category: [category.id], subcategory: [subcategory.id] }),
-        name: subcategory.name[0].value,
+        link: buildPath.catalogPathWithQuery({ subcategory: [subcategory.key] }),
+        name: subcategory.name[Number(isRuLanguage)].value,
       });
     }
 
     return links;
   }
 
-  private init(params: PageParams): void {
+  private init(): void {
     const currentSize = RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SIZE);
-
+    const loader = new LoaderModel(LOADER_SIZE.EXTRA_LARGE).getHTML();
+    this.view.getHTML().append(loader);
     getProductModel()
-      .getProductByKey(params.product?.id ?? '')
+      .getProductByKey(RouterModel.getPageID() ?? '')
       .then((productData) => {
         if (productData) {
-          const productInfo = new ProductInfoModel({
-            currentSize: currentSize ?? productData.variant[0].size,
-            ...productData,
-          });
-          this.initBreadcrumbs(productData);
-          this.getHTML().append(productInfo.getHTML(), this.view.getFullDescriptionWrapper());
-          this.view.setFullDescription(
-            productData.fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-          );
-          this.observeLanguage(productData.fullDescription);
+          this.updatePageContent(productData, currentSize);
         }
       })
-      .catch(showErrorMessage);
+      .catch(showErrorMessage)
+      .finally(() => loader.remove());
 
     getStore().dispatch(setCurrentPage(PAGE_ID.PRODUCT_PAGE));
   }
 
-  private initBreadcrumbs(currentProduct: Product): void {
-    const links = this.createNavigationLinks(currentProduct);
-    this.getHTML().append(new BreadcrumbsModel(links).getHTML());
+  private initBreadcrumbs(): void {
+    this.breadcrumbs.clearBreadcrumbLinks();
+    this.breadcrumbs.addBreadcrumbLinks(this.createBreadcrumbLinks(this.currentProduct));
+    this.view.getHTML().prepend(this.breadcrumbs.getHTML());
   }
 
   private observeLanguage(fullDescription: localization[]): void {
     observeStore(selectCurrentLanguage, () => {
-      this.view.setFullDescription(
-        fullDescription[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
-      );
+      this.view.setFullDescription(fullDescription[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value);
+      this.initBreadcrumbs();
     });
+  }
+
+  private updatePageContent(productData: Product, currentSize: null | string): void {
+    this.currentProduct = productData;
+    this.initBreadcrumbs();
+
+    const productPath = buildPath.productPathWithIDAndQuery(RouterModel.getPageID(), {
+      size: [currentSize],
+      slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE) || '0'],
+    });
+
+    const savedPath =
+      RouterModel.getSavedPath() === productPath ? RouterModel.getCurrentPage() : RouterModel.getSavedPath();
+
+    const productInfo = new ProductInfoModel(
+      {
+        currentSize: currentSize ?? productData.variant[0].size,
+        ...productData,
+      },
+      savedPath,
+    );
+    this.getHTML().append(productInfo.getHTML(), this.view.getFullDescriptionWrapper());
+    this.view.setFullDescription(
+      this.currentProduct.fullDescription[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
+    );
+    this.observeLanguage(this.currentProduct.fullDescription);
   }
 
   public getHTML(): HTMLDivElement {

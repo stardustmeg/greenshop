@@ -18,11 +18,11 @@
 }
 
 .swipeRow {
-  transform: translateX(calc(var(--extra-large-offset) * -1));
+  transform: translateX(-25%);
 }
 
 .swipeDelete {
-  transform: translateX(calc(var(--extra-large-offset) * 1.5));
+  transform: translateX(85%);
 }
 
 .deleteCell {
@@ -45,6 +45,14 @@
 }
 
 .deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  div {
+    position: absolute;
+  }
+
   svg {
     width: var(--extra-small-offset);
     height: var(--extra-small-offset);
@@ -102,6 +110,14 @@
   }
 }
 
+$color: var(--steam-green-800);
+
+.nameLink {
+  @include link(0 0, $color);
+
+  text-transform: none;
+}
+
 .nameCell {
   justify-content: flex-start;
   grid-area: 2 / 2 / 3 / 3;
@@ -133,6 +149,10 @@
 }
 
 .priceCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   grid-area: 2 / 3 / 4 / 4;
 
   @media (max-width: 768px) {
@@ -160,8 +180,9 @@
 
 .quantityText {
   padding: var(--tiny-offset);
-  font: var(--regular-font);
-  color: var(--noble-gray-800);
+  font: var(--medium-font);
+  letter-spacing: var(--one);
+  color: var(--noble-gray-700);
 }
 
 .totalText {
@@ -170,10 +191,19 @@
   color: var(--steam-green-800);
 }
 
+.priceDiscountText,
 .priceText {
   padding: var(--tiny-offset) 0;
   font: var(--regular-font);
   color: var(--noble-gray-700);
+}
+
+.priceDiscountText {
+  color: var(--steam-green-700);
+}
+
+.priceDiscountText:empty {
+  display: none;
 }
 
 .sizeText {
@@ -192,13 +222,33 @@
 
   border-radius: 50%;
   padding: 0;
+  padding-bottom: var(--one);
   width: calc(var(--tiny-offset) * 2.5);
   height: calc(var(--tiny-offset) * 2.5);
-  font: var(--regular-font);
+  font: var(--medium-font);
+  letter-spacing: 0;
 }
 
 .mobileHide {
   @media (max-width: 768px) {
     display: none;
+  }
+}
+
+.discount {
+  text-decoration: line-through;
+}
+
+.priceElement {
+  flex-direction: column;
+  margin: 0;
+
+  span:empty {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+    justify-content: start;
   }
 }

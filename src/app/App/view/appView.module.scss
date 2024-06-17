@@ -4,7 +4,11 @@
   flex-direction: column;
   justify-content: center;
   margin: 0 auto;
-  padding: var(--medium-offset) 0;
+  padding: calc(var(--medium-offset) * 2) 0;
   width: 100%;
   min-height: calc(100vh - calc(var(--extra-small-offset) * 7.1));
+
+  @media (max-width: 768px) {
+    padding: calc(var(--medium-offset) * 2.65) 0;
+  }
 }

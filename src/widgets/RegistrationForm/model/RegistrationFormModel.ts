@@ -7,29 +7,30 @@ import CredentialsModel from '@/entities/Credentials/model/CredentialsModel.ts';
 import PersonalInfoModel from '@/entities/PersonalInfo/model/PersonalInfoModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import { ADDRESS_TYPE } from '@/shared/types/address.ts';
+import { ADDRESS } from '@/shared/types/address.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
 class RegisterFormModel {
-  private addressWrappers: Record<Exclude<AddressType, typeof ADDRESS_TYPE.GENERAL>, AddressModel> = {
-    [ADDRESS_TYPE.BILLING]: new AddressModel(
+  private addressWrappers: Record<Exclude<AddressType, typeof ADDRESS.GENERAL>, AddressModel> = {
+    [ADDRESS.BILLING]: new AddressModel(
       {
         setDefault: true,
       },
-      ADDRESS_TYPE.BILLING,
+      ADDRESS.BILLING,
     ),
-    [ADDRESS_TYPE.SHIPPING]: new AddressModel(
+    [ADDRESS.SHIPPING]: new AddressModel(
       {
         setAsBilling: true,
         setDefault: true,
       },
-      ADDRESS_TYPE.SHIPPING,
+      ADDRESS.SHIPPING,
     ),
   };
 
@@ -58,7 +59,7 @@ class RegisterFormModel {
       firstName,
       id: '',
       lastName,
-      locale: getStore().getState().currentLanguage,
+      locale: getCurrentLanguage(),
       password,
       shippingAddress: [],
       version: 0,
@@ -83,8 +84,8 @@ class RegisterFormModel {
     this.getHTML().append(this.personalInfoWrapper.getHTML());
 
     this.inputFields.push(
-      ...this.personalInfoWrapper.getView().getInputFields(),
       ...this.credentialsWrapper.getView().getInputFields(),
+      ...this.personalInfoWrapper.getView().getInputFields(),
     );
 
     Object.values(this.addressWrappers)
@@ -96,7 +97,7 @@ class RegisterFormModel {
     this.inputFields.forEach((inputField) => this.setInputFieldHandlers(inputField));
     this.setPreventDefaultToForm();
     this.setSubmitFormHandler();
-    const checkboxSingleAddress = this.addressWrappers[ADDRESS_TYPE.SHIPPING]
+    const checkboxSingleAddress = this.addressWrappers[ADDRESS.SHIPPING]
       .getView()
       .getAddressAsBillingCheckBox()
       ?.getHTML();
@@ -120,11 +121,11 @@ class RegisterFormModel {
         if (newUserData) {
           getStore().dispatch(switchIsUserLoggedIn(false));
           getStore().dispatch(switchIsUserLoggedIn(true));
-          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_REGISTRATION, MESSAGE_STATUS.SUCCESS);
+          showSuccessMessage(SERVER_MESSAGE_KEY.SUCCESSFUL_REGISTRATION);
         }
       })
       .catch(() => {
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.USER_EXISTS, MESSAGE_STATUS.ERROR);
+        showErrorMessage(SERVER_MESSAGE_KEY.USER_EXISTS);
       })
       .finally(() => loader.remove());
   }
@@ -157,8 +158,8 @@ class RegisterFormModel {
       });
     }
 
-    const billingAddressView = this.addressWrappers[ADDRESS_TYPE.BILLING].getView();
-    const shippingAddress = this.addressWrappers[ADDRESS_TYPE.SHIPPING];
+    const billingAddressView = this.addressWrappers[ADDRESS.BILLING].getView();
+    const shippingAddress = this.addressWrappers[ADDRESS.SHIPPING];
     shippingAddress
       .getView()
       .getInputFields()

@@ -8,9 +8,14 @@ import type {
   ShoppingListSetAnonymousIdAction,
 } from '@commercetools/platform-sdk';
 
+import { DEFAULT_PAGE, PRODUCT_LIMIT } from '@/shared/constants/product.ts';
+
+import type { OptionsRequest } from '../types/type.ts';
+
+import makeSortRequest from '../product/utils/sort.ts';
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
 
-export class ShoppingListApi {
+export default class ShoppingListApi {
   private client: ApiClient;
 
   constructor() {
@@ -92,13 +97,39 @@ export class ShoppingListApi {
     return data;
   }
 
-  public async get(): Promise<ClientResponse<ShoppingListPagedQueryResponse>> {
-    const data = await this.client.apiRoot().me().shoppingLists().get().execute();
+  public async get(options?: OptionsRequest): Promise<ClientResponse<ShoppingListPagedQueryResponse>> {
+    const { limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, sort } = options || {};
+    const data = await this.client
+      .apiRoot()
+      .me()
+      .shoppingLists()
+      .get({
+        queryArgs: {
+          limit,
+          offset: (page - 1) * PRODUCT_LIMIT,
+          ...(sort && { sort: makeSortRequest(sort) }),
+          withTotal: true,
+        },
+      })
+      .execute();
     return data;
   }
 
-  public async getAnonymList(ID: string): Promise<ClientResponse<ShoppingListResponse>> {
-    const data = await this.client.apiRoot().shoppingLists().withId({ ID }).get().execute();
+  public async getAnonymList(ID: string, options?: OptionsRequest): Promise<ClientResponse<ShoppingListResponse>> {
+    const { limit = PRODUCT_LIMIT, page = DEFAULT_PAGE, sort } = options || {};
+    const data = await this.client
+      .apiRoot()
+      .shoppingLists()
+      .withId({ ID })
+      .get({
+        queryArgs: {
+          limit,
+          offset: (page - 1) * PRODUCT_LIMIT,
+          ...(sort && { sort: makeSortRequest(sort) }),
+          withTotal: true,
+        },
+      })
+      .execute();
     return data;
   }
 
@@ -119,12 +150,4 @@ export class ShoppingListApi {
       .execute();
     return data;
   }
-}
-
-const createShoppingListApi = (): ShoppingListApi => new ShoppingListApi();
-
-const shoppingListApi = createShoppingListApi();
-
-export default function getShoppingListApi(): ShoppingListApi {
-  return shoppingListApi;
 }

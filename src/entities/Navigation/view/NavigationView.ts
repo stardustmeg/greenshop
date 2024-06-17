@@ -1,7 +1,8 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
-import { PAGE_ID, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/pages.ts';
+import { PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY } from '@/shared/constants/links.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './navigationView.module.scss';
@@ -55,10 +56,10 @@ class NavigationView {
         href: PAGE_ID.ABOUT_US_PAGE,
       },
       classes: [styles.link],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].ABOUT,
+      text: PAGE_LINK_TEXT[getCurrentLanguage()].ABOUT,
     });
 
-    observeCurrentLanguage(this.toAboutLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.ABOUT);
+    observeCurrentLanguage(this.toAboutLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.ABOUT);
 
     this.navigationLinks.set(PAGE_ID.ABOUT_US_PAGE, this.toAboutLink);
     return this.toAboutLink;
@@ -70,10 +71,10 @@ class NavigationView {
         href: PAGE_ID.BLOG,
       },
       classes: [styles.link],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].BLOG,
+      text: PAGE_LINK_TEXT[getCurrentLanguage()].BLOG,
     });
 
-    observeCurrentLanguage(this.toBlogLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.BLOG);
+    observeCurrentLanguage(this.toBlogLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.BLOG);
 
     this.navigationLinks.set(PAGE_ID.BLOG, this.toBlogLink);
     return this.toBlogLink;
@@ -85,10 +86,10 @@ class NavigationView {
         href: PAGE_ID.CATALOG_PAGE,
       },
       classes: [styles.link],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].CATALOG,
+      text: PAGE_LINK_TEXT[getCurrentLanguage()].CATALOG,
     });
 
-    observeCurrentLanguage(this.toCatalogLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.CATALOG);
+    observeCurrentLanguage(this.toCatalogLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.CATALOG);
 
     this.navigationLinks.set(PAGE_ID.CATALOG_PAGE, this.toCatalogLink);
     return this.toCatalogLink;
@@ -100,10 +101,10 @@ class NavigationView {
         href: PAGE_ID.LOGIN_PAGE,
       },
       classes: [styles.link],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].LOGIN,
+      text: PAGE_LINK_TEXT[getCurrentLanguage()].LOGIN,
     });
 
-    observeCurrentLanguage(this.toLoginLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.LOGIN);
+    observeCurrentLanguage(this.toLoginLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.LOGIN);
 
     this.navigationLinks.set(PAGE_ID.LOGIN_PAGE, this.toLoginLink);
     return this.toLoginLink;
@@ -115,10 +116,10 @@ class NavigationView {
         href: PAGE_ID.MAIN_PAGE,
       },
       classes: [styles.link],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].MAIN,
+      text: PAGE_LINK_TEXT[getCurrentLanguage()].MAIN,
     });
 
-    observeCurrentLanguage(this.toMainLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.MAIN);
+    observeCurrentLanguage(this.toMainLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.MAIN);
 
     this.navigationLinks.set(PAGE_ID.MAIN_PAGE, this.toMainLink);
     return this.toMainLink;
@@ -130,10 +131,10 @@ class NavigationView {
         href: PAGE_ID.REGISTRATION_PAGE,
       },
       classes: [styles.link],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].REGISTRATION,
+      text: PAGE_LINK_TEXT[getCurrentLanguage()].REGISTRATION,
     });
 
-    observeCurrentLanguage(this.toRegisterLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.REGISTRATION);
+    observeCurrentLanguage(this.toRegisterLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.REGISTRATION);
 
     this.navigationLinks.set(PAGE_ID.REGISTRATION_PAGE, this.toRegisterLink);
     return this.toRegisterLink;

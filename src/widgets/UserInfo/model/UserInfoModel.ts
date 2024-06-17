@@ -8,7 +8,7 @@ import modal from '@/shared/Modal/model/ModalModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { userInfoDateOfBirth, userInfoEmail, userInfoLastName, userInfoName } from '@/shared/utils/messageTemplates.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import UserInfoView from '../view/UserInfoView.ts';
 

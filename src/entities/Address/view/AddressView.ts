@@ -1,12 +1,12 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import getStore from '@/shared/Store/Store.ts';
-import { FORM_TEXT, FORM_TEXT_KEYS, INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { FORM_TEXT, FORM_TEXT_KEY, INPUT_TYPE } from '@/shared/constants/forms.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import { TITLE_TEXT, TITLE_TEXT_KEYS } from '@/shared/constants/forms/text.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
-import { ADDRESS_TYPE, type AddressOptions, type AddressType, SINGLE_ADDRESS } from '@/shared/types/address.ts';
+import { ADDRESS, type AddressOptions, type AddressType, SINGLE_ADDRESS } from '@/shared/types/address.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './addressView.module.scss';
@@ -67,10 +67,10 @@ class AddressView {
 
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
-      innerContent: FORM_TEXT[getStore().getState().currentLanguage].SINGLE_ADDRESS,
+      innerContent: FORM_TEXT[getCurrentLanguage()].SINGLE_ADDRESS,
       tag: 'span',
     });
-    observeCurrentLanguage(checkBoxText, FORM_TEXT, FORM_TEXT_KEYS.SINGLE_ADDRESS);
+    observeCurrentLanguage(checkBoxText, FORM_TEXT, FORM_TEXT_KEY.SINGLE_ADDRESS);
 
     this.addressAsBillingCheckBox = new InputModel({
       autocomplete: FORM_FIELDS.CHECKBOX.AUTOCOMPLETE,
@@ -87,16 +87,18 @@ class AddressView {
   private createAddressByDefaultCheckbox(): HTMLLabelElement {
     const checkboxLabel = createBaseElement({
       attributes: {
-        for: this.addressType === ADDRESS_TYPE.SHIPPING ? ADDRESS_TYPE.SHIPPING : ADDRESS_TYPE.BILLING,
+        for: this.addressType === ADDRESS.SHIPPING ? ADDRESS.SHIPPING : ADDRESS.BILLING,
       },
       cssClasses: [styles.checkboxLabel],
       tag: 'label',
     });
 
+    const currentLanguage = getCurrentLanguage();
+
     const textContent =
-      this.addressType === ADDRESS_TYPE.SHIPPING
-        ? FORM_TEXT[getStore().getState().currentLanguage].DEFAULT_SHIPPING_ADDRESS
-        : FORM_TEXT[getStore().getState().currentLanguage].DEFAULT_BILLING_ADDRESS;
+      this.addressType === ADDRESS.SHIPPING
+        ? FORM_TEXT[currentLanguage].DEFAULT_SHIPPING_ADDRESS
+        : FORM_TEXT[currentLanguage].DEFAULT_BILLING_ADDRESS;
     const checkBoxText = createBaseElement({
       cssClasses: [styles.checkboxText],
       innerContent: textContent,
@@ -105,14 +107,14 @@ class AddressView {
     observeCurrentLanguage(
       checkBoxText,
       FORM_TEXT,
-      this.addressType === ADDRESS_TYPE.SHIPPING
-        ? FORM_TEXT_KEYS.DEFAULT_SHIPPING_ADDRESS
-        : FORM_TEXT_KEYS.DEFAULT_BILLING_ADDRESS,
+      this.addressType === ADDRESS.SHIPPING
+        ? FORM_TEXT_KEY.DEFAULT_SHIPPING_ADDRESS
+        : FORM_TEXT_KEY.DEFAULT_BILLING_ADDRESS,
     );
 
     this.addressByDefaultCheckBox = new InputModel({
       autocomplete: FORM_FIELDS.CHECKBOX.AUTOCOMPLETE,
-      id: this.addressType === ADDRESS_TYPE.SHIPPING ? ADDRESS_TYPE.SHIPPING : ADDRESS_TYPE.BILLING,
+      id: this.addressType === ADDRESS.SHIPPING ? ADDRESS.SHIPPING : ADDRESS.BILLING,
       placeholder: '',
       type: INPUT_TYPE.CHECK_BOX,
     });
@@ -123,7 +125,7 @@ class AddressView {
   }
 
   private createCityField(): InputFieldModel {
-    if (this.addressType === ADDRESS_TYPE.SHIPPING) {
+    if (this.addressType === ADDRESS.SHIPPING) {
       this.cityField = new InputFieldModel(FORM_FIELDS.SHIPPING_ADDRESS_CITY, FORM_VALIDATION.ADDRESS_CITY_VALIDATE);
     } else {
       this.cityField = new InputFieldModel(FORM_FIELDS.BILLING_ADDRESS_CITY, FORM_VALIDATION.ADDRESS_CITY_VALIDATE);
@@ -135,7 +137,7 @@ class AddressView {
   }
 
   private createCountryField(): InputFieldModel {
-    if (this.addressType === ADDRESS_TYPE.SHIPPING) {
+    if (this.addressType === ADDRESS.SHIPPING) {
       this.countryField = new InputFieldModel(
         FORM_FIELDS.SHIPPING_ADDRESS_COUNTRY,
         FORM_VALIDATION.ADDRESS_COUNTRY_VALIDATE,
@@ -156,7 +158,7 @@ class AddressView {
     this.address = createBaseElement({
       cssClasses: [
         styles.address,
-        this.addressType === ADDRESS_TYPE.SHIPPING ? styles.shippingAddressWrapper : styles.billingAddressWrapper,
+        this.addressType === ADDRESS.SHIPPING ? styles.shippingAddressWrapper : styles.billingAddressWrapper,
       ],
       tag: 'div',
     });
@@ -176,7 +178,7 @@ class AddressView {
   }
 
   private createPostalCodeField(): InputFieldModel {
-    if (this.addressType === ADDRESS_TYPE.SHIPPING) {
+    if (this.addressType === ADDRESS.SHIPPING) {
       this.postalCodeField = new InputFieldModel(
         FORM_FIELDS.SHIPPING_ADDRESS_POSTAL_CODE,
         FORM_VALIDATION.ADDRESS_POSTAL_CODE_VALIDATE,
@@ -194,7 +196,7 @@ class AddressView {
   }
 
   private createStreetField(): InputFieldModel {
-    if (this.addressType === ADDRESS_TYPE.SHIPPING) {
+    if (this.addressType === ADDRESS.SHIPPING) {
       this.streetField = new InputFieldModel(
         FORM_FIELDS.SHIPPING_ADDRESS_STREET,
         FORM_VALIDATION.ADDRESS_STREET_VALIDATE,
@@ -214,17 +216,20 @@ class AddressView {
   private createTitle(): HTMLHeadingElement {
     let titleText: string;
     let key: string;
+
+    const currentLanguage = getCurrentLanguage();
+
     switch (this.addressType) {
-      case ADDRESS_TYPE.BILLING:
-        titleText = TITLE_TEXT[getStore().getState().currentLanguage].BILLING_ADDRESS;
+      case ADDRESS.BILLING:
+        titleText = TITLE_TEXT[currentLanguage].BILLING_ADDRESS;
         key = TITLE_TEXT_KEYS.BILLING_ADDRESS;
         break;
-      case ADDRESS_TYPE.SHIPPING:
-        titleText = TITLE_TEXT[getStore().getState().currentLanguage].SHIPPING_ADDRESS;
+      case ADDRESS.SHIPPING:
+        titleText = TITLE_TEXT[currentLanguage].SHIPPING_ADDRESS;
         key = TITLE_TEXT_KEYS.SHIPPING_ADDRESS;
         break;
       default:
-        titleText = TITLE_TEXT[getStore().getState().currentLanguage].ADDRESS;
+        titleText = TITLE_TEXT[currentLanguage].ADDRESS;
         key = TITLE_TEXT_KEYS.ADDRESS;
         break;
     }

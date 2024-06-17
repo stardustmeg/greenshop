@@ -41,6 +41,9 @@
     @media (max-width: 768px) {
       align-items: center;
       justify-content: center;
+      justify-self: end;
+      grid-row: 1;
+      width: max-content;
     }
   }
 }

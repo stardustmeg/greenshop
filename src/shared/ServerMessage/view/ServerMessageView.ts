@@ -1,12 +1,12 @@
-import type { MessageStatusType, ServerMessageKeysType } from '@/shared/constants/messages.ts';
+import type { MessageStatusType, ServerMessageKeyType } from '@/shared/constants/messages.ts';
 
-import getStore from '@/shared/Store/Store.ts';
 import SERVER_MESSAGE_ANIMATE_DETAILS, {
   SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_END,
   SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_START,
 } from '@/shared/constants/animations.ts';
 import { MESSAGE_STATUS, SERVER_MESSAGE } from '@/shared/constants/messages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './serverMessageView.module.scss';
 
@@ -78,12 +78,23 @@ class ServerMessageView {
     return this.serverWrapper;
   }
 
-  public setServerMessage(keyOrMessage: ServerMessageKeysType, status: MessageStatusType, message?: string): boolean {
+  public setServerMessage(status: MessageStatusType, keyOrMessage?: ServerMessageKeyType, message?: string): boolean {
+    const currentLanguage = getCurrentLanguage();
+
     this.serverWrapper.classList.toggle(styles.error, status === MESSAGE_STATUS.ERROR);
     this.serverWrapper.classList.toggle(styles.success, status === MESSAGE_STATUS.SUCCESS);
 
-    this.serverMessage.textContent = SERVER_MESSAGE[getStore().getState().currentLanguage][keyOrMessage];
-    this.serverMessage.textContent = message || this.serverMessage.textContent;
+    let userMessage = '';
+
+    if (keyOrMessage) {
+      userMessage = SERVER_MESSAGE[currentLanguage][keyOrMessage] || '';
+    }
+
+    if (message) {
+      userMessage += message;
+    }
+
+    this.serverMessage.textContent = userMessage;
 
     this.startAnimation();
     return true;

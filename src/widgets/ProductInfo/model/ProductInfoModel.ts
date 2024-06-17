@@ -1,27 +1,28 @@
 import type { Cart } from '@/shared/types/cart.ts';
 import type { ProductInfoParams, Variant } from '@/shared/types/product.ts';
-import type { ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 
+import { set } from '@/app/Router/helpers/helpers.ts';
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ProductModalSliderModel from '@/entities/ProductModalSlider/model/ProductModalSliderModel.ts';
 import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
+import WishlistButtonModel from '@/features/WishlistButton/model/WishlistButtonModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
-import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import * as buildPath from '@/shared/utils/buildPathname.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { productAddedToCartMessage, productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import Swiper from 'swiper';
 import 'swiper/css';
-import 'swiper/css/autoplay';
 import 'swiper/css/bundle';
-import { Autoplay, Thumbs } from 'swiper/modules';
+import { Autoplay, Keyboard, Navigation } from 'swiper/modules';
 
 import ProductInfoView from '../view/ProductInfoView.ts';
 
@@ -29,37 +30,46 @@ const SLIDER_DELAY = 5000;
 const SLIDER_PER_VIEW = 1;
 
 class ProductInfoModel {
-  private bigSlider: Swiper | null = null;
-
   private currentVariant: Variant;
 
   private params: ProductInfoParams;
 
   private price: ProductPriceModel;
 
-  private smallSlider: Swiper | null = null;
+  private savedPath?: string;
+
+  private slider: Swiper | null = null;
 
   private view: ProductInfoView;
 
-  constructor(params: ProductInfoParams) {
+  private wishlistButton: WishlistButtonModel;
+
+  constructor(params: ProductInfoParams, savedPath?: string) {
     this.params = params;
+    this.savedPath = savedPath;
     this.view = new ProductInfoView(this.params);
     this.currentVariant =
       this.params.variant.find(({ size }) => size === this.params.currentSize) ?? this.params.variant[0];
-    this.price = new ProductPriceModel(this.currentVariant);
+    this.price = new ProductPriceModel({ new: this.currentVariant.discount, old: this.currentVariant.price });
+    this.wishlistButton = new WishlistButtonModel(this.params);
     this.init();
   }
 
   private addProductToCart(): void {
     const loader = new LoaderModel(LOADER_SIZE.EXTRA_SMALL).getHTML();
     this.view.getSwitchToCartButton().getHTML().append(loader);
+    const currentLanguage = getCurrentLanguage();
     getCartModel()
-      .addProductToCart({ productId: this.params.id, quantity: 1, variantId: this.currentVariant.id })
+      .addProductToCart({
+        name: this.params.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value,
+        productId: this.params.id,
+        quantity: 1,
+        variantId: this.currentVariant.id,
+      })
       .then(() => {
         this.view.switchToCartButtonText(true);
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_PRODUCT_TO_CART,
-          MESSAGE_STATUS.SUCCESS,
+        showSuccessMessage(
+          productAddedToCartMessage(this.params.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value),
         );
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
       })
@@ -67,18 +77,18 @@ class ProductInfoModel {
       .finally(() => loader.remove());
   }
 
-  private addProductToWishListHandler(): void {
-    getShoppingListModel()
-      .addProduct(this.params.id)
-      .then(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST,
-          MESSAGE_STATUS.SUCCESS,
-        );
-        this.view.switchStateWishListButton(true);
-        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
-      })
-      .catch(showErrorMessage);
+  private checkPath(savedPath: string): string {
+    let result = savedPath;
+
+    if (RouterModel.getCurrentPage() === PAGE_ID.CATALOG_PAGE) {
+      result = savedPath;
+    } else if (RouterModel.getCurrentPage() === PAGE_ID.PRODUCT_PAGE) {
+      result = buildPath.productPathWithIDAndQuery(this.params.key, {
+        size: [this.currentVariant.size],
+        slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE)],
+      });
+    }
+    return result;
   }
 
   private deleteProductFromCart(cart: Cart): void {
@@ -90,9 +100,8 @@ class ProductInfoModel {
         .deleteProductFromCart(currentProduct)
         .then(() => {
           this.view.switchToCartButtonText(false);
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE_KEYS.SUCCESSFUL_DELETE_PRODUCT_FROM_CART,
-            MESSAGE_STATUS.SUCCESS,
+          showSuccessMessage(
+            productRemovedFromCartMessage(this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value),
           );
           EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
         })
@@ -101,70 +110,91 @@ class ProductInfoModel {
     }
   }
 
-  private deleteProductToWishListHandler(productInWishList: ShoppingListProduct): void {
-    getShoppingListModel()
-      .deleteProduct(productInWishList)
-      .then(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST,
-          MESSAGE_STATUS.SUCCESS,
-        );
-        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
-        this.view.switchStateWishListButton(false);
-      })
-      .catch(showErrorMessage);
-  }
-
   private init(): void {
-    this.smallSlider = new Swiper(this.view.getSmallSlider(), {
-      direction: 'vertical',
-      slidesPerView: this.params.images.length,
-    });
-    this.bigSlider = new Swiper(this.view.getBigSlider(), {
+    this.slider = new Swiper(this.view.getSlider(), {
       autoplay: {
         delay: SLIDER_DELAY,
       },
-      direction: 'vertical',
-      loop: true,
-      modules: [Autoplay, Thumbs],
-      slidesPerView: SLIDER_PER_VIEW,
-      thumbs: {
-        swiper: this.smallSlider,
+      keyboard: {
+        enabled: true,
       },
+      loop: true,
+      modules: [Autoplay, Keyboard, Navigation],
+      navigation: {
+        nextEl: this.view.getNextSlideButton().getHTML(),
+        prevEl: this.view.getPrevSlideButton().getHTML(),
+      },
+      slidesPerView: SLIDER_PER_VIEW,
     });
-    this.bigSlider.autoplay.start();
-
-    this.view.getBigSliderSlides().forEach((slide, index) => {
-      slide.addEventListener('click', () => {
-        const modalSlider = new ProductModalSliderModel(this.params);
-        modal.show();
-        modalSlider.getModalSlider()?.slideTo(index);
-        modal.setContent(modalSlider.getHTML());
-      });
-    });
+    this.slider.enable();
+    this.slider.slideTo(Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE)) - 1 || 0, 0, false);
+    this.sliderHandler();
+    this.nextSlideButtonHandler();
+    this.prevSlideButtonHandler();
 
     this.view.getRightWrapper().append(this.price.getHTML());
+    this.view.getButtonsWrapper().append(this.wishlistButton.getHTML().getHTML());
     this.switchToCartButtonHandler();
-    this.switchToWishListButtonHandler();
     this.setSizeButtonHandler();
+  }
+
+  private nextSlideButtonHandler(): void {
+    const nextSlideButton = this.view.getNextSlideButton();
+    nextSlideButton.getHTML().addEventListener('click', () => {
+      const slideInSearch = Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE));
+
+      if (slideInSearch < this.view.getSliderSlides().length) {
+        RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch + 1)));
+      } else {
+        RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(1)));
+      }
+    });
+  }
+
+  private prevSlideButtonHandler(): void {
+    const prevSlideButton = this.view.getPrevSlideButton();
+    prevSlideButton.getHTML().addEventListener('click', () => {
+      const slideInSearch = Number(RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE));
+
+      if (slideInSearch > 1) {
+        RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(slideInSearch - 1)));
+      } else {
+        RouterModel.changeSearchParams((url) =>
+          set(url, SEARCH_PARAMS_FIELD.SLIDE, String(this.view.getSliderSlides().length)),
+        );
+      }
+    });
   }
 
   private setSizeButtonHandler(): void {
     this.view.getSizeButtons().forEach((sizeButton) => {
       sizeButton.getHTML().addEventListener('click', () => {
         const currentVariant = this.params.variant.find(({ size }) => size === sizeButton.getHTML().textContent);
-
-        const path = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
-          size: [currentVariant?.size ?? this.params.variant[0].size],
-        })}`;
+        const path = `${buildPath.productPathWithIDAndQuery(this.params.key, { size: [currentVariant?.size ?? this.params.variant[0].size], slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE)] })}`;
         RouterModel.getInstance().navigateTo(path);
         modal.hide();
         this.currentVariant = currentVariant ?? this.params.variant[0];
         this.params.currentSize = currentVariant?.size ?? this.params.variant[0].size;
         this.view.updateParams(this.params);
         this.price.getHTML().remove();
-        this.price = new ProductPriceModel(this.currentVariant);
+        this.price = new ProductPriceModel({ new: this.currentVariant.discount, old: this.currentVariant.price });
         this.view.getRightWrapper().append(this.price.getHTML());
+      });
+    });
+  }
+
+  private sliderHandler(): void {
+    this.view.getSliderSlides().forEach((slide, index) => {
+      slide.addEventListener('click', () => {
+        const { slider } = this;
+        if (slider) {
+          RouterModel.changeSearchParams((url) => set(url, SEARCH_PARAMS_FIELD.SLIDE, String(slider.activeIndex + 1)));
+        }
+        const router = RouterModel.getInstance();
+        const modalSlider = new ProductModalSliderModel(this.params);
+        modal.show(() => router.navigateTo(this.checkPath(this.savedPath ?? '')));
+        modalSlider.getModalSlider()?.slideTo(index);
+        modal.setContent(modalSlider.getHTML());
       });
     });
   }
@@ -185,19 +215,6 @@ class ProductInfoModel {
           }
         })
         .catch(showErrorMessage);
-    });
-  }
-
-  private switchToWishListButtonHandler(): void {
-    const switchToWishListButton = this.view.getSwitchToWishListButton();
-    switchToWishListButton.getHTML().addEventListener('click', async () => {
-      const shoppingList = await getShoppingListModel().getShoppingList();
-      const productInWishList = shoppingList.products.find((product) => product.productId === this.params.id);
-      if (productInWishList) {
-        this.deleteProductToWishListHandler(productInWishList);
-      } else {
-        this.addProductToWishListHandler();
-      }
     });
   }
 

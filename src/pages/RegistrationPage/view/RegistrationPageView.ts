@@ -1,15 +1,14 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
+import { PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY } from '@/shared/constants/links.ts';
 import {
   PAGE_ANSWER,
-  PAGE_ANSWER_KEYS,
+  PAGE_ANSWER_KEY,
   PAGE_DESCRIPTION,
-  PAGE_DESCRIPTION_KEYS,
+  PAGE_DESCRIPTION_KEY,
   PAGE_ID,
-  PAGE_LINK_TEXT,
-  PAGE_LINK_TEXT_KEYS,
 } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 
 import styles from './registrationPageView.module.scss';
@@ -50,11 +49,11 @@ class RegistrationPageView {
   private createAuthDescription(): HTMLHeadingElement {
     this.authDescription = createBaseElement({
       cssClasses: [styles.authDescription],
-      innerContent: PAGE_DESCRIPTION[getStore().getState().currentLanguage].REGISTRATION,
+      innerContent: PAGE_DESCRIPTION[getCurrentLanguage()].REGISTRATION,
       tag: 'h3',
     });
 
-    observeCurrentLanguage(this.authDescription, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEYS.REGISTRATION);
+    observeCurrentLanguage(this.authDescription, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEY.REGISTRATION);
 
     return this.authDescription;
   }
@@ -105,10 +104,10 @@ class RegistrationPageView {
         href: PAGE_ID.LOGIN_PAGE,
       },
       classes: [styles.loginLink],
-      text: PAGE_LINK_TEXT[getStore().getState().currentLanguage].LOGIN,
+      text: PAGE_LINK_TEXT[getCurrentLanguage()].LOGIN,
     });
 
-    observeCurrentLanguage(this.loginLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.LOGIN);
+    observeCurrentLanguage(this.loginLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.LOGIN);
 
     return this.loginLink;
   }
@@ -116,11 +115,11 @@ class RegistrationPageView {
   private createRegisterSpan(): HTMLSpanElement {
     this.registerSpan = createBaseElement({
       cssClasses: [styles.registerSpan],
-      innerContent: PAGE_LINK_TEXT[getStore().getState().currentLanguage].REGISTRATION,
+      innerContent: PAGE_LINK_TEXT[getCurrentLanguage()].REGISTRATION,
       tag: 'span',
     });
 
-    observeCurrentLanguage(this.registerSpan, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.REGISTRATION);
+    observeCurrentLanguage(this.registerSpan, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.REGISTRATION);
 
     return this.registerSpan;
   }
@@ -128,11 +127,11 @@ class RegistrationPageView {
   private createToLoginPageWrapper(): HTMLSpanElement {
     this.toLoginPageWrapper = createBaseElement({
       cssClasses: [styles.toLoginPageWrapper],
-      innerContent: PAGE_ANSWER[getStore().getState().currentLanguage].REGISTRATION,
+      innerContent: PAGE_ANSWER[getCurrentLanguage()].REGISTRATION,
       tag: 'span',
     });
 
-    observeCurrentLanguage(this.toLoginPageWrapper, PAGE_ANSWER, PAGE_ANSWER_KEYS.REGISTRATION);
+    observeCurrentLanguage(this.toLoginPageWrapper, PAGE_ANSWER, PAGE_ANSWER_KEY.REGISTRATION);
 
     return this.toLoginPageWrapper;
   }

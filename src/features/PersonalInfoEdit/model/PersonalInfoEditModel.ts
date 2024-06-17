@@ -6,12 +6,11 @@ import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/Cus
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import PersonalInfoEditView from '../view/PersonalInfoEditView.ts';
 
@@ -48,7 +47,7 @@ class PersonalInfoEditModel {
         );
         modal.hide();
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_INFO, '');
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.PERSONAL_INFO_CHANGED, MESSAGE_STATUS.SUCCESS);
+        showSuccessMessage(SERVER_MESSAGE_KEY.PERSONAL_INFO_CHANGED);
       }
     } catch (error) {
       showErrorMessage(error);
@@ -92,7 +91,6 @@ class PersonalInfoEditModel {
     const cancelButton = this.view.getCancelButton().getHTML();
     cancelButton.addEventListener('click', () => {
       modal.hide();
-      modal.removeContent();
     });
     return true;
   }

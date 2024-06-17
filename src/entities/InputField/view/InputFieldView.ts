@@ -1,9 +1,9 @@
 import type { InputFieldParams, InputParams, LabelParams } from '@/shared/types/form';
 
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './inputFieldView.module.scss';
 
@@ -71,7 +71,7 @@ class InputFieldView {
 
     const updateLabelText = (): void => {
       if (labelParams?.text) {
-        labelText.textContent = labelParams.text[getStore().getState().currentLanguage];
+        labelText.textContent = labelParams.text[getCurrentLanguage()];
       }
     };
 

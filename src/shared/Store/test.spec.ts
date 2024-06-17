@@ -6,6 +6,10 @@ import * as actions from './actions.ts';
 import * as observer from './observer.ts';
 import { rootReducer } from './reducer.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 describe('Checking Store', () => {
   const mockStore = getStore();
   it('should check if store is defined', () => {
@@ -54,10 +58,10 @@ vi.mock('./Store.ts', async (importOriginal) => {
   return {
     ...actual,
     getState: (): State => ({
-      anonymToken: null,
       anonymousCartId: null,
       anonymousId: null,
       anonymousShopListId: null,
+      anonymousToken: null,
       authToken: null,
       billingCountry: '',
       currentLanguage: 'en',
@@ -171,10 +175,10 @@ describe('rootReducer', () => {
 
   beforeEach(() => {
     initialState = {
-      anonymToken: null,
       anonymousCartId: null,
       anonymousId: null,
       anonymousShopListId: null,
+      anonymousToken: null,
       authToken: null,
       billingCountry: '',
       currentLanguage: 'en',

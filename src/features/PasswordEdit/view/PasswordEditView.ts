@@ -1,14 +1,14 @@
 import InputFieldModel from '@/entities/InputField/model/InputFieldModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './passwordEditView.module.scss';
 
@@ -37,14 +37,15 @@ class PasswordEditView {
     this.oldPasswordField = this.createOldPasswordField();
     this.newPasswordField = this.createNewPasswordField();
     this.view = this.createHTML();
+
+    this.submitButton.setDisabled();
   }
 
   private createCancelButton(): ButtonModel {
-    this.cancelButton = new ButtonModel({
+    return new ButtonModel({
       classes: [styles.cancelButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].CANCEL,
+      text: BUTTON_TEXT[getCurrentLanguage()].CANCEL,
     });
-    return this.cancelButton;
   }
 
   private createHTML(): HTMLFormElement {
@@ -64,6 +65,9 @@ class PasswordEditView {
         this.view.append(inputFieldElement.getHTML());
       }
     });
+
+    this.switchPasswordElementSVG(INPUT_TYPE.PASSWORD, this.showOldPasswordElement);
+    this.switchPasswordElementSVG(INPUT_TYPE.PASSWORD, this.showNewPasswordElement);
 
     this.view.append(this.submitButton.getHTML(), this.cancelButton.getHTML());
     return this.view;
@@ -90,30 +94,24 @@ class PasswordEditView {
   }
 
   private createShowNewPasswordElement(): HTMLDivElement {
-    this.showNewPasswordElement = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.showPasswordElement],
       tag: 'div',
     });
-    this.switchPasswordElementSVG(INPUT_TYPE.PASSWORD, this.showNewPasswordElement);
-    return this.showNewPasswordElement;
   }
 
   private createShowOldPasswordElement(): HTMLDivElement {
-    this.showOldPasswordElement = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.showPasswordElement],
       tag: 'div',
     });
-    this.switchPasswordElementSVG(INPUT_TYPE.PASSWORD, this.showOldPasswordElement);
-    return this.showOldPasswordElement;
   }
 
   private createSubmitButton(): ButtonModel {
-    this.submitButton = new ButtonModel({
+    return new ButtonModel({
       classes: [styles.submitButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].SAVE_CHANGES,
+      text: BUTTON_TEXT[getCurrentLanguage()].SAVE_CHANGES,
     });
-    this.submitButton.setDisabled();
-    return this.submitButton;
   }
 
   public getCancelButton(): ButtonModel {
@@ -150,9 +148,9 @@ class PasswordEditView {
 
   public switchPasswordElementSVG(type: string, el: HTMLDivElement): SVGSVGElement {
     const element = el;
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
     element.innerHTML = '';
-    svg.append(createSVGUse(type === INPUT_TYPE.PASSWORD ? SVG_DETAILS.CLOSE_EYE : SVG_DETAILS.OPEN_EYE));
+    svg.append(createSVGUse(type === INPUT_TYPE.PASSWORD ? SVG_DETAIL.CLOSE_EYE : SVG_DETAIL.OPEN_EYE));
     element.append(svg);
     return svg;
   }

@@ -1,6 +1,10 @@
-import getCustomerApi, { CustomerApi } from '../CustomerApi.ts';
+import CustomerApi from '../CustomerApi.ts';
 
-const root = getCustomerApi();
+/**
+ * @vitest-environment jsdom
+ */
+
+const root = new CustomerApi();
 
 describe('Checking CustomerApi', () => {
   it('should check if root is defined', () => {

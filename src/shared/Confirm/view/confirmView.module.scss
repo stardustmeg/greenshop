@@ -4,13 +4,11 @@
   display: grid;
   grid-column: 2 span;
   grid-template-rows: repeat((2, max-content));
-  margin: var(--small-offset) auto;
-  border-bottom: var(--tiny-offset) solid var(--steam-green-800);
   padding: var(--small-offset);
   width: 100%;
   min-height: calc(var(--extra-large-offset) * 2.1);
   max-width: calc(var(--extra-large-offset) * 4);
-  background-color: var(--noble-white-100);
+  background-color: var(--white-tr);
   gap: var(--extra-small-offset);
 }
 

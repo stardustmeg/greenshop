@@ -8,6 +8,46 @@ $one: var(--one);
 $two: var(--two);
 $active-color: var(--steam-green-800);
 
+@mixin switchLabel {
+  position: relative;
+  display: inline-block;
+  width: var(--large-offset);
+  height: calc(calc(var(--small-offset) / 1.5) + var(--extra-small-offset));
+  cursor: pointer;
+}
+
+@mixin switchCheckbox {
+  width: 0;
+  height: 0;
+  opacity: 1;
+}
+
+@mixin switchLabelSpan($label-span-color: var(--noble-gray-tr-800), $label-span-before-color: var(--steam-green-800)) {
+  position: absolute;
+  border-radius: calc(var(--large-br) * 2);
+  background-color: $label-span-color;
+  transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
+  cursor: pointer;
+  pointer-events: none;
+  inset: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--one) * 5);
+    top: 50%;
+    bottom: 0;
+    z-index: 2;
+    border-radius: var(--large-br);
+    width: calc(var(--small-offset) / 1.5);
+    height: calc(var(--small-offset) / 1.5);
+    box-shadow: var(--mellow-shadow-600);
+    background-color: $label-span-before-color;
+    transform: translateY(-50%);
+    transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
+  }
+}
+
 @mixin link($padding: 0 calc(var(--extra-small-offset) / 2), $color: var(--noble-gray-800)) {
   position: relative;
   display: flex;

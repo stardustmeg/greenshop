@@ -8,13 +8,12 @@ import CatalogModel from '@/widgets/Catalog/model/CatalogModel.ts';
 import CatalogPageView from '../view/CatalogPageView.ts';
 
 class CatalogPageModel implements Page {
-  private catalog: CatalogModel = new CatalogModel();
+  private catalog = new CatalogModel();
 
   private view: CatalogPageView;
 
   constructor(parent: HTMLDivElement) {
     this.view = new CatalogPageView(parent);
-
     this.init();
   }
 

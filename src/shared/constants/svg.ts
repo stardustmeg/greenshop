@@ -1,16 +1,17 @@
-const SVG_DETAILS = {
+const SVG_DETAIL = {
   ARROW_UP: 'arrowUp',
   BILL: 'bill',
-  BIN: 'bin',
   CART: 'cart',
+  CLOSE: 'close',
   CLOSE_EYE: 'closeEye',
   COPY: 'copy',
   DARK: 'dark',
   DELETE: 'delete',
   DELIVERY: 'delivery',
   EDIT: 'edit',
-  FILL_HEART: 'heartFill',
   GO_DETAILS: 'arrow',
+  HEART: 'heart',
+  HOUSE: 'house',
   KEY: 'key',
   LEAVES: 'leaves',
   LIGHT: 'light',
@@ -18,13 +19,13 @@ const SVG_DETAILS = {
   NOT_FOUND: 'notFound',
   OPEN_EYE: 'openEye',
   PROFILE: 'userCircle',
+  RSS_LOGO: 'rssLogo',
+  STAR: 'star',
   SVG_URL: 'http://www.w3.org/2000/svg',
   SWITCH_LANGUAGE: {
     en: 'en',
     ru: 'ru',
   },
-  TRUCK: 'truck',
-  WALLET: 'wallet',
 } as const;
 
-export default SVG_DETAILS;
+export default SVG_DETAIL;

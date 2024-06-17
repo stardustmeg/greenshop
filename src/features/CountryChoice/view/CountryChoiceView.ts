@@ -1,7 +1,7 @@
-import getStore from '@/shared/Store/Store.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { KEYBOARD_KEYS } from '@/shared/constants/keyboard.ts';
+import KEYBOARD_KEY from '@/shared/constants/keyboard.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './countryChoiceView.module.scss';
 
@@ -25,7 +25,7 @@ class CountryChoiceView {
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === KEYBOARD_KEYS.TAB && !this.getHTML().classList.contains(styles.hidden)) {
+      if (event.key === KEYBOARD_KEY.TAB && !this.getHTML().classList.contains(styles.hidden)) {
         this.hideCountryChoice();
       }
     });
@@ -37,7 +37,7 @@ class CountryChoiceView {
       tag: 'div',
     });
 
-    Object.entries(COUNTRIES_LIST[getStore().getState().currentLanguage]).forEach(([countryName, countryCode]) =>
+    Object.entries(COUNTRIES_LIST[getCurrentLanguage()]).forEach(([countryName, countryCode]) =>
       this.countryDropList.append(this.createCountryItem(countryName, countryCode)),
     );
 

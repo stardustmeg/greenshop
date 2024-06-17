@@ -1,0 +1,49 @@
+.totalWrap {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  max-width: calc(var(--extra-large-offset) * 3.8);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.couponsWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+
+  &:hover p {
+    color: var(--steam-green-800);
+  }
+}
+
+.title {
+  padding: var(--tiny-offset) 0;
+  font: var(--regular-font);
+  color: var(--noble-gray-800);
+  transition: all 0.2s;
+
+  @media (max-width: 768px) {
+    color: var(--noble-gray-1100);
+  }
+}
+
+.couponsWrap:not(:empty)::after {
+  content: '';
+  display: inline-block;
+  width: var(--tiny-offset);
+  height: var(--tiny-offset);
+  background: url('/img/png/expand-arrow.png') no-repeat center center;
+  background-size: contain;
+}
+
+.couponWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}

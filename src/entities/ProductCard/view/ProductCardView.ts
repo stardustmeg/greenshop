@@ -3,17 +3,16 @@ import type ProductCardParams from '@/shared/types/productCard.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { MORE_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
-import { PRODUCT_INFO_TEXT } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
+import * as buildPath from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { discountPercent, discountText } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './productCardView.module.scss';
 
@@ -44,13 +43,10 @@ class ProductCardView {
 
   private productShortDescription: HTMLParagraphElement;
 
-  private switchToWishListButton: ButtonModel;
-
   constructor(params: ProductCardParams, currentSize: null | string) {
     this.params = params;
     this.currentSize = currentSize;
     this.addToCartButton = this.createAddToCartButton();
-    this.switchToWishListButton = this.createSwitchToWishListButton();
     this.goDetailsPageLink = this.createGoDetailsPageLink();
     this.buttonsWrapper = this.createButtonsWrapper();
     this.productImage = this.createProductImage();
@@ -64,8 +60,7 @@ class ProductCardView {
   }
 
   private changeButtonText(productShortDescription: HTMLParagraphElement, moreButton: HTMLButtonElement): void {
-    const { currentLanguage } = getStore().getState();
-    const moreText = MORE_TEXT[currentLanguage];
+    const moreText = MORE_TEXT[getCurrentLanguage()];
     const button = moreButton;
 
     productShortDescription.classList.toggle(styles.active);
@@ -77,8 +72,8 @@ class ProductCardView {
       classes: [styles.addToCartButton],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.CART));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.CART));
     this.addToCartButton.getHTML().append(svg);
 
     return this.addToCartButton;
@@ -108,18 +103,14 @@ class ProductCardView {
       tag: 'div',
     });
 
-    this.buttonsWrapper.append(
-      this.addToCartButton.getHTML(),
-      this.switchToWishListButton.getHTML(),
-      this.goDetailsPageLink.getHTML(),
-    );
+    this.buttonsWrapper.append(this.addToCartButton.getHTML(), this.goDetailsPageLink.getHTML());
 
     return this.buttonsWrapper;
   }
 
   private createDiscountLabel(): HTMLSpanElement {
     const currentVariant = this.params.variant.find(({ size }) => size === this.currentSize) ?? this.params.variant[0];
-    const innerContent = `${Math.round((1 - currentVariant.discount / currentVariant.price) * 100)}%`;
+    const innerContent = discountPercent(currentVariant);
     this.discountLabel = createBaseElement({
       cssClasses: [styles.discountLabel],
       innerContent,
@@ -128,12 +119,12 @@ class ProductCardView {
 
     const discountSpan = createBaseElement({
       cssClasses: [styles.discountSpan],
-      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].DISCOUNT_LABEL,
+      innerContent: discountText(),
       tag: 'span',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      discountSpan.textContent = PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].DISCOUNT_LABEL;
+      discountSpan.textContent = discountText();
     });
 
     this.discountLabel.append(discountSpan);
@@ -142,9 +133,7 @@ class ProductCardView {
   }
 
   private createGoDetailsPageLink(): LinkModel {
-    const href = `${buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
-      size: [this.currentSize ?? this.params.variant[0].size],
-    })}`;
+    const href = `${buildPath.productPathWithIDAndQuery(this.params.key, { size: [this.currentSize ?? this.params.variant[0].size] })}`;
 
     this.goDetailsPageLink = new LinkModel({
       attrs: {
@@ -153,8 +142,8 @@ class ProductCardView {
       classes: [styles.goDetailsPageLink],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.GO_DETAILS));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.GO_DETAILS));
     this.goDetailsPageLink.getHTML().append(svg);
 
     return this.goDetailsPageLink;
@@ -177,7 +166,7 @@ class ProductCardView {
   private createMoreButton(): ButtonModel {
     this.moreButton = new ButtonModel({
       classes: [styles.moreButton],
-      text: MORE_TEXT[getStore().getState().currentLanguage].MORE,
+      text: MORE_TEXT[getCurrentLanguage()].MORE,
     });
 
     return this.moreButton;
@@ -217,7 +206,7 @@ class ProductCardView {
   }
 
   private createProductName(): HTMLHeadingElement {
-    const innerContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const innerContent = this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
     const productName = createBaseElement({
       cssClasses: [styles.productName],
       innerContent,
@@ -225,15 +214,14 @@ class ProductCardView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const textContent = this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       productName.textContent = textContent;
     });
     return productName;
   }
 
   private createProductShortDescription(): HTMLParagraphElement {
-    const innerContent =
-      this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const innerContent = this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
     this.productShortDescription = createBaseElement({
       cssClasses: [styles.productShortDescription],
       innerContent,
@@ -241,29 +229,15 @@ class ProductCardView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent =
-        this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const textContent = this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       this.productShortDescription.textContent = textContent;
     });
 
     return this.productShortDescription;
   }
 
-  private createSwitchToWishListButton(): ButtonModel {
-    this.switchToWishListButton = new ButtonModel({
-      classes: [styles.switchToWishListButton],
-    });
-
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
-    this.switchToWishListButton.getHTML().append(svg);
-
-    return this.switchToWishListButton;
-  }
-
   private updateMoreButtonText(moreButton: HTMLButtonElement): void {
-    const { currentLanguage } = getStore().getState();
-    const moreText = MORE_TEXT[currentLanguage];
+    const moreText = MORE_TEXT[getCurrentLanguage()];
     const isActive = this.productShortDescription.classList.contains(styles.active);
     const button = moreButton;
 
@@ -292,14 +266,6 @@ class ProductCardView {
 
   public getMoreButton(): ButtonModel {
     return this.moreButton;
-  }
-
-  public getSwitchToWishListButton(): ButtonModel {
-    return this.switchToWishListButton;
-  }
-
-  public switchStateWishListButton(hasProductInWishList: boolean): void {
-    this.switchToWishListButton.getHTML().classList.toggle(styles.inWishList, hasProductInWishList);
   }
 }
 

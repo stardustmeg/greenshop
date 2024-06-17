@@ -4,6 +4,8 @@ import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import styles from './modalView.module.scss';
 
 class ModalView {
+  private callback: () => void = () => {};
+
   private modal: HTMLDivElement;
 
   private modalContent: HTMLDivElement;
@@ -15,15 +17,21 @@ class ModalView {
     this.modalOverlay = this.createModalOverlay();
     this.modal = this.createHTML();
 
-    document.addEventListener('click', ({ target }) => {
-      if (target instanceof HTMLDivElement && !this.modalContent.contains(target)) {
-        this.hide();
+    document.addEventListener('click', (event) => {
+      if (event.target === this.modalOverlay && !this.modalContent.classList.contains(styles.modalContent_hidden)) {
+        this.hide(this.callback);
+        this.callback = (): void => {};
       }
     });
 
     document.addEventListener('keydown', ({ key }) => {
-      if (!this.modalContent.classList.contains(styles.modalContent_hidden) && key === 'Escape') {
-        this.hide();
+      if (
+        !this.modalContent.classList.contains(styles.modalContent_hidden) &&
+        key === 'Escape' &&
+        !this.modalContent.classList.contains(styles.modalContent_hidden)
+      ) {
+        this.hide(this.callback);
+        this.callback = (): void => {};
       }
     });
   }
@@ -58,6 +66,10 @@ class ModalView {
     return this.modalOverlay;
   }
 
+  private setCallback(callback: () => void): void {
+    this.callback = callback;
+  }
+
   public getHTML(): HTMLDivElement {
     return this.modal;
   }
@@ -70,7 +82,8 @@ class ModalView {
     return this.modalOverlay;
   }
 
-  public hide(): void {
+  public hide(callback?: () => void): void {
+    callback?.();
     this.modal.classList.add(styles.modal_hidden);
     this.modalOverlay.classList.add(styles.modalOverlay_hidden);
     this.modalContent.classList.add(styles.modalContent_hidden);
@@ -86,7 +99,11 @@ class ModalView {
     this.modalContent.append(content);
   }
 
-  public show(): void {
+  public show(callback?: () => void): void {
+    if (callback) {
+      this.setCallback(callback);
+    }
+
     this.modal.classList.remove(styles.modal_hidden);
     this.modalOverlay.classList.remove(styles.modalOverlay_hidden);
     this.modalContent.classList.remove(styles.modalContent_hidden);

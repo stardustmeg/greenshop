@@ -46,8 +46,10 @@
   justify-content: center;
   order: 2;
   grid-template-columns: repeat(3, auto);
+  grid-template-rows: repeat(3, max-content);
+  margin-bottom: var(--tiny-offset);
   height: max-content;
-  min-height: calc(var(--extra-large-offset) * 5); // 500px
+  min-height: calc(var(--extra-large-offset) * 13);
   font-size: var(--regular-font);
   letter-spacing: var(--one);
   text-align: center;
@@ -75,8 +77,9 @@
     align-items: center;
     justify-content: center;
     height: 100%;
+    min-height: calc(var(--extra-large-offset) * 7);
     background: url('../../../shared/img/png/notFound.png');
-    background-position: center 0;
+    background-position: center 3rem;
     background-size: calc(var(--extra-large-offset) * 3);
     background-repeat: no-repeat;
   }

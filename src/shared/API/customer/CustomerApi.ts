@@ -26,7 +26,7 @@ const CART_MERGE_MODE = 'MergeWithExistingCustomerCart';
 const CART_TYPE_ID = 'cart';
 const EMAIL = 'email';
 
-export class CustomerApi {
+export default class CustomerApi {
   private client: ApiClient;
 
   constructor() {
@@ -118,12 +118,6 @@ export class CustomerApi {
     return data;
   }
 
-  public async deleteCustomer(ID: string, version: number): Promise<ClientResponse<Customer>> {
-    const data = await this.client.adminRoot().customers().withId({ ID }).delete({ queryArgs: { version } }).execute();
-    await this.logoutUser();
-    return data;
-  }
-
   public async editCustomer(actions: MyCustomerUpdateAction[], version: number): Promise<ClientResponse<Customer>> {
     const data = await this.client.apiRoot().me().post({ body: { actions, version } }).execute();
     return data;
@@ -188,12 +182,4 @@ export class CustomerApi {
     }
     return data;
   }
-}
-
-const createCustomerApi = (): CustomerApi => new CustomerApi();
-
-const customerApi = createCustomerApi();
-
-export default function getCustomerApi(): CustomerApi {
-  return customerApi;
 }

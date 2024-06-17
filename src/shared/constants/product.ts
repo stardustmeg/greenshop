@@ -2,7 +2,7 @@ export const PRICE_FRACTIONS = 100;
 export const PRODUCT_LIMIT = 9;
 export const DEFAULT_PAGE = 1;
 export const MIN_PRICE = 0;
-export const MAX_PRICE = 1000000;
+export const MAX_PRICE = '*';
 export const CURRENCY = 'USD';
 
 export const EMPTY_PRODUCT = {
@@ -24,6 +24,7 @@ export const SEARCH_PARAMS_FIELD = {
   PAGE: 'page',
   SEARCH: 'search',
   SIZE: 'size',
+  SLIDE: 'slide',
   SUBCATEGORY: 'subcategory',
 } as const;
 
@@ -46,7 +47,7 @@ export const PRODUCT_INFO_TEXT = {
   },
 } as const;
 
-export const PRODUCT_INFO_TEXT_KEYS = {
+export const PRODUCT_INFO_TEXT_KEY = {
   CATEGORY: 'CATEGORY',
   DIFFICULTY: 'DIFFICULTY',
   DISCOUNT_LABEL: 'DISCOUNT_LABEL',

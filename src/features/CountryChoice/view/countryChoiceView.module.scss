@@ -94,7 +94,7 @@
     visibility 0.2s;
 
   &::-webkit-scrollbar {
-    width: 8px;
+    width: var(--five);
   }
 
   &::-webkit-scrollbar-track {

@@ -1,25 +1,24 @@
 import type { Cart } from '@/shared/types/cart.ts';
+import type { ShoppingList } from '@/shared/types/shopping-list.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
+import CountBadgeModel from '@/entities/CountBadge/model/CountBadgeModel.ts';
 import NavigationModel from '@/entities/Navigation/model/NavigationModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import getCustomerModel, { CustomerModel } from '@/shared/API/customer/model/CustomerModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
+import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setAuthToken, setCurrentLanguage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import HeaderView from '../view/HeaderView.ts';
 
 class HeaderModel {
-  private cartChangeHandler = (cart: Cart): boolean => {
-    this.view.updateCartCount(cart.products.length);
-    return true;
-  };
+  private cartCountBadge = new CountBadgeModel();
 
   private navigation: NavigationModel;
 
@@ -27,10 +26,17 @@ class HeaderModel {
 
   private view = new HeaderView();
 
+  private wishListCountBadge = new CountBadgeModel();
+
   constructor(parent: HTMLDivElement) {
     this.parent = parent;
     this.navigation = new NavigationModel();
     this.init();
+  }
+
+  private cartChangeHandler(cart: Cart): boolean {
+    this.cartCountBadge.updateBadgeCount(cart.products.reduce((acc, item) => acc + item.quantity, 0));
+    return true;
   }
 
   private checkCurrentUser(): void {
@@ -38,24 +44,28 @@ class HeaderModel {
     const logoutButton = this.view.getLogoutButton();
     if (isUserLoggedIn) {
       this.view.getToProfileLink().setEnabled();
+      this.view.getToAddressesLink().setEnabled();
       logoutButton.setEnabled();
     } else {
       logoutButton.setDisabled();
       this.view.getToProfileLink().setDisabled();
+      this.view.getToAddressesLink().setDisabled();
     }
   }
 
   private init(): void {
     this.view.getWrapper().append(this.navigation.getHTML());
+    this.view.getToCartLink().getHTML().append(this.cartCountBadge.getHTML());
+    this.view.getToWishlistLink().getHTML().append(this.wishListCountBadge.getHTML());
     this.parent.insertAdjacentElement('beforebegin', this.view.getNavigationWrapper());
     this.checkCurrentUser();
     this.setLogoHandler();
     this.observeCurrentUser();
     this.setLogoutButtonHandler();
-    this.setCartLinkHandler();
-    this.observeCartChange();
-    this.setCartCount().catch(showErrorMessage);
+    this.setLinksHandler();
     this.setChangeLanguageCheckboxHandler();
+    this.observeCartChange();
+    this.observeShoppingListChange();
   }
 
   private async logoutHandler(): Promise<boolean> {
@@ -70,7 +80,7 @@ class HeaderModel {
   }
 
   private observeCartChange(): boolean {
-    return getCartModel().observeCartChange(this.cartChangeHandler);
+    return getCartModel().observeCartChange(this.cartChangeHandler.bind(this));
   }
 
   private observeCurrentUser(): void {
@@ -79,18 +89,8 @@ class HeaderModel {
     });
   }
 
-  private async setCartCount(): Promise<boolean> {
-    const cart = await getCartModel().getCart();
-    this.view.updateCartCount(cart.products.length);
-    return true;
-  }
-
-  private setCartLinkHandler(): void {
-    const logo = this.view.getToCartLink().getHTML();
-    logo.addEventListener('click', (event) => {
-      event.preventDefault();
-      RouterModel.getInstance().navigateTo(PAGE_ID.CART_PAGE);
-    });
+  private observeShoppingListChange(): void {
+    getShoppingListModel().subscribe(this.shoppingListChangeHandler.bind(this));
   }
 
   private setChangeLanguageCheckboxHandler(): void {
@@ -105,16 +105,33 @@ class HeaderModel {
           if (user) {
             await getCustomerModel().editCustomer([CustomerModel.actionSetLocale(newLanguage)], user);
             getStore().dispatch(setCurrentLanguage(newLanguage));
-            serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
+            showSuccessMessage(SERVER_MESSAGE_KEY.LANGUAGE_CHANGED);
           }
         } catch (error) {
           showErrorMessage(error);
         }
       } else {
         getStore().dispatch(setCurrentLanguage(newLanguage));
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED, MESSAGE_STATUS.SUCCESS);
+        showSuccessMessage(SERVER_MESSAGE_KEY.LANGUAGE_CHANGED);
       }
     });
+  }
+
+  private setLinksHandler(): void {
+    this.view
+      .getToCartLink()
+      .getHTML()
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        RouterModel.getInstance().navigateTo(PAGE_ID.CART_PAGE);
+      });
+    this.view
+      .getToWishlistLink()
+      .getHTML()
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        RouterModel.getInstance().navigateTo(PAGE_ID.WISHLIST_PAGE);
+      });
   }
 
   private setLogoHandler(): void {
@@ -131,6 +148,10 @@ class HeaderModel {
       await this.logoutHandler();
       logoutButton.setDisabled();
     });
+  }
+
+  private shoppingListChangeHandler(shoppingList: ShoppingList): void {
+    this.wishListCountBadge.updateBadgeCount(shoppingList.products.length);
   }
 
   public getHTML(): HTMLElement {

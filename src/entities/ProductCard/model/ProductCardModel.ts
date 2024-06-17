@@ -1,17 +1,20 @@
 import type { AddCartItem, Cart } from '@/shared/types/cart.ts';
 import type { Product, ProductInfoParams, Variant } from '@/shared/types/product.ts';
-import type { ShoppingList, ShoppingListProduct } from '@/shared/types/shopping-list.ts';
 
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
+import WishlistButtonModel from '@/features/WishlistButton/model/WishlistButtonModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
-import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
+import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
-import { buildPathName } from '@/shared/utils/buildPathname.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
+import * as buildPath from '@/shared/utils/buildPathname.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { productAddedToCartMessage } from '@/shared/utils/messageTemplates.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
 import ProductCardView from '../view/ProductCardView.ts';
@@ -27,56 +30,31 @@ class ProductCardModel {
 
   private view: ProductCardView;
 
-  constructor(params: Product, currentSize: null | string, shoppingList: ShoppingList, cart: Cart) {
+  private wishlistButton: WishlistButtonModel;
+
+  constructor(params: Product, currentSize: null | string, cart: Cart) {
     this.params = params;
-    this.currentSize = currentSize;
+    this.currentSize = currentSize ?? this.params.variant[0].size;
     this.currentVariant = this.params.variant.find(({ size }) => size === currentSize) ?? this.params.variant[0];
     this.view = new ProductCardView(params, currentSize);
-    this.price = new ProductPriceModel(this.currentVariant);
-    this.init(shoppingList, cart);
+    this.price = new ProductPriceModel({ new: this.currentVariant.discount, old: this.currentVariant.price });
+    this.wishlistButton = new WishlistButtonModel(this.params);
+    this.init(cart);
   }
 
   private addProductToCartHandler(): void {
     getCartModel()
       .addProductToCart(this.getProductMeta())
       .then(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_PRODUCT_TO_CART,
-          MESSAGE_STATUS.SUCCESS,
-        );
+        showSuccessMessage(productAddedToCartMessage(this.getProductMeta().name));
         this.view.getAddToCartButton().setDisabled();
-      })
-      .catch(showErrorMessage);
-  }
-
-  private addProductToWishListHandler(): void {
-    getShoppingListModel()
-      .addProduct(this.params.id)
-      .then(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_ADD_PRODUCT_TO_WISHLIST,
-          MESSAGE_STATUS.SUCCESS,
-        );
-        this.view.switchStateWishListButton(true);
-      })
-      .catch(showErrorMessage);
-  }
-
-  private deleteProductToWishListHandler(productInWishList: ShoppingListProduct): void {
-    getShoppingListModel()
-      .deleteProduct(productInWishList)
-      .then(() => {
-        serverMessageModel.showServerMessage(
-          SERVER_MESSAGE_KEYS.SUCCESSFUL_DELETE_PRODUCT_FROM_WISHLIST,
-          MESSAGE_STATUS.SUCCESS,
-        );
-        this.view.switchStateWishListButton(false);
       })
       .catch(showErrorMessage);
   }
 
   private getProductMeta(): AddCartItem {
     return {
+      name: this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
       productId: this.params.id,
       quantity: 1,
       variantId: this.currentVariant.id,
@@ -87,10 +65,10 @@ class ProductCardModel {
     const goDetailsPageLink = this.view.getGoDetailsPageLink();
     goDetailsPageLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      const path = buildPathName(PAGE_ID.PRODUCT_PAGE, this.params.key, {
+      const path = buildPath.productPathWithIDAndQuery(this.params.key, {
         size: [this.currentSize ?? this.params.variant[0].size],
+        slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE) ?? '1'],
       });
-
       RouterModel.getInstance().navigateTo(path);
     });
   }
@@ -102,33 +80,25 @@ class ProductCardModel {
     }
   }
 
-  private hasProductInWishList(shoppingList: ShoppingList): void {
-    const result = shoppingList.products.find((product) => product.productId === this.params.id);
-    this.view.switchStateWishListButton(Boolean(result));
-  }
-
-  private init(shoppingList: ShoppingList, cart: Cart): void {
-    this.setButtonHandlers();
-    this.hasProductInWishList(shoppingList);
+  private init(cart: Cart): void {
+    this.setAddToCartButtonHandler();
     this.hasProductInCart(cart);
     this.goDetailsPageHandler();
-    this.view.getBottomWrapper().append(this.price.getHTML());
     this.setCardHandler();
+    this.view.getBottomWrapper().append(this.price.getHTML());
+    this.view.getButtonsWrapper().append(this.wishlistButton.getHTML().getHTML());
+    EventMediatorModel.getInstance().subscribe(MEDIATOR_EVENT.CHANGE_WISHLIST_BUTTON, () => {
+      this.wishlistButton.getHTML().getHTML().remove();
+      this.wishlistButton = new WishlistButtonModel(this.params);
+      this.view.getButtonsWrapper().append(this.wishlistButton.getHTML().getHTML());
+    });
   }
 
-  private setButtonHandlers(): void {
-    const addToCartButton = this.view.getAddToCartButton();
-    const switchToWishListButton = this.view.getSwitchToWishListButton();
-    addToCartButton.getHTML().addEventListener('click', () => this.addProductToCartHandler());
-    switchToWishListButton.getHTML().addEventListener('click', async () => {
-      const shoppingList = await getShoppingListModel().getShoppingList();
-      const productInWishList = shoppingList.products.find((product) => product.productId === this.params.id);
-      if (productInWishList) {
-        this.deleteProductToWishListHandler(productInWishList);
-      } else {
-        this.addProductToWishListHandler();
-      }
-    });
+  private setAddToCartButtonHandler(): void {
+    this.view
+      .getAddToCartButton()
+      .getHTML()
+      .addEventListener('click', () => this.addProductToCartHandler());
   }
 
   private setCardHandler(): void {
@@ -138,18 +108,42 @@ class ProductCardModel {
         !this.view.getButtonsWrapper().contains(target) &&
         !this.view.getMoreButton().getHTML().contains(target)
       ) {
-        const params: ProductInfoParams = {
-          ...this.params,
-          currentSize: this.currentSize,
-        };
-        modal.show();
-        modal.setContent(new ProductInfoModel(params).getHTML());
+        this.openProductInfoModal();
       }
     });
   }
 
   public getHTML(): HTMLLIElement {
     return this.view.getHTML();
+  }
+
+  public getKey(): string {
+    return this.params.key;
+  }
+
+  public openProductInfoModal(): void {
+    const params: ProductInfoParams = {
+      ...this.params,
+      currentSize: this.currentSize,
+    };
+    const catalogPath = buildPath.catalogPathWithIDAndQuery(this.params.key, {
+      size: [this.currentSize ?? this.params.variant[0].size],
+      slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE) ?? '1'],
+    });
+
+    const wishlistPath = buildPath.wishlistPathWithIDAndQuery(this.params.key, {
+      size: [this.currentSize ?? this.params.variant[0].size],
+      slide: [RouterModel.getSearchParams().get(SEARCH_PARAMS_FIELD.SLIDE) ?? '1'],
+    });
+
+    const currentPath = RouterModel.getCurrentPage() === PAGE_ID.CATALOG_PAGE ? catalogPath : wishlistPath;
+
+    const router = RouterModel.getInstance();
+    const savedPath =
+      RouterModel.getSavedPath() === currentPath ? RouterModel.getCurrentPage() : RouterModel.getSavedPath();
+    router.navigateTo(currentPath);
+    modal.show(() => router.navigateTo(savedPath));
+    modal.setContent(new ProductInfoModel(params, savedPath).getHTML());
   }
 }
 

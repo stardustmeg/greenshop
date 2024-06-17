@@ -1,7 +1,7 @@
-export const KEYBOARD_KEYS = {
+const KEYBOARD_KEY = {
   ENTER: 'Enter',
   ESC: 'Escape',
   TAB: 'Tab',
 } as const;
 
-export type KeyboardKeysType = (typeof KEYBOARD_KEYS)[keyof typeof KEYBOARD_KEYS];
+export default KEYBOARD_KEY;

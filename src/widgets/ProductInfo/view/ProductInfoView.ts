@@ -1,43 +1,39 @@
 import type { ProductInfoParams } from '@/shared/types/product';
 
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
-import getShoppingListModel from '@/shared/API/shopping-list/model/ShoppingListModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
-import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { INPUT_TYPE } from '@/shared/constants/forms.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
-import { PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS } from '@/shared/constants/product.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
+import { PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEY } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
+import { DIFFICULTY } from '@/shared/types/product.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { SKUCopiedMessage } from '@/shared/utils/messageTemplates.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import './productInfoView.scss';
 
-const SLIDER_WIDTH = 8;
-const SLIDER_WIDTH_PART = 2;
 const DELIMITER = '>';
 
 class ProductInfoView {
   private SKUSpan: HTMLSpanElement;
 
-  private bigSlider: HTMLDivElement;
-
-  private bigSliderSlides: HTMLDivElement[] = [];
-
   private buttonsWrapper: HTMLDivElement;
 
   private categoriesSpan: HTMLSpanElement;
 
+  private nextSlideButton: ButtonModel;
+
   private params: ProductInfoParams;
+
+  private prevSlideButton: ButtonModel;
 
   private rightWrapper: HTMLDivElement;
 
@@ -45,11 +41,11 @@ class ProductInfoView {
 
   private sizeButtons: ButtonModel[] = [];
 
-  private smallSlider: HTMLDivElement;
+  private slider: HTMLDivElement;
+
+  private sliderSlides: HTMLDivElement[] = [];
 
   private switchToCartButton: ButtonModel;
-
-  private switchToWishListButton: ButtonModel;
 
   private title: HTMLHeadingElement;
 
@@ -59,68 +55,15 @@ class ProductInfoView {
     this.params = params;
     this.title = this.createProductTitle();
     this.shortDescription = this.createShortDescription();
-    this.smallSlider = this.createSmallSlider();
-    this.bigSlider = this.createBigSlider();
+    this.nextSlideButton = this.createNextSlideButton();
+    this.prevSlideButton = this.createPrevSlideButton();
+    this.slider = this.createSlider();
     this.SKUSpan = this.createSKUSpan();
     this.categoriesSpan = this.createCategoriesSpan();
     this.switchToCartButton = this.createSwitchToCartButton();
-    this.switchToWishListButton = this.createSwitchToWishListButton();
     this.buttonsWrapper = this.createButtonsWrapper();
     this.rightWrapper = this.createRightWrapper();
     this.view = this.createHTML();
-  }
-
-  private createBigSlider(): HTMLDivElement {
-    const slider = createBaseElement({
-      cssClasses: ['swiper', 'bigSlider'],
-      tag: 'div',
-    });
-
-    const width = this.params.images.length * SLIDER_WIDTH + SLIDER_WIDTH_PART;
-    slider.style.width = `${width}rem`;
-    slider.append(this.createBigSliderWrapper());
-    return slider;
-  }
-
-  private createBigSliderSlideContent(src: string, alt: string): HTMLImageElement {
-    const slide = createBaseElement({
-      attributes: {
-        alt,
-        src,
-      },
-      cssClasses: ['bigSliderImage'],
-      tag: 'img',
-    });
-
-    return slide;
-  }
-
-  private createBigSliderWrapper(): HTMLDivElement {
-    const sliderWrapper = createBaseElement({
-      cssClasses: ['swiper-wrapper', 'bigSliderWrapper'],
-      tag: 'div',
-    });
-
-    this.params.images.forEach((image) => {
-      const slideWrapper = createBaseElement({
-        cssClasses: ['swiper-slide', 'bigSliderSlide'],
-        tag: 'div',
-      });
-      const slide = this.createBigSliderSlideContent(image, this.params.name[0].value);
-      const loader = new LoaderModel(LOADER_SIZE.MEDIUM);
-      loader.setAbsolutePosition();
-      slideWrapper.append(slide, loader.getHTML());
-      slide.classList.add('hidden');
-      slide.addEventListener('load', () => {
-        slide.classList.remove('hidden');
-        loader.getHTML().remove();
-      });
-      this.bigSliderSlides.push(slide);
-      slideWrapper.append(slide);
-      sliderWrapper.append(slideWrapper);
-    });
-
-    return sliderWrapper;
   }
 
   private createButtonsWrapper(): HTMLDivElement {
@@ -129,24 +72,23 @@ class ProductInfoView {
       tag: 'div',
     });
 
-    this.buttonsWrapper.append(this.switchToCartButton.getHTML(), this.switchToWishListButton.getHTML());
+    this.buttonsWrapper.append(this.switchToCartButton.getHTML());
 
     return this.buttonsWrapper;
   }
 
   private createCategoriesSpan(): HTMLSpanElement {
+    const currentLanguage = getCurrentLanguage();
     this.categoriesSpan = createBaseElement({
       cssClasses: ['categoriesSpan'],
-      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].CATEGORY,
+      innerContent: PRODUCT_INFO_TEXT[currentLanguage].CATEGORY,
       tag: 'span',
     });
 
-    observeCurrentLanguage(this.categoriesSpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS.CATEGORY);
+    observeCurrentLanguage(this.categoriesSpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEY.CATEGORY);
 
-    const category =
-      this.params.category[0].parent?.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
-    const subcategory =
-      this.params.category[0].name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const category = this.params.category[0].parent?.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const subcategory = this.params.category[0].name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
     const currentCategoriesText = `${category ? `${category} ${DELIMITER} ` : ''}${subcategory}`;
 
     const currentCategories = createBaseElement({
@@ -157,11 +99,9 @@ class ProductInfoView {
     this.categoriesSpan.append(currentCategories);
 
     observeStore(selectCurrentLanguage, () => {
-      const category =
-        this.params.category[0].parent?.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)]
-          .value;
-      const subcategory =
-        this.params.category[0].name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const currentLanguage = getCurrentLanguage();
+      const category = this.params.category[0].parent?.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const subcategory = this.params.category[0].name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
       const currentCategoriesText = `${category ? `${category} ${DELIMITER} ` : ''}${subcategory}`;
 
       currentCategories.textContent = currentCategoriesText;
@@ -177,8 +117,8 @@ class ProductInfoView {
         tag: 'span',
       });
 
-      const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-      svg.append(createSVGUse(SVG_DETAILS.LEAVES));
+      const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+      svg.append(createSVGUse(SVG_DETAIL.LEAVES));
       difficultyPoint.append(svg);
 
       difficultyPoints.push(difficultyPoint);
@@ -197,21 +137,56 @@ class ProductInfoView {
       tag: 'div',
     });
 
-    leftWrapper.append(this.smallSlider, this.bigSlider);
+    if (this.params.images.length > 1) {
+      const navigationWrapper = this.createNavigationWrapper();
+      navigationWrapper.append(this.prevSlideButton.getHTML(), this.nextSlideButton.getHTML());
+      leftWrapper.append(navigationWrapper);
+    }
+
+    leftWrapper.append(this.slider);
 
     this.view.append(leftWrapper, this.rightWrapper);
     return this.view;
   }
 
+  private createNavigationWrapper(): HTMLDivElement {
+    const navigationWrapper = createBaseElement({
+      cssClasses: ['navigationWrapper'],
+      tag: 'div',
+    });
+    return navigationWrapper;
+  }
+
+  private createNextSlideButton(): ButtonModel {
+    this.nextSlideButton = new ButtonModel({
+      classes: ['nextSlideButton'],
+    });
+
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.ARROW_UP));
+    this.nextSlideButton.getHTML().append(svg);
+    return this.nextSlideButton;
+  }
+
+  private createPrevSlideButton(): ButtonModel {
+    this.prevSlideButton = new ButtonModel({
+      classes: ['prevSlideButton'],
+    });
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.ARROW_UP));
+    this.prevSlideButton.getHTML().append(svg);
+    return this.prevSlideButton;
+  }
+
   private createProductTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: ['productTitle'],
-      innerContent: this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      innerContent: this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
       tag: 'h3',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent = this.params.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const textContent = this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       this.title.textContent = textContent;
     });
 
@@ -219,19 +194,21 @@ class ProductInfoView {
   }
 
   private createRightWrapper(): HTMLDivElement {
+    const currentLanguage = getCurrentLanguage();
+
     this.rightWrapper = createBaseElement({
-      cssClasses: ['rightWrapper', 'productDetailsPriceWrapper'],
+      cssClasses: ['rightWrapper', 'productDetailsPriceWrapper', 'modalContent'],
       tag: 'div',
     });
 
     const shortDescriptionWrapper = createBaseElement({
       cssClasses: ['shortDescriptionWrapper'],
-      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].SHORT_DESCRIPTION,
+      innerContent: PRODUCT_INFO_TEXT[currentLanguage].SHORT_DESCRIPTION,
       tag: 'div',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const text = PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].SHORT_DESCRIPTION;
+      const text = PRODUCT_INFO_TEXT[getCurrentLanguage()].SHORT_DESCRIPTION;
       const textNode = [...shortDescriptionWrapper.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -241,11 +218,15 @@ class ProductInfoView {
     if (this.params.level) {
       const difficultySpan = createBaseElement({
         cssClasses: ['difficultySpan'],
-        innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].DIFFICULTY,
+        innerContent: PRODUCT_INFO_TEXT[currentLanguage].DIFFICULTY,
         tag: 'span',
+        title: DIFFICULTY[getCurrentLanguage()][this.params.level],
       });
 
-      observeCurrentLanguage(difficultySpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEYS.DIFFICULTY);
+      observeStore(selectCurrentLanguage, () => {
+        difficultySpan.title = this.params.level ? DIFFICULTY[getCurrentLanguage()][this.params.level] : '';
+      });
+      observeCurrentLanguage(difficultySpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEY.DIFFICULTY);
 
       difficultySpan.append(...this.createDifficultyPoints());
       this.rightWrapper.append(difficultySpan);
@@ -269,29 +250,18 @@ class ProductInfoView {
       tag: 'span',
     });
 
-    const currentSKU = new InputModel({
-      autocomplete: AUTOCOMPLETE_OPTION.ON,
-      id: '',
-      placeholder: '',
-      type: INPUT_TYPE.TEXT,
-      value: this.params.key,
-    });
+    const currentSKU = new InputModel({ value: this.params.key });
 
     currentSKU.getHTML().classList.add('currentSKU');
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.COPY));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.COPY));
 
     svg.addEventListener('click', () => {
       window.navigator.clipboard
         .writeText(currentSKU.getValue())
-        .then(() =>
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE_KEYS.SUCCESSFUL_COPY_TO_CLIPBOARD,
-            MESSAGE_STATUS.SUCCESS,
-          ),
-        )
-        .catch(() => serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.BAD_REQUEST, MESSAGE_STATUS.ERROR));
+        .then(() => showSuccessMessage(SKUCopiedMessage(currentSKU.getValue())))
+        .catch(showErrorMessage);
     });
 
     this.SKUSpan.append(currentSKU.getHTML(), svg);
@@ -301,13 +271,12 @@ class ProductInfoView {
   private createShortDescription(): HTMLParagraphElement {
     this.shortDescription = createBaseElement({
       cssClasses: ['shortDescription'],
-      innerContent: this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value,
+      innerContent: this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
       tag: 'p',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent =
-        this.params.description[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const textContent = this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       this.shortDescription.textContent = textContent;
     });
     return this.shortDescription;
@@ -339,7 +308,7 @@ class ProductInfoView {
   private createSizesWrapper(): HTMLDivElement {
     const sizesWrapper = createBaseElement({
       cssClasses: ['sizesWrapper'],
-      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].SIZE,
+      innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].SIZE,
       tag: 'div',
     });
 
@@ -350,7 +319,7 @@ class ProductInfoView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const text = PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].SIZE;
+      const text = PRODUCT_INFO_TEXT[getCurrentLanguage()].SIZE;
       const textNode = [...sizesWrapper.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -360,42 +329,42 @@ class ProductInfoView {
     return sizesWrapper;
   }
 
-  private createSmallSlider(): HTMLDivElement {
+  private createSlider(): HTMLDivElement {
     const slider = createBaseElement({
-      cssClasses: ['swiper', 'smallSlider'],
+      cssClasses: ['swiper', 'slider'],
       tag: 'div',
     });
 
-    slider.append(this.createSmallSliderWrapper());
+    slider.append(this.createSliderWrapper());
     return slider;
   }
 
-  private createSmallSliderSlideContent(src: string, alt: string): HTMLImageElement {
+  private createSliderSlideContent(src: string, alt: string): HTMLImageElement {
     const slide = createBaseElement({
       attributes: {
         alt,
         src,
       },
-      cssClasses: ['smallSliderImage'],
+      cssClasses: ['sliderImage'],
       tag: 'img',
     });
+
     return slide;
   }
 
-  private createSmallSliderWrapper(): HTMLDivElement {
+  private createSliderWrapper(): HTMLDivElement {
     const sliderWrapper = createBaseElement({
-      cssClasses: ['swiper-wrapper', 'smallSliderWrapper'],
+      cssClasses: ['swiper-wrapper', 'sliderWrapper'],
       tag: 'div',
     });
 
     this.params.images.forEach((image) => {
       const slideWrapper = createBaseElement({
-        cssClasses: ['swiper-slide', 'smallSliderSlide'],
+        cssClasses: ['swiper-slide', 'sliderSlide'],
         tag: 'div',
       });
-
-      const slide = this.createSmallSliderSlideContent(image, this.params.name[0].value);
-      const loader = new LoaderModel(LOADER_SIZE.SMALL);
+      const slide = this.createSliderSlideContent(image, this.params.name[0].value);
+      const loader = new LoaderModel(LOADER_SIZE.MEDIUM);
       loader.setAbsolutePosition();
       slideWrapper.append(slide, loader.getHTML());
       slide.classList.add('hidden');
@@ -403,6 +372,7 @@ class ProductInfoView {
         slide.classList.remove('hidden');
         loader.getHTML().remove();
       });
+      this.sliderSlides.push(slide);
       slideWrapper.append(slide);
       sliderWrapper.append(slideWrapper);
     });
@@ -421,57 +391,36 @@ class ProductInfoView {
     return this.switchToCartButton;
   }
 
-  private createSwitchToWishListButton(): ButtonModel {
-    this.switchToWishListButton = new ButtonModel({
-      classes: ['switchToWishListButton'],
-    });
-
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.FILL_HEART));
-    this.switchToWishListButton.getHTML().append(svg);
-
-    this.hasProductInWishList();
-
-    return this.switchToWishListButton;
-  }
-
   private hasProductInToCart(): void {
     getCartModel()
       .getCart()
       .then((cart) => {
+        const currentLanguage = getCurrentLanguage();
         if (
           cart.products.find((product) => product.key === this.params.key && product.size === this.params.currentSize)
         ) {
-          this.switchToCartButton.getHTML().textContent =
-            BUTTON_TEXT[getStore().getState().currentLanguage].DELETE_PRODUCT;
+          this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[currentLanguage].DELETE_PRODUCT;
         } else {
-          this.switchToCartButton.getHTML().textContent =
-            BUTTON_TEXT[getStore().getState().currentLanguage].ADD_PRODUCT;
+          this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[currentLanguage].ADD_PRODUCT;
         }
       })
       .catch(showErrorMessage);
   }
 
-  private hasProductInWishList(): void {
-    getShoppingListModel()
-      .getShoppingList()
-      .then((shoppingList) => {
-        const result = shoppingList.products.find((product) => product.productId === this.params.id);
-        this.switchStateWishListButton(Boolean(result));
-      })
-      .catch(showErrorMessage);
-  }
-
-  public getBigSlider(): HTMLDivElement {
-    return this.bigSlider;
-  }
-
-  public getBigSliderSlides(): HTMLDivElement[] {
-    return this.bigSliderSlides;
+  public getButtonsWrapper(): HTMLDivElement {
+    return this.buttonsWrapper;
   }
 
   public getHTML(): HTMLDivElement {
     return this.view;
+  }
+
+  public getNextSlideButton(): ButtonModel {
+    return this.nextSlideButton;
+  }
+
+  public getPrevSlideButton(): ButtonModel {
+    return this.prevSlideButton;
   }
 
   public getRightWrapper(): HTMLDivElement {
@@ -482,27 +431,24 @@ class ProductInfoView {
     return this.sizeButtons;
   }
 
-  public getSmallSlider(): HTMLDivElement {
-    return this.smallSlider;
+  public getSlider(): HTMLDivElement {
+    return this.slider;
+  }
+
+  public getSliderSlides(): HTMLDivElement[] {
+    return this.sliderSlides;
   }
 
   public getSwitchToCartButton(): ButtonModel {
     return this.switchToCartButton;
   }
 
-  public getSwitchToWishListButton(): ButtonModel {
-    return this.switchToWishListButton;
-  }
-
-  public switchStateWishListButton(hasProductInWishList: boolean): void {
-    this.switchToWishListButton.getHTML().classList.toggle('inWishList', hasProductInWishList);
-  }
-
   public switchToCartButtonText(hasCart: boolean): void {
+    const currentLanguage = getCurrentLanguage();
     if (hasCart) {
-      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].DELETE_PRODUCT;
+      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[currentLanguage].DELETE_PRODUCT;
     } else {
-      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].ADD_PRODUCT;
+      this.switchToCartButton.getHTML().textContent = BUTTON_TEXT[currentLanguage].ADD_PRODUCT;
     }
   }
 

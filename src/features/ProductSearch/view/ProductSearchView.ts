@@ -1,12 +1,11 @@
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { AUTOCOMPLETE_OPTION } from '@/shared/constants/common.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
-import { TEXT } from '@/shared/constants/sorting.ts';
+import { SORTING_TEXT } from '@/shared/constants/sorting.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './productSearchView.module.scss';
 
@@ -32,8 +31,7 @@ class ProductSearchView {
 
   private createSearchField(): InputModel {
     this.searchField = new InputModel({
-      autocomplete: AUTOCOMPLETE_OPTION.ON,
-      placeholder: TEXT[getStore().getState().currentLanguage].SEARCH,
+      placeholder: SORTING_TEXT[getCurrentLanguage()].SEARCH,
       type: INPUT_TYPE.SEARCH,
     });
 
@@ -43,7 +41,7 @@ class ProductSearchView {
     }
 
     observeStore(selectCurrentLanguage, () => {
-      this.searchField.getHTML().placeholder = TEXT[getStore().getState().currentLanguage].SEARCH;
+      this.searchField.getHTML().placeholder = SORTING_TEXT[getCurrentLanguage()].SEARCH;
     });
 
     this.searchField.getHTML().classList.add(styles.searchField);

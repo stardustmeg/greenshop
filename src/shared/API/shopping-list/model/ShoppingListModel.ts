@@ -10,7 +10,9 @@ import type {
 
 import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousId, setAnonymousShopListId } from '@/shared/Store/actions.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import { showErrorMessage } from '@/shared/utils/userMessage.ts';
+
+import type { OptionsRequest } from '../../types/type.ts';
 
 import {
   isClientResponse,
@@ -18,21 +20,32 @@ import {
   isShoppingList,
   isShoppingListPagedQueryResponse,
 } from '../../types/validation.ts';
-import getShoppingListApi, { type ShoppingListApi } from '../ShoppingListApi.ts';
+import ShoppingListApi from '../ShoppingListApi.ts';
 
 enum ACTIONS {
   addLineItem = 'addLineItem',
   setAnonymousId = 'setAnonymousId',
 }
 
+type ShoppingListChangeHandler = (shoppingList: ShoppingList) => void;
+
 export class ShoppingListModel {
   private root: ShoppingListApi;
 
   private shoppingList: ShoppingList | null = null;
 
+  private subscribers: ShoppingListChangeHandler[] = [];
+
   constructor() {
-    this.root = getShoppingListApi();
-    this.getShoppingList().catch(showErrorMessage);
+    this.root = new ShoppingListApi();
+    this.getShoppingList()
+      .then(() => {
+        const { anonymousId } = getStore().getState();
+        if (anonymousId && this.shoppingList?.anonymousId !== anonymousId) {
+          this.updateListCustomer(anonymousId).catch(showErrorMessage);
+        }
+      })
+      .catch(showErrorMessage);
   }
 
   private adaptLineItem(product: ShoppingListLineItem): ShoppingListProduct {
@@ -44,11 +57,15 @@ export class ShoppingListModel {
   }
 
   private adaptShopList(data: ShoppingListResponse): ShoppingList {
-    if (data.anonymousId && !getStore().getState().authToken) {
-      getStore().dispatch(setAnonymousId(data.anonymousId));
+    const { anonymousId, authToken } = getStore().getState();
+    if (data.anonymousId && !authToken) {
       getStore().dispatch(setAnonymousShopListId(data.id));
     }
+    if (data.anonymousId && !authToken && !anonymousId) {
+      getStore().dispatch(setAnonymousId(data.anonymousId));
+    }
     return {
+      anonymousId: data.anonymousId || null,
       id: data.id,
       products: data.lineItems.map((lineItem) => this.adaptLineItem(lineItem)),
       version: data.version,
@@ -57,17 +74,13 @@ export class ShoppingListModel {
 
   private async getAnonymousShoppingList(
     anonymousShopListId: string,
-    anonymousId: string,
+    options?: OptionsRequest,
   ): Promise<ShoppingList | null> {
-    const dataAnonymList = await this.root.getAnonymList(anonymousShopListId);
+    const dataAnonymList = await this.root.getAnonymList(anonymousShopListId, options);
     const anonymShoppingList = this.getShopListFromData(dataAnonymList);
     if (anonymShoppingList.id && !dataAnonymList.body.customer?.id) {
-      const actions: ShoppingListSetAnonymousIdAction = {
-        action: ACTIONS.setAnonymousId,
-        anonymousId,
-      };
-      const dataUserList = await this.root.setAnonymousId(anonymShoppingList, actions);
-      this.shoppingList = this.getShopListFromData(dataUserList);
+      this.shoppingList = anonymShoppingList;
+      this.notifySubscribers();
     }
     return this.shoppingList;
   }
@@ -76,6 +89,7 @@ export class ShoppingListModel {
     data: ClientResponse<ShoppingListPagedQueryResponse | ShoppingListResponse> | ShoppingListResponse,
   ): ShoppingList {
     let cart: ShoppingList = {
+      anonymousId: null,
       id: '',
       products: [],
       version: 0,
@@ -90,8 +104,8 @@ export class ShoppingListModel {
     return cart;
   }
 
-  private async getUserShoppingLists(): Promise<ShoppingList> {
-    const data = await this.root.get();
+  private async getUserShoppingLists(options?: OptionsRequest): Promise<ShoppingList> {
+    const data = await this.root.get(options);
     if (data.body.count === 0) {
       const newShopList = await this.root.create();
       this.shoppingList = this.getShopListFromData(newShopList);
@@ -100,6 +114,7 @@ export class ShoppingListModel {
     } else {
       this.shoppingList = this.getShopListFromData(data);
     }
+    this.notifySubscribers();
     return this.shoppingList;
   }
 
@@ -127,6 +142,30 @@ export class ShoppingListModel {
       await Promise.all(otherShopLists.map((id) => this.root.deleteShopList(id)));
     }
     this.shoppingList = this.getShopListFromData(lastShopList);
+    this.notifySubscribers();
+    return this.shoppingList;
+  }
+
+  private notifySubscribers(): void {
+    if (this.shoppingList) {
+      this.subscribers.forEach((handler) => {
+        if (this.shoppingList) {
+          handler(this.shoppingList);
+        }
+      });
+    }
+  }
+
+  private async updateListCustomer(anonymousId: string): Promise<ShoppingList | null> {
+    if (this.shoppingList) {
+      const actions: ShoppingListSetAnonymousIdAction = {
+        action: ACTIONS.setAnonymousId,
+        anonymousId,
+      };
+      const dataUserList = await this.root.setAnonymousId(this.shoppingList, actions);
+      this.shoppingList = this.getShopListFromData(dataUserList);
+      this.notifySubscribers();
+    }
     return this.shoppingList;
   }
 
@@ -143,6 +182,7 @@ export class ShoppingListModel {
 
     const data = await this.root.addProduct(this.shoppingList, actions);
     this.shoppingList = this.getShopListFromData(data);
+    this.notifySubscribers();
     return this.shoppingList;
   }
 
@@ -154,6 +194,7 @@ export class ShoppingListModel {
   public async create(): Promise<ShoppingList> {
     const newShoppingList = await this.root.create();
     this.shoppingList = this.getShopListFromData(newShoppingList);
+    this.notifySubscribers();
     return this.shoppingList;
   }
 
@@ -163,21 +204,29 @@ export class ShoppingListModel {
     }
     const data = await this.root.deleteProduct(this.shoppingList, products);
     this.shoppingList = this.getShopListFromData(data);
-
+    this.notifySubscribers();
     return this.shoppingList;
   }
 
-  public async getShoppingList(): Promise<ShoppingList> {
+  public async getShoppingList(options?: OptionsRequest): Promise<ShoppingList> {
     if (!this.shoppingList) {
       const { anonymousId, anonymousShopListId } = getStore().getState();
       if (anonymousShopListId && anonymousId) {
-        this.shoppingList = await this.getAnonymousShoppingList(anonymousShopListId, anonymousId);
+        this.shoppingList = await this.getAnonymousShoppingList(anonymousShopListId, options);
       }
       if (!this.shoppingList) {
-        this.shoppingList = await this.getUserShoppingLists();
+        this.shoppingList = await this.getUserShoppingLists(options);
       }
+      this.notifySubscribers();
     }
     return this.shoppingList;
+  }
+
+  public subscribe(handler: ShoppingListChangeHandler): void {
+    this.subscribers.push(handler);
+    if (this.shoppingList) {
+      handler(this.shoppingList);
+    }
   }
 }
 

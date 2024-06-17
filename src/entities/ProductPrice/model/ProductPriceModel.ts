@@ -1,12 +1,10 @@
-import type { Variant } from '@/shared/types/product.ts';
-
 import ProductPriceView from '../view/ProductPriceView.ts';
 
 class ProductPriceModel {
   private view: ProductPriceView;
 
-  constructor(currentVariant: Variant) {
-    this.view = new ProductPriceView(currentVariant);
+  constructor(params: { new: number; old: number }) {
+    this.view = new ProductPriceView(params);
     this.init();
   }
 
@@ -14,6 +12,10 @@ class ProductPriceModel {
 
   public getHTML(): HTMLDivElement {
     return this.view.getHTML();
+  }
+
+  public updatePrice(params: { new: number; old: number }): void {
+    this.view.updatesPrice(params);
   }
 }
 

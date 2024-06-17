@@ -2,20 +2,22 @@ import type { SizeProductCount } from '@/shared/API/types/type';
 import type { Category } from '@/shared/types/product';
 import type ProductFiltersParams from '@/shared/types/productFilters';
 
+import { append, remove, set } from '@/app/Router/helpers/helpers.ts';
 import RouterModel from '@/app/Router/model/RouterModel.ts';
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import { AUTOCOMPLETE_OPTION, LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { META_FILTERS, META_FILTERS_ID, PRICE_RANGE_LABEL, TITLE } from '@/shared/constants/filters.ts';
+import { META_FILTER, META_FILTER_ID, PRICE_RANGE_LABEL, TITLE } from '@/shared/constants/filters.ts';
 import { INPUT_TYPE } from '@/shared/constants/forms.ts';
+import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import * as noUiSlider from 'nouislider';
 
 import styles from './productFiltersView.module.scss';
@@ -66,16 +68,17 @@ class ProductFiltersView {
 
   private categoryClickHandler(parentCategory: { category: Category; count: number } | null): void {
     const searchParams = RouterModel.getSearchParams();
-    if (
-      searchParams.has(SEARCH_PARAMS_FIELD.CATEGORY) &&
-      searchParams.get(SEARCH_PARAMS_FIELD.CATEGORY) === parentCategory?.category.parent?.id
-    ) {
-      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.CATEGORY);
-    } else {
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.CATEGORY, parentCategory?.category.parent?.id ?? '');
-    }
-
-    RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
+    const handleCategoryChange = (url: URL, key: string, value: string): void => {
+      if (searchParams.has(key) && searchParams.get(key) === value) {
+        remove(url, key);
+      } else {
+        set(url, key, value);
+      }
+    };
+    RouterModel.changeSearchParams((url) => {
+      handleCategoryChange(url, SEARCH_PARAMS_FIELD.CATEGORY, parentCategory?.category.parent?.key ?? '');
+      remove(url, SEARCH_PARAMS_FIELD.PAGE);
+    });
 
     this.callback();
   }
@@ -113,7 +116,7 @@ class ProductFiltersView {
   }
 
   private createCategoryLink(category: { category: Category; count: number }): LinkModel {
-    const text = category.category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const text = category.category.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
     const categoryLink = new LinkModel({
       attrs: {
         href: category.category.key,
@@ -132,7 +135,7 @@ class ProductFiltersView {
 
     const span = createBaseElement({
       attributes: {
-        id: category.category.id,
+        id: category.category.key,
       },
       cssClasses: [styles.categoryLinkCount],
       innerContent,
@@ -147,7 +150,7 @@ class ProductFiltersView {
     this.categoryLinks.push(categoryLink);
 
     observeStore(selectCurrentLanguage, () => {
-      const text = category.category.name[Number(getStore().getState().currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const text = category.category.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
       const textNode = [...categoryLink.getHTML().childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -163,7 +166,7 @@ class ProductFiltersView {
         list: [styles.categoryList],
         title: [styles.categoryTitle],
       },
-      TITLE[getStore().getState().currentLanguage].CATEGORY,
+      TITLE[getCurrentLanguage()].CATEGORY,
     );
 
     this.categoryList = filtersList;
@@ -174,7 +177,7 @@ class ProductFiltersView {
     this.createCategoryItems(subcategories);
 
     observeStore(selectCurrentLanguage, () => {
-      filtersListTitle.textContent = TITLE[getStore().getState().currentLanguage].CATEGORY;
+      filtersListTitle.textContent = TITLE[getCurrentLanguage()].CATEGORY;
     });
 
     return this.categoryList;
@@ -224,28 +227,27 @@ class ProductFiltersView {
       tag: 'div',
     });
 
+    const currentLanguage = getCurrentLanguage();
+
     const allProductsLink = this.createMetaLink(
-      META_FILTERS[getStore().getState().currentLanguage].ALL_PRODUCTS,
-      META_FILTERS_ID.ALL_PRODUCTS,
-      META_FILTERS.en.ALL_PRODUCTS,
+      META_FILTER[currentLanguage].ALL_PRODUCTS,
+      META_FILTER_ID.ALL_PRODUCTS,
+      META_FILTER.en.ALL_PRODUCTS,
     );
     const newArrivalsLink = this.createMetaLink(
-      META_FILTERS[getStore().getState().currentLanguage].NEW_ARRIVALS,
-      META_FILTERS_ID.NEW_ARRIVALS,
-      META_FILTERS.en.NEW_ARRIVALS,
+      META_FILTER[currentLanguage].NEW_ARRIVALS,
+      META_FILTER_ID.NEW_ARRIVALS,
+      META_FILTER.en.NEW_ARRIVALS,
     );
-    const saleLink = this.createMetaLink(
-      META_FILTERS[getStore().getState().currentLanguage].SALE,
-      META_FILTERS_ID.SALE,
-      META_FILTERS.en.SALE,
-    );
+    const saleLink = this.createMetaLink(META_FILTER[currentLanguage].SALE, META_FILTER_ID.SALE, META_FILTER.en.SALE);
     allProductsLink.getHTML().classList.add(styles.activeLink);
     this.metaFilters.append(allProductsLink.getHTML(), newArrivalsLink.getHTML(), saleLink.getHTML());
 
     observeStore(selectCurrentLanguage, () => {
-      allProductsLink.getHTML().textContent = META_FILTERS[getStore().getState().currentLanguage].ALL_PRODUCTS;
-      newArrivalsLink.getHTML().textContent = META_FILTERS[getStore().getState().currentLanguage].NEW_ARRIVALS;
-      saleLink.getHTML().textContent = META_FILTERS[getStore().getState().currentLanguage].SALE;
+      const currentLanguage = getCurrentLanguage();
+      allProductsLink.getHTML().textContent = META_FILTER[currentLanguage].ALL_PRODUCTS;
+      newArrivalsLink.getHTML().textContent = META_FILTER[currentLanguage].NEW_ARRIVALS;
+      saleLink.getHTML().textContent = META_FILTER[currentLanguage].SALE;
     });
 
     return this.metaFilters;
@@ -264,8 +266,10 @@ class ProductFiltersView {
     link.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
 
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.META, id);
-      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
+      RouterModel.changeSearchParams((url) => {
+        set(url, SEARCH_PARAMS_FIELD.META, id);
+        remove(url, SEARCH_PARAMS_FIELD.PAGE);
+      });
       this.metaLinks.forEach((link) => this.switchSelectedFilter(link, false));
       this.switchSelectedFilter(link, true);
       this.callback();
@@ -294,10 +298,12 @@ class ProductFiltersView {
       tag: 'span',
     });
 
+    const currentLanguage = getCurrentLanguage();
+
     const minPrice = this.params?.priceRange?.min.toFixed(2) ?? '';
     const maxPrice = this.params?.priceRange?.max.toFixed(2) ?? '';
-    const from = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
-    const to = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO;
+    const from = PRICE_RANGE_LABEL[currentLanguage].FROM;
+    const to = PRICE_RANGE_LABEL[currentLanguage].TO;
 
     const priceInput = new InputModel({
       autocomplete: AUTOCOMPLETE_OPTION.OFF,
@@ -331,21 +337,24 @@ class ProductFiltersView {
       start: [min, max],
     });
 
+    const currentLanguage = getCurrentLanguage();
+
     this.priceSlider.on('change', (values) => {
       const [min, max] = values;
-      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM)?.setValue(String(min));
-      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO)?.setValue(String(max));
-      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.MIN_PRICE);
-      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.MAX_PRICE);
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MIN_PRICE, String(min));
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MAX_PRICE, String(max));
+      this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].FROM)?.setValue(String(min));
+      this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].TO)?.setValue(String(max));
+      RouterModel.changeSearchParams((url) => {
+        remove(url, [SEARCH_PARAMS_FIELD.MIN_PRICE, SEARCH_PARAMS_FIELD.MAX_PRICE]);
+        set(url, SEARCH_PARAMS_FIELD.MIN_PRICE, String(min));
+        set(url, SEARCH_PARAMS_FIELD.MAX_PRICE, String(max));
+      });
       this.callback();
     });
 
     this.priceSlider.on('slide', (values) => {
       const [min, max] = values;
-      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM)?.setValue(String(min));
-      this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO)?.setValue(String(max));
+      this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].FROM)?.setValue(String(min));
+      this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].TO)?.setValue(String(max));
     });
 
     return this.priceSlider;
@@ -359,21 +368,24 @@ class ProductFiltersView {
 
     const title = createBaseElement({
       cssClasses: [styles.priceTitle],
-      innerContent: TITLE[getStore().getState().currentLanguage].PRICE,
+      innerContent: TITLE[getCurrentLanguage()].PRICE,
       tag: 'h3',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      title.textContent = TITLE[getStore().getState().currentLanguage].PRICE;
+      title.textContent = TITLE[getCurrentLanguage()].PRICE;
     });
 
-    const from = this.createPriceLabel(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
-    const to = this.createPriceLabel(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    const currentLanguage = getCurrentLanguage();
+
+    const from = this.createPriceLabel(PRICE_RANGE_LABEL[currentLanguage].FROM);
+    const to = this.createPriceLabel(PRICE_RANGE_LABEL[currentLanguage].TO);
     priceWrapper.append(title, from.priceLabel, this.priceSlider.target, to.priceLabel);
 
     observeStore(selectCurrentLanguage, () => {
-      from.priceSpan.textContent = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM;
-      to.priceSpan.textContent = PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO;
+      const currentLanguage = getCurrentLanguage();
+      from.priceSpan.textContent = PRICE_RANGE_LABEL[currentLanguage].FROM;
+      to.priceSpan.textContent = PRICE_RANGE_LABEL[currentLanguage].TO;
     });
     return priceWrapper;
   }
@@ -381,7 +393,7 @@ class ProductFiltersView {
   private createResetFiltersButton(): ButtonModel {
     this.resetFiltersButton = new ButtonModel({
       classes: [styles.resetFiltersButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].RESET,
+      text: BUTTON_TEXT[getCurrentLanguage()].RESET,
     });
 
     this.resetFiltersButton.getHTML().addEventListener('click', () => {
@@ -389,18 +401,18 @@ class ProductFiltersView {
       this.categoryLinks.forEach((link) => this.switchSelectedFilter(link, false));
       this.metaLinks.forEach((link) => {
         this.switchSelectedFilter(link, false);
-        if (link.getHTML().id === META_FILTERS.en.ALL_PRODUCTS) {
+        if (link.getHTML().id === META_FILTER.en.ALL_PRODUCTS) {
           this.switchSelectedFilter(link, true);
         }
       });
 
-      RouterModel.clearSearchParams();
+      RouterModel.getInstance().navigateTo(PAGE_ID.CATALOG_PAGE);
       EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.CLEAR_CATALOG_SEARCH, '');
       this.callback();
     });
 
     observeStore(selectCurrentLanguage, () => {
-      this.resetFiltersButton.getHTML().textContent = BUTTON_TEXT[getStore().getState().currentLanguage].RESET;
+      this.resetFiltersButton.getHTML().textContent = BUTTON_TEXT[getCurrentLanguage()].RESET;
     });
 
     return this.resetFiltersButton;
@@ -418,8 +430,10 @@ class ProductFiltersView {
 
     sizeLink.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
-      RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
-      RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.SIZE, size.size);
+      RouterModel.changeSearchParams((url) => {
+        remove(url, SEARCH_PARAMS_FIELD.PAGE);
+        set(url, SEARCH_PARAMS_FIELD.SIZE, size.size);
+      });
       this.sizeLinks.forEach((link) => this.switchSelectedFilter(link, false));
       this.switchSelectedFilter(sizeLink, true);
       this.callback();
@@ -447,12 +461,21 @@ class ProductFiltersView {
         list: [styles.sizesList],
         title: [styles.sizesTitle],
       },
-      TITLE[getStore().getState().currentLanguage].SIZE,
+      TITLE[getCurrentLanguage()].SIZE,
     );
 
     this.sizesList = filtersList;
 
-    this.params?.sizes?.forEach((size) => {
+    const sortedSizes = this.params?.sizes?.sort((a, b) => {
+      const lastA = a.size.at(-1);
+      const lastB = b.size.at(-1);
+      if (lastA && lastB) {
+        return lastB.localeCompare(lastA, LANGUAGE_CHOICE.EN, { numeric: true, sensitivity: 'base' });
+      }
+      return 0;
+    });
+
+    sortedSizes?.forEach((size) => {
       const li = createBaseElement({
         cssClasses: [styles.sizeItem],
         tag: 'li',
@@ -463,7 +486,7 @@ class ProductFiltersView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      filtersListTitle.textContent = TITLE[getStore().getState().currentLanguage].SIZE;
+      filtersListTitle.textContent = TITLE[getCurrentLanguage()].SIZE;
     });
 
     return this.sizesList;
@@ -507,7 +530,7 @@ class ProductFiltersView {
 
   private redrawProductsCount(): void {
     this.params?.categoriesProductCount?.forEach((categoryCount) => {
-      const currentSpan = this.categoryCountSpan.find((span) => span.id === categoryCount.category.id) ?? null;
+      const currentSpan = this.categoryCountSpan.find((span) => span.id === categoryCount.category.key) ?? null;
       if (currentSpan) {
         currentSpan.innerText = `(${categoryCount.count})`;
       }
@@ -522,38 +545,41 @@ class ProductFiltersView {
   }
 
   private setPriceSliderHandlers(): void {
-    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
-    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    const currentLanguage = getCurrentLanguage();
+    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].FROM);
+    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].TO);
 
     fromInput?.getHTML().addEventListener('change', () => this.updateSelectedPrice(fromInput, toInput));
     toInput?.getHTML().addEventListener('change', () => this.updateSelectedPrice(fromInput, toInput));
   }
 
   private subcategoryClickHandler(subcategory: { category: Category; count: number }): void {
-    const currentSubcategories = RouterModel.getSearchParams().getAll(SEARCH_PARAMS_FIELD.SUBCATEGORY);
-    const currentSubcategory = currentSubcategories?.find((id) => id === subcategory.category.id);
-    const currentLink = this.categoryLinks.find((link) => link.getHTML().id === subcategory.category.id);
-    RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.PAGE);
+    const subcategories = RouterModel.getSearchParams().getAll(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+    const currentSubcategory = subcategories?.find((key) => key === subcategory.category.key);
+    const currentLink = this.categoryLinks.find((link) => link.getHTML().id === subcategory.category.key);
+    RouterModel.changeSearchParams((url) => remove(url, SEARCH_PARAMS_FIELD.PAGE));
 
     if (currentSubcategory) {
-      const filteredSubcategories = currentSubcategories.filter((id) => id !== currentSubcategory);
-      if (!filteredSubcategories.length) {
-        RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY);
+      const filteredSubcategory = subcategories.filter((key) => key !== currentSubcategory);
+      if (!filteredSubcategory.length) {
+        RouterModel.changeSearchParams((url) => remove(url, SEARCH_PARAMS_FIELD.SUBCATEGORY));
         if (currentLink) {
           this.switchSelectedFilter(currentLink, false);
         }
       } else {
-        RouterModel.deleteSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY);
-        filteredSubcategories.forEach((id) => RouterModel.appendSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY, id));
-        filteredSubcategories.forEach((id) => {
-          const currentLink = this.categoryLinks.find((link) => link.getHTML().id === id);
+        RouterModel.changeSearchParams((url) => remove(url, SEARCH_PARAMS_FIELD.SUBCATEGORY));
+        filteredSubcategory.forEach((key) =>
+          RouterModel.changeSearchParams((url) => append(url, SEARCH_PARAMS_FIELD.SUBCATEGORY, key)),
+        );
+        filteredSubcategory.forEach((key) => {
+          const currentLink = this.categoryLinks.find((link) => link.getHTML().id === key);
           if (currentLink) {
             this.switchSelectedFilter(currentLink, true);
           }
         });
       }
     } else {
-      RouterModel.appendSearchParams(SEARCH_PARAMS_FIELD.SUBCATEGORY, subcategory.category.id);
+      RouterModel.changeSearchParams((url) => append(url, SEARCH_PARAMS_FIELD.SUBCATEGORY, subcategory.category.key));
       if (currentLink) {
         this.switchSelectedFilter(currentLink, true);
       }
@@ -568,15 +594,18 @@ class ProductFiltersView {
       },
       true,
     );
-    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].FROM);
-    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[getStore().getState().currentLanguage].TO);
+    const currentLanguage = getCurrentLanguage();
+    const fromInput = this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].FROM);
+    const toInput = this.priceInputs.get(PRICE_RANGE_LABEL[currentLanguage].TO);
     fromInput?.setValue((this.params?.priceRange?.min ?? 0).toFixed(2));
     toInput?.setValue((this.params?.priceRange?.max ?? 0).toFixed(2));
   }
 
   private updateSelectedPrice(from: InputModel | null = null, to: InputModel | null = null): void {
-    RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MIN_PRICE, from?.getValue() ?? '0');
-    RouterModel.setSearchParams(SEARCH_PARAMS_FIELD.MAX_PRICE, to?.getValue() ?? '0');
+    RouterModel.changeSearchParams((url) => {
+      set(url, SEARCH_PARAMS_FIELD.MIN_PRICE, from?.getValue() ?? '0');
+      set(url, SEARCH_PARAMS_FIELD.MAX_PRICE, to?.getValue() ?? '0');
+    });
     this.callback();
   }
 
@@ -621,8 +650,8 @@ class ProductFiltersView {
     this.categoryLinks.forEach((link) => this.switchSelectedFilter(link, false));
     this.metaLinks.forEach((link) => this.switchSelectedFilter(link, false));
 
-    activeFilters.categoryLinks.forEach((id) => {
-      const currentLink = this.categoryLinks.find((link) => link.getHTML().id === id);
+    activeFilters.categoryLinks.forEach((key) => {
+      const currentLink = this.categoryLinks.find((link) => link.getHTML().id === key);
       if (currentLink) {
         this.switchSelectedFilter(currentLink, true);
       }

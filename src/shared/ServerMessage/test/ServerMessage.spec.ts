@@ -1,6 +1,10 @@
 import serverMessageModel from '../model/ServerMessageModel.ts';
 import ServerMessageView from '../view/ServerMessageView.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 describe('check serverMessageModel', () => {
   it('serverMessageModel instance should be defined', () => {
     expect(serverMessageModel).toBeDefined();

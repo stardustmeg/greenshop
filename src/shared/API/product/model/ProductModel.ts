@@ -14,8 +14,6 @@ import type {
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 import { getLevel, getSize } from '@/shared/utils/size.ts';
 
-import type { ProductApi } from '../ProductApi.ts';
-
 import {
   Attribute,
   type CategoriesProductCount,
@@ -40,7 +38,7 @@ import {
   isRangeFacetResult,
   isTermFacetResult,
 } from '../../types/validation.ts';
-import getProductApi from '../ProductApi.ts';
+import ProductApi from '../ProductApi.ts';
 
 enum ProductConstant {
   categoriesId = 'categories.id',
@@ -52,10 +50,15 @@ enum ProductConstant {
 export class ProductModel {
   private categories: Category[] = [];
 
+  private priceRange: PriceRange = {
+    max: 0,
+    min: 0,
+  };
+
   private root: ProductApi;
 
   constructor() {
-    this.root = getProductApi();
+    this.root = new ProductApi();
   }
 
   private adaptCategoryPagedQueryToClient(data: CategoryPagedQueryResponse): Category[] {
@@ -268,6 +271,9 @@ export class ProductModel {
         });
       }
     }
+    if (this.priceRange.min === 0 && this.priceRange.max === 0) {
+      this.priceRange = priceRange;
+    }
     return priceRange;
   }
 
@@ -395,7 +401,7 @@ export class ProductModel {
 
   public async getProducts(options?: OptionsRequest): Promise<ProductWithCount> {
     await getProductModel().getCategories();
-    const data = await this.root.getProducts(options);
+    const data = await this.root.getProducts(options, this.priceRange);
     const products = this.getProductsFromData(data);
     if (options?.sort) {
       this.sortVariants(products, options?.sort);
@@ -412,6 +418,10 @@ export class ProductModel {
       total,
     };
     return result;
+  }
+
+  public getProductsPriceRange(): PriceRange {
+    return this.priceRange;
   }
 }
 

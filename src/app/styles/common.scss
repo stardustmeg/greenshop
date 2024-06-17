@@ -1,5 +1,9 @@
 * {
   box-sizing: border-box;
+
+  &::selection {
+    background-color: var(--steam-green-1000);
+  }
 }
 
 html,
@@ -17,7 +21,7 @@ body {
 }
 
 html {
-  font-size: clamp(12px, 1vw, 50px);
+  font-size: clamp(12px, 1.1vw, 50px);
 }
 
 body {
@@ -44,6 +48,7 @@ img {
   max-width: 100%;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .stop-scroll {
   overflow-y: hidden;
 }

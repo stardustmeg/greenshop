@@ -6,34 +6,26 @@ import ConfirmModel from '@/shared/Confirm/model/ConfirmModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry } from '@/shared/Store/actions.ts';
-import { USER_MESSAGE } from '@/shared/constants/confirmUserMessage.ts';
+import USER_MESSAGE from '@/shared/constants/confirmUserMessage.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { ADDRESS_TYPE, type AddressTypeType } from '@/shared/constants/forms.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { ADDRESS, type AddressType } from '@/shared/constants/forms.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import UserAddressView from '../view/UserAddressView.ts';
 
 class UserAddressModel {
-  private callback: (isDisabled: boolean) => void;
-
   private currentAddress: Address;
 
-  private labels: Map<HTMLDivElement, { inactive?: boolean; type: AddressTypeType }>;
+  private labels: Map<HTMLDivElement, { inactive?: boolean; type: AddressType }>;
 
   private view: UserAddressView;
 
-  constructor(
-    address: Address,
-    activeTypes: AddressTypeType[],
-    callback: (isDisabled: boolean) => void,
-    inactiveTypes?: AddressTypeType[],
-  ) {
-    this.callback = callback;
+  constructor(address: Address, activeTypes: AddressType[], inactiveTypes?: AddressType[]) {
     this.currentAddress = address;
     this.view = new UserAddressView(address, activeTypes, inactiveTypes);
     this.labels = this.view.getLabels();
@@ -49,7 +41,7 @@ class UserAddressModel {
         try {
           await getCustomerModel().editCustomer([CustomerModel.actionRemoveAddress(address)], user);
           EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_ADDRESSES, '');
-          serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_DELETED, MESSAGE_STATUS.SUCCESS);
+          showSuccessMessage(SERVER_MESSAGE_KEY.ADDRESS_DELETED);
         } catch (error) {
           showErrorMessage(error);
         }
@@ -59,20 +51,20 @@ class UserAddressModel {
     }
   }
 
-  private async handleAddressType(user: User, activeType: AddressTypeType, inactive: boolean): Promise<void> {
+  private async handleAddressType(user: User, activeType: AddressType, inactive: boolean): Promise<void> {
     const customerModel = getCustomerModel();
 
     const actions = {
-      [ADDRESS_TYPE.BILLING]: inactive
+      [ADDRESS.BILLING]: inactive
         ? CustomerModel.actionAddBillingAddress(this.currentAddress.id)
         : CustomerModel.actionRemoveBillingAddress(this.currentAddress),
-      [ADDRESS_TYPE.DEFAULT_BILLING]: inactive
+      [ADDRESS.DEFAULT_BILLING]: inactive
         ? CustomerModel.actionEditDefaultBillingAddress(this.currentAddress.id)
-        : CustomerModel.actionEditDefaultBillingAddress(undefined),
-      [ADDRESS_TYPE.DEFAULT_SHIPPING]: inactive
+        : CustomerModel.actionEditDefaultBillingAddress(),
+      [ADDRESS.DEFAULT_SHIPPING]: inactive
         ? CustomerModel.actionEditDefaultShippingAddress(this.currentAddress.id)
-        : CustomerModel.actionEditDefaultShippingAddress(undefined),
-      [ADDRESS_TYPE.SHIPPING]: inactive
+        : CustomerModel.actionEditDefaultShippingAddress(),
+      [ADDRESS.SHIPPING]: inactive
         ? CustomerModel.actionAddShippingAddress(this.currentAddress.id)
         : CustomerModel.actionRemoveShippingAddress(this.currentAddress),
     };
@@ -84,10 +76,9 @@ class UserAddressModel {
     }
   }
 
-  private async labelClickHandler(activeType: AddressTypeType, inactive?: boolean): Promise<void> {
+  private async labelClickHandler(activeType: AddressType, inactive?: boolean): Promise<void> {
     const loader = new LoaderModel(LOADER_SIZE.MEDIUM);
     loader.setAbsolutePosition();
-    this.callback(true);
     this.view.toggleState(true);
     this.getHTML().append(loader.getHTML());
     try {
@@ -95,7 +86,7 @@ class UserAddressModel {
       if (user) {
         await this.handleAddressType(user, activeType, inactive ?? false);
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_ADDRESSES, '');
-        serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.ADDRESS_STATUS_CHANGED, MESSAGE_STATUS.SUCCESS);
+        showSuccessMessage(SERVER_MESSAGE_KEY.ADDRESS_STATUS_CHANGED);
       }
     } catch (error) {
       showErrorMessage(error);
@@ -112,7 +103,7 @@ class UserAddressModel {
       .addEventListener('click', () => {
         const confirmModel = new ConfirmModel(
           () => this.deleteAddress(address),
-          USER_MESSAGE[getStore().getState().currentLanguage].DELETE_ADDRESS,
+          USER_MESSAGE[getCurrentLanguage()].DELETE_ADDRESS,
         );
         modal.setContent(confirmModel.getHTML());
         modal.show();
@@ -141,7 +132,7 @@ class UserAddressModel {
   }
 
   private setLabelClickHandler(): void {
-    this.labels.forEach((value: { inactive?: boolean; type: AddressTypeType }, label: HTMLDivElement) => {
+    this.labels.forEach((value: { inactive?: boolean; type: AddressType }, label: HTMLDivElement) => {
       label.addEventListener('click', async () => {
         await this.labelClickHandler(value.type, value.inactive);
       });

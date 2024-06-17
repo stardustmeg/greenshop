@@ -68,7 +68,6 @@
 }
 
 .addToCartButton,
-.switchToWishListButton,
 .goDetailsPageLink {
   position: relative;
   outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
@@ -90,16 +89,13 @@
   &:active {
     transform: scale(0.9);
   }
-}
 
-.addToCartButton,
-.goDetailsPageLink {
   @media (hover: hover) {
     &:hover {
-      outline: calc(var(--one) * 1.5) solid var(--steam-green-400);
+      outline: calc(var(--one) * 1.5) solid var(--steam-green-1200);
 
       svg {
-        fill: var(--steam-green-400);
+        fill: var(--steam-green-1200);
       }
     }
   }
@@ -109,38 +105,6 @@
   &:disabled {
     opacity: 0.5;
     pointer-events: none;
-  }
-}
-
-.inWishList {
-  outline: calc(var(--one) * 1.5) solid var(--red-power-600);
-
-  svg {
-    fill: var(--red-power-600);
-  }
-}
-
-.switchToWishListButton {
-  @media (hover: hover) {
-    &:hover {
-      outline: calc(var(--one) * 1.5) solid var(--red-power-600);
-
-      svg {
-        fill: var(--red-power-600);
-      }
-    }
-  }
-
-  &.inWishList {
-    @media (hover: hover) {
-      &:hover {
-        outline: calc(var(--one) * 1.5) solid var(--noble-gray-700);
-
-        svg {
-          fill: var(--noble-gray-700);
-        }
-      }
-    }
   }
 }
 
@@ -171,6 +135,7 @@
   width: 100%;
   max-width: 90%;
   font: var(--regular-font);
+  line-height: 150%;
   letter-spacing: var(--one);
   text-align: left;
   text-overflow: ellipsis;

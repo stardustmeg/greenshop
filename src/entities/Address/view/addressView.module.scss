@@ -3,6 +3,7 @@
   grid-column: 2 span;
   grid-template-columns: repeat(2, 1fr);
   padding: var(--extra-small-offset);
+  width: 100%;
   gap: calc(var(--extra-small-offset) * 1.5) var(--extra-small-offset);
 
   .title {

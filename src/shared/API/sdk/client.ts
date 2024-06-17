@@ -2,7 +2,6 @@ import type { UserCredentials } from '@/shared/types/user';
 
 import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousId } from '@/shared/Store/actions.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
 import { type ByProjectKeyRequestBuilder, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import {
   type AnonymousAuthMiddlewareOptions,
@@ -29,13 +28,10 @@ const URL_HTTP = 'https://api.europe-west1.gcp.commercetools.com';
 const USE_SAVE_TOKEN = true;
 
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
-  fetch,
   host: URL_HTTP,
 };
 
 export class ApiClient {
-  private adminConnection: ByProjectKeyRequestBuilder;
-
   private anonymConnection: ByProjectKeyRequestBuilder | null = null;
 
   private authConnection: ByProjectKeyRequestBuilder | null = null;
@@ -62,9 +58,6 @@ export class ApiClient {
     } else {
       this.anonymConnection = this.createAnonymConnection();
     }
-    this.adminConnection = this.createAdminConnection();
-
-    this.init().catch(showErrorMessage);
   }
 
   private addAuthMiddleware(
@@ -100,16 +93,6 @@ export class ApiClient {
     }
   }
 
-  private createAdminConnection(): ByProjectKeyRequestBuilder {
-    const defaultOptions = this.getDefaultOptions();
-    const client = this.getDefaultClient();
-
-    client.withClientCredentialsFlow(defaultOptions);
-
-    this.adminConnection = this.getConnection(client.build());
-    return this.adminConnection;
-  }
-
   private createAnonymConnection(): ByProjectKeyRequestBuilder {
     const defaultOptions = this.getDefaultOptions(TokenType.ANONYM);
     const client = this.getDefaultClient();
@@ -122,7 +105,6 @@ export class ApiClient {
         anonymousId,
       },
     };
-
     client.withAnonymousSessionFlow(anonymOptions);
     getStore().dispatch(setAnonymousId(anonymousId));
     this.anonymConnection = this.getConnection(client.build());
@@ -161,25 +143,11 @@ export class ApiClient {
         clientId: this.clientID,
         clientSecret: this.clientSecret,
       },
-      fetch,
       host: URL_AUTH,
       projectKey: this.projectKey,
       scopes: this.scopes,
       tokenCache: USE_SAVE_TOKEN && tokenType === TokenType.AUTH ? getTokenCache(tokenType) : undefined,
     };
-  }
-
-  private async init(): Promise<void> {
-    await this.apiRoot()
-      .get()
-      .execute()
-      .catch((error: Error) => {
-        showErrorMessage(error);
-      });
-  }
-
-  public adminRoot(): ByProjectKeyRequestBuilder {
-    return this.adminConnection;
   }
 
   public apiRoot(): ByProjectKeyRequestBuilder {

@@ -1,7 +1,7 @@
-import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { PRODUCT_INFO_TEXT } from '@/shared/constants/product.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './productPageView.module.scss';
 
@@ -34,12 +34,12 @@ class ProductPageView {
   private createFullDescriptionWrapper(): HTMLDivElement {
     this.fullDescriptionWrapper = createBaseElement({
       cssClasses: [styles.fullDescriptionWrapper],
-      innerContent: PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].FULL_DESCRIPTION,
+      innerContent: PRODUCT_INFO_TEXT[getCurrentLanguage()].FULL_DESCRIPTION,
       tag: 'div',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const text = PRODUCT_INFO_TEXT[getStore().getState().currentLanguage].FULL_DESCRIPTION;
+      const text = PRODUCT_INFO_TEXT[getCurrentLanguage()].FULL_DESCRIPTION;
       const textNode = [...this.fullDescriptionWrapper.childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;
@@ -74,4 +74,5 @@ class ProductPageView {
     return this.fullDescription;
   }
 }
+
 export default ProductPageView;

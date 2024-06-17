@@ -3,8 +3,6 @@
 .cartPage {
   display: flex;
   flex-grow: 1;
-  overflow: hidden;
-  padding: 0 var(--small-offset);
   animation: show 0.2s ease-out forwards;
   gap: 2%;
 
@@ -33,7 +31,10 @@
 }
 
 .total {
+  position: sticky;
+  top: calc(var(--extra-small-offset) * 3.5);
   flex-shrink: 1;
+  height: max-content;
 
   @media (max-width: 768px) {
     position: sticky;
@@ -41,11 +42,9 @@
     bottom: 0;
     z-index: 100;
     margin-bottom: var(--tiny-offset);
-    border-radius: var(--large-br);
     padding: var(--small-offset);
-    width: 100%;
     box-shadow: var(--mellow-shadow-700);
-    background-color: var(--white-tr);
+    background-color: var(--noble-gray-1000);
     backdrop-filter: blur(10px);
   }
 }
@@ -55,7 +54,14 @@
 }
 
 .thead {
+  position: sticky;
+  top: calc(var(--extra-small-offset) * 3.5);
   width: 100%;
+  background: var(--noble-white-100);
+
+  @media (max-width: 768px) {
+    position: static;
+  }
 }
 
 .mainText {
@@ -101,6 +107,10 @@
   padding: var(--tiny-offset) 0;
   font: var(--bold-font);
   color: var(--noble-gray-800);
+
+  @media (max-width: 768px) {
+    color: var(--noble-gray-1100);
+  }
 }
 
 .border {
@@ -111,6 +121,11 @@
   padding: var(--tiny-offset) 0;
   font: var(--regular-font);
   color: var(--noble-gray-800);
+  transition: all 0.2s;
+
+  @media (max-width: 768px) {
+    color: var(--noble-gray-1100);
+  }
 }
 
 .totalWrap {
@@ -123,6 +138,24 @@
     width: 100%;
     max-width: 100%;
   }
+}
+
+.couponsWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+
+  &:hover p {
+    color: var(--steam-green-800);
+  }
+}
+
+.couponWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .totalPrice {
@@ -148,6 +181,10 @@
 
 .applyBtn {
   border-radius: 0 var(--small-br) var(--small-br) 0;
+
+  div {
+    position: absolute;
+  }
 
   &:active {
     transform: scale(1);
@@ -176,6 +213,12 @@ $color: var(--steam-green-800);
   }
 }
 
+.clear {
+  @include link(0 0, $color);
+
+  text-transform: none;
+}
+
 .mobileHide {
   @media (max-width: 768px) {
     display: none;
@@ -201,4 +244,57 @@ $color: var(--steam-green-800);
 
 .hide {
   display: none;
+}
+
+.couponsWrap:not(:empty)::after {
+  content: '';
+  display: inline-block;
+  width: var(--tiny-offset);
+  height: var(--tiny-offset);
+  background: url('/img/png/expand-arrow.png') no-repeat center center;
+  background-size: contain;
+}
+
+.deleteCoupon {
+  border-radius: var(--small-br);
+  padding: calc(var(--extra-small-offset) / 8);
+  width: calc(var(--extra-small-offset) * 1.2); // 24px
+  height: calc(var(--extra-small-offset) * 1.2); // 24px
+  background-image: url('../../../shared/img/svg/coupon-delete.svg');
+  background-position: center;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+}
+
+.coupon {
+  display: flex;
+  align-items: center;
+}
+
+.productsWrap {
+  padding-left: var(--small-offset);
+
+  @media (max-width: 768px) {
+    overflow: hidden;
+    padding: 0 var(--small-offset);
+  }
+}
+
+.totalsWrap {
+  display: flex;
+  flex-direction: column;
+  padding-right: var(--small-offset);
+
+  @media (max-width: 768px) {
+    padding: 0;
+  }
 }

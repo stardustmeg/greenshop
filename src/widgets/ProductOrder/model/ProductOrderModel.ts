@@ -1,13 +1,15 @@
 import type { Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
 
+import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.ts';
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { CartActive } from '@/shared/types/cart.ts';
-import showErrorMessage from '@/shared/utils/userMessage.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
+import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import ProductOrderView from '../view/ProductOrderView.ts';
 
@@ -16,14 +18,26 @@ type Callback = (cart: Cart) => void;
 class ProductOrderModel {
   private callback: Callback;
 
+  private price: ProductPriceModel;
+
   private productItem: CartProduct;
+
+  private total: ProductPriceModel;
 
   private view: ProductOrderView;
 
   constructor(productItem: CartProduct, callback: Callback) {
     this.callback = callback;
     this.productItem = productItem;
-    this.view = new ProductOrderView(this.productItem, this.updateProductHandler.bind(this));
+    this.price = new ProductPriceModel({ new: this.productItem.priceCouponDiscount, old: this.productItem.price });
+    this.total = new ProductPriceModel({
+      new:
+        this.productItem.totalPrice === this.productItem.totalPriceCouponDiscount
+          ? 0
+          : this.productItem.totalPriceCouponDiscount,
+      old: this.productItem.totalPrice,
+    });
+    this.view = new ProductOrderView(this.productItem, this.price, this.total, this.updateProductHandler.bind(this));
     this.init();
   }
 
@@ -34,9 +48,10 @@ class ProductOrderModel {
       .deleteProductFromCart(this.productItem)
       .then((cart) => {
         if (cart) {
-          serverMessageModel.showServerMessage(
-            SERVER_MESSAGE_KEYS.SUCCESSFUL_DELETE_PRODUCT_FROM_CART,
-            MESSAGE_STATUS.SUCCESS,
+          showSuccessMessage(
+            productRemovedFromCartMessage(
+              this.productItem.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
+            ),
           );
           const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
           this.updateView(updateItem);
@@ -92,6 +107,11 @@ class ProductOrderModel {
     return this.productItem;
   }
 
+  public setProduct(product: CartProduct): CartProduct {
+    this.productItem = product;
+    return this.productItem;
+  }
+
   public async updateProductHandler(active: CartActive): Promise<void> {
     switch (active) {
       case CartActive.DELETE: {
@@ -104,6 +124,10 @@ class ProductOrderModel {
       }
       case CartActive.PLUS: {
         await this.activePlus();
+        break;
+      }
+      case CartActive.UPDATE: {
+        this.updateView(this.productItem);
         break;
       }
       default:

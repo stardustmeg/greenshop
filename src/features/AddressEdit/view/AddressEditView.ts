@@ -1,7 +1,7 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 
 import styles from './addressEditView.module.scss';
 
@@ -16,14 +16,15 @@ class AddressEditView {
     this.saveChangesButton = this.createSaveChangesButton();
     this.cancelButton = this.createCancelButton();
     this.view = this.createHTML();
+
+    this.saveChangesButton.setDisabled();
   }
 
   private createCancelButton(): ButtonModel {
-    this.cancelButton = new ButtonModel({
+    return new ButtonModel({
       classes: [styles.cancelButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].CANCEL,
+      text: BUTTON_TEXT[getCurrentLanguage()].CANCEL,
     });
-    return this.cancelButton;
   }
 
   private createHTML(): HTMLFormElement {
@@ -31,18 +32,15 @@ class AddressEditView {
       cssClasses: [styles.wrapper],
       tag: 'form',
     });
-
     this.view.append(this.saveChangesButton.getHTML(), this.cancelButton.getHTML());
     return this.view;
   }
 
   private createSaveChangesButton(): ButtonModel {
-    this.saveChangesButton = new ButtonModel({
+    return new ButtonModel({
       classes: [styles.saveChangesButton],
-      text: BUTTON_TEXT[getStore().getState().currentLanguage].SAVE_CHANGES,
+      text: BUTTON_TEXT[getCurrentLanguage()].SAVE_CHANGES,
     });
-    this.saveChangesButton.setDisabled();
-    return this.saveChangesButton;
   }
 
   public getCancelButton(): ButtonModel {

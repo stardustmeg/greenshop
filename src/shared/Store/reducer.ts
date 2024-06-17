@@ -7,10 +7,10 @@ import type * as actions from './actions.ts';
 import type { Reducer } from './types.ts';
 
 export interface State {
-  anonymToken: TokenStore | null;
   anonymousCartId: null | string;
   anonymousId: null | string;
   anonymousShopListId: null | string;
+  anonymousToken: TokenStore | null;
   authToken: TokenStore | null;
   billingCountry: string;
   currentLanguage: LanguageChoiceType;
@@ -26,10 +26,10 @@ type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 export type Action = ReturnType<InferValueTypes<typeof actions>>;
 export const rootReducer: Reducer<State, Action> = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'setAnonymToken':
+    case 'setAnonymousToken':
       return {
         ...state,
-        anonymToken: action.payload,
+        anonymousToken: action.payload,
       };
     case 'setAuthToken':
       return {

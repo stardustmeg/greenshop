@@ -7,13 +7,13 @@ import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import serverMessageModel from '@/shared/ServerMessage/model/ServerMessageModel.ts';
-import getStore from '@/shared/Store/Store.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import * as FORM_FIELDS from '@/shared/constants/forms/fieldParams.ts';
 import * as FORM_VALIDATION from '@/shared/constants/forms/validationParams.ts';
-import { MESSAGE_STATUS, SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
+import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import type { Link } from '../model/FooterModel';
 
@@ -35,6 +35,7 @@ type Contact = {
   href?: string;
   src: string;
   tag: keyof HTMLElementTagNameMap;
+  target?: string;
 };
 
 type Img = {
@@ -53,7 +54,7 @@ const GOALS: Goal[] = [
     alt: 'Garden Care',
     description: {
       en: 'Provide expert tips and tools for maintaining a healthy and beautiful garden',
-      ru: 'Для Вас советы экспертов и инструменты для поддержания здорового и красивого сада',
+      ru: 'Для вас советы экспертов и инструменты для поддержания здорового и красивого сада',
     },
     id: 'goal_1',
     imgH: 93,
@@ -95,12 +96,15 @@ const GOALS: Goal[] = [
     },
   },
 ];
+
 const CONTACTS: Contact[] = [
   {
     alt: 'location greenshop',
     description: '70 West Buckingham Ave. Farmingdale, NY 11735',
+    href: 'https://www.google.com/maps/place/70+West+Dr,+Massapequa,+NY+11758,+%D0%A1%D0%A8%D0%90/@40.7095332,-73.4562642,17z/data=!3m1!4b1!4m6!3m5!1s0x89e9d5501f64213b:0xb7d1b7ebb0725ac6!8m2!3d40.7095332!4d-73.4536893!16s%2Fg%2F11c5fp8grj?entry=ttu',
     src: '/img/png/location.png',
-    tag: 'address',
+    tag: 'a',
+    target: '_blank',
   },
   {
     alt: 'email greenshop',
@@ -164,6 +168,7 @@ type textElementsType = {
   element: HTMLAnchorElement | HTMLButtonElement | HTMLInputElement | HTMLParagraphElement | HTMLUListElement;
   textItem: languageVariants;
 };
+
 const FOOTER_PAGE = {
   NAV_CATEGORY: {
     en: 'Categories',
@@ -219,7 +224,7 @@ class FooterView {
   private wrapper: HTMLDivElement;
 
   constructor() {
-    this.language = getStore().getState().currentLanguage;
+    this.language = getCurrentLanguage();
     this.wrapper = this.createWrapper();
     this.footer = this.createHTML();
     const blockGoals = this.createGoalsHTML();
@@ -250,7 +255,7 @@ class FooterView {
 
     const wrapContactItems = createBaseElement({
       cssClasses: [styles.contactItemsWrap],
-      tag: 'div',
+      tag: 'address',
     });
     CONTACTS.forEach((contact) => wrapContactItems.append(this.createContactItemHTML(contact)));
     wrap.append(logoImg, wrapContactItems);
@@ -262,6 +267,10 @@ class FooterView {
 
     if (contact.href) {
       attributes.href = contact.href;
+    }
+
+    if (contact.target) {
+      attributes.target = contact.target;
     }
 
     const wrap = createBaseElement({
@@ -496,7 +505,7 @@ class FooterView {
       cssClasses: [styles.subForm],
       tag: 'form',
     });
-    const email = new InputFieldModel(FORM_FIELDS.EMAIL_NOT_LABEL_TEXT, FORM_VALIDATION.FOOTER_EMAIL_VALIDATE);
+    const email = new InputFieldModel(FORM_FIELDS.EMAIL_NOT_LABEL_TEXT, FORM_VALIDATION.EMAIL_VALIDATE);
     const inputFieldElement = email.getView().getHTML();
     const inputHTML = email.getView().getInput().getHTML();
     if (inputFieldElement instanceof HTMLLabelElement) {
@@ -521,7 +530,7 @@ class FooterView {
 
     submit.getHTML().addEventListener('click', () => {
       email.getView().getInput().clear();
-      serverMessageModel.showServerMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_SUBSCRIBE, MESSAGE_STATUS.SUCCESS);
+      showSuccessMessage(SERVER_MESSAGE_KEY.SUCCESSFUL_SUBSCRIBE);
       submit.setDisabled();
     });
 
@@ -599,7 +608,7 @@ class FooterView {
   }
 
   public updateLanguage(): void {
-    this.language = getStore().getState().currentLanguage;
+    this.language = getCurrentLanguage();
     this.goals.forEach((goalEl) => {
       const title = goalEl.goalTitle;
       const description = goalEl.goalDescription;
