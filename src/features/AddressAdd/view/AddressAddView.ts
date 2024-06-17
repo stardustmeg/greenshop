@@ -16,14 +16,15 @@ class AddressAddView {
     this.saveChangesButton = this.createSaveChangesButton();
     this.cancelButton = this.createCancelButton();
     this.view = this.createHTML();
+
+    this.saveChangesButton.setDisabled();
   }
 
   private createCancelButton(): ButtonModel {
-    this.cancelButton = new ButtonModel({
+    return new ButtonModel({
       classes: [styles.cancelButton],
       text: BUTTON_TEXT[getCurrentLanguage()].CANCEL,
     });
-    return this.cancelButton;
   }
 
   private createHTML(): HTMLFormElement {
@@ -36,15 +37,13 @@ class AddressAddView {
   }
 
   private createSaveChangesButton(): ButtonModel {
-    this.saveChangesButton = new ButtonModel({
+    return new ButtonModel({
       attrs: {
         type: BUTTON_TYPE.SUBMIT,
       },
       classes: [styles.saveChangesButton],
       text: BUTTON_TEXT[getCurrentLanguage()].ADD_ADDRESS,
     });
-    this.saveChangesButton.setDisabled();
-    return this.saveChangesButton;
   }
 
   public getCancelButton(): ButtonModel {

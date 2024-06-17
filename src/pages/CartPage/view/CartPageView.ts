@@ -11,7 +11,8 @@ import InputModel from '@/shared/Input/model/InputModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import USER_MESSAGE from '@/shared/constants/confirmUserMessage.ts';
-import { PAGE_ID } from '@/shared/constants/pages.ts';
+import { CART_PAGE_TITLE, PAGE_ID } from '@/shared/constants/pages.ts';
+import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { cartPrice } from '@/shared/utils/messageTemplates.ts';
@@ -25,25 +26,6 @@ type textElementsType = {
   textItem: languageVariants;
 };
 
-const TITLE = {
-  BUTTON_CHECKOUT: { en: 'Proceed to Checkout', ru: 'Оформить заказ' },
-  BUTTON_COUPON: { en: 'Apply', ru: 'Применить' },
-  CART_TOTAL: { en: 'Cart Totals', ru: 'Итого по корзине' },
-  CLEAR: { en: 'Clear all', ru: 'Очистить' },
-  CONTINUE: { en: 'Continue Shopping', ru: 'Продолжить покупки' },
-  COUPON_APPLY: { en: 'Apply Coupon', ru: 'Применить купон' },
-  COUPON_DISCOUNT: { en: 'Cart Discount', ru: 'Скидка на корзину' },
-  EMPTY: {
-    en: `Oops! Looks like you haven't added the item to your cart yet.`,
-    ru: `Ой! Похоже, вы еще не добавили товар в корзину.`,
-  },
-  INPUT_COUPON: { en: 'Enter coupon here...', ru: 'Введите купон здесь...' },
-  PRICE: { en: 'Price', ru: 'Цена' },
-  PRODUCT: { en: 'Product', ru: 'Продукт' },
-  QUANTITY: { en: 'Quantity', ru: 'Количество' },
-  SUBTOTAL: { en: 'Subtotal', ru: 'Сумма' },
-  TOTAL: { en: 'Total', ru: 'Итого' },
-};
 class CartPageView {
   private addDiscountCallback: DiscountCallback;
 
@@ -108,17 +90,9 @@ class CartPageView {
     this.total = createBaseElement({ cssClasses: [styles.totalPrice], tag: 'p' });
     this.discountTotal = createBaseElement({ cssClasses: [styles.couponsWrap], tag: 'summary' });
     this.discountList = createBaseElement({ cssClasses: [styles.couponsList], tag: 'ul' });
-    this.couponButton = createBaseElement({
-      cssClasses: [styles.button, styles.applyBtn],
-      innerContent: TITLE.BUTTON_COUPON[this.language],
-      tag: 'button',
-    });
-    this.totalDiscountTitle = createBaseElement({
-      cssClasses: [styles.title],
-      innerContent: TITLE.COUPON_DISCOUNT[this.language],
-      tag: 'p',
-    });
-    this.clear = new ButtonModel({ classes: [styles.continue, styles.clear], text: TITLE.CLEAR[this.language] });
+    this.couponButton = this.createCouponButton();
+    this.totalDiscountTitle = this.createTotalDiscountTitle();
+    this.clear = this.createClearButton();
     this.totalWrap = this.createWrapHTML();
     this.totalWrap.classList.add(styles.total);
     this.page.append(this.productWrap);
@@ -134,29 +108,29 @@ class CartPageView {
     const tr = createBaseElement({ cssClasses: [styles.tr, styles.head], tag: 'tr' });
     const thImage = createBaseElement({
       cssClasses: [styles.th, styles.imgCell, styles.mainText],
-      innerContent: TITLE.PRODUCT[this.language],
+      innerContent: CART_PAGE_TITLE.PRODUCT[this.language],
       tag: 'th',
     });
-    this.textElement.push({ element: thImage, textItem: TITLE.PRODUCT });
+    this.textElement.push({ element: thImage, textItem: CART_PAGE_TITLE.PRODUCT });
     const thProduct = createBaseElement({ cssClasses: [styles.th, styles.nameCell, styles.mainText], tag: 'th' });
     const thPrice = createBaseElement({
       cssClasses: [styles.th, styles.priceCell, styles.mainText],
-      innerContent: TITLE.PRICE[this.language],
+      innerContent: CART_PAGE_TITLE.PRICE[this.language],
       tag: 'th',
     });
-    this.textElement.push({ element: thPrice, textItem: TITLE.PRICE });
+    this.textElement.push({ element: thPrice, textItem: CART_PAGE_TITLE.PRICE });
     const thQuantity = createBaseElement({
       cssClasses: [styles.th, styles.quantityCell, styles.mainText],
-      innerContent: TITLE.QUANTITY[this.language],
+      innerContent: CART_PAGE_TITLE.QUANTITY[this.language],
       tag: 'th',
     });
-    this.textElement.push({ element: thQuantity, textItem: TITLE.QUANTITY });
+    this.textElement.push({ element: thQuantity, textItem: CART_PAGE_TITLE.QUANTITY });
     const thTotal = createBaseElement({
       cssClasses: [styles.th, styles.totalCell, styles.mainText],
-      innerContent: TITLE.TOTAL[this.language],
+      innerContent: CART_PAGE_TITLE.TOTAL[this.language],
       tag: 'th',
     });
-    this.textElement.push({ element: thTotal, textItem: TITLE.TOTAL });
+    this.textElement.push({ element: thTotal, textItem: CART_PAGE_TITLE.TOTAL });
     const thDelete = this.createDeleCell();
     this.tableBody = createBaseElement({ cssClasses: [styles.tbody], tag: 'tbody' });
     this.table.append(thead, this.tableBody);
@@ -170,26 +144,26 @@ class CartPageView {
     const totalBlockWrap = createBaseElement({ cssClasses: [styles.totalsWrap], tag: 'div' });
     const title = createBaseElement({
       cssClasses: [styles.totalTitle, styles.border, styles.mobileHide],
-      innerContent: TITLE.CART_TOTAL[this.language],
+      innerContent: CART_PAGE_TITLE.CART_TOTAL[this.language],
       tag: 'p',
     });
-    this.textElement.push({ element: title, textItem: TITLE.CART_TOTAL });
+    this.textElement.push({ element: title, textItem: CART_PAGE_TITLE.CART_TOTAL });
     const couponTitle = createBaseElement({
       cssClasses: [styles.title, styles.mobileHide],
-      innerContent: TITLE.COUPON_APPLY[this.language],
+      innerContent: CART_PAGE_TITLE.COUPON_APPLY[this.language],
       tag: 'p',
     });
-    this.textElement.push({ element: couponTitle, textItem: TITLE.COUPON_APPLY });
+    this.textElement.push({ element: couponTitle, textItem: CART_PAGE_TITLE.COUPON_APPLY });
     const couponWrap = this.createCouponHTML();
     const subtotalWrap = this.createSubtotalHTML();
     const discountWrap = this.createDiscountHTML();
     const totalWrap = this.createTotalHTML();
     const finalButton = createBaseElement({
       cssClasses: [styles.button, styles.checkoutBtn],
-      innerContent: TITLE.BUTTON_CHECKOUT[this.language],
+      innerContent: CART_PAGE_TITLE.BUTTON_CHECKOUT[this.language],
       tag: 'button',
     });
-    this.textElement.push({ element: finalButton, textItem: TITLE.BUTTON_CHECKOUT });
+    this.textElement.push({ element: finalButton, textItem: CART_PAGE_TITLE.BUTTON_CHECKOUT });
     const continueLink = this.createCatalogLinkHTML();
     continueLink.getHTML().classList.add(styles.mobileHide);
     totalBlockWrap.append(
@@ -213,9 +187,9 @@ class CartPageView {
         href: PAGE_ID.CATALOG_PAGE,
       },
       classes: [styles.continue],
-      text: TITLE.CONTINUE[this.language],
+      text: CART_PAGE_TITLE.CONTINUE[this.language],
     });
-    this.textElement.push({ element: link.getHTML(), textItem: TITLE.CONTINUE });
+    this.textElement.push({ element: link.getHTML(), textItem: CART_PAGE_TITLE.CONTINUE });
 
     link.getHTML().addEventListener('click', (event) => {
       event.preventDefault();
@@ -224,16 +198,31 @@ class CartPageView {
     return link;
   }
 
+  private createClearButton(): ButtonModel {
+    return new ButtonModel({
+      classes: [styles.continue, styles.clear],
+      text: CART_PAGE_TITLE.CLEAR[this.language],
+    });
+  }
+
+  private createCouponButton(): HTMLButtonElement {
+    return createBaseElement({
+      cssClasses: [styles.button, styles.applyBtn],
+      innerContent: CART_PAGE_TITLE.BUTTON_COUPON[this.language],
+      tag: 'button',
+    });
+  }
+
   private createCouponHTML(): HTMLDivElement {
     const couponWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
     const couponInput = new InputModel({
       id: 'coupon',
-      placeholder: TITLE.INPUT_COUPON[this.language],
+      placeholder: CART_PAGE_TITLE.INPUT_COUPON[this.language],
     });
     couponInput.getHTML().classList.add(styles.couponInput);
 
-    this.textElement.push({ element: couponInput.getHTML(), textItem: TITLE.INPUT_COUPON });
-    this.textElement.push({ element: this.couponButton, textItem: TITLE.BUTTON_COUPON });
+    this.textElement.push({ element: couponInput.getHTML(), textItem: CART_PAGE_TITLE.INPUT_COUPON });
+    this.textElement.push({ element: this.couponButton, textItem: CART_PAGE_TITLE.BUTTON_COUPON });
     this.couponButton.addEventListener('click', (evn: Event) => {
       evn.preventDefault();
       this.addDiscountCallback(couponInput.getHTML().value);
@@ -246,7 +235,7 @@ class CartPageView {
   private createDeleCell(): HTMLTableCellElement {
     const tdDelete = createBaseElement({ cssClasses: [styles.th, styles.deleteCell, styles.mainText], tag: 'th' });
 
-    this.textElement.push({ element: this.clear.getHTML(), textItem: TITLE.CLEAR });
+    this.textElement.push({ element: this.clear.getHTML(), textItem: CART_PAGE_TITLE.CLEAR });
     this.clear.getHTML().addEventListener('click', () => {
       const confirmModel = new ConfirmModel(() => this.clearCallback(), USER_MESSAGE[getCurrentLanguage()].CLEAR_CART);
       modal.setContent(confirmModel.getHTML());
@@ -259,7 +248,7 @@ class CartPageView {
   private createDiscountHTML(): HTMLDetailsElement {
     const discountWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'details' });
     discountWrap.append(this.discountTotal, this.discountList);
-    this.textElement.push({ element: this.totalDiscountTitle, textItem: TITLE.COUPON_DISCOUNT });
+    this.textElement.push({ element: this.totalDiscountTitle, textItem: CART_PAGE_TITLE.COUPON_DISCOUNT });
     return discountWrap;
   }
 
@@ -267,10 +256,10 @@ class CartPageView {
     const empty = createBaseElement({ cssClasses: [styles.empty, styles.hide], tag: 'div' });
     const emptyTitle = createBaseElement({
       cssClasses: [styles.emptyTitle],
-      innerContent: TITLE.EMPTY[this.language],
+      innerContent: CART_PAGE_TITLE.EMPTY[this.language],
       tag: 'p',
     });
-    this.textElement.push({ element: emptyTitle, textItem: TITLE.EMPTY });
+    this.textElement.push({ element: emptyTitle, textItem: CART_PAGE_TITLE.EMPTY });
     const continueLink = this.createCatalogLinkHTML();
     empty.append(emptyTitle, continueLink.getHTML());
     this.page.append(empty);
@@ -292,33 +281,39 @@ class CartPageView {
     const subtotalWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
     const subtotalTitle = createBaseElement({
       cssClasses: [styles.title],
-      innerContent: TITLE.SUBTOTAL[this.language],
+      innerContent: CART_PAGE_TITLE.SUBTOTAL[this.language],
       tag: 'p',
     });
     subtotalWrap.append(subtotalTitle, this.subTotal);
-    this.textElement.push({ element: subtotalTitle, textItem: TITLE.SUBTOTAL });
+    this.textElement.push({ element: subtotalTitle, textItem: CART_PAGE_TITLE.SUBTOTAL });
     return subtotalWrap;
+  }
+
+  private createTotalDiscountTitle(): HTMLParagraphElement {
+    return createBaseElement({
+      cssClasses: [styles.title],
+      innerContent: CART_PAGE_TITLE.COUPON_DISCOUNT[this.language],
+      tag: 'p',
+    });
   }
 
   private createTotalHTML(): HTMLDivElement {
     const totalWrap = createBaseElement({ cssClasses: [styles.totalWrap], tag: 'div' });
     const totalTitle = createBaseElement({
       cssClasses: [styles.totalTitle],
-      innerContent: TITLE.TOTAL[this.language],
+      innerContent: CART_PAGE_TITLE.TOTAL[this.language],
       tag: 'p',
     });
     totalWrap.append(totalTitle, this.total);
-    this.textElement.push({ element: totalTitle, textItem: TITLE.TOTAL });
+    this.textElement.push({ element: totalTitle, textItem: CART_PAGE_TITLE.TOTAL });
     return totalWrap;
   }
 
   private createWrapHTML(): HTMLDivElement {
-    const wrap = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.wrap],
       tag: 'div',
     });
-
-    return wrap;
   }
 
   public getCouponButton(): HTMLButtonElement {
@@ -330,10 +325,7 @@ class CartPageView {
   }
 
   public renderCart(productsItem: ProductOrderModel[]): void {
-    this.productWrap.innerHTML = '';
-    this.totalWrap.innerHTML = '';
-    this.discountTotal.innerHTML = '';
-    this.discountList.innerHTML = '';
+    clearOutElement(this.productWrap, this.totalWrap, this.discountTotal, this.discountList);
     this.productWrap.classList.remove(styles.hide);
     this.totalWrap.classList.remove(styles.hide);
     this.empty.classList.add(styles.hide);
@@ -345,10 +337,7 @@ class CartPageView {
   }
 
   public renderEmpty(): void {
-    this.productWrap.innerHTML = '';
-    this.totalWrap.innerHTML = '';
-    this.discountTotal.innerHTML = '';
-    this.discountList.innerHTML = '';
+    clearOutElement(this.productWrap, this.totalWrap, this.discountTotal, this.discountList);
     this.productWrap.classList.add(styles.hide);
     this.totalWrap.classList.add(styles.hide);
     this.empty.classList.remove(styles.hide);
@@ -367,12 +356,12 @@ class CartPageView {
   }
 
   public updateTotal(cart: Cart): void {
-    this.discountTotal.innerHTML = '';
-    this.discountList.innerHTML = '';
+    clearOutElement(this.discountTotal, this.discountList);
     const totalDiscount = cart.discountsCart.reduce((acc, discount) => acc + discount.value, 0);
     const subTotal = cart.total + totalDiscount;
     this.subTotal.innerHTML = cartPrice(subTotal.toFixed(2));
     this.total.innerHTML = cartPrice(cart.total.toFixed(2));
   }
 }
+
 export default CartPageView;

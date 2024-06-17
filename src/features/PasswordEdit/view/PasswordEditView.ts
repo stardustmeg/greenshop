@@ -37,14 +37,15 @@ class PasswordEditView {
     this.oldPasswordField = this.createOldPasswordField();
     this.newPasswordField = this.createNewPasswordField();
     this.view = this.createHTML();
+
+    this.submitButton.setDisabled();
   }
 
   private createCancelButton(): ButtonModel {
-    this.cancelButton = new ButtonModel({
+    return new ButtonModel({
       classes: [styles.cancelButton],
       text: BUTTON_TEXT[getCurrentLanguage()].CANCEL,
     });
-    return this.cancelButton;
   }
 
   private createHTML(): HTMLFormElement {
@@ -64,6 +65,9 @@ class PasswordEditView {
         this.view.append(inputFieldElement.getHTML());
       }
     });
+
+    this.switchPasswordElementSVG(INPUT_TYPE.PASSWORD, this.showOldPasswordElement);
+    this.switchPasswordElementSVG(INPUT_TYPE.PASSWORD, this.showNewPasswordElement);
 
     this.view.append(this.submitButton.getHTML(), this.cancelButton.getHTML());
     return this.view;
@@ -90,30 +94,24 @@ class PasswordEditView {
   }
 
   private createShowNewPasswordElement(): HTMLDivElement {
-    this.showNewPasswordElement = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.showPasswordElement],
       tag: 'div',
     });
-    this.switchPasswordElementSVG(INPUT_TYPE.PASSWORD, this.showNewPasswordElement);
-    return this.showNewPasswordElement;
   }
 
   private createShowOldPasswordElement(): HTMLDivElement {
-    this.showOldPasswordElement = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.showPasswordElement],
       tag: 'div',
     });
-    this.switchPasswordElementSVG(INPUT_TYPE.PASSWORD, this.showOldPasswordElement);
-    return this.showOldPasswordElement;
   }
 
   private createSubmitButton(): ButtonModel {
-    this.submitButton = new ButtonModel({
+    return new ButtonModel({
       classes: [styles.submitButton],
       text: BUTTON_TEXT[getCurrentLanguage()].SAVE_CHANGES,
     });
-    this.submitButton.setDisabled();
-    return this.submitButton;
   }
 
   public getCancelButton(): ButtonModel {

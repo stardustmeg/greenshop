@@ -71,3 +71,10 @@ export const ADDRESS_TEXT = {
     STREET: 'Адрес: ',
   },
 } as const;
+
+export const ADDRESS_TEXT_KEY = {
+  CITY: 'CITY',
+  COUNTRY: 'COUNTRY',
+  POSTAL_CODE: 'POSTAL_CODE',
+  STREET: 'STREET',
+};

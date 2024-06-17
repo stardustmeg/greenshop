@@ -31,6 +31,8 @@ class NotFoundPageView {
     this.toMainButton = this.createToMainButton();
     this.page = this.createHTML();
     window.scrollTo(0, 0);
+
+    this.observeStoreChanges();
   }
 
   private createHTML(): HTMLDivElement {
@@ -46,15 +48,11 @@ class NotFoundPageView {
   }
 
   private createPageDescription(): HTMLParagraphElement {
-    this.description = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.pageDescription],
       innerContent: PAGE_DESCRIPTION[getCurrentLanguage()][404],
       tag: 'p',
     });
-
-    observeCurrentLanguage(this.description, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEY[404]);
-
-    return this.description;
   }
 
   private createPageLogo(): HTMLDivElement {
@@ -66,21 +64,23 @@ class NotFoundPageView {
   }
 
   private createPageTitle(): HTMLHeadingElement {
-    this.title = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.pageTitle],
       innerContent: PAGE_DESCRIPTION_KEY[404],
       tag: 'h1',
     });
-    return this.title;
   }
 
   private createToMainButton(): ButtonModel {
-    this.toMainButton = new ButtonModel({
+    return new ButtonModel({
       classes: [styles.toMainButton],
       text: BUTTON_TEXT[getCurrentLanguage()].BACK_TO_MAIN,
     });
+  }
+
+  private observeStoreChanges(): void {
+    observeCurrentLanguage(this.description, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEY[404]);
     observeCurrentLanguage(this.toMainButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEY.BACK_TO_MAIN);
-    return this.toMainButton;
   }
 
   public getHTML(): HTMLDivElement {

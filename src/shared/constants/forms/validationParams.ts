@@ -23,7 +23,7 @@ export const PASSWORD_VALIDATE = {
   required: true,
   requiredSymbols: {
     messages: {
-      en: 'Password must contain English letters, at least one letter in upper and lower case and at least one number',
+      en: 'Password must contain English letters, at least one letter in upper and lower case, and at least one number',
       ru: 'Пароль должен содержать английские буквы, как минимум одну букву в верхнем и нижнем регистре, а также хотя бы одну цифру',
     },
     pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+/,

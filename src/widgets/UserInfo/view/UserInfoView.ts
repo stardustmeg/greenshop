@@ -42,84 +42,54 @@ class UserInfoView {
     this.editInfoButton = this.createEditInfoButton();
     this.editPasswordButton = this.createEditPasswordButton();
     this.userInfoWrapper = this.createUserInfoWrapper();
+
+    this.observeStoreChanges();
   }
 
   private createBirthDate(): HTMLSpanElement {
-    this.birthDate = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.info],
       innerContent: userInfoDateOfBirth(this.currentUser.birthDate),
       tag: 'span',
     });
-
-    observeStore(selectCurrentLanguage, () => {
-      this.birthDate.textContent = userInfoDateOfBirth(this.currentUser.birthDate);
-    });
-    return this.birthDate;
   }
 
   private createEditInfoButton(): ButtonModel {
-    this.editInfoButton = new ButtonModel({
+    return new ButtonModel({
       classes: [styles.editInfoButton],
       text: BUTTON_TEXT[getCurrentLanguage()].EDIT_INFO,
     });
-
-    observeCurrentLanguage(this.editInfoButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEY.EDIT_INFO);
-
-    return this.editInfoButton;
   }
 
   private createEditPasswordButton(): ButtonModel {
-    this.editPasswordButton = new ButtonModel({
+    return new ButtonModel({
       classes: [styles.editPasswordButton],
       title: TOOLTIP_TEXT[getCurrentLanguage()].EDIT_PASSWORD,
     });
-
-    this.editPasswordButton.getHTML().append(this.logo);
-
-    observeStore(selectCurrentLanguage, () => {
-      this.editPasswordButton.getHTML().title = TOOLTIP_TEXT[getCurrentLanguage()].EDIT_PASSWORD;
-    });
-
-    return this.editPasswordButton;
   }
 
   private createEmail(): HTMLSpanElement {
-    this.email = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.info],
       innerContent: userInfoEmail(this.currentUser.email),
       tag: 'span',
     });
-
-    observeStore(selectCurrentLanguage, () => {
-      this.email.textContent = userInfoEmail(this.currentUser.email);
-    });
-    return this.email;
   }
 
   private createFirstName(): HTMLSpanElement {
-    this.firstName = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.info],
       innerContent: userInfoName(this.currentUser.firstName),
       tag: 'span',
     });
-
-    observeStore(selectCurrentLanguage, () => {
-      this.firstName.textContent = userInfoName(this.currentUser.firstName);
-    });
-    return this.firstName;
   }
 
   private createLastName(): HTMLSpanElement {
-    this.lastName = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.info],
       innerContent: userInfoLastName(this.currentUser.lastName),
       tag: 'span',
     });
-
-    observeStore(selectCurrentLanguage, () => {
-      this.lastName.textContent = userInfoLastName(this.currentUser.lastName);
-    });
-    return this.lastName;
   }
 
   private createLogo(): HTMLDivElement {
@@ -135,6 +105,9 @@ class UserInfoView {
       cssClasses: [styles.userInfoWrapper, styles.hidden],
       tag: 'div',
     });
+
+    this.editPasswordButton.getHTML().append(this.logo);
+
     this.userInfoWrapper.append(
       this.firstName,
       this.lastName,
@@ -144,6 +117,17 @@ class UserInfoView {
       this.editPasswordButton.getHTML(),
     );
     return this.userInfoWrapper;
+  }
+
+  private observeStoreChanges(): void {
+    observeStore(selectCurrentLanguage, () => {
+      this.birthDate.textContent = userInfoDateOfBirth(this.currentUser.birthDate);
+      this.email.textContent = userInfoEmail(this.currentUser.email);
+      this.firstName.textContent = userInfoName(this.currentUser.firstName);
+      this.lastName.textContent = userInfoLastName(this.currentUser.lastName);
+      this.editPasswordButton.getHTML().title = TOOLTIP_TEXT[getCurrentLanguage()].EDIT_PASSWORD;
+    });
+    observeCurrentLanguage(this.editInfoButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEY.EDIT_INFO);
   }
 
   public getBirthDate(): HTMLSpanElement {

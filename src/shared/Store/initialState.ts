@@ -1,7 +1,7 @@
-import type { State } from '../Store/reducer';
+import type { State } from './reducer.ts';
 
-import { LANGUAGE_CHOICE } from './common.ts';
-import { PAGE_ID } from './pages.ts';
+import { LANGUAGE_CHOICE } from '../constants/common.ts';
+import { PAGE_ID } from '../constants/pages.ts';
 
 const initialState: State = {
   anonymousCartId: null,

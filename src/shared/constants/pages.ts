@@ -53,7 +53,7 @@ export const PAGE_DESCRIPTION = {
 export const BLOG_DESCRIPTION = {
   en: {
     LIST_DESCRIPTION:
-      'Empowering all people to be plant people—a collection of articles from ours team of plant experts across a variety of plant care topics to inspire confidence in the next generation of plant parents. Welcome to GREENSHOP',
+      'Empowering all people to be plant people — a collection of articles from ours team of plant experts across a variety of plant care topics to inspire confidence in the next generation of plant parents. Welcome to GREENSHOP',
     LIST_TITLE: 'Your Journey to Plant Parenthood',
     WIDGET_DESCRIPTIONS: 'This is where we share our experiences with all green friend lovers',
     WIDGET_TITLE: 'Our Blog Posts',
@@ -123,4 +123,24 @@ export const USER_INFO_TEXT = {
     LAST_NAME: 'Фамилия: ',
     NAME: 'Имя: ',
   },
+} as const;
+
+export const CART_PAGE_TITLE = {
+  BUTTON_CHECKOUT: { en: 'Proceed to Checkout', ru: 'Оформить заказ' },
+  BUTTON_COUPON: { en: 'Apply', ru: 'Применить' },
+  CART_TOTAL: { en: 'Cart Totals', ru: 'Итого по корзине' },
+  CLEAR: { en: 'Clear all', ru: 'Очистить' },
+  CONTINUE: { en: 'Continue Shopping', ru: 'Продолжить покупки' },
+  COUPON_APPLY: { en: 'Apply Coupon', ru: 'Применить купон' },
+  COUPON_DISCOUNT: { en: 'Cart Discount', ru: 'Скидка на корзину' },
+  EMPTY: {
+    en: "Oops! Looks like you haven't added the item to your cart yet.",
+    ru: 'Ой! Похоже, вы еще не добавили товар в корзину.',
+  },
+  INPUT_COUPON: { en: 'Enter coupon here...', ru: 'Введите купон здесь...' },
+  PRICE: { en: 'Price', ru: 'Цена' },
+  PRODUCT: { en: 'Product', ru: 'Продукт' },
+  QUANTITY: { en: 'Quantity', ru: 'Количество' },
+  SUBTOTAL: { en: 'Subtotal', ru: 'Сумма' },
+  TOTAL: { en: 'Total', ru: 'Итого' },
 } as const;

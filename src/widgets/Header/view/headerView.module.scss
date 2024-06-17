@@ -27,7 +27,7 @@
 
 .navigationWrapper {
   position: fixed;
-  right: 0; // 100%
+  right: -100%;
   top: calc(var(--tiny-offset) * 6.9); // 69px
   z-index: 20;
   display: flex;
@@ -50,7 +50,7 @@
   }
 
   &.open {
-    // transform: translateX(-500%);
+    transform: translateX(-500%);
 
     @media (max-width: 768px) {
       transform: translateX(-220%);
