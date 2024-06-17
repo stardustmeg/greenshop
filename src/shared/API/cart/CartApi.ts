@@ -1,4 +1,4 @@
-import type { AddCartItem, Cart, CartProduct, EditCartItem } from '@/shared/types/cart.ts';
+import type { Cart } from '@/shared/types/cart.ts';
 import type {
   CartPagedQueryResponse,
   Cart as CartResponse,
@@ -12,39 +12,11 @@ import { CURRENCY } from '@/shared/constants/product.ts';
 
 import getApiClient, { type ApiClient } from '../sdk/client.ts';
 
-enum Actions {
-  addLineItem = 'addLineItem',
-  changeLineItemQuantity = 'changeLineItemQuantity',
-  removeLineItem = 'removeLineItem',
-}
-export class CartApi {
+export default class CartApi {
   private client: ApiClient;
 
   constructor() {
     this.client = getApiClient();
-  }
-
-  public async addProduct(cart: Cart, addCartItem: AddCartItem): Promise<ClientResponse> {
-    const data = await this.client
-      .apiRoot()
-      .me()
-      .carts()
-      .withId({ ID: cart.id })
-      .post({
-        body: {
-          actions: [
-            {
-              action: Actions.addLineItem,
-              productId: addCartItem.productId,
-              quantity: addCartItem.quantity,
-              variantId: addCartItem.variantId,
-            },
-          ],
-          version: cart.version,
-        },
-      })
-      .execute();
-    return data;
   }
 
   public async create(): Promise<ClientResponse<CartResponse>> {
@@ -79,49 +51,6 @@ export class CartApi {
     return data;
   }
 
-  public async deleteProduct(cart: Cart, product: CartProduct): Promise<ClientResponse> {
-    const data = await this.client
-      .apiRoot()
-      .me()
-      .carts()
-      .withId({ ID: cart.id })
-      .post({
-        body: {
-          actions: [
-            {
-              action: Actions.removeLineItem,
-              lineItemId: product.lineItemId,
-            },
-          ],
-          version: cart.version,
-        },
-      })
-      .execute();
-    return data;
-  }
-
-  public async editProductCount(cart: Cart, editCartItem: EditCartItem): Promise<ClientResponse> {
-    const data = await this.client
-      .apiRoot()
-      .me()
-      .carts()
-      .withId({ ID: cart.id })
-      .post({
-        body: {
-          actions: [
-            {
-              action: Actions.changeLineItemQuantity,
-              lineItemId: editCartItem.lineId,
-              quantity: editCartItem.quantity,
-            },
-          ],
-          version: cart.version,
-        },
-      })
-      .execute();
-    return data;
-  }
-
   public async getActiveCart(): Promise<ClientResponse<CartResponse>> {
     const data = await this.client.apiRoot().me().activeCart().get().execute();
     return data;
@@ -137,14 +66,14 @@ export class CartApi {
     return data;
   }
 
-  public async setAnonymousId(cart: Cart, actions: CartSetAnonymousIdAction): Promise<ClientResponse> {
+  public async setAnonymousId(cart: Cart, actions: CartSetAnonymousIdAction[]): Promise<ClientResponse> {
     const data = await this.client
       .apiRoot()
       .carts()
       .withId({ ID: cart.id })
       .post({
         body: {
-          actions: [actions],
+          actions,
           version: cart.version,
         },
       })
@@ -167,12 +96,4 @@ export class CartApi {
       .execute();
     return data;
   }
-}
-
-const createCartApi = (): CartApi => new CartApi();
-
-const cartApi = createCartApi();
-
-export default function getCartApi(): CartApi {
-  return cartApi;
 }

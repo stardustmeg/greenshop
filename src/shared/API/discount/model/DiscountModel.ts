@@ -15,7 +15,7 @@ import {
   isDiscountCodePagedQueryResponse,
   isProductDiscountPagedQueryResponse,
 } from '../../types/validation.ts';
-import getDiscountApi, { type DiscountApi } from '../DiscountApi.ts';
+import DiscountApi from '../DiscountApi.ts';
 
 export class DiscountModel {
   private coupons: Coupon[] = [];
@@ -23,7 +23,7 @@ export class DiscountModel {
   private root: DiscountApi;
 
   constructor() {
-    this.root = getDiscountApi();
+    this.root = new DiscountApi();
     this.init().catch(showErrorMessage);
   }
 

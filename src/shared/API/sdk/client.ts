@@ -28,13 +28,10 @@ const URL_HTTP = 'https://api.europe-west1.gcp.commercetools.com';
 const USE_SAVE_TOKEN = true;
 
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
-  fetch,
   host: URL_HTTP,
 };
 
 export class ApiClient {
-  private adminConnection: ByProjectKeyRequestBuilder;
-
   private anonymConnection: ByProjectKeyRequestBuilder | null = null;
 
   private authConnection: ByProjectKeyRequestBuilder | null = null;
@@ -61,7 +58,6 @@ export class ApiClient {
     } else {
       this.anonymConnection = this.createAnonymConnection();
     }
-    this.adminConnection = this.createAdminConnection();
   }
 
   private addAuthMiddleware(
@@ -95,16 +91,6 @@ export class ApiClient {
       };
       client.withRefreshTokenFlow(optionsRefreshToken);
     }
-  }
-
-  private createAdminConnection(): ByProjectKeyRequestBuilder {
-    const defaultOptions = this.getDefaultOptions();
-    const client = this.getDefaultClient();
-
-    client.withClientCredentialsFlow(defaultOptions);
-
-    this.adminConnection = this.getConnection(client.build());
-    return this.adminConnection;
   }
 
   private createAnonymConnection(): ByProjectKeyRequestBuilder {
@@ -157,16 +143,11 @@ export class ApiClient {
         clientId: this.clientID,
         clientSecret: this.clientSecret,
       },
-      fetch,
       host: URL_AUTH,
       projectKey: this.projectKey,
       scopes: this.scopes,
       tokenCache: USE_SAVE_TOKEN && tokenType === TokenType.AUTH ? getTokenCache(tokenType) : undefined,
     };
-  }
-
-  public adminRoot(): ByProjectKeyRequestBuilder {
-    return this.adminConnection;
   }
 
   public apiRoot(): ByProjectKeyRequestBuilder {

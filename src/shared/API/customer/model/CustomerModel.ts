@@ -17,7 +17,7 @@ import {
   isCustomerResponse,
   isCustomerSignInResultResponse,
 } from '../../types/validation.ts';
-import getCustomerApi, { type CustomerApi } from '../CustomerApi.ts';
+import CustomerApi from '../CustomerApi.ts';
 
 const CUSTOMER_FIELD = 'customer';
 
@@ -43,7 +43,7 @@ export class CustomerModel {
   private root: CustomerApi;
 
   constructor() {
-    this.root = getCustomerApi();
+    this.root = new CustomerApi();
   }
 
   public static actionAddAddress(address: Address): MyCustomerUpdateAction {
@@ -231,11 +231,6 @@ export class CustomerModel {
   public async authCustomer(userLoginData: UserCredentials): Promise<User | null> {
     const data = await this.root.authenticateUser(userLoginData);
     return this.getCustomerFromData(data);
-  }
-
-  public async deleteCustomer(customer: User): Promise<boolean> {
-    const data = await this.root.deleteCustomer(customer.id, customer.version);
-    return this.getCustomerFromData(data) !== null;
   }
 
   public async editCustomer(actions: MyCustomerUpdateAction[], customer: User): Promise<User | null> {

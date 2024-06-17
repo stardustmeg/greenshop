@@ -1,5 +1,9 @@
 import ButtonModel from '../model/ButtonModel.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 const button = new ButtonModel({
   action: {
     key: 'click',

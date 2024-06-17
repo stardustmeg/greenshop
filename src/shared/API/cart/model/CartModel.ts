@@ -21,10 +21,12 @@ import getProductModel from '../../product/model/ProductModel.ts';
 import FilterProduct from '../../product/utils/filter.ts';
 import { Attribute, FilterFields } from '../../types/type.ts';
 import { isCart, isCartPagedQueryResponse, isClientResponse } from '../../types/validation.ts';
-import getCartApi, { type CartApi } from '../CartApi.ts';
+import CartApi from '../CartApi.ts';
 
 enum ACTIONS {
   addDiscountCode = 'addDiscountCode',
+  addLineItem = 'addLineItem',
+  changeLineItemQuantity = 'changeLineItemQuantity',
   removeDiscountCode = 'removeDiscountCode',
   removeLineItem = 'removeLineItem',
   setAnonymousId = 'setAnonymousId',
@@ -39,7 +41,7 @@ export class CartModel {
   private root: CartApi;
 
   constructor() {
-    this.root = getCartApi();
+    this.root = new CartApi();
     this.getCart()
       .then(() => {
         const { anonymousId } = getStore().getState();
@@ -215,10 +217,12 @@ export class CartModel {
 
   private async updateCartCustomer(anonymousId: string): Promise<Cart | null> {
     if (this.cart) {
-      const actions: CartSetAnonymousIdAction = {
-        action: ACTIONS.setAnonymousId,
-        anonymousId,
-      };
+      const actions: CartSetAnonymousIdAction[] = [
+        {
+          action: ACTIONS.setAnonymousId,
+          anonymousId,
+        },
+      ];
       const dataSetId = await this.root.setAnonymousId(this.cart, actions);
       this.cart = this.getCartFromData(dataSetId);
     }
@@ -274,7 +278,19 @@ export class CartModel {
   }
 
   public async addProductToCart(addCartItem: AddCartItem): Promise<Cart | null> {
-    const data = await this.root.addProduct(await this.getCart(), addCartItem);
+    if (!this.cart) {
+      this.cart = await this.getCart();
+    }
+
+    const actions: MyCartUpdateAction[] = [
+      {
+        action: ACTIONS.addLineItem,
+        productId: addCartItem.productId,
+        quantity: addCartItem.quantity,
+        variantId: addCartItem.variantId,
+      },
+    ];
+    const data = await this.root.updateCart(this.cart, actions);
     this.cart = this.getCartFromData(data);
     this.dispatchUpdate();
     return this.cart;
@@ -331,11 +347,17 @@ export class CartModel {
     return this.cart;
   }
 
-  public async deleteProductFromCart(products: CartProduct): Promise<Cart | null> {
+  public async deleteProductFromCart(cartItem: CartProduct): Promise<Cart | null> {
     if (!this.cart) {
       this.cart = await this.getCart();
     }
-    const data = await this.root.deleteProduct(this.cart, products);
+    const actions: MyCartUpdateAction[] = [
+      {
+        action: ACTIONS.removeLineItem,
+        lineItemId: cartItem.lineItemId,
+      },
+    ];
+    const data = await this.root.updateCart(this.cart, actions);
     this.cart = this.getCartFromData(data);
     this.dispatchUpdate();
     return this.cart;
@@ -345,7 +367,16 @@ export class CartModel {
     if (!this.cart) {
       this.cart = await this.getCart();
     }
-    const data = await this.root.editProductCount(this.cart, editCartItem);
+
+    const actions: MyCartUpdateAction[] = [
+      {
+        action: ACTIONS.changeLineItemQuantity,
+        lineItemId: editCartItem.lineId,
+        quantity: editCartItem.quantity,
+      },
+    ];
+
+    const data = await this.root.updateCart(this.cart, actions);
     this.cart = this.getCartFromData(data);
     this.dispatchUpdate();
     return this.cart;

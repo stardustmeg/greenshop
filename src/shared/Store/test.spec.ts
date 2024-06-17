@@ -6,6 +6,10 @@ import * as actions from './actions.ts';
 import * as observer from './observer.ts';
 import { rootReducer } from './reducer.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 describe('Checking Store', () => {
   const mockStore = getStore();
   it('should check if store is defined', () => {
