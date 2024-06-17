@@ -10,6 +10,7 @@ import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEY } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAIL from '@/shared/constants/svg.ts';
+import { DIFFICULTY } from '@/shared/types/product.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
@@ -219,8 +220,12 @@ class ProductInfoView {
         cssClasses: ['difficultySpan'],
         innerContent: PRODUCT_INFO_TEXT[currentLanguage].DIFFICULTY,
         tag: 'span',
+        title: DIFFICULTY[getCurrentLanguage()][this.params.level],
       });
 
+      observeStore(selectCurrentLanguage, () => {
+        difficultySpan.title = this.params.level ? DIFFICULTY[getCurrentLanguage()][this.params.level] : '';
+      });
       observeCurrentLanguage(difficultySpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEY.DIFFICULTY);
 
       difficultySpan.append(...this.createDifficultyPoints());

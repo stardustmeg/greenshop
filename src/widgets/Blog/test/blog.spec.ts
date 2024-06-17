@@ -1,6 +1,6 @@
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 
-import BlogWidgetModel from '../model/BogWidgetModel.ts';
+import BlogWidgetModel from '../model/BlogWidgetModel.ts';
 
 /**
  * @vitest-environment jsdom
