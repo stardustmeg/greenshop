@@ -5,10 +5,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: var(--one) solid var(--noble-gray-1000);
   border-radius: 100%;
   width: calc(var(--tiny-offset) * 2);
   height: calc(var(--tiny-offset) * 2);
+  box-shadow: 0 0 0 var(--one) var(--noble-gray-tr-1000);
   font: var(--regular-font);
   background-color: var(--steam-green-800);
 }
