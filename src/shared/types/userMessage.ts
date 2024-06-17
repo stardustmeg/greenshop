@@ -1,7 +1,7 @@
-import type { MessageStatusType, ServerMessageKeysType } from '../constants/messages';
+import type { MessageStatusType, ServerMessageKeyType } from '../constants/messages';
 
 interface UserMessage {
-  key?: ServerMessageKeysType;
+  key?: ServerMessageKeyType;
   message?: string;
   status: MessageStatusType;
 }

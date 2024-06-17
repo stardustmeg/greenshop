@@ -4,7 +4,7 @@ import RouterModel from '@/app/Router/model/RouterModel.ts';
 import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
-import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
@@ -21,7 +21,7 @@ class UserProfilePageModel implements Page {
     const { isUserLoggedIn } = getStore().getState();
     if (!isUserLoggedIn) {
       RouterModel.getInstance().navigateTo(PAGE_ID.LOGIN_PAGE);
-      showErrorMessage(SERVER_MESSAGE_KEYS.NEED_LOGIN);
+      showErrorMessage(SERVER_MESSAGE_KEY.NEED_LOGIN);
     } else {
       this.view = new UserProfilePageView(parent);
       this.init().catch(showErrorMessage);
@@ -37,7 +37,7 @@ class UserProfilePageModel implements Page {
         getStore().dispatch(setCurrentPage(PAGE_ID.USER_PROFILE_PAGE));
       }
     } catch (error) {
-      showErrorMessage(SERVER_MESSAGE_KEYS.NEED_LOGIN);
+      showErrorMessage(SERVER_MESSAGE_KEY.NEED_LOGIN);
     }
   }
 

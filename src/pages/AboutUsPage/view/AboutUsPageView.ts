@@ -1,9 +1,9 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { LINK_DETAILS } from '@/shared/constants/links.ts';
+import { LINK_DETAIL } from '@/shared/constants/links.ts';
 import { PAGE_DESCRIPTION } from '@/shared/constants/pages.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
@@ -48,13 +48,13 @@ class AboutUsPageView {
     const logo = new LinkModel({
       attrs: {
         href: 'https://rs.school',
-        target: LINK_DETAILS.BLANK,
+        target: LINK_DETAIL.BLANK,
       },
       classes: [styles.logo],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.RSS_LOGO));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.RSS_LOGO));
     logo.getHTML().append(svg);
     return logo;
   }

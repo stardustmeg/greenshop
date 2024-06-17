@@ -1,5 +1,5 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import { BUTTON_TEXT, BUTTON_TEXT_KEYS } from '@/shared/constants/buttons.ts';
+import { BUTTON_TEXT, BUTTON_TEXT_KEY } from '@/shared/constants/buttons.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
@@ -28,7 +28,7 @@ class ConfirmView {
       text: BUTTON_TEXT[getCurrentLanguage()].CANCEL,
     });
 
-    observeCurrentLanguage(this.cancelButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.CANCEL);
+    observeCurrentLanguage(this.cancelButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEY.CANCEL);
 
     return this.cancelButton;
   }
@@ -39,7 +39,7 @@ class ConfirmView {
       text: BUTTON_TEXT[getCurrentLanguage()].CONFIRM,
     });
 
-    observeCurrentLanguage(this.confirmButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEYS.CONFIRM);
+    observeCurrentLanguage(this.confirmButton.getHTML(), BUTTON_TEXT, BUTTON_TEXT_KEY.CONFIRM);
 
     return this.confirmButton;
   }

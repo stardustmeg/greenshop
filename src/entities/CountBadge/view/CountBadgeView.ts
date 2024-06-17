@@ -8,18 +8,15 @@ class CountBadgeView {
   private countBadgeWrap: HTMLDivElement;
 
   constructor() {
-    this.countBadgeWrap = this.createHTML();
     this.countBadge = this.createBadge();
+    this.countBadgeWrap = this.createHTML();
   }
 
   private createBadge(): HTMLSpanElement {
-    this.countBadge = createBaseElement({
+    return createBaseElement({
       cssClasses: [styles.badge],
       tag: 'span',
     });
-    this.countBadgeWrap.append(this.countBadge);
-
-    return this.countBadge;
   }
 
   private createHTML(): HTMLDivElement {
@@ -27,6 +24,8 @@ class CountBadgeView {
       cssClasses: [styles.badgeWrap],
       tag: 'div',
     });
+
+    this.countBadgeWrap.append(this.countBadge);
 
     return this.countBadgeWrap;
   }

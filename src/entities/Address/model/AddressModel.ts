@@ -3,7 +3,7 @@ import type { Address, PersonalData } from '@/shared/types/user.ts';
 
 import CountryChoiceModel from '@/features/CountryChoice/model/CountryChoiceModel.ts';
 import getStore from '@/shared/Store/Store.ts';
-import { ADDRESS_TYPE } from '@/shared/types/address.ts';
+import { ADDRESS } from '@/shared/types/address.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
 
 import AddressView from '../view/AddressView.ts';
@@ -13,7 +13,7 @@ class AddressModel {
 
   private view: AddressView;
 
-  constructor(options: AddressOptions, addressType: AddressType = ADDRESS_TYPE.GENERAL) {
+  constructor(options: AddressOptions, addressType: AddressType = ADDRESS.GENERAL) {
     this.addressType = addressType;
     this.view = new AddressView(addressType, options);
     this.init();
@@ -29,10 +29,10 @@ class AddressModel {
     let country: string;
 
     switch (this.addressType) {
-      case ADDRESS_TYPE.BILLING:
+      case ADDRESS.BILLING:
         country = store.billingCountry;
         break;
-      case ADDRESS_TYPE.SHIPPING:
+      case ADDRESS.SHIPPING:
         country = store.shippingCountry;
         break;
       default:

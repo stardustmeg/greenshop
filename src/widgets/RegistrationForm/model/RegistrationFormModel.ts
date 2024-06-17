@@ -9,28 +9,28 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
-import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import { ADDRESS_TYPE } from '@/shared/types/address.ts';
+import { ADDRESS } from '@/shared/types/address.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
 
 class RegisterFormModel {
-  private addressWrappers: Record<Exclude<AddressType, typeof ADDRESS_TYPE.GENERAL>, AddressModel> = {
-    [ADDRESS_TYPE.BILLING]: new AddressModel(
+  private addressWrappers: Record<Exclude<AddressType, typeof ADDRESS.GENERAL>, AddressModel> = {
+    [ADDRESS.BILLING]: new AddressModel(
       {
         setDefault: true,
       },
-      ADDRESS_TYPE.BILLING,
+      ADDRESS.BILLING,
     ),
-    [ADDRESS_TYPE.SHIPPING]: new AddressModel(
+    [ADDRESS.SHIPPING]: new AddressModel(
       {
         setAsBilling: true,
         setDefault: true,
       },
-      ADDRESS_TYPE.SHIPPING,
+      ADDRESS.SHIPPING,
     ),
   };
 
@@ -97,7 +97,7 @@ class RegisterFormModel {
     this.inputFields.forEach((inputField) => this.setInputFieldHandlers(inputField));
     this.setPreventDefaultToForm();
     this.setSubmitFormHandler();
-    const checkboxSingleAddress = this.addressWrappers[ADDRESS_TYPE.SHIPPING]
+    const checkboxSingleAddress = this.addressWrappers[ADDRESS.SHIPPING]
       .getView()
       .getAddressAsBillingCheckBox()
       ?.getHTML();
@@ -121,11 +121,11 @@ class RegisterFormModel {
         if (newUserData) {
           getStore().dispatch(switchIsUserLoggedIn(false));
           getStore().dispatch(switchIsUserLoggedIn(true));
-          showSuccessMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_REGISTRATION);
+          showSuccessMessage(SERVER_MESSAGE_KEY.SUCCESSFUL_REGISTRATION);
         }
       })
       .catch(() => {
-        showErrorMessage(SERVER_MESSAGE_KEYS.USER_EXISTS);
+        showErrorMessage(SERVER_MESSAGE_KEY.USER_EXISTS);
       })
       .finally(() => loader.remove());
   }
@@ -158,8 +158,8 @@ class RegisterFormModel {
       });
     }
 
-    const billingAddressView = this.addressWrappers[ADDRESS_TYPE.BILLING].getView();
-    const shippingAddress = this.addressWrappers[ADDRESS_TYPE.SHIPPING];
+    const billingAddressView = this.addressWrappers[ADDRESS.BILLING].getView();
+    const shippingAddress = this.addressWrappers[ADDRESS.SHIPPING];
     shippingAddress
       .getView()
       .getInputFields()

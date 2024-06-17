@@ -5,7 +5,7 @@ import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage, selectCurrentTheme } from '@/shared/Store/observer.ts';
 import ABOUT_TEXT from '@/shared/constants/about.ts';
-import { LINK_DETAILS } from '@/shared/constants/links.ts';
+import { LINK_DETAIL } from '@/shared/constants/links.ts';
 import changeColor from '@/shared/utils/changeColor.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import hexToRgba from '@/shared/utils/hexToRgba.ts';
@@ -83,12 +83,12 @@ class AboutFullCardView extends AboutShortCardView {
     const href = `https://github.com/${item.from}`;
     const background = `url(${`/img/png/${item.from}Avatar.png`})`;
     const from = new LinkModel({
-      attrs: { href, target: LINK_DETAILS.BLANK },
+      attrs: { href, target: LINK_DETAIL.BLANK },
       classes: [styles.from],
       text: item.from,
     });
 
-    const avatar = new LinkModel({ attrs: { href, target: LINK_DETAILS.BLANK }, classes: [styles.avatar] });
+    const avatar = new LinkModel({ attrs: { href, target: LINK_DETAIL.BLANK }, classes: [styles.avatar] });
 
     avatar.getHTML().style.backgroundImage = background;
     from.getHTML().append(avatar.getHTML());

@@ -58,10 +58,10 @@ vi.mock('./Store.ts', async (importOriginal) => {
   return {
     ...actual,
     getState: (): State => ({
-      anonymToken: null,
       anonymousCartId: null,
       anonymousId: null,
       anonymousShopListId: null,
+      anonymousToken: null,
       authToken: null,
       billingCountry: '',
       currentLanguage: 'en',
@@ -175,10 +175,10 @@ describe('rootReducer', () => {
 
   beforeEach(() => {
     initialState = {
-      anonymToken: null,
       anonymousCartId: null,
       anonymousId: null,
       anonymousShopListId: null,
+      anonymousToken: null,
       authToken: null,
       billingCountry: '',
       currentLanguage: 'en',

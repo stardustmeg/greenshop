@@ -8,7 +8,7 @@ import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { CartActive } from '@/shared/types/cart.ts';
@@ -101,7 +101,7 @@ class CartPageModel implements Page {
 
   private async checkBirthday(): Promise<void> {
     if (!getStore().getState().isUserLoggedIn) {
-      throw showErrorMessage(SERVER_MESSAGE_KEYS.COUPON_NEED_LOGIN);
+      throw showErrorMessage(SERVER_MESSAGE_KEY.COUPON_NEED_LOGIN);
     }
     const customer = await getCustomerModel().getCurrentUser();
     if (customer?.birthDate) {
@@ -119,7 +119,7 @@ class CartPageModel implements Page {
         if (currentDate >= startBirthdayPeriod && currentDate <= endBirthdayPeriod) {
           return;
         }
-        throw showErrorMessage(SERVER_MESSAGE_KEYS.COUPON_WRONG_DATE);
+        throw showErrorMessage(SERVER_MESSAGE_KEY.COUPON_WRONG_DATE);
       }
     }
   }
@@ -129,7 +129,7 @@ class CartPageModel implements Page {
       .clearCart()
       .then((cart) => {
         this.cart = cart;
-        showSuccessMessage(SERVER_MESSAGE_KEYS.SUCCESSFUL_CLEAR_CART);
+        showSuccessMessage(SERVER_MESSAGE_KEY.SUCCESSFUL_CLEAR_CART);
         this.productsItem = this.productsItem.filter((productItem) => {
           const searchEl = this.cart?.products.find((item) => item.lineItemId === productItem.getProduct().lineItemId);
           if (!searchEl) {

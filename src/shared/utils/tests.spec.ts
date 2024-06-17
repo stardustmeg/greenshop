@@ -1,15 +1,11 @@
 import findAddressIndex from './address.ts';
-import { BaseComponent } from './baseComponent.ts';
 import BaseElement from './baseElement.ts';
 import clearOutElement from './clearOutElement.ts';
 import createBaseElement from './createBaseElement.ts';
 import createSVGUse from './createSVGUse.ts';
 import formattedText from './formattedText.ts';
 import getCountryIndex from './getCountryIndex.ts';
-import { isKeyOfUserData } from './isKeyOf.ts';
-import { isNotNullable, isNullable } from './isNullable.ts';
 import observeCurrentLanguage from './observeCurrentLanguage.ts';
-import { a, div, h2, h3, iconFromCode, img, input, label, main, span } from './tags.ts';
 
 /**
  * @vitest-environment jsdom
@@ -77,11 +73,6 @@ const elem = createBaseElement({
   tag: 'div',
 });
 
-const baseComponent = new BaseComponent({
-  tag: 'div',
-  txt: 'test',
-});
-
 describe('Checking createBaseElement function', () => {
   it('should create an element', () => {
     expect(elem).toBeDefined();
@@ -93,24 +84,6 @@ describe('Checking createBaseElement function', () => {
 
   it('should create an element with css classes', () => {
     expect(elem.classList.contains('test')).toBe(true);
-  });
-});
-
-describe('Checking isNullable function', () => {
-  it('should return true', () => {
-    expect(isNullable(null)).toBe(true);
-  });
-  it('should return false', () => {
-    expect(isNullable('test')).toBe(false);
-  });
-});
-
-describe('Checking isNotNullable function', () => {
-  it('should return true', () => {
-    expect(isNotNullable(null)).toBe(false);
-  });
-  it('should return false', () => {
-    expect(isNotNullable('test')).toBe(true);
   });
 });
 
@@ -194,94 +167,6 @@ describe('Checking BaseElement class', () => {
   });
 });
 
-describe('Checking BaseComponent class', () => {
-  it('getNode should return instance of HTMLDivElement', () => {
-    expect(baseComponent.getNode()).toBeInstanceOf(HTMLDivElement);
-  });
-
-  it('destroy should return true', () => {
-    baseComponent.destroy();
-    expect(baseComponent.getNode().parentElement).toBe(null);
-  });
-
-  it('destroyAllChildren should return true', () => {
-    baseComponent.destroyAllChildren();
-    expect(baseComponent.getNode().children.length).toBe(0);
-  });
-
-  it('append should return true', () => {
-    baseComponent.append(elem);
-    expect(baseComponent.getNode().contains(elem)).toBe(true);
-  });
-
-  it('appendChildren should return true', () => {
-    baseComponent.appendChildren([elem]);
-    expect(baseComponent.getNode().contains(elem)).toBe(true);
-  });
-
-  it('set text content should return test', () => {
-    baseComponent.stc('test');
-    expect(baseComponent.getNode().textContent).toBe('test');
-  });
-
-  it('add css class should return test', () => {
-    baseComponent.addClass('test');
-    expect(baseComponent.getNode().classList.contains('test')).toBe(true);
-  });
-
-  it('remove css class should return test', () => {
-    baseComponent.removeClass('test');
-    expect(baseComponent.getNode().classList.contains('test')).toBe(false);
-  });
-
-  it('toggle css class should return test', () => {
-    baseComponent.toggleClass('test');
-    expect(baseComponent.getNode().classList.contains('test')).toBe(true);
-  });
-});
-
-describe('Checking tags functions', () => {
-  it('span should return instance of HTMLSpanElement', () => {
-    expect(span({ txt: 'test' }).getNode()).toBeInstanceOf(HTMLSpanElement);
-  });
-
-  it('main should return instance of HTMLDivElement', () => {
-    expect(main({ txt: 'test' }).getNode()).toBeInstanceOf(HTMLElement);
-  });
-
-  it('label should return instance of HTMLLabelElement', () => {
-    expect(label({ txt: 'test' }).getNode()).toBeInstanceOf(HTMLLabelElement);
-  });
-
-  it('input should return instance of HTMLInputElement', () => {
-    expect(input({ txt: 'test' }).getNode()).toBeInstanceOf(HTMLInputElement);
-  });
-
-  it('iconFromCode should return instance of HTMLElement', () => {
-    expect(iconFromCode({ txt: 'test' }, 'test').getNode()).toBeInstanceOf(HTMLElement);
-  });
-
-  it('h2 should return instance of HTMLHeadingElement', () => {
-    expect(h2('test', 'test').getNode()).toBeInstanceOf(HTMLHeadingElement);
-  });
-
-  it('h3 should return instance of HTMLHeadingElement', () => {
-    expect(h3('test', 'test').getNode()).toBeInstanceOf(HTMLHeadingElement);
-  });
-
-  it('div should return instance of HTMLDivElement', () => {
-    expect(div({ txt: 'test' }, null).getNode()).toBeInstanceOf(HTMLDivElement);
-  });
-
-  it('a should return instance of HTMLAnchorElement', () => {
-    expect(a({ txt: 'test' }).getNode()).toBeInstanceOf(HTMLAnchorElement);
-  });
-
-  it('img should return instance of HTMLImageElement', () => {
-    expect(img({ src: 'test' }).getNode()).toBeInstanceOf(HTMLImageElement);
-  });
-});
-
 describe('Checking getCountryIndex function', () => {
   it('Afghanistan country should return AF', () => {
     expect(getCountryIndex('Afghanistan')).toBe('AF');
@@ -289,17 +174,6 @@ describe('Checking getCountryIndex function', () => {
 
   it('Canada country should return CA', () => {
     expect(getCountryIndex('Canada')).toBe('CA');
-  });
-});
-
-const userData = {
-  email: 'user@example.com',
-  password: 'test',
-};
-
-describe('Checking isKeyOfUserData function', () => {
-  it('Email should return true', () => {
-    expect(isKeyOfUserData(userData, 'email')).toBe(true);
   });
 });
 

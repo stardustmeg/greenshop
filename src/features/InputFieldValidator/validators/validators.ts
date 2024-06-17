@@ -3,7 +3,7 @@ import type { InputFieldParams, InputFieldValidatorParams } from '@/shared/types
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
+import { USER_ADDRESS } from '@/shared/constants/forms.ts';
 import { ERROR_MESSAGE } from '@/shared/constants/messages.ts';
 import { checkInputLanguage } from '@/shared/utils/getCountryIndex.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
@@ -101,7 +101,7 @@ export const checkValidPostalCode = (
   if (validParams.validPostalCode && inputParams.inputParams.data) {
     const { billingCountry, shippingCountry } = getStore().getState();
     const currentCountry =
-      inputParams.inputParams.data.addressType === USER_ADDRESS_TYPE.SHIPPING ? shippingCountry : billingCountry;
+      inputParams.inputParams.data.addressType === USER_ADDRESS.SHIPPING ? shippingCountry : billingCountry;
     try {
       const result = postcodeValidator(value, currentCountry);
       if (!result) {

@@ -1,9 +1,9 @@
 const SERVER_MESSAGE_ANIMATE_PARAMS = [
-  { transform: 'translateX(110%)' },
-  { transform: 'translateX(-10%)' },
-  { transform: 'translateX(-10%)' },
-  { opacity: 1, transform: 'translateX(-10%)' },
-  { opacity: 0, transform: 'translate(-10%, -110%)' },
+  { transform: 'translateX(-120%)' },
+  { transform: 'translateX(10%)' },
+  { transform: 'translateX(10%)' },
+  { opacity: 1, transform: 'translateX(10%)' },
+  { opacity: 0, transform: 'translate(10%, -100%)' },
 ];
 
 const SERVER_MESSAGE_ANIMATE_DETAILS = {

@@ -1,4 +1,4 @@
-import type { AddressTypeType } from '@/shared/constants/forms.ts';
+import type { AddressType } from '@/shared/constants/forms.ts';
 import type { Address, User } from '@/shared/types/user.ts';
 
 import UserAddressModel from '@/entities/UserAddress/model/UserAddressModel.ts';
@@ -7,7 +7,7 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { ADDRESS_TYPE, DEFAULT_ADDRESS } from '@/shared/constants/forms.ts';
+import { ADDRESS, DEFAULT_ADDRESS } from '@/shared/constants/forms.ts';
 import clearOutElement from '@/shared/utils/clearOutElement.ts';
 import determineNewAddress from '@/shared/utils/determineNewAddress.ts';
 import { arrayContainsObjectWithValue, objectHasPropertyValue } from '@/shared/utils/hasValue.ts';
@@ -36,7 +36,7 @@ class UserAddressesModel {
         return objectHasPropertyValue(defaultAddress, KEY_TO_FIND, address.id);
       };
 
-      const createAddress = (activeTypes: AddressTypeType[], inactiveTypes?: AddressTypeType[]): UserAddressModel =>
+      const createAddress = (activeTypes: AddressType[], inactiveTypes?: AddressType[]): UserAddressModel =>
         new UserAddressModel(address, activeTypes, inactiveTypes);
 
       const newAddress = determineNewAddress(addressesContainsID, defaultContainsID, user, createAddress);
@@ -75,7 +75,7 @@ class UserAddressesModel {
       .getCreateBillingAddressButton()
       .getHTML()
       .addEventListener('click', () => {
-        const newAddressForm = new AddressAddModel(ADDRESS_TYPE.BILLING, DEFAULT_ADDRESS).getHTML();
+        const newAddressForm = new AddressAddModel(ADDRESS.BILLING, DEFAULT_ADDRESS).getHTML();
         modal.show();
         modal.setContent(newAddressForm);
       });
@@ -86,7 +86,7 @@ class UserAddressesModel {
       .getCreateShippingAddressButton()
       .getHTML()
       .addEventListener('click', () => {
-        const newAddressForm = new AddressAddModel(ADDRESS_TYPE.SHIPPING, DEFAULT_ADDRESS).getHTML();
+        const newAddressForm = new AddressAddModel(ADDRESS.SHIPPING, DEFAULT_ADDRESS).getHTML();
         modal.show();
         modal.setContent(newAddressForm);
       });

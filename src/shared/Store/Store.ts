@@ -1,10 +1,10 @@
 import type { Action, State } from './reducer.ts';
 import type { Reducer, ReduxStore } from './types';
 
-import initialState from '../constants/initialState.ts';
 import { parseToLoad } from '../services/helper.ts';
 import { STORAGE_KEY, saveCurrentStateToLocalStorage } from '../services/localStorage.ts';
 import { setCurrentPage } from './actions.ts';
+import initialState from './initialState.ts';
 import { rootReducer } from './reducer.ts';
 
 export class Store<S, A> implements ReduxStore<S, A> {

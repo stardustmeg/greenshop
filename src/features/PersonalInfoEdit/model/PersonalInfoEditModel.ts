@@ -7,7 +7,7 @@ import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
@@ -47,7 +47,7 @@ class PersonalInfoEditModel {
         );
         modal.hide();
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_INFO, '');
-        showSuccessMessage(SERVER_MESSAGE_KEYS.PERSONAL_INFO_CHANGED);
+        showSuccessMessage(SERVER_MESSAGE_KEY.PERSONAL_INFO_CHANGED);
       }
     } catch (error) {
       showErrorMessage(error);

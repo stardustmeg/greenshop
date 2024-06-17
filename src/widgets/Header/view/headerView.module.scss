@@ -297,15 +297,15 @@
 }
 
 .burgerButton.open .burgerLine:nth-child(1) {
-  left: calc(var(--five) + 0.04rem);
+  left: calc(var(--one) * 1.5); // 1.5px
   top: calc(var(--tiny-offset) * 1.1); // 11px
-  width: var(--extra-small-offset); // 20px
+  width: calc(var(--extra-small-offset) * 1.1); // 20px
   transform: rotate(90deg);
   transition-delay: 150ms;
 }
 
 .burgerButton.open .burgerLine:nth-child(2) {
-  left: calc(var(--one) * 3); // 3px
+  left: 0;
   top: calc(var(--tiny-offset) * 1.7); // 17px
   width: calc(var(--tiny-offset) * 1.5); // 15px
   transform: rotate(45deg);
@@ -313,7 +313,7 @@
 }
 
 .burgerButton.open .burgerLine:nth-child(3) {
-  left: calc(var(--tiny-offset) * 1.3); // 13px
+  left: calc(var(--tiny-offset)); // 10px
   top: calc(var(--tiny-offset) * 1.7); // 17px
   width: calc(var(--tiny-offset) * 1.5); // 15px
   transform: rotate(-45deg);
@@ -325,55 +325,24 @@
 }
 
 .switchThemeLabel {
-  position: relative;
-  display: inline-block;
+  @include switchLabel;
+
   order: 3;
-  width: var(--large-offset);
-  height: calc(calc(var(--small-offset) / 1.5) + var(--extra-small-offset));
-  cursor: pointer;
 }
 
 .switchThemeCheckbox {
-  width: 0;
-  height: 0;
-  opacity: 1;
+  @include switchCheckbox;
 
   &:checked {
-    + .switchThemeLabelSpan {
-      background-color: var(--noble-gray-tr-900);
-    }
-
     + .switchThemeLabelSpan::before {
       background-color: var(--steam-green-1100);
-      transform: translate(calc(var(--small-offset) + var(--two)), -50%);
+      transform: translate(calc(var(--small-offset) + calc(var(--one) * 2)), -50%);
     }
   }
 }
 
 .switchThemeLabelSpan {
-  position: absolute;
-  border-radius: calc(var(--large-br) * 2);
-  background-color: var(--noble-gray-tr-800);
-  transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
-  cursor: pointer;
-  pointer-events: none;
-  inset: 0;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 5px;
-    top: 50%;
-    bottom: 0;
-    z-index: 2;
-    border-radius: var(--large-br);
-    width: calc(var(--small-offset) / 1.5);
-    height: calc(var(--small-offset) / 1.5);
-    box-shadow: var(--mellow-shadow-600);
-    background-color: var(--steam-green-800);
-    transform: translateY(-50%);
-    transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
-  }
+  @include switchLabelSpan;
 }
 
 .darkSVG,
@@ -398,12 +367,9 @@
 }
 
 .switchLanguageLabel {
-  position: relative;
-  display: inline-block;
+  @include switchLabel;
+
   order: 4;
-  width: var(--large-offset);
-  height: calc(calc(var(--small-offset) / 1.5) + var(--extra-small-offset));
-  cursor: pointer;
 
   &:disabled {
     background-color: var(--noble-gray-300);
@@ -412,46 +378,17 @@
 }
 
 .switchLanguageCheckbox {
-  width: 0;
-  height: 0;
-  opacity: 1;
+  @include switchCheckbox;
 
   &:checked {
-    + .switchLanguageLabelSpan {
-      background-color: var(--noble-gray-tr-900);
-    }
-
     + .switchLanguageLabelSpan::before {
-      background-color: var(--noble-gray-tr-900);
-      transform: translate(calc(var(--small-offset) + calc(var(--one) * 4)), -50%);
+      transform: translate(calc(var(--small-offset) + calc(var(--one) * 3)), -50%);
     }
   }
 }
 
 .switchLanguageLabelSpan {
-  position: absolute;
-  border-radius: calc(var(--large-br) * 2);
-  background-color: var(--noble-gray-tr-800);
-  transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
-  cursor: pointer;
-  pointer-events: none;
-  inset: 0;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: calc(var(--one) * 5);
-    top: 50%;
-    bottom: 0;
-    z-index: 2;
-    border-radius: var(--large-br);
-    width: calc(var(--small-offset) / 1.5);
-    height: calc(var(--small-offset) / 1.5);
-    box-shadow: 0 1px 5px #353535;
-    background-color: var(--noble-gray-tr-900);
-    transform: translateY(-50%);
-    transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
-  }
+  @include switchLabelSpan(var(--noble-gray-tr-800), var(--noble-gray-tr-900));
 }
 
 .enSVG,

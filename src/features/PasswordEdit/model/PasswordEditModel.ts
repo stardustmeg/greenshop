@@ -4,7 +4,7 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import { INPUT_TYPE, PASSWORD_TEXT } from '@/shared/constants/forms.ts';
-import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
@@ -40,10 +40,10 @@ class PasswordEditModel {
                 this.view.getOldPasswordField().getView().getValue(),
                 this.view.getNewPasswordField().getView().getValue(),
               );
-              showSuccessMessage(SERVER_MESSAGE_KEYS.PASSWORD_CHANGED);
+              showSuccessMessage(SERVER_MESSAGE_KEY.PASSWORD_CHANGED);
               modal.hide();
             } catch {
-              showErrorMessage(SERVER_MESSAGE_KEYS.PASSWORD_NOT_CHANGED);
+              showErrorMessage(SERVER_MESSAGE_KEY.PASSWORD_NOT_CHANGED);
             }
           }
         });

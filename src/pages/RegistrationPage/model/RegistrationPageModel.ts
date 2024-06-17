@@ -4,7 +4,7 @@ import RouterModel from '@/app/Router/model/RouterModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
-import { PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/links.ts';
+import { PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY } from '@/shared/constants/links.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import RegisterFormModel from '@/widgets/RegistrationForm/model/RegistrationFormModel.ts';
@@ -39,7 +39,7 @@ class RegistrationPageModel implements Page {
     const loginLink = this.view.getLoginLink().getHTML();
     const loginLinkCopy = loginLink.cloneNode(true);
 
-    observeCurrentLanguage(loginLinkCopy, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.LOGIN);
+    observeCurrentLanguage(loginLinkCopy, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.LOGIN);
 
     loginLink.addEventListener('click', (event) => this.loginLinkHandler(event));
     loginLinkCopy.addEventListener('click', (event) => this.loginLinkHandler(event));
