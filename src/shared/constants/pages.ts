@@ -134,8 +134,8 @@ export const CART_PAGE_TITLE = {
   COUPON_APPLY: { en: 'Apply Coupon', ru: 'Применить купон' },
   COUPON_DISCOUNT: { en: 'Cart Discount', ru: 'Скидка на корзину' },
   EMPTY: {
-    en: "Oops! Looks like you haven't added the item to your cart yet.",
-    ru: 'Ой! Похоже, вы еще не добавили товар в корзину.',
+    en: "Oops! Looks like you haven't added any items to your cart yet",
+    ru: 'Ой! Похоже, вы еще не добавили товар в корзину',
   },
   INPUT_COUPON: { en: 'Enter coupon here...', ru: 'Введите купон здесь...' },
   PRICE: { en: 'Price', ru: 'Цена' },
