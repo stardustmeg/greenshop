@@ -28,7 +28,7 @@ const URL_HTTP = 'https://api.europe-west1.gcp.commercetools.com';
 const USE_SAVE_TOKEN = true;
 
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
-  fetch,
+  // fetch,
   host: URL_HTTP,
 };
 
@@ -157,7 +157,7 @@ export class ApiClient {
         clientId: this.clientID,
         clientSecret: this.clientSecret,
       },
-      fetch,
+      // fetch,
       host: URL_AUTH,
       projectKey: this.projectKey,
       scopes: this.scopes,

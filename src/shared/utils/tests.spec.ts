@@ -11,6 +11,10 @@ import { isNotNullable, isNullable } from './isNullable.ts';
 import observeCurrentLanguage from './observeCurrentLanguage.ts';
 import { a, div, h2, h3, iconFromCode, img, input, label, main, span } from './tags.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 describe('Checking formattedText function', () => {
   it('should return formatted text for basic functionality', () => {
     expect(formattedText('test')).toBe('Test');

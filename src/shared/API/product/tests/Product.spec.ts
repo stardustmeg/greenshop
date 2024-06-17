@@ -2,6 +2,10 @@ import { type localization } from '@/shared/types/product.ts';
 
 import getProductModel, { ProductModel } from '../model/ProductModel.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 const productModel = getProductModel();
 
 describe('Checking Product Model', () => {

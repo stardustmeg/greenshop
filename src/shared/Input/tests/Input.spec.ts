@@ -2,6 +2,10 @@ import type { InputParams } from '@/shared/types/form.ts';
 
 import InputModel from '../model/InputModel.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 const params: InputParams = {
   autocomplete: 'on',
   id: 'password',

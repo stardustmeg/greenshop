@@ -1,5 +1,9 @@
 import getProductApi, { ProductApi } from '../ProductApi.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 const root = getProductApi();
 
 describe('Checking ProductApi', () => {

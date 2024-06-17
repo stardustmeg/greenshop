@@ -55,8 +55,7 @@
     "typescript": "^5.4.5",
     "validate-branch-name": "^1.3.0",
     "vite": "^5.2.11",
-    "vite-plugin-sass": "^0.1.0",
-    "vitest": "^1.6.0"
+    "vite-plugin-sass": "^0.1.0"
   },
   "dependencies": {
     "@commercetools/api-request-builder": "^6.0.0",
@@ -66,6 +65,7 @@
     "@commercetools/sdk-middleware-http": "^7.0.4",
     "@types/hammerjs": "^2.0.45",
     "@types/js-cookie": "^3.0.6",
+    "@types/sinon": "^17.0.3",
     "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.4.19",
     "hammerjs": "^2.0.8",
@@ -73,16 +73,19 @@
     "js-cookie": "^3.0.5",
     "materialize-css": "^1.0.0-rc.2",
     "modern-normalize": "^2.0.0",
+    "msw": "^2.3.1",
     "nouislider": "^15.7.1",
     "plop": "^4.0.1",
     "postcode-validator": "^3.8.20",
     "sharp": "^0.33.3",
+    "sinon": "^18.0.0",
     "swiper": "^11.1.3",
     "uuid": "^9.0.1",
     "vite-plugin-checker": "^0.6.4",
     "vite-plugin-image-optimizer": "^1.1.7",
     "vite-plugin-svg-spriter": "^1.0.0",
-    "vite-tsconfig-paths": "^4.3.2"
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^1.6.0"
   },
   "homepage": "https://github.com/stardustmeg/ecommerce-application#readme",
   "license": "ISC"

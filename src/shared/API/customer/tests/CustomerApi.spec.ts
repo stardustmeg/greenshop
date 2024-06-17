@@ -1,5 +1,9 @@
 import getCustomerApi, { CustomerApi } from '../CustomerApi.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 const root = getCustomerApi();
 
 describe('Checking CustomerApi', () => {
