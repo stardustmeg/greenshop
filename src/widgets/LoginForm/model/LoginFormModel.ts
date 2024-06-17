@@ -6,7 +6,7 @@ import getCustomerModel from '@/shared/API/customer/model/CustomerModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentLanguage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
-import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import isLanguageChoiceType from '@/shared/types/validation/language.ts';
 import { createGreetingMessage } from '@/shared/utils/messageTemplates.ts';
@@ -42,7 +42,7 @@ class LoginFormModel {
         if (response) {
           this.loginUserHandler(userLoginData);
         } else {
-          showErrorMessage(SERVER_MESSAGE_KEYS.INVALID_EMAIL);
+          showErrorMessage(SERVER_MESSAGE_KEY.INVALID_EMAIL);
         }
       })
       .catch((error) => showErrorMessage(error))
@@ -64,7 +64,7 @@ class LoginFormModel {
         }
       })
       .catch(() => {
-        showErrorMessage(SERVER_MESSAGE_KEYS.INCORRECT_PASSWORD);
+        showErrorMessage(SERVER_MESSAGE_KEY.INCORRECT_PASSWORD);
       })
       .finally(() => loader.remove());
   }

@@ -1,4 +1,4 @@
-export const USER_MESSAGE = {
+const USER_MESSAGE = {
   en: {
     CLEAR_CART: 'Are you sure you want to clear the cart?',
     CONFIRM: 'Are you sure you want to proceed?',
@@ -11,9 +11,4 @@ export const USER_MESSAGE = {
   },
 } as const;
 
-export const USER_MESSAGE_KEYS = {
-  CONFIRM: 'CONFIRM',
-  DELETE_ADDRESS: 'DELETE_ADDRESS',
-};
-
-export type UserMessageKeysType = (typeof USER_MESSAGE_KEYS)[keyof typeof USER_MESSAGE_KEYS];
+export default USER_MESSAGE;

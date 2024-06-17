@@ -47,6 +47,7 @@ export default {
   ],
   resolve: {
     alias: {
+      '@': path.resolve(__dirname, './src'),
       'node-fetch': 'isomorphic-fetch',
     },
   },

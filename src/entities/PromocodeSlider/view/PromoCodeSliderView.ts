@@ -5,7 +5,7 @@ import InputModel from '@/shared/Input/model/InputModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import PROMO_SLIDER_CONTENT from '@/shared/constants/promo.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import calcUserBirthDayRange from '@/shared/utils/calcUserBirthDayRange.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
@@ -93,8 +93,8 @@ class PromoCodeSliderView {
 
     currentPromoCode.getHTML().classList.add(styles.currentPromoCode);
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.COPY));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.COPY));
 
     svg.addEventListener('click', () => {
       window.navigator.clipboard

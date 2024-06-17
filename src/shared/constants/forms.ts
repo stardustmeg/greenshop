@@ -23,7 +23,7 @@ export const FORM_TEXT = {
   },
 } as const;
 
-export const FORM_TEXT_KEYS = {
+export const FORM_TEXT_KEY = {
   DEFAULT_BILLING_ADDRESS: 'DEFAULT_BILLING_ADDRESS',
   DEFAULT_SHIPPING_ADDRESS: 'DEFAULT_SHIPPING_ADDRESS',
   SINGLE_ADDRESS: 'SINGLE_ADDRESS',
@@ -33,45 +33,19 @@ export const DEFAULT_ADDRESS = {
   setDefault: true,
 };
 
-export type FormTextKeysType = (typeof FORM_TEXT_KEYS)[keyof typeof FORM_TEXT_KEYS];
-
-export const USER_COUNTRY_ADDRESS = {
+export const USER_ADDRESS = {
   BILLING: 'billing',
   SHIPPING: 'shipping',
 } as const;
 
-export const USER_ADDRESS_TYPE = {
-  BILLING: 'billing',
-  SHIPPING: 'shipping',
-} as const;
-
-export type UserAddressType = (typeof USER_ADDRESS_TYPE)[keyof typeof USER_ADDRESS_TYPE];
-
-export const ADDRESS_TYPE = {
+export const ADDRESS = {
   BILLING: 'billing',
   DEFAULT_BILLING: 'default billing',
   DEFAULT_SHIPPING: 'default shipping',
   SHIPPING: 'shipping',
 } as const;
 
-export type AddressTypeType = (typeof ADDRESS_TYPE)[keyof typeof ADDRESS_TYPE];
-
-export const LABEL_TYPE = {
-  en: {
-    BILLING: 'billing',
-    DEFAULT_BILLING: 'default billing',
-    DEFAULT_SHIPPING: 'default shipping',
-    SHIPPING: 'shipping',
-  },
-  ru: {
-    BILLING: 'Выставление счетов',
-    DEFAULT_BILLING: 'По умолчанию для выставления счетов',
-    DEFAULT_SHIPPING: 'По умолчанию для доставки',
-    SHIPPING: 'Доставка',
-  },
-} as const;
-
-export type LabelTypeType = (typeof LABEL_TYPE)[keyof typeof LABEL_TYPE];
+export type AddressType = (typeof ADDRESS)[keyof typeof ADDRESS];
 
 export const USER_POSTAL_CODE = {
   BILLING_POSTAL_CODE: 'billing_PostalCode',
@@ -97,3 +71,10 @@ export const ADDRESS_TEXT = {
     STREET: 'Адрес: ',
   },
 } as const;
+
+export const ADDRESS_TEXT_KEY = {
+  CITY: 'CITY',
+  COUNTRY: 'COUNTRY',
+  POSTAL_CODE: 'POSTAL_CODE',
+  STREET: 'STREET',
+};

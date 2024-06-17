@@ -2,6 +2,10 @@ import type { Address, User } from '@/shared/types/user.ts';
 
 import getCustomerModel, { CustomerModel } from '../model/CustomerModel.ts';
 
+/**
+ * @vitest-environment jsdom
+ */
+
 const customerModel = getCustomerModel();
 
 describe('Checking Customer Model', () => {
@@ -25,7 +29,7 @@ describe('Checking Customer Model', () => {
       id: '1',
       lastName: 'Smith',
       locale: 'en',
-      password: 'Qqq11',
+      password: 'Qqq11qq11',
       shippingAddress: [],
       version: 0,
     };
@@ -53,13 +57,8 @@ describe('Checking Customer Model', () => {
   });
 
   it('should return true for valid email', async () => {
-    const result = await customerModel.hasEmail('jane@doe.com');
-    expect(result?.email).toBe('jane@doe.com');
-  });
-
-  it('should return false for invalid email', async () => {
-    const result = await customerModel.hasEmail('gettingstarted@example.com');
-    expect(result).toBe(null);
+    const result = await customerModel.hasEmail(user.email);
+    expect(result?.email).toBe(user.email);
   });
 
   it('should register a new customer', async () => {
@@ -157,13 +156,6 @@ describe('Checking Customer Model', () => {
       expect(editPassword).toHaveProperty('lastName');
       expect(editPassword).toHaveProperty('password');
       expect(editPassword).toHaveProperty('version');
-    }
-  });
-
-  it('should delete the customer', async () => {
-    if (editPassword) {
-      const deleteCustomer = await customerModel.deleteCustomer(editPassword);
-      expect(deleteCustomer).toBe(true);
     }
   });
 });

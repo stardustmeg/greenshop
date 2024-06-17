@@ -1,7 +1,7 @@
 import type { TokenCache, TokenStore } from '@commercetools/sdk-client-v2';
 
 import getStore from '@/shared/Store/Store.ts';
-import { setAnonymToken, setAuthToken } from '@/shared/Store/actions.ts';
+import { setAnonymousToken, setAuthToken } from '@/shared/Store/actions.ts';
 
 import type { TokenTypeType } from '../../types/type.ts';
 
@@ -19,8 +19,8 @@ export class MyTokenCache implements TokenCache {
   constructor(name: string) {
     this.name = name;
     const soreData = getStore().getState();
-    if (this.name === TokenType.ANONYM && soreData.anonymToken) {
-      this.myCache = soreData.anonymToken;
+    if (this.name === TokenType.ANONYM && soreData.anonymousToken) {
+      this.myCache = soreData.anonymousToken;
     } else if (this.name === TokenType.AUTH && soreData.authToken) {
       this.myCache = soreData.authToken;
     }
@@ -29,7 +29,7 @@ export class MyTokenCache implements TokenCache {
   private saveToken(): void {
     if (this.myCache.token) {
       if (this.name === TokenType.ANONYM) {
-        getStore().dispatch(setAnonymToken(this.myCache));
+        getStore().dispatch(setAnonymousToken(this.myCache));
       } else if (this.name === TokenType.AUTH) {
         getStore().dispatch(setAuthToken(this.myCache));
       }
@@ -43,7 +43,7 @@ export class MyTokenCache implements TokenCache {
       token: '',
     };
     if (this.name === TokenType.ANONYM) {
-      getStore().dispatch(setAnonymToken(null));
+      getStore().dispatch(setAnonymousToken(null));
     } else if (this.name === TokenType.AUTH) {
       getStore().dispatch(setAuthToken(null));
     }
@@ -65,9 +65,9 @@ export class MyTokenCache implements TokenCache {
 
 const createTokenCache = (name: string): MyTokenCache => new MyTokenCache(name);
 
-const anonymTokenCache = createTokenCache(TokenType.ANONYM);
+const anonymousTokenCache = createTokenCache(TokenType.ANONYM);
 const authTokenCache = createTokenCache(TokenType.AUTH);
 
 export default function getTokenCache(tokenType?: TokenTypeType): MyTokenCache {
-  return tokenType === TokenType.AUTH ? authTokenCache : anonymTokenCache;
+  return tokenType === TokenType.AUTH ? authTokenCache : anonymousTokenCache;
 }

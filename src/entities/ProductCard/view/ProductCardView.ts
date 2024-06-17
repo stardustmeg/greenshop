@@ -7,7 +7,7 @@ import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts'
 import { MORE_TEXT } from '@/shared/constants/buttons.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
@@ -72,8 +72,8 @@ class ProductCardView {
       classes: [styles.addToCartButton],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.CART));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.CART));
     this.addToCartButton.getHTML().append(svg);
 
     return this.addToCartButton;
@@ -142,8 +142,8 @@ class ProductCardView {
       classes: [styles.goDetailsPageLink],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.GO_DETAILS));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.GO_DETAILS));
     this.goDetailsPageLink.getHTML().append(svg);
 
     return this.goDetailsPageLink;

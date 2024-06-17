@@ -1,5 +1,5 @@
 import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
-import SVG_DETAILS from '@/shared/constants/svg.ts';
+import SVG_DETAIL from '@/shared/constants/svg.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 
 import styles from './wishlistButtonView.module.scss';
@@ -16,8 +16,8 @@ class WishlistButtonView {
       classes: [styles.switchToWishListButton],
     });
 
-    const svg = document.createElementNS(SVG_DETAILS.SVG_URL, 'svg');
-    svg.append(createSVGUse(SVG_DETAILS.HEART));
+    const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
+    svg.append(createSVGUse(SVG_DETAIL.HEART));
     this.switchToWishListButton.getHTML().append(svg);
 
     return this.switchToWishListButton;

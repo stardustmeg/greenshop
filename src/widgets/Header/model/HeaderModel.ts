@@ -11,7 +11,7 @@ import getStore from '@/shared/Store/Store.ts';
 import { setAuthToken, setCurrentLanguage, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import observeStore, { selectIsUserLoggedIn } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
-import { SERVER_MESSAGE_KEYS } from '@/shared/constants/messages.ts';
+import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
@@ -105,14 +105,14 @@ class HeaderModel {
           if (user) {
             await getCustomerModel().editCustomer([CustomerModel.actionSetLocale(newLanguage)], user);
             getStore().dispatch(setCurrentLanguage(newLanguage));
-            showSuccessMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED);
+            showSuccessMessage(SERVER_MESSAGE_KEY.LANGUAGE_CHANGED);
           }
         } catch (error) {
           showErrorMessage(error);
         }
       } else {
         getStore().dispatch(setCurrentLanguage(newLanguage));
-        showSuccessMessage(SERVER_MESSAGE_KEYS.LANGUAGE_CHANGED);
+        showSuccessMessage(SERVER_MESSAGE_KEY.LANGUAGE_CHANGED);
       }
     });
   }

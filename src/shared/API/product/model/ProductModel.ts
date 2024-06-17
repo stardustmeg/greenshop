@@ -14,8 +14,6 @@ import type {
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
 import { getLevel, getSize } from '@/shared/utils/size.ts';
 
-import type { ProductApi } from '../ProductApi.ts';
-
 import {
   Attribute,
   type CategoriesProductCount,
@@ -40,7 +38,7 @@ import {
   isRangeFacetResult,
   isTermFacetResult,
 } from '../../types/validation.ts';
-import getProductApi from '../ProductApi.ts';
+import ProductApi from '../ProductApi.ts';
 
 enum ProductConstant {
   categoriesId = 'categories.id',
@@ -60,7 +58,7 @@ export class ProductModel {
   private root: ProductApi;
 
   constructor() {
-    this.root = getProductApi();
+    this.root = new ProductApi();
   }
 
   private adaptCategoryPagedQueryToClient(data: CategoryPagedQueryResponse): Category[] {

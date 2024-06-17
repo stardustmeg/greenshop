@@ -1,4 +1,4 @@
-import type { Post } from '@/shared/constants/blog';
+import type { Post } from '@/shared/types/blog';
 
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';

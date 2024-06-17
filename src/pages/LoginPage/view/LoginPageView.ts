@@ -1,10 +1,10 @@
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import { PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS } from '@/shared/constants/links.ts';
+import { PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY } from '@/shared/constants/links.ts';
 import {
   PAGE_ANSWER,
-  PAGE_ANSWER_KEYS,
+  PAGE_ANSWER_KEY,
   PAGE_DESCRIPTION,
-  PAGE_DESCRIPTION_KEYS,
+  PAGE_DESCRIPTION_KEY,
   PAGE_ID,
 } from '@/shared/constants/pages.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
@@ -52,7 +52,7 @@ class LoginPageView {
       innerContent: PAGE_DESCRIPTION[getCurrentLanguage()].LOGIN,
       tag: 'h3',
     });
-    observeCurrentLanguage(this.authDescription, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEYS.LOGIN);
+    observeCurrentLanguage(this.authDescription, PAGE_DESCRIPTION, PAGE_DESCRIPTION_KEY.LOGIN);
     return this.authDescription;
   }
 
@@ -103,7 +103,7 @@ class LoginPageView {
       tag: 'span',
     });
 
-    observeCurrentLanguage(this.loginSpan, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.LOGIN);
+    observeCurrentLanguage(this.loginSpan, PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.LOGIN);
 
     return this.loginSpan;
   }
@@ -117,7 +117,7 @@ class LoginPageView {
       text: PAGE_LINK_TEXT[getCurrentLanguage()].REGISTRATION,
     });
 
-    observeCurrentLanguage(this.registerLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEYS.REGISTRATION);
+    observeCurrentLanguage(this.registerLink.getHTML(), PAGE_LINK_TEXT, PAGE_LINK_TEXT_KEY.REGISTRATION);
 
     return this.registerLink;
   }
@@ -129,7 +129,7 @@ class LoginPageView {
       tag: 'span',
     });
 
-    observeCurrentLanguage(this.toRegisterPageWrapper, PAGE_ANSWER, PAGE_ANSWER_KEYS.LOGIN);
+    observeCurrentLanguage(this.toRegisterPageWrapper, PAGE_ANSWER, PAGE_ANSWER_KEY.LOGIN);
 
     return this.toRegisterPageWrapper;
   }

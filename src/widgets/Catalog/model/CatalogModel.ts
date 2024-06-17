@@ -19,7 +19,7 @@ import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
-import { META_FILTERS } from '@/shared/constants/filters.ts';
+import { META_FILTER } from '@/shared/constants/filters.ts';
 import { DEFAULT_PAGE, PRODUCT_LIMIT, SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { SORTING_ID } from '@/shared/constants/sorting.ts';
@@ -53,10 +53,10 @@ class CatalogModel {
 
   private addCurrentMetaFilter(filter: FilterProduct, metaFilter: string): FilterProduct {
     switch (metaFilter) {
-      case META_FILTERS.en.NEW_ARRIVALS:
+      case META_FILTER.en.NEW_ARRIVALS:
         filter.addFilter(FilterFields.NEW_ARRIVAL);
         return filter;
-      case META_FILTERS.en.SALE:
+      case META_FILTER.en.SALE:
         filter.addFilter(FilterFields.SALE);
         return filter;
       default:
@@ -80,7 +80,7 @@ class CatalogModel {
     const categories = await getProductModel().getCategories();
     const categorySetWithID: Set<string> = this.replaceCategoryKeyWithID(categories, categorySetWithKey);
 
-    const metaFilter = searchParams.get(SEARCH_PARAMS_FIELD.META) ?? META_FILTERS.en.ALL_PRODUCTS;
+    const metaFilter = searchParams.get(SEARCH_PARAMS_FIELD.META) ?? META_FILTER.en.ALL_PRODUCTS;
     const size = searchParams.get(SEARCH_PARAMS_FIELD.SIZE) ?? null;
     const price = {
       max: parseFloat(searchParams.get(SEARCH_PARAMS_FIELD.MAX_PRICE) ?? '0'),
@@ -168,7 +168,7 @@ class CatalogModel {
       filter.addFilter(FilterFields.SIZE, params.selectedFilters.size);
     }
 
-    this.addCurrentMetaFilter(filter, params.selectedFilters.metaFilter ?? META_FILTERS.en.ALL_PRODUCTS);
+    this.addCurrentMetaFilter(filter, params.selectedFilters.metaFilter ?? META_FILTER.en.ALL_PRODUCTS);
 
     const currentSort = this.getSelectedSorting(params.selectedSorting ?? null);
     if (currentSort) {

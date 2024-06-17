@@ -1,4 +1,4 @@
-const SVG_DETAILS = {
+const SVG_DETAIL = {
   ARROW_UP: 'arrowUp',
   BILL: 'bill',
   CART: 'cart',
@@ -22,11 +22,10 @@ const SVG_DETAILS = {
   RSS_LOGO: 'rssLogo',
   STAR: 'star',
   SVG_URL: 'http://www.w3.org/2000/svg',
-
   SWITCH_LANGUAGE: {
     en: 'en',
     ru: 'ru',
   },
 } as const;
 
-export default SVG_DETAILS;
+export default SVG_DETAIL;

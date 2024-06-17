@@ -1,9 +1,9 @@
 import getStore from '@/shared/Store/Store.ts';
 import { setBillingCountry, setDefaultCountry, setShippingCountry } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { DATA_KEYS } from '@/shared/constants/common.ts';
+import { DATA_KEY } from '@/shared/constants/common.ts';
 import COUNTRIES_LIST from '@/shared/constants/countriesList.ts';
-import { USER_ADDRESS_TYPE } from '@/shared/constants/forms.ts';
+import { USER_ADDRESS } from '@/shared/constants/forms.ts';
 import formattedText from '@/shared/utils/formattedText.ts';
 import getCountryIndex from '@/shared/utils/getCountryIndex.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
@@ -40,7 +40,7 @@ class CountryChoiceModel {
       currentItem.addEventListener('click', () => {
         if (currentItem.textContent) {
           inputHTML.value = currentItem.textContent;
-          this.setCountryToStore(currentItem, inputHTML.getAttribute(DATA_KEYS.ADDRESS_TYPE) ?? '');
+          this.setCountryToStore(currentItem, inputHTML.getAttribute(DATA_KEY.ADDRESS) ?? '');
           const event = new Event('input');
           input.dispatchEvent(event);
           this.view.hideCountryChoice();
@@ -58,10 +58,10 @@ class CountryChoiceModel {
     let action;
 
     switch (key) {
-      case USER_ADDRESS_TYPE.BILLING:
+      case USER_ADDRESS.BILLING:
         action = setBillingCountry;
         break;
-      case USER_ADDRESS_TYPE.SHIPPING:
+      case USER_ADDRESS.SHIPPING:
         action = setShippingCountry;
         break;
       default:
@@ -77,7 +77,7 @@ class CountryChoiceModel {
     input.addEventListener('focus', () => this.view.showCountryChoice());
     input.addEventListener('input', () => {
       this.view.switchVisibilityCountryItems(input);
-      this.setCountryToStore(input, input.getAttribute(DATA_KEYS.ADDRESS_TYPE) ?? '');
+      this.setCountryToStore(input, input.getAttribute(DATA_KEY.ADDRESS) ?? '');
     });
     return true;
   }

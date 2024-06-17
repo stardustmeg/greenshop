@@ -22,7 +22,7 @@ export const PRICE_RANGE_LABEL = {
   },
 } as const;
 
-export const META_FILTERS = {
+export const META_FILTER = {
   en: {
     ALL_PRODUCTS: 'all',
     NEW_ARRIVALS: 'new',
@@ -35,15 +35,15 @@ export const META_FILTERS = {
   },
 } as const;
 
-export const META_FILTERS_KEY = {
+const META_FILTER_KEY = {
   ALL_PRODUCTS: 'ALL_PRODUCTS',
   NEW_ARRIVALS: 'NEW_ARRIVALS',
   SALE: 'SALE',
 };
 
-export type MetaFiltersType = (typeof META_FILTERS_KEY)[keyof typeof META_FILTERS_KEY];
+export type MetaFilterKeyType = (typeof META_FILTER_KEY)[keyof typeof META_FILTER_KEY];
 
-export const META_FILTERS_ID = {
+export const META_FILTER_ID = {
   ALL_PRODUCTS: 'all-products',
   NEW_ARRIVALS: 'new-arrivals',
   SALE: 'sale',
