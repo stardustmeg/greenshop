@@ -56,13 +56,11 @@ class WishlistButtonModel {
   }
 
   private init(): void {
-    getShoppingListModel()
-      .getShoppingList()
-      .then((shoppingList) => {
-        this.hasProductInWishList(shoppingList);
-        this.setButtonHandler();
-      })
-      .catch(showErrorMessage);
+    const shoppingList = getShoppingListModel().getExistShopList();
+    if (shoppingList) {
+      this.hasProductInWishList(shoppingList);
+      this.setButtonHandler();
+    }
   }
 
   private setButtonHandler(): void {

@@ -12,8 +12,6 @@ import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousId, setAnonymousShopListId } from '@/shared/Store/actions.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
-import type { OptionsRequest } from '../../types/type.ts';
-
 import {
   isClientResponse,
   isErrorResponse,
@@ -39,10 +37,10 @@ export class ShoppingListModel {
   constructor() {
     this.root = new ShoppingListApi();
     this.getShoppingList()
-      .then(() => {
+      .then((shopList: ShoppingList) => {
         const { anonymousId } = getStore().getState();
-        if (anonymousId && this.shoppingList?.anonymousId !== anonymousId) {
-          this.updateListCustomer(anonymousId).catch(showErrorMessage);
+        if (anonymousId && shopList.anonymousId !== anonymousId) {
+          this.updateListCustomer(shopList, anonymousId).catch(showErrorMessage);
         }
       })
       .catch(showErrorMessage);
@@ -72,17 +70,15 @@ export class ShoppingListModel {
     };
   }
 
-  private async getAnonymousShoppingList(
-    anonymousShopListId: string,
-    options?: OptionsRequest,
-  ): Promise<ShoppingList | null> {
-    const dataAnonymList = await this.root.getAnonymList(anonymousShopListId, options);
-    const anonymShoppingList = this.getShopListFromData(dataAnonymList);
-    if (anonymShoppingList.id && !dataAnonymList.body.customer?.id) {
-      this.shoppingList = anonymShoppingList;
-      this.notifySubscribers();
+  private async getAnonymousShoppingList(anonymousShopListId: string): Promise<ShoppingList | null> {
+    const dataAnonymList = await this.root.getAnonymList(anonymousShopListId);
+
+    if (!dataAnonymList.body.customer?.id) {
+      const anonymShoppingList = this.getShopListFromData(dataAnonymList);
+      this.notifySubscribers(anonymShoppingList);
+      return anonymShoppingList;
     }
-    return this.shoppingList;
+    return null;
   }
 
   private getShopListFromData(
@@ -104,18 +100,20 @@ export class ShoppingListModel {
     return cart;
   }
 
-  private async getUserShoppingLists(options?: OptionsRequest): Promise<ShoppingList> {
-    const data = await this.root.get(options);
+  private async getUserShoppingLists(): Promise<ShoppingList> {
+    const data = await this.root.get();
     if (data.body.count === 0) {
       const newShopList = await this.root.create();
-      this.shoppingList = this.getShopListFromData(newShopList);
-    } else if (data.body.count > 1) {
-      this.shoppingList = await this.mergeShopLists(data);
-    } else {
-      this.shoppingList = this.getShopListFromData(data);
+      return this.getShopListFromData(newShopList);
     }
-    this.notifySubscribers();
-    return this.shoppingList;
+    if (data.body.count > 1) {
+      const mergeShopLists = await this.mergeShopLists(data);
+      return mergeShopLists;
+    }
+
+    const result = this.getShopListFromData(data);
+    this.notifySubscribers(result);
+    return result;
   }
 
   private async mergeShopLists(data: ClientResponse<ShoppingListPagedQueryResponse>): Promise<ShoppingList> {
@@ -141,38 +139,32 @@ export class ShoppingListModel {
     if (!isErrorResponse(lastShopList)) {
       await Promise.all(otherShopLists.map((id) => this.root.deleteShopList(id)));
     }
-    this.shoppingList = this.getShopListFromData(lastShopList);
-    this.notifySubscribers();
-    return this.shoppingList;
+    const result = this.getShopListFromData(lastShopList);
+    this.notifySubscribers(result);
+    return result;
   }
 
-  private notifySubscribers(): void {
-    if (this.shoppingList) {
-      this.subscribers.forEach((handler) => {
-        if (this.shoppingList) {
-          handler(this.shoppingList);
-        }
-      });
-    }
+  private notifySubscribers(shopList: ShoppingList): void {
+    this.subscribers.forEach((handler) => {
+      handler(shopList);
+    });
   }
 
-  private async updateListCustomer(anonymousId: string): Promise<ShoppingList | null> {
-    if (this.shoppingList) {
-      const actions: ShoppingListSetAnonymousIdAction = {
-        action: ACTIONS.setAnonymousId,
-        anonymousId,
-      };
-      const dataUserList = await this.root.setAnonymousId(this.shoppingList, actions);
-      this.shoppingList = this.getShopListFromData(dataUserList);
-      this.notifySubscribers();
-    }
-    return this.shoppingList;
+  private async updateListCustomer(shoppingList: ShoppingList, anonymousId: string): Promise<ShoppingList | null> {
+    const actions: ShoppingListSetAnonymousIdAction = {
+      action: ACTIONS.setAnonymousId,
+      anonymousId,
+    };
+    const dataUserList = await this.root.setAnonymousId(shoppingList, actions);
+    const result = this.getShopListFromData(dataUserList);
+    this.notifySubscribers(result);
+
+    return result;
   }
 
   public async addProduct(productId: string): Promise<ShoppingList> {
-    if (!this.shoppingList) {
-      this.shoppingList = await this.getShoppingList();
-    }
+    const shoppingList = await this.getShoppingList();
+
     const actions: MyShoppingListAddLineItemAction[] = [
       {
         action: ACTIONS.addLineItem,
@@ -180,53 +172,50 @@ export class ShoppingListModel {
       },
     ];
 
-    const data = await this.root.addProduct(this.shoppingList, actions);
-    this.shoppingList = this.getShopListFromData(data);
-    this.notifySubscribers();
-    return this.shoppingList;
-  }
-
-  public clear(): boolean {
-    this.shoppingList = null;
-    return true;
+    const data = await this.root.addProduct(shoppingList, actions);
+    const result = this.getShopListFromData(data);
+    this.shoppingList = result;
+    this.notifySubscribers(result);
+    return result;
   }
 
   public async create(): Promise<ShoppingList> {
     const newShoppingList = await this.root.create();
-    this.shoppingList = this.getShopListFromData(newShoppingList);
-    this.notifySubscribers();
-    return this.shoppingList;
+    const shoppingList = this.getShopListFromData(newShoppingList);
+    this.notifySubscribers(shoppingList);
+    return shoppingList;
   }
 
   public async deleteProduct(products: ShoppingListProduct): Promise<ShoppingList> {
-    if (!this.shoppingList) {
-      this.shoppingList = await this.getShoppingList();
-    }
-    const data = await this.root.deleteProduct(this.shoppingList, products);
-    this.shoppingList = this.getShopListFromData(data);
-    this.notifySubscribers();
+    const shoppingList = await this.getShoppingList();
+
+    const data = await this.root.deleteProduct(shoppingList, products);
+    const result = this.getShopListFromData(data);
+    this.shoppingList = result;
+    this.notifySubscribers(result);
+    return result;
+  }
+
+  public getExistShopList(): ShoppingList | null {
     return this.shoppingList;
   }
 
-  public async getShoppingList(options?: OptionsRequest): Promise<ShoppingList> {
-    if (!this.shoppingList) {
-      const { anonymousId, anonymousShopListId } = getStore().getState();
-      if (anonymousShopListId && anonymousId) {
-        this.shoppingList = await this.getAnonymousShoppingList(anonymousShopListId, options);
-      }
-      if (!this.shoppingList) {
-        this.shoppingList = await this.getUserShoppingLists(options);
-      }
-      this.notifySubscribers();
+  public async getShoppingList(): Promise<ShoppingList> {
+    let shopList: ShoppingList | null = null;
+    const { anonymousId, anonymousShopListId } = getStore().getState();
+    if (anonymousShopListId && anonymousId) {
+      shopList = await this.getAnonymousShoppingList(anonymousShopListId);
     }
-    return this.shoppingList;
+    if (!shopList) {
+      shopList = await this.getUserShoppingLists();
+    }
+    this.shoppingList = shopList;
+    this.notifySubscribers(shopList);
+    return shopList;
   }
 
   public subscribe(handler: ShoppingListChangeHandler): void {
     this.subscribers.push(handler);
-    if (this.shoppingList) {
-      handler(this.shoppingList);
-    }
   }
 }
 

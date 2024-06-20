@@ -75,11 +75,6 @@ describe('Checking CartModel', () => {
     expect(cartProduct).toHaveProperty('version');
   });
 
-  it('should clear cart in model', () => {
-    const cart = cartModel.clear();
-    expect(cart).equal(true);
-  });
-
   it('should clear cart', async () => {
     const cart = await cartModel.getCart();
     expect(cart).toBeDefined();

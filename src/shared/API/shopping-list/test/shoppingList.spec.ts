@@ -49,11 +49,6 @@ describe('Checking ShoppingListModel', () => {
     expect(shopProduct).toHaveProperty('version');
   });
 
-  it('should clear shopModel in model', () => {
-    const shop = shopModel.clear();
-    expect(shop).equal(true);
-  });
-
   it('should delete product from shopModel', async () => {
     const product: ShoppingListProduct = {
       lineItemId: '',
