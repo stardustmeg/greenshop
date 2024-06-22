@@ -18,6 +18,7 @@ import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import getLanguageValue from '@/shared/utils/getLanguageValue.ts';
 import * as noUiSlider from 'nouislider';
 
 import styles from './productFiltersView.module.scss';
@@ -116,7 +117,7 @@ class ProductFiltersView {
   }
 
   private createCategoryLink(category: { category: Category; count: number }): LinkModel {
-    const text = category.category.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+    const text = getLanguageValue(category.category.name);
     const categoryLink = new LinkModel({
       attrs: {
         href: category.category.key,
@@ -150,7 +151,7 @@ class ProductFiltersView {
     this.categoryLinks.push(categoryLink);
 
     observeStore(selectCurrentLanguage, () => {
-      const text = category.category.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+      const text = getLanguageValue(category.category.name);
       const textNode = [...categoryLink.getHTML().childNodes].find((child) => child.nodeType === Node.TEXT_NODE);
       if (textNode) {
         textNode.textContent = text;

@@ -5,13 +5,13 @@ import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { MORE_TEXT } from '@/shared/constants/buttons.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAIL from '@/shared/constants/svg.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import getLanguageValue from '@/shared/utils/getLanguageValue.ts';
 import { discountPercent, discountText } from '@/shared/utils/messageTemplates.ts';
 
 import styles from './productCardView.module.scss';
@@ -206,7 +206,7 @@ class ProductCardView {
   }
 
   private createProductName(): HTMLHeadingElement {
-    const innerContent = this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+    const innerContent = getLanguageValue(this.params.name);
     const productName = createBaseElement({
       cssClasses: [styles.productName],
       innerContent,
@@ -214,14 +214,14 @@ class ProductCardView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent = this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+      const textContent = getLanguageValue(this.params.name);
       productName.textContent = textContent;
     });
     return productName;
   }
 
   private createProductShortDescription(): HTMLParagraphElement {
-    const innerContent = this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+    const innerContent = getLanguageValue(this.params.description);
     this.productShortDescription = createBaseElement({
       cssClasses: [styles.productShortDescription],
       innerContent,
@@ -229,7 +229,7 @@ class ProductCardView {
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent = this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+      const textContent = getLanguageValue(this.params.description);
       this.productShortDescription.textContent = textContent;
     });
 

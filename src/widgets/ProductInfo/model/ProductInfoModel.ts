@@ -10,13 +10,12 @@ import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import EventMediatorModel from '@/shared/EventMediator/model/EventMediatorModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import modal from '@/shared/Modal/model/ModalModel.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import MEDIATOR_EVENT from '@/shared/constants/events.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
-import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import getLanguageValue from '@/shared/utils/getLanguageValue.ts';
 import { productAddedToCartMessage, productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import Swiper from 'swiper';
@@ -58,19 +57,16 @@ class ProductInfoModel {
   private addProductToCart(): void {
     const loader = new LoaderModel(LOADER_SIZE.EXTRA_SMALL).getHTML();
     this.view.getSwitchToCartButton().getHTML().append(loader);
-    const currentLanguage = getCurrentLanguage();
     getCartModel()
       .addProductToCart({
-        name: this.params.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value,
+        name: getLanguageValue(this.params.name),
         productId: this.params.id,
         quantity: 1,
         variantId: this.currentVariant.id,
       })
       .then(() => {
         this.view.switchToCartButtonText(true);
-        showSuccessMessage(
-          productAddedToCartMessage(this.params.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value),
-        );
+        showSuccessMessage(productAddedToCartMessage(getLanguageValue(this.params.name)));
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
       })
       .catch(showErrorMessage)
@@ -100,9 +96,7 @@ class ProductInfoModel {
         .deleteProductFromCart(currentProduct)
         .then(() => {
           this.view.switchToCartButtonText(false);
-          showSuccessMessage(
-            productRemovedFromCartMessage(this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value),
-          );
+          showSuccessMessage(productRemovedFromCartMessage(getLanguageValue(this.params.name)));
           EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
         })
         .catch(showErrorMessage)

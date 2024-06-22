@@ -4,13 +4,14 @@ import type { CartProduct } from '@/shared/types/cart';
 import type { languageVariants } from '@/shared/types/common';
 
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
-import { LANGUAGE_CHOICE, TABLET_WIDTH } from '@/shared/constants/common.ts';
+import { TABLET_WIDTH } from '@/shared/constants/common.ts';
 import SVG_DETAIL from '@/shared/constants/svg.ts';
 import { CartActive } from '@/shared/types/cart.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import getLanguageValue from '@/shared/utils/getLanguageValue.ts';
 import Hammer from 'hammerjs';
 
 import styles from './productOrderView.module.scss';
@@ -133,7 +134,7 @@ class ProductOrderView {
     });
     const img = createBaseElement({ cssClasses: [styles.img], tag: 'img' });
     img.src = this.productItem.images;
-    img.alt = this.productItem.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+    img.alt = getLanguageValue(this.productItem.name);
     link.getHTML().append(img);
     tdImage.append(link.getHTML());
     return tdImage;
@@ -180,7 +181,7 @@ class ProductOrderView {
         href,
       },
       classes: [styles.nameLink],
-      text: this.productItem.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
+      text: getLanguageValue(this.productItem.name),
     });
     td.append(link.getHTML());
     return td;
@@ -232,7 +233,7 @@ class ProductOrderView {
       if (textEl.textItem === TITLE.SIZE) {
         elHTML.textContent = this.productItem.size ? `${TITLE.SIZE[this.language]}: ${this.productItem.size}` : '';
       } else if (textEl.textItem === TITLE.NAME) {
-        elHTML.textContent = this.productItem.name[Number(this.language === LANGUAGE_CHOICE.RU)].value;
+        elHTML.textContent = getLanguageValue(this.productItem.name);
       }
     });
   }
