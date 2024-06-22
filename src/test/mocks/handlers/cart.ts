@@ -1,5 +1,7 @@
 import { HttpResponse, http } from 'msw';
 
+import { TEST_API_URL, TEST_PROJECT_KEY } from '../constant.ts';
+
 const carts = {
   anonymousId: 'f6b6183e-cc73-4b19-a65e-f408fc785e89',
   cartState: 'Merged',
@@ -237,21 +239,11 @@ const cartList = {
 };
 
 const handlers = [
-  http.get(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me/carts`, () =>
-    HttpResponse.json(cartList),
-  ),
-  http.post(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me/carts`, () =>
-    HttpResponse.json(cartList),
-  ),
-  http.post(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/carts/*`, () =>
-    HttpResponse.json(carts),
-  ),
-  http.get(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/carts/*`, () =>
-    HttpResponse.json(carts),
-  ),
-  http.post(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me/carts/*`, () =>
-    HttpResponse.json(carts),
-  ),
+  http.get(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me/carts`, () => HttpResponse.json(cartList)),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me/carts`, () => HttpResponse.json(cartList)),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/carts/*`, () => HttpResponse.json(carts)),
+  http.get(`${TEST_API_URL}/${TEST_PROJECT_KEY}/carts/*`, () => HttpResponse.json(carts)),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me/carts/*`, () => HttpResponse.json(carts)),
 ];
 
 export default handlers;

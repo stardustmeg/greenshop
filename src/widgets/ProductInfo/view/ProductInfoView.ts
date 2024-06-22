@@ -6,7 +6,6 @@ import InputModel from '@/shared/Input/model/InputModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
 import { BUTTON_TEXT } from '@/shared/constants/buttons.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEY } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import SVG_DETAIL from '@/shared/constants/svg.ts';
@@ -14,6 +13,7 @@ import { DIFFICULTY } from '@/shared/types/product.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import createSVGUse from '@/shared/utils/createSVGUse.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import getLanguageValue from '@/shared/utils/getLanguageValue.ts';
 import { SKUCopiedMessage } from '@/shared/utils/messageTemplates.ts';
 import observeCurrentLanguage from '@/shared/utils/observeCurrentLanguage.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
@@ -87,8 +87,8 @@ class ProductInfoView {
 
     observeCurrentLanguage(this.categoriesSpan, PRODUCT_INFO_TEXT, PRODUCT_INFO_TEXT_KEY.CATEGORY);
 
-    const category = this.params.category[0].parent?.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
-    const subcategory = this.params.category[0].name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
+    const category = getLanguageValue(this.params.category[0].parent?.name || []);
+    const subcategory = getLanguageValue(this.params.category[0].name);
     const currentCategoriesText = `${category ? `${category} ${DELIMITER} ` : ''}${subcategory}`;
 
     const currentCategories = createBaseElement({
@@ -99,9 +99,8 @@ class ProductInfoView {
     this.categoriesSpan.append(currentCategories);
 
     observeStore(selectCurrentLanguage, () => {
-      const currentLanguage = getCurrentLanguage();
-      const category = this.params.category[0].parent?.name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
-      const subcategory = this.params.category[0].name[Number(currentLanguage === LANGUAGE_CHOICE.RU)].value;
+      const category = getLanguageValue(this.params.category[0].parent?.name || []);
+      const subcategory = getLanguageValue(this.params.category[0].name);
       const currentCategoriesText = `${category ? `${category} ${DELIMITER} ` : ''}${subcategory}`;
 
       currentCategories.textContent = currentCategoriesText;
@@ -181,12 +180,12 @@ class ProductInfoView {
   private createProductTitle(): HTMLHeadingElement {
     this.title = createBaseElement({
       cssClasses: ['productTitle'],
-      innerContent: this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
+      innerContent: getLanguageValue(this.params.name),
       tag: 'h3',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent = this.params.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+      const textContent = getLanguageValue(this.params.name);
       this.title.textContent = textContent;
     });
 
@@ -271,12 +270,12 @@ class ProductInfoView {
   private createShortDescription(): HTMLParagraphElement {
     this.shortDescription = createBaseElement({
       cssClasses: ['shortDescription'],
-      innerContent: this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
+      innerContent: getLanguageValue(this.params.description),
       tag: 'p',
     });
 
     observeStore(selectCurrentLanguage, () => {
-      const textContent = this.params.description[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value;
+      const textContent = getLanguageValue(this.params.description);
       this.shortDescription.textContent = textContent;
     });
     return this.shortDescription;

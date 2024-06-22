@@ -3,8 +3,10 @@ import type { Category } from '@/shared/types/product.ts';
 
 import getProductModel from '@/shared/API/product/model/ProductModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
+import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID } from '@/shared/constants/pages.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
+import getLanguageValue from '@/shared/utils/getLanguageValue.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import FooterView from '../view/FooterView.ts';
@@ -94,8 +96,8 @@ function generateRandomCategoryLink(categoriesArr: Category[]): Link[] {
     result.push({
       href: buildPath.catalogPathWithQuery({ subcategory: [category.key] }),
       name: {
-        en: category.name[0].value,
-        ru: category.name[1].value,
+        en: getLanguageValue(category.name, LANGUAGE_CHOICE.EN),
+        ru: getLanguageValue(category.name, LANGUAGE_CHOICE.RU),
       },
     });
   }

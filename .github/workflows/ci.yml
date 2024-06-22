@@ -31,6 +31,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      VITE_APP_CTP_PROJECT_KEY: ${{ secrets.VITE_APP_CTP_PROJECT_KEY }}
+      VITE_APP_CTP_SCOPES: ${{ secrets.VITE_APP_CTP_SCOPES }}
+      VITE_APP_CTP_CLIENT_ID: ${{ secrets.VITE_APP_CTP_CLIENT_ID }}
+      VITE_APP_CTP_CLIENT_SECRET: ${{ secrets.VITE_APP_CTP_CLIENT_SECRET }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

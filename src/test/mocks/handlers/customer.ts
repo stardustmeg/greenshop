@@ -1,5 +1,7 @@
 import { HttpResponse, http } from 'msw';
 
+import { TEST_API_URL, TEST_PROJECT_KEY } from '../constant.ts';
+
 const me = {
   addresses: [
     {
@@ -100,21 +102,11 @@ const meList = {
 };
 
 const handlers = [
-  http.post(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me/signup`, () =>
-    HttpResponse.json(customer),
-  ),
-  http.post(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me/login`, () =>
-    HttpResponse.json(customer),
-  ),
-  http.get(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/customers`, () =>
-    HttpResponse.json(meList),
-  ),
-  http.post(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me`, () =>
-    HttpResponse.json(me),
-  ),
-  http.post(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me/password`, () =>
-    HttpResponse.json(me),
-  ),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me/signup`, () => HttpResponse.json(customer)),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me/login`, () => HttpResponse.json(customer)),
+  http.get(`${TEST_API_URL}/${TEST_PROJECT_KEY}/customers`, () => HttpResponse.json(meList)),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me`, () => HttpResponse.json(me)),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me/password`, () => HttpResponse.json(me)),
 ];
 
 export default handlers;

@@ -1,5 +1,9 @@
 import server from '@/test/mocks/node.ts';
 
+if (typeof window !== 'undefined') {
+  window.scrollTo = (): void => {};
+}
+
 beforeAll(() => {
   server.listen({
     onUnhandledRequest: 'warn',

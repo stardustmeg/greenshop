@@ -9,12 +9,12 @@ import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import getStore from '@/shared/Store/Store.ts';
 import { setCurrentPage } from '@/shared/Store/actions.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { PAGE_ID, PAGE_TITLE } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import getLanguageValue from '@/shared/utils/getLanguageValue.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
@@ -34,7 +34,6 @@ class ProductPageModel implements Page {
 
   private createBreadcrumbLinks(currentProduct: Product | null): BreadcrumbLink[] {
     const currentLanguage = getCurrentLanguage();
-    const isRuLanguage = currentLanguage === LANGUAGE_CHOICE.RU;
     const category = currentProduct?.category[0].parent;
     const subcategory = currentProduct?.category[0];
 
@@ -46,14 +45,14 @@ class ProductPageModel implements Page {
     if (category) {
       links.push({
         link: buildPath.catalogPathWithQuery({ category: [category.key] }),
-        name: category.name[Number(isRuLanguage)].value,
+        name: getLanguageValue(category.name),
       });
     }
 
     if (subcategory && category) {
       links.push({
         link: buildPath.catalogPathWithQuery({ subcategory: [subcategory.key] }),
-        name: subcategory.name[Number(isRuLanguage)].value,
+        name: getLanguageValue(subcategory.name),
       });
     }
 
@@ -85,7 +84,7 @@ class ProductPageModel implements Page {
 
   private observeLanguage(fullDescription: localization[]): void {
     observeStore(selectCurrentLanguage, () => {
-      this.view.setFullDescription(fullDescription[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value);
+      this.view.setFullDescription(getLanguageValue(fullDescription));
       this.initBreadcrumbs();
     });
   }
@@ -110,9 +109,7 @@ class ProductPageModel implements Page {
       savedPath,
     );
     this.getHTML().append(productInfo.getHTML(), this.view.getFullDescriptionWrapper());
-    this.view.setFullDescription(
-      this.currentProduct.fullDescription[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
-    );
+    this.view.setFullDescription(getLanguageValue(this.currentProduct.fullDescription));
     this.observeLanguage(this.currentProduct.fullDescription);
   }
 

@@ -57,11 +57,13 @@ class SummaryView {
 
   private updateTitle(): void {
     this.discountTotal.innerHTML = '';
-    const totalDiscountWrap = createBaseElement({ cssClasses: [styles.couponWrap], tag: 'div' });
-    const totalDiscountTitle = this.getTitle();
-    const totalDiscountValue = this.getValue(this.total);
-    totalDiscountWrap.append(totalDiscountTitle, totalDiscountValue);
-    this.discountTotal.append(totalDiscountWrap);
+    if (this.total) {
+      const totalDiscountWrap = createBaseElement({ cssClasses: [styles.couponWrap], tag: 'div' });
+      const totalDiscountTitle = this.getTitle();
+      const totalDiscountValue = this.getValue(this.total);
+      totalDiscountWrap.append(totalDiscountTitle, totalDiscountValue);
+      this.discountTotal.append(totalDiscountWrap);
+    }
   }
 
   public addCouponItem(coupon: CouponModel): void {
@@ -78,12 +80,8 @@ class SummaryView {
   }
 
   public updateTotal(total: number): void {
-    if (total) {
-      this.total = total;
-      this.updateTitle();
-    } else {
-      this.discountTotal.innerHTML = '';
-    }
+    this.total = total;
+    this.updateTitle();
   }
 }
 

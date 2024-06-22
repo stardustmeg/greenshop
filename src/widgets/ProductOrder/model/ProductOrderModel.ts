@@ -4,10 +4,9 @@ import ProductPriceModel from '@/entities/ProductPrice/model/ProductPriceModel.t
 import getCartModel from '@/shared/API/cart/model/CartModel.ts';
 import LoaderModel from '@/shared/Loader/model/LoaderModel.ts';
 import observeStore, { selectCurrentLanguage } from '@/shared/Store/observer.ts';
-import { LANGUAGE_CHOICE } from '@/shared/constants/common.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { CartActive } from '@/shared/types/cart.ts';
-import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import getLanguageValue from '@/shared/utils/getLanguageValue.ts';
 import { productRemovedFromCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
@@ -48,11 +47,7 @@ class ProductOrderModel {
       .deleteProductFromCart(this.productItem)
       .then((cart) => {
         if (cart) {
-          showSuccessMessage(
-            productRemovedFromCartMessage(
-              this.productItem.name[Number(getCurrentLanguage() === LANGUAGE_CHOICE.RU)].value,
-            ),
-          );
+          showSuccessMessage(productRemovedFromCartMessage(getLanguageValue(this.productItem.name)));
           const updateItem = cart.products.find((item) => item.lineItemId === this.productItem.lineItemId);
           this.updateView(updateItem);
           this.callback(cart);

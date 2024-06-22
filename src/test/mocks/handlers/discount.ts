@@ -1,5 +1,7 @@
 import { HttpResponse, http } from 'msw';
 
+import { TEST_API_URL, TEST_PROJECT_KEY } from '../constant.ts';
+
 const discountList = {
   count: 4,
   limit: 20,
@@ -49,9 +51,7 @@ const discountList = {
 };
 
 const handlers = [
-  http.get(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/discount-codes`, () =>
-    HttpResponse.json(discountList),
-  ),
+  http.get(`${TEST_API_URL}/${TEST_PROJECT_KEY}/discount-codes`, () => HttpResponse.json(discountList)),
 ];
 
 export default handlers;
