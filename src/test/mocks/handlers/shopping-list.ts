@@ -1,5 +1,7 @@
 import { HttpResponse, http } from 'msw';
 
+import { TEST_API_URL, TEST_PROJECT_KEY } from '../constant.ts';
+
 const shopList = {
   anonymousId: '599456f9-bff8-46e7-8c9b-5f6e60dabb27',
   createdAt: '2024-06-12T12:52:38.321Z',
@@ -41,32 +43,13 @@ const shopListList = {
   total: 1,
 };
 const handlers = [
-  http.get(
-    `${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me/shopping-lists`,
-    () => HttpResponse.json(shopListList),
-  ),
-  http.get(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/shopping-lists/*`, () =>
-    HttpResponse.json(shopListList),
-  ),
-  http.post(
-    `${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me/shopping-lists`,
-    () => HttpResponse.json(shopList),
-  ),
-  http.post(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/shopping-lists`, () =>
-    HttpResponse.json(shopList),
-  ),
-  http.post(
-    `${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/shopping-lists/*`,
-    () => HttpResponse.json(shopList),
-  ),
-  http.post(
-    `${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me/shopping-lists/*`,
-    () => HttpResponse.json(shopList),
-  ),
-  http.delete(
-    `${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/me/shopping-lists/*`,
-    () => HttpResponse.json(shopList),
-  ),
+  http.get(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me/shopping-lists`, () => HttpResponse.json(shopListList)),
+  http.get(`${TEST_API_URL}/${TEST_PROJECT_KEY}/shopping-lists/*`, () => HttpResponse.json(shopListList)),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me/shopping-lists`, () => HttpResponse.json(shopList)),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/shopping-lists`, () => HttpResponse.json(shopList)),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/shopping-lists/*`, () => HttpResponse.json(shopList)),
+  http.post(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me/shopping-lists/*`, () => HttpResponse.json(shopList)),
+  http.delete(`${TEST_API_URL}/${TEST_PROJECT_KEY}/me/shopping-lists/*`, () => HttpResponse.json(shopList)),
 ];
 
 export default handlers;

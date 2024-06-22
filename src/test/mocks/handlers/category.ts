@@ -1,5 +1,7 @@
 import { HttpResponse, http } from 'msw';
 
+import { TEST_API_URL, TEST_PROJECT_KEY } from '../constant.ts';
+
 const categoryList = {
   count: 1,
   limit: 20,
@@ -55,10 +57,6 @@ const categoryList = {
   ],
   total: 1,
 };
-const handlers = [
-  http.get(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}/categories`, () =>
-    HttpResponse.json(categoryList),
-  ),
-];
+const handlers = [http.get(`${TEST_API_URL}/${TEST_PROJECT_KEY}/categories`, () => HttpResponse.json(categoryList))];
 
 export default handlers;
