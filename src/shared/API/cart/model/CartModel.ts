@@ -36,17 +36,15 @@ type Callback = (cart: Cart) => boolean;
 export class CartModel {
   private callback: Callback[] = [];
 
-  private cart: Cart | null = null;
-
   private root: CartApi;
 
   constructor() {
     this.root = new CartApi();
     this.getCart()
-      .then(() => {
+      .then((cart) => {
         const { anonymousId } = getStore().getState();
-        if (anonymousId && this.cart?.anonymousId !== anonymousId) {
-          this.updateCartCustomer(anonymousId).catch(showErrorMessage);
+        if (anonymousId && cart?.anonymousId !== anonymousId) {
+          this.updateCartCustomer(cart, anonymousId).catch(showErrorMessage);
         }
       })
       .catch(showErrorMessage);
@@ -156,28 +154,27 @@ export class CartModel {
     return uniqueCoupons;
   }
 
-  private async deleteOtherCarts(data: ClientResponse<CartPagedQueryResponse>): Promise<void> {
-    if (this.cart) {
-      const carts: Cart[] = [];
-      data.body.results.forEach((cart) => {
-        carts.push(this.getCartFromData(cart));
-      });
-      const otherCarts = carts.filter((shopList) => this.cart?.id !== shopList.id);
-      await Promise.all(otherCarts.map((id) => this.root.deleteCart(id)));
-    }
+  private async deleteOtherCarts(activeCart: Cart, data: ClientResponse<CartPagedQueryResponse>): Promise<void> {
+    const carts: Cart[] = [];
+    data.body.results.forEach((cart) => {
+      carts.push(this.getCartFromData(cart));
+    });
+    const otherCarts = carts.filter((shopList) => activeCart.id !== shopList.id);
+    await Promise.all(otherCarts.map((id) => this.root.deleteCart(id)));
   }
 
-  private dispatchUpdate(): void {
-    this.callback.forEach((callback) => (this.cart !== null ? callback(this.cart) : null));
+  private dispatchUpdate(cart: Cart): void {
+    this.callback.forEach((callback) => callback(cart));
   }
 
   private async getAnonymousCart(anonymousCartId: string): Promise<Cart | null> {
     const data = await this.root.getAnonymCart(anonymousCartId);
     if (!data.body.customerId) {
-      this.cart = this.getCartFromData(data);
+      const result = this.getCartFromData(data);
+      return result;
     }
 
-    return this.cart;
+    return null;
   }
 
   private getCartFromData(data: CartResponse | ClientResponse<CartPagedQueryResponse | CartResponse>): Cart {
@@ -202,67 +199,62 @@ export class CartModel {
 
   private async getUserCart(): Promise<Cart> {
     const data = await this.root.getCarts();
-    if (data.body.count === 1) {
-      this.cart = this.getCartFromData(data);
-    } else if (data.body.count === 0) {
+    if (data.body.count === 0) {
       const newCart = await this.root.create();
-      this.cart = this.getCartFromData(newCart);
-    } else {
-      const activeCart = await this.root.getActiveCart();
-      this.cart = this.getCartFromData(activeCart);
-      await this.deleteOtherCarts(data);
+      return this.getCartFromData(newCart);
     }
-    return this.cart;
+    if (data.body.count === 1) {
+      return this.getCartFromData(data);
+    }
+    const activeCart = await this.root.getActiveCart();
+    const result = this.getCartFromData(activeCart);
+    await this.deleteOtherCarts(result, data);
+    return result;
   }
 
-  private async updateCartCustomer(anonymousId: string): Promise<Cart | null> {
-    if (this.cart) {
-      const actions: CartSetAnonymousIdAction[] = [
-        {
-          action: ACTIONS.setAnonymousId,
-          anonymousId,
-        },
-      ];
-      const dataSetId = await this.root.setAnonymousId(this.cart, actions);
-      this.cart = this.getCartFromData(dataSetId);
-    }
-    return this.cart;
+  private async updateCartCustomer(cart: Cart, anonymousId: string): Promise<Cart | null> {
+    const actions: CartSetAnonymousIdAction[] = [
+      {
+        action: ACTIONS.setAnonymousId,
+        anonymousId,
+      },
+    ];
+    const dataSetId = await this.root.setAnonymousId(cart, actions);
+    const result = this.getCartFromData(dataSetId);
+    return result;
   }
 
   public async addCoupon(discountCode: string): Promise<Cart> {
-    if (!this.cart) {
-      this.cart = await this.getCart();
-    }
+    const cart = await this.getCart();
+
     const action: MyCartUpdateAction[] = [
       {
         action: ACTIONS.addDiscountCode,
         code: discountCode,
       },
     ];
-    const data = await this.root.updateCart(this.cart, action);
-    this.cart = this.getCartFromData(data);
-    return this.cart;
+    const data = await this.root.updateCart(cart, action);
+    const result = this.getCartFromData(data);
+    return result;
   }
 
   public async addProductInfo(): Promise<Cart | null> {
-    if (!this.cart) {
-      this.cart = await this.getCart();
-    }
+    const cart = await this.getCart();
 
     const filter = new FilterProduct();
-    this.cart.products.forEach((product) => {
+    cart.products.forEach((product) => {
       filter.addFilter(FilterFields.ID, product.productId);
     });
     const opt: OptionsRequest = {
       filter,
-      limit: this.cart.products.length,
+      limit: cart.products.length,
     };
 
     return getProductModel()
       .getProducts(opt)
       .then((products) => {
-        if (products.products.length && this.cart) {
-          this.cart.products = this.cart.products.map((product) => {
+        if (products.products.length && cart) {
+          cart.products = cart.products.map((product) => {
             const productInfo = products.products.find(({ id }) => id === product.productId);
             if (productInfo) {
               if (!product.images) {
@@ -273,14 +265,12 @@ export class CartModel {
             return product;
           });
         }
-        return this.cart;
+        return cart;
       });
   }
 
   public async addProductToCart(addCartItem: AddCartItem): Promise<Cart | null> {
-    if (!this.cart) {
-      this.cart = await this.getCart();
-    }
+    const cart = await this.getCart();
 
     const actions: MyCartUpdateAction[] = [
       {
@@ -290,49 +280,42 @@ export class CartModel {
         variantId: addCartItem.variantId,
       },
     ];
-    const data = await this.root.updateCart(this.cart, actions);
-    this.cart = this.getCartFromData(data);
-    this.dispatchUpdate();
-    return this.cart;
-  }
-
-  public clear(): boolean {
-    this.cart = null;
-    return true;
+    const data = await this.root.updateCart(cart, actions);
+    const result = this.getCartFromData(data);
+    this.dispatchUpdate(result);
+    return result;
   }
 
   public async clearCart(): Promise<Cart | null> {
-    if (!this.cart) {
-      this.cart = await this.getCart();
-    }
-    const actions: MyCartUpdateAction[] = this.cart?.products.map((lineItem) => ({
+    const cart = await this.getCart();
+
+    const actions: MyCartUpdateAction[] = cart?.products.map((lineItem) => ({
       action: ACTIONS.removeLineItem,
       lineItemId: lineItem.lineItemId,
     }));
-    const data = await this.root.updateCart(this.cart, actions);
-    this.cart = this.getCartFromData(data);
-    this.dispatchUpdate();
-    return this.cart;
+    const data = await this.root.updateCart(cart, actions);
+    const result = this.getCartFromData(data);
+    this.dispatchUpdate(result);
+    return result;
   }
 
   public create(): Promise<Cart | null> {
     return this.root
       .create()
       .then((newCart) => {
-        this.cart = this.getCartFromData(newCart);
-        this.dispatchUpdate();
-        return this.cart;
+        const result = this.getCartFromData(newCart);
+        this.dispatchUpdate(result);
+        return result;
       })
       .catch((error: Error) => {
         showErrorMessage(error);
-        return this.cart;
+        return null;
       });
   }
 
   public async deleteCoupon(id: string): Promise<Cart> {
-    if (!this.cart) {
-      this.cart = await this.getCart();
-    }
+    const cart = await this.getCart();
+
     const action: MyCartUpdateAction[] = [
       {
         action: ACTIONS.removeDiscountCode,
@@ -342,31 +325,28 @@ export class CartModel {
         },
       },
     ];
-    const data = await this.root.updateCart(this.cart, action);
-    this.cart = this.getCartFromData(data);
-    return this.cart;
+    const data = await this.root.updateCart(cart, action);
+    const result = this.getCartFromData(data);
+    return result;
   }
 
   public async deleteProductFromCart(cartItem: CartProduct): Promise<Cart | null> {
-    if (!this.cart) {
-      this.cart = await this.getCart();
-    }
+    const cart = await this.getCart();
+
     const actions: MyCartUpdateAction[] = [
       {
         action: ACTIONS.removeLineItem,
         lineItemId: cartItem.lineItemId,
       },
     ];
-    const data = await this.root.updateCart(this.cart, actions);
-    this.cart = this.getCartFromData(data);
-    this.dispatchUpdate();
-    return this.cart;
+    const data = await this.root.updateCart(cart, actions);
+    const result = this.getCartFromData(data);
+    this.dispatchUpdate(cart);
+    return result;
   }
 
   public async editProductCount(editCartItem: EditCartItem): Promise<Cart> {
-    if (!this.cart) {
-      this.cart = await this.getCart();
-    }
+    const cart = await this.getCart();
 
     const actions: MyCartUpdateAction[] = [
       {
@@ -376,24 +356,23 @@ export class CartModel {
       },
     ];
 
-    const data = await this.root.updateCart(this.cart, actions);
-    this.cart = this.getCartFromData(data);
-    this.dispatchUpdate();
-    return this.cart;
+    const data = await this.root.updateCart(cart, actions);
+    const result = this.getCartFromData(data);
+    this.dispatchUpdate(cart);
+    return result;
   }
 
   public async getCart(): Promise<Cart> {
-    if (!this.cart) {
-      const { anonymousCartId, anonymousId } = getStore().getState();
-      if (anonymousCartId && anonymousId) {
-        this.cart = await this.getAnonymousCart(anonymousCartId);
-      }
-      if (!this.cart) {
-        this.cart = await this.getUserCart();
-      }
+    let cart: Cart | null = null;
+    const { anonymousCartId, anonymousId } = getStore().getState();
+    if (anonymousCartId && anonymousId) {
+      cart = await this.getAnonymousCart(anonymousCartId);
     }
-    this.dispatchUpdate();
-    return this.cart;
+    if (!cart) {
+      cart = await this.getUserCart();
+    }
+    this.dispatchUpdate(cart);
+    return cart;
   }
 
   public observeCartChange(callback: (cart: Cart) => boolean): boolean {

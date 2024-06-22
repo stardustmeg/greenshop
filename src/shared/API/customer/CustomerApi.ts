@@ -56,8 +56,6 @@ export default class CustomerApi {
     const testConnect = await client.get().execute();
     if (!isErrorResponse(testConnect)) {
       this.client.approveAuth();
-      getCartModel().clear();
-      getShoppingListModel().clear();
       getStore().dispatch(setAnonymousCartId(null));
       getStore().dispatch(setAnonymousId(null));
       getStore().dispatch(setAnonymousShopListId(null));
@@ -110,8 +108,6 @@ export default class CustomerApi {
     const data = await this.client.apiRoot().me().login().post({ body: authData }).execute();
     if (!isErrorResponse(data)) {
       await this.checkAuthConnection(authData);
-      getCartModel().clear();
-      getShoppingListModel().clear();
       await getCartModel().getCart();
       await getShoppingListModel().getShoppingList();
     }
@@ -161,9 +157,7 @@ export default class CustomerApi {
   public async logoutUser(): Promise<boolean> {
     const client = this.client.deleteAuthConnection();
     const testConnect = this.client.apiRoot().get().execute();
-    getCartModel().clear();
     await getCartModel().getCart();
-    getShoppingListModel().clear();
     await getShoppingListModel().getShoppingList();
     return client && !isErrorResponse(testConnect);
   }
