@@ -1,7 +1,7 @@
 import type { UserCredentials } from '@/shared/types/user';
 
 import getStore from '@/shared/Store/Store.ts';
-import { setAnonymousId } from '@/shared/Store/actions.ts';
+import { setAnonymousId, setAuthToken, switchIsUserLoggedIn } from '@/shared/Store/actions.ts';
 import { type ByProjectKeyRequestBuilder, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import {
   type AnonymousAuthMiddlewareOptions,
@@ -23,8 +23,8 @@ const PROJECT_KEY = import.meta.env.VITE_APP_CTP_PROJECT_KEY;
 const SCOPES = import.meta.env.VITE_APP_CTP_SCOPES;
 const CLIENT_ID = import.meta.env.VITE_APP_CTP_CLIENT_ID;
 const CLIENT_SECRET = import.meta.env.VITE_APP_CTP_CLIENT_SECRET;
-const URL_AUTH = 'https://auth.europe-west1.gcp.commercetools.com';
-const URL_HTTP = 'https://api.europe-west1.gcp.commercetools.com';
+const URL_AUTH = import.meta.env.VITE_APP_CTP_AUTH_URL;
+const URL_HTTP = import.meta.env.VITE_APP_CTP_API_URL;
 const USE_SAVE_TOKEN = true;
 
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
@@ -51,6 +51,9 @@ export class ApiClient {
     this.clientID = CLIENT_ID;
     this.clientSecret = CLIENT_SECRET;
     this.scopes = SCOPES.split(' ');
+    if (USE_SAVE_TOKEN) {
+      this.checkSaveToken();
+    }
 
     if (USE_SAVE_TOKEN && getStore().getState().authToken) {
       this.authConnection = this.createAuthConnectionWithRefreshToken();
@@ -93,20 +96,48 @@ export class ApiClient {
     }
   }
 
+  private checkSaveToken(): void {
+    const { anonymousToken, authToken } = getStore().getState();
+    if (authToken && authToken.expirationTime < Date.now()) {
+      localStorage.clear();
+      getStore().dispatch(setAuthToken(null));
+      getStore().dispatch(switchIsUserLoggedIn(false));
+      getTokenCache(TokenType.AUTH).clear();
+    }
+    if (anonymousToken && anonymousToken.expirationTime < Date.now()) {
+      localStorage.clear();
+      getStore().dispatch(setAnonymousId(null));
+      getTokenCache(TokenType.ANONYM).clear();
+    }
+  }
+
   private createAnonymConnection(): ByProjectKeyRequestBuilder {
     const defaultOptions = this.getDefaultOptions(TokenType.ANONYM);
     const client = this.getDefaultClient();
-    const anonymousId = uuid();
 
-    const anonymOptions: AnonymousAuthMiddlewareOptions = {
+    let anonymOptions: AnonymousAuthMiddlewareOptions = {
       ...defaultOptions,
       credentials: {
         ...defaultOptions.credentials,
-        anonymousId,
       },
     };
+
+    const saveAnonymousId = getStore().getState().anonymousId;
+    if (!saveAnonymousId) {
+      const anonymousId = uuid();
+
+      anonymOptions = {
+        ...defaultOptions,
+        credentials: {
+          ...defaultOptions.credentials,
+          anonymousId,
+        },
+      };
+      getStore().dispatch(setAnonymousId(anonymousId));
+    }
+
     client.withAnonymousSessionFlow(anonymOptions);
-    getStore().dispatch(setAnonymousId(anonymousId));
+
     this.anonymConnection = this.getConnection(client.build());
     return this.anonymConnection;
   }
@@ -146,7 +177,7 @@ export class ApiClient {
       host: URL_AUTH,
       projectKey: this.projectKey,
       scopes: this.scopes,
-      tokenCache: USE_SAVE_TOKEN && tokenType === TokenType.AUTH ? getTokenCache(tokenType) : undefined,
+      tokenCache: USE_SAVE_TOKEN ? getTokenCache(tokenType) : undefined,
     };
   }
 

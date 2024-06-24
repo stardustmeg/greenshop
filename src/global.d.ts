@@ -24,7 +24,7 @@ interface ImportMeta {
     MODE: 'development' | 'production';
     PROD: boolean;
     VITE_APP_CTP_API_URL: string;
-    VITE_APP_CTP_AUTH_UR: string;
+    VITE_APP_CTP_AUTH_URL: string;
     VITE_APP_CTP_CLIENT_ID: string;
     VITE_APP_CTP_CLIENT_SECRET: string;
     VITE_APP_CTP_PROJECT_KEY: string;
