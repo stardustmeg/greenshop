@@ -23,8 +23,8 @@ const PROJECT_KEY = import.meta.env.VITE_APP_CTP_PROJECT_KEY;
 const SCOPES = import.meta.env.VITE_APP_CTP_SCOPES;
 const CLIENT_ID = import.meta.env.VITE_APP_CTP_CLIENT_ID;
 const CLIENT_SECRET = import.meta.env.VITE_APP_CTP_CLIENT_SECRET;
-const URL_AUTH = import.meta.env.VITE_APP_CTP_AUTH_URL;
-const URL_HTTP = import.meta.env.VITE_APP_CTP_API_URL;
+const URL_AUTH = 'https://auth.europe-west1.gcp.commercetools.com';
+const URL_HTTP = 'https://api.europe-west1.gcp.commercetools.com';
 const USE_SAVE_TOKEN = true;
 
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
