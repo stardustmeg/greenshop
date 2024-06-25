@@ -24,6 +24,8 @@ export const discountPercent = (currentVariant: Variant): string =>
 export const productAddedToCartMessage = (name: string): string =>
   textTemplate(name, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_ADD_PRODUCT_TO_CART);
 
+export const productNotAddedToCartMessage = (name: string): string => `Failed to add ${name} to cart`;
+
 export const productRemovedFromCartMessage = (name: string): string =>
   textTemplate(name, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_DELETE_PRODUCT_FROM_CART);
 
@@ -57,6 +59,9 @@ export const userInfoDateOfBirth = (date: string): string =>
 
 export const createGreetingMessage = (name: string): string =>
   textTemplate(`Hi, ${name}!`, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_LOGIN);
+
+export const createRegistrationMessage = (name: string): string =>
+  textTemplate(`Hi, ${name}!`, SERVER_MESSAGE[getCurrentLanguage()].SUCCESSFUL_REGISTRATION);
 
 const maxLengthMessageRu = (maxLength: number): string =>
   textTemplate('Максимальная длина не должна превышать', maxLength, ' символов');

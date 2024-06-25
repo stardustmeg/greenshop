@@ -21,26 +21,26 @@ class WishlistButtonModel {
     this.init();
   }
 
-  private addProductToWishListHandler(): void {
-    getShoppingListModel()
-      .addProduct(this.params.id)
-      .then(() => {
-        showSuccessMessage(productAddedToWishListMessage(getLanguageValue(this.params.name)));
-        this.view.switchStateWishListButton(true);
-        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.CHANGE_WISHLIST_BUTTON, '');
-      })
-      .catch(showErrorMessage);
+  private async addProductToWishListHandler(): Promise<void> {
+    try {
+      await getShoppingListModel().addProduct(this.params.id);
+      showSuccessMessage(productAddedToWishListMessage(getLanguageValue(this.params.name)));
+      this.view.switchStateWishListButton(true);
+      EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.CHANGE_WISHLIST_BUTTON, '');
+    } catch (error) {
+      showErrorMessage(error);
+    }
   }
 
-  private deleteProductToWishListHandler(productInWishList: ShoppingListProduct): void {
-    getShoppingListModel()
-      .deleteProduct(productInWishList)
-      .then(() => {
-        showSuccessMessage(productRemovedFromWishListMessage(getLanguageValue(this.params.name)));
-        this.view.switchStateWishListButton(false);
-        EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.CHANGE_WISHLIST_BUTTON, this.params.key);
-      })
-      .catch(showErrorMessage);
+  private async deleteProductToWishListHandler(productInWishList: ShoppingListProduct): Promise<void> {
+    try {
+      await getShoppingListModel().deleteProduct(productInWishList);
+      showSuccessMessage(productRemovedFromWishListMessage(getLanguageValue(this.params.name)));
+      this.view.switchStateWishListButton(false);
+      EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.CHANGE_WISHLIST_BUTTON, this.params.key);
+    } catch (error) {
+      showErrorMessage(error);
+    }
   }
 
   private hasProductInWishList(shoppingList: ShoppingList): void {
@@ -59,12 +59,19 @@ class WishlistButtonModel {
   private setButtonHandler(): void {
     const switchToWishListButton = this.view.getHTML();
     switchToWishListButton.getHTML().addEventListener('click', async () => {
-      const shoppingList = await getShoppingListModel().getShoppingList();
-      const productInWishList = shoppingList.products.find((product) => product.productId === this.params.id);
-      if (productInWishList) {
-        this.deleteProductToWishListHandler(productInWishList);
-      } else {
-        this.addProductToWishListHandler();
+      try {
+        switchToWishListButton.setDisabled();
+        const shoppingList = await getShoppingListModel().getShoppingList();
+        const productInWishList = shoppingList.products.find((product) => product.productId === this.params.id);
+        if (productInWishList) {
+          await this.deleteProductToWishListHandler(productInWishList);
+        } else {
+          await this.addProductToWishListHandler();
+        }
+      } catch (error) {
+        showErrorMessage(error);
+      } finally {
+        switchToWishListButton.setEnabled();
       }
     });
   }

@@ -33,9 +33,9 @@ class LoginFormModel {
   }
 
   private loginUser(userLoginData: UserCredentials): void {
-    this.view.getSubmitFormButton().setDisabled();
+    const submitButton = this.view.getSubmitFormButton();
     const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
-    this.view.getSubmitFormButton().getHTML().append(loader);
+    submitButton.getHTML().append(loader);
     getCustomerModel()
       .hasEmail(userLoginData.email)
       .then((response) => {
@@ -43,15 +43,20 @@ class LoginFormModel {
           this.loginUserHandler(userLoginData);
         } else {
           showErrorMessage(SERVER_MESSAGE_KEY.INVALID_EMAIL);
+          submitButton.setEnabled();
         }
       })
-      .catch((error) => showErrorMessage(error))
+      .catch((error) => {
+        showErrorMessage(error);
+        submitButton.setEnabled();
+      })
       .finally(() => loader.remove());
   }
 
   private loginUserHandler(userLoginData: UserCredentials): void {
+    const submitButton = this.view.getSubmitFormButton();
     const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
-    this.view.getSubmitFormButton().getHTML().append(loader);
+    submitButton.getHTML().append(loader);
     getCustomerModel()
       .authCustomer(userLoginData)
       .then((data) => {
@@ -65,36 +70,34 @@ class LoginFormModel {
       })
       .catch(() => {
         showErrorMessage(SERVER_MESSAGE_KEY.INCORRECT_PASSWORD);
+        submitButton.setEnabled();
       })
       .finally(() => loader.remove());
   }
 
-  private setInputFieldHandlers(inputField: InputFieldModel): boolean {
+  private setInputFieldHandlers(inputField: InputFieldModel): void {
     const inputHTML = inputField.getView().getInput().getHTML();
-
     inputHTML.addEventListener('input', () => this.switchSubmitFormButtonAccess());
-    return true;
   }
 
-  private setPreventDefaultToForm(): boolean {
+  private setPreventDefaultToForm(): void {
     this.getHTML().addEventListener('submit', (event) => event.preventDefault());
-    return true;
   }
 
-  private setSubmitFormHandler(): boolean {
-    const submitButton = this.view.getSubmitFormButton().getHTML();
-    submitButton.addEventListener('click', () => this.loginUser(this.credentialsWrapper.getFormCredentials()));
-    return true;
+  private setSubmitFormHandler(): void {
+    const submitButton = this.view.getSubmitFormButton();
+    submitButton.getHTML().addEventListener('click', () => {
+      submitButton.setDisabled();
+      this.loginUser(this.credentialsWrapper.getFormCredentials());
+    });
   }
 
-  private switchSubmitFormButtonAccess(): boolean {
+  private switchSubmitFormButtonAccess(): void {
     if (this.credentialsWrapper.getInputFields().every((inputField) => inputField.getIsValid())) {
       this.view.getSubmitFormButton().setEnabled();
     } else {
       this.view.getSubmitFormButton().setDisabled();
     }
-
-    return true;
   }
 
   public getFirstInputField(): InputFieldModel {

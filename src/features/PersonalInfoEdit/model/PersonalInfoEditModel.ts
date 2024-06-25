@@ -45,7 +45,6 @@ class PersonalInfoEditModel {
           ],
           user,
         );
-        modal.hide();
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_USER_INFO, '');
         showSuccessMessage(SERVER_MESSAGE_KEY.PERSONAL_INFO_CHANGED);
       }
@@ -53,6 +52,7 @@ class PersonalInfoEditModel {
       showErrorMessage(error);
     } finally {
       loader.remove();
+      modal.hide();
     }
   }
 
@@ -111,8 +111,11 @@ class PersonalInfoEditModel {
   }
 
   private setSubmitFormHandler(): boolean {
-    const submitButton = this.view.getSaveChangesButton().getHTML();
-    submitButton.addEventListener('click', () => this.editPersonalInfo());
+    const submitButton = this.view.getSaveChangesButton();
+    submitButton.getHTML().addEventListener('click', async () => {
+      submitButton.setDisabled();
+      await this.editPersonalInfo();
+    });
     return true;
   }
 

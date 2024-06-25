@@ -1,6 +1,7 @@
 import type { DeleteCallback } from '@/entities/Summary/model/SummaryModel';
 import type { CartCoupon } from '@/shared/types/cart';
 
+import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import createBaseElement from '@/shared/utils/createBaseElement.ts';
 import { minusCartPrice } from '@/shared/utils/messageTemplates.ts';
 
@@ -35,9 +36,13 @@ class CouponView {
     });
 
     const couponWrap = createBaseElement({ cssClasses: [styles.coupon], tag: 'div' });
-    const deleteCoupon = createBaseElement({ cssClasses: [styles.deleteCoupon], tag: 'button' });
-    deleteCoupon.addEventListener('click', () => this.deleteCallback(this.coupon.coupon));
-    couponWrap.append(deleteCoupon, couponTitle);
+    const deleteCoupon = new ButtonModel({ classes: [styles.deleteCoupon] });
+    deleteCoupon.getHTML().addEventListener('click', async () => {
+      deleteCoupon.setDisabled();
+      await this.deleteCallback(this.coupon.coupon);
+      deleteCoupon.setEnabled();
+    });
+    couponWrap.append(deleteCoupon.getHTML(), couponTitle);
     this.view.append(couponWrap, this.couponValue);
 
     return this.view;

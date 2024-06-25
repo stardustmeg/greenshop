@@ -35,7 +35,7 @@ class CartPageView {
 
   private clearCallback: ClearCallback;
 
-  private couponButton: HTMLButtonElement;
+  private couponButton: ButtonModel;
 
   private discountList: HTMLUListElement;
 
@@ -205,11 +205,10 @@ class CartPageView {
     });
   }
 
-  private createCouponButton(): HTMLButtonElement {
-    return createBaseElement({
-      cssClasses: [styles.button, styles.applyBtn],
-      innerContent: CART_PAGE_TITLE.BUTTON_COUPON[this.language],
-      tag: 'button',
+  private createCouponButton(): ButtonModel {
+    return new ButtonModel({
+      classes: [styles.button, styles.applyBtn],
+      text: CART_PAGE_TITLE.BUTTON_COUPON[this.language],
     });
   }
 
@@ -222,13 +221,14 @@ class CartPageView {
     couponInput.getHTML().classList.add(styles.couponInput);
 
     this.textElement.push({ element: couponInput.getHTML(), textItem: CART_PAGE_TITLE.INPUT_COUPON });
-    this.textElement.push({ element: this.couponButton, textItem: CART_PAGE_TITLE.BUTTON_COUPON });
-    this.couponButton.addEventListener('click', (evn: Event) => {
-      evn.preventDefault();
+    this.textElement.push({ element: this.couponButton.getHTML(), textItem: CART_PAGE_TITLE.BUTTON_COUPON });
+    this.couponButton.getHTML().addEventListener('click', () => {
+      this.couponButton.setDisabled();
       this.addDiscountCallback(couponInput.getHTML().value);
       couponInput.getHTML().value = '';
+      this.couponButton.setEnabled();
     });
-    couponWrap.append(couponInput.getHTML(), this.couponButton);
+    couponWrap.append(couponInput.getHTML(), this.couponButton.getHTML());
     return couponWrap;
   }
 
@@ -317,7 +317,7 @@ class CartPageView {
   }
 
   public getCouponButton(): HTMLButtonElement {
-    return this.couponButton;
+    return this.couponButton.getHTML();
   }
 
   public getHTML(): HTMLDivElement {
