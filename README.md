@@ -8,7 +8,7 @@ Welcome to [Greenshop](https://mad-wizards-greenshop.netlify.app/), your digital
 - [Key Features](#key-features-of-greenshop-include-%EF%B8%8F) 🗝️
 - [Technical Stack](#technical-stack-) 💻
 - [How to Run the Project Locally](#how-to-run-the-project-locally-%EF%B8%8F) ⚙️
-- [Availabile Scripts](#availabile-scripts-) 📑
+- [Available Scripts](#available-scripts-) 📑
 - [Contact us](#contact-us-) 📩
 
 ### Our Mission 🌸
@@ -21,25 +21,27 @@ Our modern and minimalist website offers a sleek and intuitive shopping experien
 
 🔎 **Comprehensive Product Selection**: Explore our extensive catalog of potted plants, seeds, soil, and gardening essentials, handpicked to ensure the highest quality and variety.
 
+🎨 **Seamless UI/UX**: Enjoy a cohesive and engaging user experience with a beautifully crafted interface that prioritizes ease of use and accessibility.
+
 🧭 **User-friendly Navigation**: Our intuitive navigation system makes it easy for you to find the plants, seeds, soil, and accessories you need.
 
-🧩 **Elegance and Functionality**: Our intuitive design and intuitive features make it easy to shop for plants, seeds, soil, and accessories.
+🧩 **Elegance and Functionality**: Our intuitive design and thoughtful features make it easy to shop for plants, seeds, soil, and accessories.
 
 🖼️ **Responsive Design**: Whether you're browsing on a desktop, tablet, or smartphone, our website adapts seamlessly to provide a visually stunning and immersive experience on any device.
-
-🔐 **Secure checkout process**: Secure checkout ensures you can shop with confidence and peace of mind.
 
 ## Technical Stack 💻
 
 _in our project we used the following technologies:_
 
-- **Frontend**: Utilizes [HTML](https://www.w3schools.com/html/), [SASS](https://sass-lang.com/), and [Typescript](https://www.typescriptlang.org/) to craft a dynamic and engaging user interface 🎨
-- **Bundling**: Employs [Vite](https://vitejs.dev/) as the bundler, ensuring swift development server startup time and seamless module replacement 🌳
-- **CI/CD**: Integrates [GitHub Actions](https://github.com/features/actions), [Plop](https://plopjs.com/), [Netlify](https://www.netlify.com/) for continuous integration and deployment 🚀
+- **Frontend**: Utilizes [Typescript](https://www.typescriptlang.org/), [HTML](https://www.w3schools.com/html/), [SASS](https://sass-lang.com/), and [modern-normalize](https://github.com/sindresorhus/modern-normalize) to craft a dynamic and engaging user interface 🎨
+- **Backend**: Supported by [CommerceTools](https://commercetools.com/), a leading provider of commerce solutions, offering a robust and scalable platform for creating immersive digital commerce experiences 🌐
+- **CI/CD**: Integrates [GitHub Actions](https://github.com/features/actions) and [Netlify](https://www.netlify.com/) for continuous integration and deployment 🚀
 - **Deployment**: Hosted on [Netlify](https://www.netlify.com/), enabling efficient and hassle-free deployment of the application 🌟
 - **Code Quality**: Ensured code quality through rigorous checks by [Husky](https://typicode.github.io/husky/), [Prettier](https://prettier.io/), [ESLint](https://eslint.org/), [Perfectionist](https://eslint-plugin-perfectionist.azat.io/), [Stylelint](https://stylelint.io/), [SonarLint](https://www.sonarsource.com/products/sonarlint/), and [EditorConfig](https://editorconfig.org/), maintaining consistency and best practices throughout the codebase 🐶
-- **Testing**: Thorough testing conducted with [Vitest](https://vitest.dev/), ensuring the reliability and robustness of the application's functionalities ⚡
-- **Backend**: Supported by [CommerceTools](https://commercetools.com/), a leading provider of commerce solutions, offering a robust and scalable platform for creating immersive digital commerce experiences 🌐
+- **Testing**: Thorough testing conducted with [Vitest](https://vitest.dev/), [Mock Service Worker](https://mswjs.io/), and [Sinon.js](https://sinonjs.org/), ensuring the reliability and robustness of the application's functionalities ⚡
+- **Bundling**: Employs [Vite](https://vitejs.dev/) as the bundler, ensuring swift development server startup time and seamless module replacement 🌳
+- **Additional Features and Libraries**: [Plop](https://plopjs.com/) for generating components from a template, [Hammer.js](https://hammerjs.github.io/) for touch interactions, [js-cookie](https://github.com/js-cookie/js-cookie) for cookie management, [noUiSlider](https://github.com/leongersen/noUiSlider) for range sliders, [Swiper](https://swiperjs.com/) for image carousel, and [postcode-validator](https://www.npmjs.com/package/postcode-validator) for address validation 📦
+- **Project's Architecture**: Carefully designed and implemented [Feature-Sliced Design](https://feature-sliced.design/) for efficient, scalable, and maintainable development 🌍
 
 ## How to Run the Project Locally ⚙️
 
@@ -50,7 +52,7 @@ _to run the project locally, you can follow the following steps:_
 - Install dependencies: `npm install`
 - Run the project: `npm run dev`
 
-## Availabile Scripts 📑
+## Available Scripts 📑
 
 _you can run the following scripts in the project directory:_
 

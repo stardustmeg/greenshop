@@ -12,7 +12,7 @@ import { PAGE_ID } from '@/shared/constants/pages.ts';
 import { SEARCH_PARAMS_FIELD } from '@/shared/constants/product.ts';
 import * as buildPath from '@/shared/utils/buildPathname.ts';
 import getLanguageValue from '@/shared/utils/getLanguageValue.ts';
-import { productAddedToCartMessage } from '@/shared/utils/messageTemplates.ts';
+import { productAddedToCartMessage, productNotAddedToCartMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 import ProductInfoModel from '@/widgets/ProductInfo/model/ProductInfoModel.ts';
 
@@ -48,7 +48,10 @@ class ProductCardModel {
         showSuccessMessage(productAddedToCartMessage(this.getProductMeta().name));
         this.view.getAddToCartButton().setDisabled();
       })
-      .catch(showErrorMessage);
+      .catch(() => {
+        showErrorMessage(productNotAddedToCartMessage(this.getProductMeta().name));
+        this.view.getAddToCartButton().setEnabled();
+      });
   }
 
   private getProductMeta(): AddCartItem {
@@ -97,7 +100,10 @@ class ProductCardModel {
     this.view
       .getAddToCartButton()
       .getHTML()
-      .addEventListener('click', () => this.addProductToCartHandler());
+      .addEventListener('click', () => {
+        this.view.getAddToCartButton().setDisabled();
+        this.addProductToCartHandler();
+      });
   }
 
   private setCardHandler(): void {

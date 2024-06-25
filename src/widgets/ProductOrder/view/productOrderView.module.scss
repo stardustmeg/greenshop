@@ -252,3 +252,8 @@ $color: var(--steam-green-800);
     justify-content: start;
   }
 }
+
+.disabled {
+  filter: opacity(0.5);
+  pointer-events: none;
+}

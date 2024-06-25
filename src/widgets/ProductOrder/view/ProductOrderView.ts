@@ -3,6 +3,7 @@ import type { LanguageChoiceType } from '@/shared/constants/common.ts';
 import type { CartProduct } from '@/shared/types/cart';
 import type { languageVariants } from '@/shared/types/common';
 
+import ButtonModel from '@/shared/Button/model/ButtonModel.ts';
 import LinkModel from '@/shared/Link/model/LinkModel.ts';
 import { TABLET_WIDTH } from '@/shared/constants/common.ts';
 import SVG_DETAIL from '@/shared/constants/svg.ts';
@@ -38,7 +39,7 @@ const TITLE = {
 class ProductOrderView {
   private callback: CallbackActive;
 
-  private deleteButton: HTMLButtonElement;
+  private deleteButton: ButtonModel;
 
   private language: LanguageChoiceType;
 
@@ -72,17 +73,21 @@ class ProductOrderView {
       innerContent: this.productItem.quantity.toString(),
       tag: 'p',
     });
-    this.deleteButton = createBaseElement({ cssClasses: [styles.deleteButton], tag: 'button' });
+    this.deleteButton = new ButtonModel({ classes: [styles.deleteButton] });
     this.view = this.createHTML();
   }
 
   private createDeleCell(): HTMLTableCellElement {
     const tdDelete = createBaseElement({ cssClasses: [styles.td, styles.deleteCell, styles.hide], tag: 'td' });
-    this.deleteButton.addEventListener('click', () => this.callback(CartActive.DELETE));
-    tdDelete.append(this.deleteButton);
+    this.deleteButton.getHTML().addEventListener('click', async () => {
+      this.deleteButton.setDisabled();
+      await this.callback(CartActive.DELETE);
+      this.deleteButton.setEnabled();
+    });
+    tdDelete.append(this.deleteButton.getHTML());
     const svg = document.createElementNS(SVG_DETAIL.SVG_URL, 'svg');
     svg.append(createSVGUse(SVG_DETAIL.DELETE));
-    this.deleteButton.append(svg);
+    this.deleteButton.getHTML().append(svg);
     return tdDelete;
   }
 
@@ -145,19 +150,25 @@ class ProductOrderView {
       cssClasses: [styles.td, styles.quantityCell, styles.quantityText],
       tag: 'td',
     });
-    const plusButton = createBaseElement({
-      cssClasses: [styles.quantityCell, styles.quantityButton],
-      innerContent: TITLE.PLUS,
-      tag: 'button',
+    const plusButton = new ButtonModel({
+      classes: [styles.quantityCell, styles.quantityButton],
+      text: TITLE.PLUS,
     });
-    const minusButton = createBaseElement({
-      cssClasses: [styles.quantityCell, styles.quantityButton],
-      innerContent: TITLE.MINUS,
-      tag: 'button',
+    const minusButton = new ButtonModel({
+      classes: [styles.quantityCell, styles.quantityButton],
+      text: TITLE.MINUS,
     });
-    tdQuantity.append(minusButton, this.quantity, plusButton);
-    plusButton.addEventListener('click', () => this.callback(CartActive.PLUS));
-    minusButton.addEventListener('click', () => this.callback(CartActive.MINUS));
+    tdQuantity.append(minusButton.getHTML(), this.quantity, plusButton.getHTML());
+    plusButton.getHTML().addEventListener('click', async () => {
+      plusButton.setDisabled();
+      await this.callback(CartActive.PLUS);
+      plusButton.setEnabled();
+    });
+    minusButton.getHTML().addEventListener('click', async () => {
+      minusButton.setDisabled();
+      await this.callback(CartActive.MINUS);
+      minusButton.setEnabled();
+    });
     return tdQuantity;
   }
 
@@ -205,7 +216,7 @@ class ProductOrderView {
   }
 
   public getDeleteButton(): HTMLButtonElement {
-    return this.deleteButton;
+    return this.deleteButton.getHTML();
   }
 
   public getHTML(): HTMLTableRowElement {

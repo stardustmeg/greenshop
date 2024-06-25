@@ -55,8 +55,6 @@ class ProductInfoModel {
   }
 
   private addProductToCart(): void {
-    const loader = new LoaderModel(LOADER_SIZE.EXTRA_SMALL).getHTML();
-    this.view.getSwitchToCartButton().getHTML().append(loader);
     getCartModel()
       .addProductToCart({
         name: getLanguageValue(this.params.name),
@@ -70,7 +68,9 @@ class ProductInfoModel {
         EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
       })
       .catch(showErrorMessage)
-      .finally(() => loader.remove());
+      .finally(() => {
+        this.view.getSwitchToCartButton().setEnabled();
+      });
   }
 
   private checkPath(savedPath: string): string {
@@ -90,8 +90,6 @@ class ProductInfoModel {
   private deleteProductFromCart(cart: Cart): void {
     const currentProduct = cart.products.find((product) => product.key === this.params.key);
     if (currentProduct) {
-      const loader = new LoaderModel(LOADER_SIZE.EXTRA_SMALL).getHTML();
-      this.view.getSwitchToCartButton().getHTML().append(loader);
       getCartModel()
         .deleteProductFromCart(currentProduct)
         .then(() => {
@@ -100,7 +98,9 @@ class ProductInfoModel {
           EventMediatorModel.getInstance().notify(MEDIATOR_EVENT.REDRAW_PRODUCTS, '');
         })
         .catch(showErrorMessage)
-        .finally(() => loader.remove());
+        .finally(() => {
+          this.view.getSwitchToCartButton().setEnabled();
+        });
     }
   }
 
@@ -195,8 +195,10 @@ class ProductInfoModel {
 
   private switchToCartButtonHandler(): void {
     const switchToCartButton = this.view.getSwitchToCartButton();
-
     switchToCartButton.getHTML().addEventListener('click', () => {
+      const loader = new LoaderModel(LOADER_SIZE.EXTRA_SMALL).getHTML();
+      switchToCartButton.getHTML().append(loader);
+      switchToCartButton.setDisabled();
       getCartModel()
         .getCart()
         .then((cart) => {
