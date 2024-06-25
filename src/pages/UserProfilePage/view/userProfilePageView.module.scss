@@ -1,0 +1,28 @@
+@import 'src/app/styles/mixins';
+
+.userProfilePage {
+  position: relative;
+  display: block;
+  padding: 0 var(--small-offset);
+  animation: show 0.2s ease-out forwards;
+}
+
+.userProfileWrapper {
+  display: flex;
+  justify-content: space-evenly;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}

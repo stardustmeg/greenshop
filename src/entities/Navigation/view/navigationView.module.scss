@@ -1,0 +1,28 @@
+@import 'src/app/styles/mixins';
+
+.navigation {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  order: 2;
+  margin: 0 auto;
+  height: calc(var(--extra-small-offset) * 3.5); // 70px
+
+  @media (max-width: 768px) {
+    align-self: auto;
+    justify-content: space-between;
+    margin: 0;
+  }
+}
+
+$color: var(--noble-gray-1100);
+$padding: 0 calc(var(--extra-small-offset) / 2);
+
+.link {
+  @include link($padding, $color);
+}
+
+.active {
+  @include active;
+}

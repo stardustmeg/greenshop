@@ -1,0 +1,50 @@
+@import 'src/app/styles/mixins';
+
+.userInfoWrapper {
+  position: relative;
+  display: grid;
+  align-items: center;
+  grid-template-rows: 5.5rem auto auto auto auto 5.5rem;
+  margin: 0 auto;
+  padding: var(--small-offset);
+  width: 65%;
+  font: var(--basic-regular-font);
+  line-break: break-all;
+  letter-spacing: var(--one);
+  color: var(--noble-gray-900);
+  background-color: var(--steam-green-900);
+  gap: var(--extra-small-offset);
+
+  @media (max-width: 768px) {
+    margin: 0;
+    padding: var(--extra-small-offset);
+    width: 100%;
+  }
+}
+
+.keyLogo {
+  @include svg-logo;
+}
+
+.editPasswordButton {
+  @include round-btn;
+
+  grid-row: 1;
+  margin-right: 0;
+  margin-left: auto;
+}
+
+.info {
+  border-radius: var(--medium-br);
+  padding: var(--extra-small-offset);
+  max-width: 100%;
+  word-break: break-all;
+  color: var(--steam-green-400);
+  background: var(--white-tr);
+}
+
+.editInfoButton {
+  @include green-btn;
+
+  grid-row: 6;
+}

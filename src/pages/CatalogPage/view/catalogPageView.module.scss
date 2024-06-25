@@ -1,0 +1,21 @@
+.catalogPage {
+  position: relative;
+  display: block;
+  padding: 0 var(--small-offset);
+  animation: show 0.2s ease-out forwards;
+
+  @media (max-width: 768px) {
+    padding: 0 var(--tiny-offset);
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}

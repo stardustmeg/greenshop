@@ -1,0 +1,134 @@
+@import 'src/app/styles/mixins';
+
+.addressItem {
+  position: relative;
+  display: grid;
+  align-items: center;
+  border-radius: var(--medium-br);
+  padding: var(--small-offset);
+  background: var(--white-tr);
+  gap: var(--extra-small-offset) var(--tiny-offset);
+}
+
+.labelsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  grid-row: 1;
+  gap: var(--tiny-offset);
+}
+
+.addressType {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--medium-br);
+  padding: var(--tiny-offset);
+  min-width: 8rem;
+  font: var(--small-font);
+  text-align: center;
+  color: var(--black);
+  background-color: var(--steam-green-900);
+  transition: scale 0.2s;
+
+  &:hover {
+    cursor: pointer;
+    scale: 1.05;
+  }
+
+  &:active {
+    scale: 0.95;
+  }
+}
+
+.billing {
+  order: 1;
+  background-color: var(--steam-green-1000);
+}
+
+.shipping {
+  order: 2;
+  background-color: var(--steam-green-1000);
+}
+
+.defaultBilling {
+  order: 3;
+  background-color: var(--steam-green-300);
+}
+
+.defaultShipping {
+  order: 4;
+  background-color: var(--steam-green-300);
+}
+
+.inactive {
+  filter: grayscale(1);
+  transition:
+    filter 0.2s,
+    scale 0.2s;
+}
+
+.editButton,
+.deleteButton {
+  @include green-btn;
+
+  padding: 0;
+  width: calc(var(--extra-small-offset) * 1.5);
+  height: calc(var(--extra-small-offset) * 1.5);
+  background-color: transparent;
+
+  svg {
+    width: calc(var(--extra-small-offset) * 1.5);
+    height: calc(var(--extra-small-offset) * 1.5);
+
+    &:hover {
+      fill: var(--steam-green-800);
+      stroke: var(--steam-green-800);
+    }
+  }
+
+  &:hover {
+    filter: brightness(1);
+  }
+}
+
+.buttonsWrapper {
+  display: flex;
+  grid-row: 1;
+  margin-left: auto;
+  gap: var(--tiny-offset);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    grid-row: 2;
+  }
+}
+
+.addressTextWrapper {
+  display: flex;
+  flex-direction: column;
+  grid-row: 2;
+  gap: var(--tiny-offset);
+}
+
+.citySpan,
+.streetNameSpan,
+.postalCodeSpan,
+.countrySpan {
+  font: var(--basic-regular-font);
+  letter-spacing: var(--one);
+  word-break: break-all;
+  color: var(--steam-green-400);
+}
+
+.disabled {
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    border-radius: var(--medium-br);
+    backdrop-filter: blur(5px);
+    inset: 0;
+  }
+}

@@ -1,0 +1,423 @@
+@import 'src/app/styles/mixins';
+
+.header {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  border-bottom: var(--one) solid var(--steam-green-300);
+  width: 100%;
+  background-color: var(--noble-gray-1000);
+  backdrop-filter: blur(10px);
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0 var(--small-offset);
+
+  @media (max-width: 768px) {
+    display: grid;
+    padding: 0;
+    padding-block-start: 3rem;
+  }
+}
+
+.navigationWrapper {
+  position: fixed;
+  right: -100%;
+  top: calc(var(--tiny-offset) * 6.9); // 69px
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  order: 3;
+  padding: calc(var(--extra-small-offset) * 3.5) var(--extra-small-offset) 0; // 70px
+  width: 20%;
+  height: 100dvh;
+  background-color: var(--noble-gray-1000);
+  transform: none;
+  transition: transform 0.3s;
+  backdrop-filter: blur(10px);
+  gap: var(--medium-offset);
+
+  @media (max-width: 768px) {
+    top: calc(var(--extra-small-offset) * 6);
+    grid-row: 2;
+    width: 45%;
+  }
+
+  &.open {
+    transform: translateX(-500%);
+
+    @media (max-width: 768px) {
+      transform: translateX(-220%);
+    }
+  }
+}
+
+.logo {
+  position: absolute;
+  order: 1;
+  width: var(--small-offset);
+  height: var(--small-offset);
+
+  svg {
+    width: var(--small-offset);
+    height: var(--small-offset);
+    fill: var(--steam-green-800);
+    transition: filter 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        filter: brightness(1.3);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    top: 0;
+    grid-row: 1;
+    margin-top: calc(var(--tiny-offset) * 1.5);
+    margin-left: calc(var(--extra-small-offset) * 1.5);
+  }
+}
+
+.logoutButton {
+  @include green-btn;
+
+  order: 5;
+}
+
+.cartLink,
+.wishListLink,
+.profileLink,
+.addressesLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: var(--small-offset);
+    height: var(--small-offset);
+    fill: var(--noble-gray-1100);
+    transition: fill 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        fill: var(--steam-green-800);
+      }
+    }
+  }
+}
+
+.cartLink {
+  position: absolute;
+  right: calc(var(--extra-small-offset) * 6);
+
+  svg {
+    width: calc(var(--small-offset) / 1.5);
+    height: calc(var(--small-offset) / 1.5);
+  }
+
+  @media (max-width: 768px) {
+    top: calc(var(--extra-small-offset) * 1.2);
+  }
+}
+
+.wishListLink {
+  position: absolute;
+  right: calc(var(--extra-small-offset) * 3.65);
+
+  svg {
+    width: calc(var(--small-offset) / 1.5);
+    height: calc(var(--small-offset) / 1.5);
+    fill: none;
+    stroke: var(--noble-gray-1100);
+    stroke-width: 4px;
+    transition:
+      stroke 0.2s,
+      fill 0.2s;
+  }
+
+  @media (max-width: 768px) {
+    top: calc(var(--extra-small-offset) * 1.2);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        fill: none;
+        stroke: var(--steam-green-800);
+      }
+    }
+  }
+}
+
+.cartLinkActive {
+  pointer-events: none;
+
+  svg {
+    fill: var(--steam-green-800);
+  }
+}
+
+.wishListLinkActive {
+  pointer-events: none;
+
+  svg {
+    fill: none;
+    stroke: var(--steam-green-800);
+  }
+}
+
+.profileLink {
+  order: 1;
+
+  svg {
+    stroke: var(--noble-gray-1100);
+    transition: stroke 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        stroke: var(--steam-green-800);
+      }
+    }
+  }
+}
+
+.addressesLink {
+  order: 2;
+}
+
+.profileLinkActive,
+.addressesLinkActive {
+  pointer-events: none;
+
+  svg {
+    fill: var(--steam-green-800);
+    stroke: var(--steam-green-800);
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.burgerButton {
+  position: absolute;
+  right: calc(var(--extra-small-offset) * 1.5);
+  z-index: 10;
+  order: 4;
+  width: calc(var(--tiny-offset) * 2.5);
+  height: var(--extra-small-offset);
+
+  @media (max-width: 768px) {
+    top: calc(var(--extra-small-offset) * 1.5);
+    grid-row: 1;
+  }
+}
+
+.burgerLine {
+  position: absolute;
+  border-radius: var(--two);
+  background-color: var(--noble-gray-1100);
+  transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
+  pointer-events: none;
+}
+
+.burgerButton:hover .burgerLine:nth-child(1),
+.burgerButton:hover .burgerLine:nth-child(2),
+.burgerButton:hover .burgerLine:nth-child(3) {
+  background-color: var(--steam-green-800);
+}
+
+.burgerButton:not(.open):hover .burgerLine:nth-child(1),
+.burgerButton:not(.open):hover .burgerLine:nth-child(2),
+.burgerButton:not(.open):hover .burgerLine:nth-child(3) {
+  left: 0;
+  display: block;
+  width: 100%;
+  height: var(--two); // 2px
+  transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
+}
+
+.burgerButton:not(.open):hover .burgerLine:nth-child(1) {
+  top: -var(--two); // -2px
+}
+
+.burgerButton:not(.open):hover .burgerLine:nth-child(2) {
+  top: calc(var(--tiny-offset) * 0.9); // 9px
+}
+
+.burgerButton:not(.open):hover .burgerLine:nth-child(3) {
+  bottom: -var(--two); // -2px
+}
+
+.burgerButton > .burgerLine:nth-child(1),
+.burgerButton > .burgerLine:nth-child(2),
+.burgerButton > .burgerLine:nth-child(3) {
+  position: absolute;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: var(--two);
+}
+
+.burgerButton > .burgerLine:nth-child(1) {
+  top: 0;
+}
+
+.burgerButton > .burgerLine:nth-child(2) {
+  top: calc(var(--tiny-offset) * 0.9); // 9px
+}
+
+.burgerButton > .burgerLine:nth-child(3) {
+  bottom: 0;
+}
+
+.burgerButton.open {
+  transform: rotate(-90deg);
+}
+
+.burgerButton.open .burgerLine:nth-child(1),
+.burgerButton.open .burgerLine:nth-child(2),
+.burgerButton.open .burgerLine:nth-child(3) {
+  background-color: var(--steam-green-800);
+  transition: 0.3s cubic-bezier(0.8, 0.5, 0.2, 1.4);
+}
+
+.burgerButton.open .burgerLine:nth-child(1) {
+  left: calc(var(--one) * 1.5); // 1.5px
+  top: calc(var(--tiny-offset) * 1.1); // 11px
+  width: calc(var(--extra-small-offset) * 1.1); // 20px
+  transform: rotate(90deg);
+  transition-delay: 150ms;
+}
+
+.burgerButton.open .burgerLine:nth-child(2) {
+  left: 0;
+  top: calc(var(--tiny-offset) * 1.7); // 17px
+  width: calc(var(--tiny-offset) * 1.5); // 15px
+  transform: rotate(45deg);
+  transition-delay: 50ms;
+}
+
+.burgerButton.open .burgerLine:nth-child(3) {
+  left: calc(var(--tiny-offset)); // 10px
+  top: calc(var(--tiny-offset) * 1.7); // 17px
+  width: calc(var(--tiny-offset) * 1.5); // 15px
+  transform: rotate(-45deg);
+  transition-delay: 100ms;
+}
+
+.stopScroll {
+  overflow: hidden;
+}
+
+.switchThemeLabel {
+  @include switchLabel;
+
+  order: 3;
+}
+
+.switchThemeCheckbox {
+  @include switchCheckbox;
+
+  &:checked {
+    + .switchThemeLabelSpan::before {
+      background-color: var(--steam-green-1100);
+      transform: translate(calc(var(--small-offset) + calc(var(--one) * 2)), -50%);
+    }
+  }
+}
+
+.switchThemeLabelSpan {
+  @include switchLabelSpan;
+}
+
+.darkSVG,
+.lightSVG {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: calc(var(--small-offset) / 1.5);
+  height: calc(var(--small-offset) / 1.5);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.darkSVG {
+  left: var(--five);
+  fill: var(--noble-gray-800);
+}
+
+.lightSVG {
+  right: var(--five);
+  fill: var(--white);
+}
+
+.switchLanguageLabel {
+  @include switchLabel;
+
+  order: 4;
+
+  &:disabled {
+    background-color: var(--noble-gray-300);
+    pointer-events: none;
+  }
+}
+
+.switchLanguageCheckbox {
+  @include switchCheckbox;
+
+  &:checked {
+    + .switchLanguageLabelSpan::before {
+      transform: translate(calc(var(--small-offset) + calc(var(--one) * 3)), -50%);
+    }
+  }
+}
+
+.switchLanguageLabelSpan {
+  @include switchLabelSpan(var(--noble-gray-tr-800), var(--noble-gray-tr-900));
+}
+
+.enSVG,
+.ruSVG {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  border-radius: 50%;
+  width: calc(var(--small-offset) / 1.5);
+  height: calc(var(--small-offset) / 1.5);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.enSVG {
+  left: calc(var(--one) * 5); // 5px
+}
+
+.ruSVG {
+  right: calc(var(--one) * 5);
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}

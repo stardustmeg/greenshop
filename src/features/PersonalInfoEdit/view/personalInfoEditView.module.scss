@@ -1,0 +1,100 @@
+@import 'src/app/styles/mixins';
+
+.wrapper {
+  display: grid;
+  place-items: center center;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  border-bottom: var(--tiny-offset) solid var(--steam-green-800);
+  padding: var(--small-offset);
+  height: max-content;
+  max-width: max-content;
+  background-color: var(--noble-white-100);
+  gap: calc(var(--extra-small-offset) * 1.5) var(--extra-small-offset);
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(4, auto);
+    padding: var(--medium-offset);
+    min-width: calc(var(--extra-large-offset) * 4.5);
+  }
+
+  @media (max-width: 480px) {
+    padding: var(--small-offset);
+    min-width: calc(var(--extra-large-offset) * 3.5);
+  }
+}
+
+.labelEmail {
+  grid-column: 2 span;
+  grid-row: 2;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+  }
+}
+
+.saveChangesButton,
+.cancelButton {
+  @include green-btn;
+
+  margin: 0 auto;
+  padding: calc(var(--small-offset) / 3) var(--small-offset);
+  height: max-content;
+}
+
+.saveChangesButton {
+  display: flex;
+  grid-column: 2;
+  grid-row: 3;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+  }
+}
+
+.cancelButton {
+  grid-column: 1;
+  grid-row: 3;
+
+  @media (max-width: 768px) {
+    grid-row: 4;
+  }
+}
+
+.label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  color: var(--noble-gray-800);
+  gap: calc(var(--extra-small-offset) / 2);
+}
+
+.input {
+  border: 1px solid var(--noble-gray-200);
+  border-radius: var(--small-br);
+  padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
+  padding-right: calc(var(--small-offset) * 1.5);
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  color: var(--noble-gray-800);
+  transition: border 0.2s;
+  cursor: text;
+
+  &::placeholder {
+    color: var(--noble-gray-600);
+  }
+
+  &:focus {
+    border: 1px solid var(--steam-green-800);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      border: 1px solid var(--steam-green-800);
+    }
+  }
+}

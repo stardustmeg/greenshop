@@ -1,0 +1,141 @@
+:root {
+  // body wrapper
+  --wrapper-width: calc(var(--large-offset) * 18); // 1440px
+
+  // small vars
+  --one: 0.0625rem; // 1px
+  --two: 0.125rem; // 2px
+  --five: 0.3125rem; // 5px
+
+  // offsets
+  --tiny-offset: calc(var(--extra-small-offset) / 2); // 10px
+  --extra-small-offset: 1.25rem; // 20px
+  --small-offset: 2.5rem; // 40px
+  --medium-offset: 3.75rem; // 60px
+  --large-offset: 5rem; // 80px
+  --extra-large-offset: 6.25rem; // 100px
+
+  // border-radius
+  --large-br: var(--extra-small-offset); // 20px
+  --medium-br: calc(var(--large-br) / 2); // 10px
+  --small-br: calc(var(--large-br) / 4); // 5px
+
+  // shadows
+  --mellow-shadow-050: 0 0 20px rgb(0 0 0 / 6%);
+  --mellow-shadow-100: rgb(0 0 0 / 19%) 0 10px 20px, rgb(0 0 0 / 23%) 0 6px 6px;
+  --mellow-shadow-200: hsl(0deg 0% 100% / 10%) 0 1px 1px 0 inset, rgb(50 50 93 / 25%) 0 50px 100px -20px,
+    rgb(0 0 0 / 30%) 0 30px 60px -30px;
+  --mellow-shadow-300: rgb(0 0 0 / 25%) 0 14px 28px, rgb(0 0 0 / 22%) 0 10px 10px;
+  --mellow-shadow-400: rgb(0 0 0 / 9%) 0 2px 1px, rgb(0 0 0 / 9%) 0 4px 2px, rgb(0 0 0 / 9%) 0 8px 4px,
+    rgb(0 0 0 / 9%) 0 16px 8px, rgb(0 0 0 / 9%) 0 32px 16px;
+  --mellow-shadow-500: 0 0 10px 0 rgb(0 0 0 / 10%);
+  --mellow-shadow-600: 0 1px 5px #353535;
+
+  // fonts
+  --small-font: 400 0.625rem 'Cerapro', sans-serif; // 10px
+  --regular-font: 400 0.8125rem 'Cerapro', sans-serif; // 13px
+  --basic-regular-font: 400 1.125rem 'Cerapro', sans-serif; // 18px
+  --extra-regular-font: 500 1.5rem 'Cerapro', sans-serif; // 24px
+  --medium-font: 500 1.25rem 'Cerapro', sans-serif; // 20px
+  --extra-medium-font: 500 1.875rem 'Cerapro', sans-serif; // 30px
+  --bold-font: 700 1rem 'Cerapro', sans-serif; // 16px
+  --medium-bold-font: 700 1.125rem 'Cerapro', sans-serif; // 18px
+  --extra-bold-font: 700 2.1875rem 'Cerapro', sans-serif; // 35px
+  --black-font: 900 2.1875rem 'Cerapro', sans-serif; // 35px
+  --extra-black-font: 900 2.5rem 'Cerapro', sans-serif; // 40px
+  --super-large-font: 900 4.4rem 'Cerapro', sans-serif; // 70px
+
+  body.light {
+    // colors
+    // basic colors:
+    --white: #fff; // table background, buttons text, blog post footer, blog text background, user menu, form background
+    --button-white: #fff; // buttons text
+
+    // backgrounds:
+    --noble-white-100: #f5f5f5; // page background, edit forms background
+    --noble-white-200: #f0f0f0; // catalog filters background and product cards
+    --white-tr: #ffffffa9; // footer background, modal background, pagination background, card buttons background
+    --noble-gray-200: #eaeaea; // loader / input basic
+    --noble-gray-1000: #1a1a1ab5; // header background
+    --steam-green-900: #46a3581a; // blog background, personal info background
+    --steam-green-1000: #46a35937; // footer links background, pics round thingies
+    --noble-gray-1200: #091e420f; // about us cards
+    --noble-gray-1300: #ffffffd6; // about us cards modal
+
+    // tranparent colors:
+    --noble-gray-tr-800: #acacacbd; // not active labels, tumblers
+    --noble-gray-tr-900: #c4c4c4a8; // not active labels, tumblers
+    --steam-green-300: #46a35880; // header outline, social media buttons outline
+    --noble-gray-tr-1000: #1a1a1a32; // header background
+
+    // outline:
+    --noble-gray-300: #cbcbcb; // item cards and pagination outline
+
+    // text colors:
+    --black: #000; // blog titles, footer titles
+    --red-power-600: #d0302f; // error messages, form errors
+    --noble-gray-400: #c4c4c4; // item cards description
+    --noble-gray-500: #acacac; // form titles
+    --noble-gray-600: #a5a5a5; // placeholders
+    --noble-gray-700: #727272; // blog/footer text
+    --noble-gray-800: #3d3d3d; // links, labels, base text, disabled svg, filters, descriptions
+    --noble-gray-900: #1d1d1d; // user profile text, buttons
+    --noble-gray-1100: #c4c4c4; // navigation links
+
+    // highlight colors:
+    --steam-green-400: #4b8f3a; // price inputs, filter highlight, pagination active, product info titles
+    --steam-green-500: #5a9f50; // new price, product name, filter titles
+    --steam-green-700: #70d27a; // price slider, more, added to wishlist
+    --steam-green-800: #46a358; // main green: buttons, logo, active links, burger, scroll, blog posts details, cart price, active svg
+    --steam-green-1100: #a7e599; // theme tumbler round thingy
+    --steam-green-1200: #008500; // hover footer links
+  }
+
+  body.dark {
+    // colors
+    // colors that mustn't change
+    --button-white: #fff; // buttons text
+    --red-power-600: #d0302f; // error messages, form errors
+    --steam-green-300: #46a35880; // header outline, social media buttons outline
+    --steam-green-700: #70d27a; // price slider, more, added to wishlist
+    --steam-green-800: #46a358; // main green: buttons, logo, active links, burger, scroll, blog posts details, cart price, active svg
+    --steam-green-900: #46a3581a; // blog background, personal info background
+    --steam-green-1000: #46a35937; // footer links background, pics round thingies
+    --steam-green-1100: #a7e599; // theme tumbler round thingy
+    --noble-gray-1000: #1a1a1ab5; // header background
+    --noble-gray-tr-900: #c4c4c4a8; // not active labels, tumblers
+    --noble-gray-1100: #ccc; // navigation links
+
+    // basic colors:
+
+    --white: #000; // table background, buttons text, blog post footer, blog text background, user menu, form background
+
+    // backgrounds:
+    --noble-white-100: #2b2b2b; // page background, edit forms background
+    --noble-white-200: #4a4a4a; // catalog filters background and product cards
+    --white-tr: #1a1a1ab5; // footer background, modal background, pagination background, card buttons background
+    --noble-gray-200: #f6f6f6; // loader / input basic
+    --noble-gray-1200: #a1bdd914; // about us cards
+    --noble-gray-1300: #080808a8; // about us cards modal
+
+    // tranparent colors:
+    --noble-gray-tr-800: #acacacbd; // not active labels, tumblers
+
+    // outline:
+    --noble-gray-300: #dcdbdb; // item cards and pagination outline
+
+    // text colors:
+    --black: #fff; // blog titles, footer titles
+    --noble-gray-400: #ddd; // item cards description
+    --noble-gray-500: #cfcfcf; // form titles
+    --noble-gray-600: #cdcdcd; // placeholders
+    --noble-gray-700: #b0b0b0; // blog/footer text
+    --noble-gray-800: #c4c4c4; // links, labels, base text, disabled svg, filters, descriptions
+    --noble-gray-900: #f5f5f5; // user profile text, buttons
+
+    // highlight colors:
+    --steam-green-400: #c8f4b4; // price inputs, filter highlight, pagination active, product info titles
+    --steam-green-500: #b6f09c; // new price, product name, filter titles
+    --steam-green-1200: #a7e599; // hover footer links
+  }
+}

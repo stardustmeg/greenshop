@@ -1,0 +1,45 @@
+@import 'src/app/styles/mixins';
+
+.wrapper {
+  display: grid;
+  place-items: center center;
+  grid-template-rows: repeat(auto, auto);
+  border-bottom: var(--tiny-offset) solid var(--steam-green-800);
+  padding: var(--small-offset);
+  height: max-content;
+  background-color: var(--noble-white-100);
+
+  @media (max-width: 768px) {
+    min-width: calc(var(--extra-large-offset) * 4.5);
+  }
+
+  @media (max-width: 480px) {
+    padding: var(--tiny-offset);
+    padding-bottom: calc(var(--tiny-offset) + var(--tiny-offset));
+    min-width: calc(var(--extra-large-offset) * 3.5);
+  }
+}
+
+.saveChangesButton,
+.cancelButton {
+  @include green-btn;
+
+  grid-row: 5;
+  margin-top: var(--tiny-offset);
+}
+
+.cancelButton {
+  grid-column: 1;
+
+  @media (max-width: 768px) {
+    grid-row: 6;
+  }
+}
+
+.saveChangesButton {
+  grid-column: 2;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+  }
+}

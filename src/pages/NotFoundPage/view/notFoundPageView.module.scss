@@ -1,0 +1,61 @@
+@import 'src/app/styles/mixins';
+
+.notFoundPage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  margin: 0 var(--small-offset);
+  border-bottom: var(--tiny-offset) solid var(--steam-green-800);
+  border-radius: var(--medium-br);
+  padding: var(--small-offset);
+  padding-bottom: calc(var(--extra-large-offset) / 2 + calc(var(--extra-small-offset) / 2));
+  max-width: calc(var(--extra-large-offset) * 5);
+  background-color: var(--white);
+  animation: show 0.2s ease-out forwards;
+  gap: var(--extra-small-offset);
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    display: flex;
+    opacity: 1;
+  }
+}
+
+.pageLogo {
+  display: flex;
+  margin: 0 auto;
+
+  svg {
+    width: calc(var(--extra-large-offset) * 2);
+    height: calc(var(--extra-large-offset) * 2);
+  }
+}
+
+.pageTitle {
+  display: flex;
+  align-self: center;
+  font: var(--extra-medium-font);
+  letter-spacing: var(--one);
+  color: var(--steam-green-800);
+}
+
+.pageDescription {
+  align-self: center;
+  padding: var(--extra-small-offset);
+  font: var(--regular-font) '*' 1.5;
+  letter-spacing: var(--one);
+  text-align: center;
+  color: var(--noble-gray-700);
+}
+
+.toMainButton {
+  @include green-btn;
+
+  align-self: center;
+}

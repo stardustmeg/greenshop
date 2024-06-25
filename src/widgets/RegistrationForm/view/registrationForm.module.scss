@@ -1,0 +1,29 @@
+@import 'src/app/styles/mixins';
+
+.registrationForm {
+  display: grid;
+  grid-column: 2 span;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat((6, max-content));
+  margin: 0 auto;
+  width: 100%;
+  gap: var(--extra-small-offset);
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.submitFormButton {
+  @include green-btn;
+
+  grid-column: 2 span;
+  grid-row: 5;
+  padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
+  max-height: var(--small-offset);
+  font: var(--bold-font);
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+  }
+}

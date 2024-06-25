@@ -1,0 +1,26 @@
+@import 'src/app/styles/mixins';
+
+.userAddressesPage {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  width: 65%;
+  animation: show 0.2s ease-out forwards;
+
+  @media (max-width: 768px) {
+    margin: 0;
+    padding: var(--extra-small-offset);
+    width: 100%;
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}

@@ -1,0 +1,28 @@
+@import 'src/app/styles/mixins';
+
+.submitFormButton {
+  @include green-btn;
+
+  place-self: center center;
+  grid-column: 2 span;
+  grid-row: 2;
+  padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
+  font: var(--bold-font);
+}
+
+.loginForm {
+  display: grid;
+  grid-column: 2 span;
+  grid-template-rows: repeat((2, max-content));
+  margin: var(--small-offset) auto;
+  width: 100%;
+  gap: var(--extra-small-offset);
+
+  .loginCredentialsWrapper {
+    display: flex;
+    flex-direction: column;
+    grid-column: 2 span;
+    padding: 0;
+    width: 100%;
+  }
+}

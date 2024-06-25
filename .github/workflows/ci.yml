@@ -1,0 +1,56 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - sprint-2
+      - sprint-3
+      - sprint-4
+      - sprint-5
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Format code with Prettier
+        run: npm run ci:format
+
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      VITE_APP_CTP_PROJECT_KEY: ${{ secrets.VITE_APP_CTP_PROJECT_KEY }}
+      VITE_APP_CTP_SCOPES: ${{ secrets.VITE_APP_CTP_SCOPES }}
+      VITE_APP_CTP_CLIENT_ID: ${{ secrets.VITE_APP_CTP_CLIENT_ID }}
+      VITE_APP_CTP_CLIENT_SECRET: ${{ secrets.VITE_APP_CTP_CLIENT_SECRET }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Vitest tests
+        run: npm test
+
+      - name: Generate coverage report
+        run: npm run coverage

@@ -1,0 +1,89 @@
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s,
+    backdrop-filter 0.2s;
+  backdrop-filter: blur(5px);
+
+  &_hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.modalOverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #27272760;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+
+  &_hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.modalContent {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  overflow: hidden scroll;
+  border: var(--two) solid var(--noble-black-500);
+  border-radius: var(--border-radius);
+  max-width: 95%;
+  max-height: 80vh;
+  font: var(--small-font);
+  letter-spacing: var(--one);
+  color: var(--steam-green-500);
+  background-color: var(--noble-black-700);
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+
+  &_hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  &::-webkit-scrollbar {
+    border-radius: var(--medium-br);
+    width: var(--five);
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: var(--medium-br);
+    background: var(--white-tr);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: var(--medium-br);
+    background-color: var(--steam-green-800);
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    width: max-content;
+  }
+}
+
+.stopScroll {
+  overflow-y: hidden;
+}

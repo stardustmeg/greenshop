@@ -1,0 +1,44 @@
+.serverMessageWrapper {
+  position: fixed;
+  left: 0;
+  top: 20%;
+  z-index: 15;
+  border: var(--two) solid var(--steam-green-800);
+  border-top: var(--tiny-offset) solid var(--steam-green-800);
+  border-radius: var(--medium-br);
+  padding: calc(var(--extra-small-offset) / 2) var(--extra-small-offset);
+  max-width: calc(var(--extra-large-offset) * 2);
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  word-break: break-word;
+  text-align: center;
+  background-color: var(--white);
+  transform: translateX(-110%);
+}
+
+.progressBar {
+  margin-top: var(--tiny-offset);
+  margin-bottom: calc(var(--tiny-offset) / 2);
+  border-radius: var(--medium-br);
+  height: 0.1rem;
+  background-color: var(--steam-green-800);
+  transform: scaleX(0);
+}
+
+.error {
+  border-color: var(--red-power-600);
+  color: var(--red-power-600);
+
+  .progressBar {
+    background-color: var(--red-power-600);
+  }
+}
+
+.success {
+  border-color: var(--steam-green-800);
+  color: var(--steam-green-800);
+
+  .progressBar {
+    background-color: var(--steam-green-800);
+  }
+}

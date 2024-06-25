@@ -1,0 +1,63 @@
+.blog {
+  flex-grow: 1;
+  padding: 0 var(--small-offset);
+}
+
+.pageTitle {
+  margin: var(--extra-small-offset);
+  max-width: 25rem;
+  font: var(--extra-regular-font);
+  letter-spacing: var(--one);
+  color: var(--black);
+}
+
+.postList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0 auto;
+  gap: var(--extra-small-offset);
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.wrap {
+  position: relative;
+  z-index: -1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0;
+  margin-bottom: var(--extra-small-offset);
+  padding: var(--medium-offset);
+  background-image: url('/img/webp/blog-logo.webp');
+  background-position: right top;
+  background-position-y: calc(-1 * var(--extra-large-offset));
+  background-size: calc(var(--extra-large-offset) * 2.5);
+  background-repeat: no-repeat;
+  background-color: var(--steam-green-900);
+  gap: 0.5rem;
+}
+
+.pageDescription {
+  margin: 0 var(--extra-small-offset);
+  max-width: 25rem;
+  font: var(--regular-font);
+  letter-spacing: var(--one);
+  color: var(--noble-gray-700);
+}
+
+.blogLogo {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 0;
+  height: 100%;
+  max-width: 100%;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}

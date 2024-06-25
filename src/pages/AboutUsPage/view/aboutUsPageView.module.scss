@@ -1,0 +1,60 @@
+.aboutUsPage {
+  position: relative;
+  display: block;
+  padding: 0 var(--small-offset);
+  animation: show 0.2s ease-out forwards;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}
+
+.title {
+  margin-bottom: var(--small-offset);
+  font: var(--black-font);
+  letter-spacing: var(--one);
+  color: var(--steam-green-1200);
+}
+
+.cardsList {
+  display: flex;
+  justify-content: center;
+  gap: var(--small-offset);
+
+  @media (max-width: 840px) {
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.logo {
+  display: flex;
+  margin: 0 auto;
+  margin-top: var(--small-offset);
+  width: max-content;
+
+  svg {
+    width: 11rem;
+    height: 4rem;
+    transition: fill 0.1s;
+
+    use {
+      transition: fill 0.1s;
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        fill: var(--steam-green-1200);
+      }
+    }
+  }
+}
