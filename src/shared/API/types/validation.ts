@@ -1,3 +1,4 @@
+import type { ChannelMessageType } from '@/shared/types/channel';
 import type {
   AttributePlainEnumValue,
   Cart,
@@ -258,5 +259,16 @@ export function isProductDiscountPagedQueryResponse(data: unknown): data is Prod
       typeof data.total === 'number' &&
       'results' in data &&
       Array.isArray(data.results),
+  );
+}
+
+export function isChannelMessage(data: unknown): data is ChannelMessageType {
+  return Boolean(
+    typeof data === 'object' &&
+      data &&
+      'type' in data &&
+      typeof data.type === 'string' &&
+      'cart' in data &&
+      data.cart !== undefined,
   );
 }

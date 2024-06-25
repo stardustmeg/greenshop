@@ -208,7 +208,7 @@ class ProductOrderView {
     return this.deleteButton;
   }
 
-  public getHTML(): HTMLDivElement {
+  public getHTML(): HTMLTableRowElement {
     return this.view;
   }
 

@@ -316,6 +316,11 @@ class CartPageView {
     });
   }
 
+  public addItem(productsItem: ProductOrderModel): void {
+    this.productRow.push(productsItem.getHTML());
+    this.tableBody?.append(productsItem.getHTML());
+  }
+
   public getCouponButton(): HTMLButtonElement {
     return this.couponButton;
   }
@@ -332,7 +337,10 @@ class CartPageView {
     this.productRow.map((productEl) => productEl.remove());
     this.productRow = [];
     this.addTableHeader();
-    productsItem.forEach((productEl) => this.tableBody?.append(productEl.getHTML()));
+    productsItem.forEach((productEl) => {
+      this.productRow.push(productEl.getHTML());
+      this.tableBody?.append(productEl.getHTML());
+    });
     this.addTotalInfo();
   }
 

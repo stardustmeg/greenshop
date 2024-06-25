@@ -94,7 +94,7 @@ class ProductOrderModel {
     }
   }
 
-  public getHTML(): HTMLDivElement {
+  public getHTML(): HTMLTableRowElement {
     return this.view.getHTML();
   }
 

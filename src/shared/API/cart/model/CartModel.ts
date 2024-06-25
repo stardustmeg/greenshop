@@ -12,6 +12,7 @@ import type {
 import getStore from '@/shared/Store/Store.ts';
 import { setAnonymousCartId, setAnonymousId } from '@/shared/Store/actions.ts';
 import { PRICE_FRACTIONS } from '@/shared/constants/product.ts';
+import { ChannelMessage } from '@/shared/types/channel.ts';
 import { showErrorMessage } from '@/shared/utils/userMessage.ts';
 
 import type { OptionsRequest } from '../../types/type.ts';
@@ -36,9 +37,12 @@ type Callback = (cart: Cart) => boolean;
 export class CartModel {
   private callback: Callback[] = [];
 
+  private channel: BroadcastChannel;
+
   private root: CartApi;
 
   constructor() {
+    this.channel = new BroadcastChannel(`${import.meta.env.VITE_APP_CTP_PROJECT_KEY}`);
     this.root = new CartApi();
     this.getCart()
       .then((cart) => {
@@ -163,10 +167,6 @@ export class CartModel {
     await Promise.all(otherCarts.map((id) => this.root.deleteCart(id)));
   }
 
-  private dispatchUpdate(cart: Cart): void {
-    this.callback.forEach((callback) => callback(cart));
-  }
-
   private async getAnonymousCart(anonymousCartId: string): Promise<Cart | null> {
     const data = await this.root.getAnonymCart(anonymousCartId);
     if (!data.body.customerId) {
@@ -283,6 +283,7 @@ export class CartModel {
     const data = await this.root.updateCart(cart, actions);
     const result = this.getCartFromData(data);
     this.dispatchUpdate(result);
+    this.channel.postMessage({ cart: result, type: ChannelMessage.ADD_PRODUCT });
     return result;
   }
 
@@ -341,8 +342,12 @@ export class CartModel {
     ];
     const data = await this.root.updateCart(cart, actions);
     const result = this.getCartFromData(data);
-    this.dispatchUpdate(cart);
+    this.dispatchUpdate(result);
     return result;
+  }
+
+  public dispatchUpdate(cart: Cart): void {
+    this.callback.forEach((callback) => callback(cart));
   }
 
   public async editProductCount(editCartItem: EditCartItem): Promise<Cart> {
@@ -358,7 +363,7 @@ export class CartModel {
 
     const data = await this.root.updateCart(cart, actions);
     const result = this.getCartFromData(data);
-    this.dispatchUpdate(cart);
+    this.dispatchUpdate(result);
     return result;
   }
 
