@@ -43,7 +43,6 @@ class AddressAddModel {
           if (this.shouldSetDefaultAddress()) {
             actions.push(this.getDefaultAddressAction(newAddress.id));
           }
-
           await getCustomerModel().editCustomer(actions, updatedUser);
           this.handleSuccess();
         }
@@ -74,7 +73,6 @@ class AddressAddModel {
   private async createNewAddress(): Promise<void> {
     const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
     this.view.getSaveChangesButton().getHTML().append(loader);
-
     try {
       const user = await getCustomerModel().getCurrentUser();
       if (user) {
@@ -147,7 +145,6 @@ class AddressAddModel {
     const cancelButton = this.view.getCancelButton().getHTML();
     cancelButton.addEventListener('click', () => {
       modal.hide();
-      modal.removeContent();
     });
     return true;
   }
@@ -164,8 +161,12 @@ class AddressAddModel {
   }
 
   private setSubmitFormHandler(): boolean {
-    const submitButton = this.view.getSaveChangesButton().getHTML();
-    submitButton.addEventListener('click', () => this.createNewAddress());
+    const submitButton = this.view.getSaveChangesButton();
+    submitButton.getHTML().addEventListener('click', async () => {
+      submitButton.setDisabled();
+      await this.createNewAddress();
+      submitButton.setEnabled();
+    });
     return true;
   }
 

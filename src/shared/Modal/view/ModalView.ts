@@ -90,10 +90,6 @@ class ModalView {
     document.body.classList.remove('stop-scroll');
   }
 
-  public removeContent(): void {
-    clearOutElement(this.modalContent);
-  }
-
   public setContent(content: HTMLElement): void {
     clearOutElement(this.modalContent);
     this.modalContent.append(content);

@@ -50,6 +50,7 @@ class UserInfoModel {
     const editInfoButton = this.view.getEditInfoButton();
     editInfoButton.getHTML().addEventListener('click', async () => {
       try {
+        editInfoButton.setDisabled();
         const user = await getCustomerModel().getCurrentUser();
 
         if (user) {
@@ -59,6 +60,8 @@ class UserInfoModel {
         }
       } catch (error) {
         showErrorMessage(error);
+      } finally {
+        editInfoButton.setEnabled();
       }
     });
     return true;

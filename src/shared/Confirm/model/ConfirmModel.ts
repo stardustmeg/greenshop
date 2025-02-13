@@ -27,21 +27,21 @@ class ConfirmModel {
   }
 
   private setConfirmButtonHandler(): void {
-    this.view
-      .getConfirmButton()
-      .getHTML()
-      .addEventListener('click', async () => {
-        const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
-        this.view.getConfirmButton().getHTML().append(loader);
-        try {
-          await this.callback();
-        } catch (error) {
-          showErrorMessage(error);
-        } finally {
-          loader.remove();
-        }
-        modal.hide();
-      });
+    const confirmButton = this.view.getConfirmButton();
+    confirmButton.getHTML().addEventListener('click', async () => {
+      const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
+      confirmButton.getHTML().append(loader);
+      confirmButton.setDisabled();
+      try {
+        await this.callback();
+      } catch (error) {
+        showErrorMessage(error);
+      } finally {
+        loader.remove();
+        confirmButton.setEnabled();
+      }
+      modal.hide();
+    });
   }
 
   public getHTML(): HTMLDivElement {

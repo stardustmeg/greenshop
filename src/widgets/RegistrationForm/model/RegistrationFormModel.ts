@@ -13,6 +13,7 @@ import { SERVER_MESSAGE_KEY } from '@/shared/constants/messages.ts';
 import { LOADER_SIZE } from '@/shared/constants/sizes.ts';
 import { ADDRESS } from '@/shared/types/address.ts';
 import getCurrentLanguage from '@/shared/utils/getCurrentLanguage.ts';
+import { createRegistrationMessage } from '@/shared/utils/messageTemplates.ts';
 import { showErrorMessage, showSuccessMessage } from '@/shared/utils/userMessage.ts';
 
 import RegistrationFormView from '../view/RegistrationFormView.ts';
@@ -79,7 +80,7 @@ class RegisterFormModel {
     };
   }
 
-  private init(): boolean {
+  private init(): void {
     this.getHTML().append(this.credentialsWrapper.getHTML());
     this.getHTML().append(this.personalInfoWrapper.getHTML());
 
@@ -106,13 +107,12 @@ class RegisterFormModel {
     );
 
     this.credentialsWrapper.getHTML().append(this.credentialsWrapper.getView().getTitle());
-
-    return true;
   }
 
   private registerUser(): void {
+    const submitButton = this.view.getSubmitFormButton();
     const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
-    this.view.getSubmitFormButton().getHTML().append(loader);
+    submitButton.getHTML().append(loader);
     const customer = this.getFormUserData();
     this.updateUserAddresses(customer);
     getCustomerModel()
@@ -121,37 +121,38 @@ class RegisterFormModel {
         if (newUserData) {
           getStore().dispatch(switchIsUserLoggedIn(false));
           getStore().dispatch(switchIsUserLoggedIn(true));
-          showSuccessMessage(SERVER_MESSAGE_KEY.SUCCESSFUL_REGISTRATION);
+          showSuccessMessage(createRegistrationMessage(newUserData.firstName));
         }
       })
       .catch(() => {
         showErrorMessage(SERVER_MESSAGE_KEY.USER_EXISTS);
+        submitButton.setEnabled();
       })
       .finally(() => loader.remove());
   }
 
-  private setInputFieldHandlers(inputField: InputFieldModel): boolean {
+  private setInputFieldHandlers(inputField: InputFieldModel): void {
     const inputHTML = inputField.getView().getInput().getHTML();
     inputHTML.addEventListener('input', () => {
       this.switchSubmitFormButtonAccess();
     });
-    return true;
   }
 
-  private setPreventDefaultToForm(): boolean {
+  private setPreventDefaultToForm(): void {
     this.getHTML().addEventListener('submit', (event) => {
       event.preventDefault();
     });
-    return true;
   }
 
-  private setSubmitFormHandler(): boolean {
-    const submitButton = this.view.getSubmitFormButton().getHTML();
-    submitButton.addEventListener('click', () => this.registerUser());
-    return true;
+  private setSubmitFormHandler(): void {
+    const submitButton = this.view.getSubmitFormButton();
+    submitButton.getHTML().addEventListener('click', () => {
+      submitButton.setDisabled();
+      this.registerUser();
+    });
   }
 
-  private singleAddressCheckBoxHandler(isChecked: boolean): boolean {
+  private singleAddressCheckBoxHandler(isChecked: boolean): void {
     if (!isChecked) {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
@@ -180,17 +181,14 @@ class RegisterFormModel {
       });
     billingAddressView.switchVisibilityAddressWrapper(isChecked);
     this.switchSubmitFormButtonAccess();
-
-    return true;
   }
 
-  private switchSubmitFormButtonAccess(): boolean {
+  private switchSubmitFormButtonAccess(): void {
     if (this.inputFields.every((inputField) => inputField.getIsValid())) {
       this.view.getSubmitFormButton().setEnabled();
     } else {
       this.view.getSubmitFormButton().setDisabled();
     }
-    return true;
   }
 
   private updateUserAddresses(userData: User | null): User | null {

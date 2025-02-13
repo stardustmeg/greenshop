@@ -17,6 +17,16 @@ class PasswordEditModel {
     this.init();
   }
 
+  private clearInputFields(): void {
+    this.view.getInputFields().forEach((inputField) => {
+      inputField.getView().getInput().setValue('');
+      const errorField = inputField.getView().getErrorField();
+      if (errorField?.textContent) {
+        errorField.textContent = '';
+      }
+    });
+  }
+
   private init(): void {
     this.view.getInputFields().forEach((inputField) => this.setInputFieldHandlers(inputField));
     this.setPreventDefaultToForm();
@@ -26,7 +36,7 @@ class PasswordEditModel {
     this.setCancelButtonHandler();
   }
 
-  private async saveNewPassword(): Promise<boolean> {
+  private async saveNewPassword(): Promise<void> {
     const loader = new LoaderModel(LOADER_SIZE.SMALL).getHTML();
     this.view.getSubmitButton().getHTML().append(loader);
     try {
@@ -41,7 +51,7 @@ class PasswordEditModel {
                 this.view.getNewPasswordField().getView().getValue(),
               );
               showSuccessMessage(SERVER_MESSAGE_KEY.PASSWORD_CHANGED);
-              modal.hide();
+              this.clearInputFields();
             } catch {
               showErrorMessage(SERVER_MESSAGE_KEY.PASSWORD_NOT_CHANGED);
             }
@@ -51,64 +61,61 @@ class PasswordEditModel {
       showErrorMessage(error);
     } finally {
       loader.remove();
+      modal.hide();
     }
-    return true;
   }
 
-  private setCancelButtonHandler(): boolean {
+  private setCancelButtonHandler(): void {
     this.view
       .getCancelButton()
       .getHTML()
       .addEventListener('click', () => {
+        this.clearInputFields();
         modal.hide();
       });
-    return true;
   }
 
-  private setInputFieldHandlers(inputField: InputFieldModel): boolean {
+  private setInputFieldHandlers(inputField: InputFieldModel): void {
     const inputHTML = inputField.getView().getInput().getHTML();
     inputHTML.addEventListener('input', () => this.switchSubmitFormButtonAccess());
-    return true;
   }
 
-  private setPreventDefaultToForm(): boolean {
+  private setPreventDefaultToForm(): void {
     this.view.getHTML().addEventListener('submit', (event) => event.preventDefault());
-    return true;
   }
 
-  private setSubmitFormHandler(): boolean {
-    const submitButton = this.view.getSubmitButton().getHTML();
-    submitButton.addEventListener('click', this.saveNewPassword.bind(this));
-    return true;
+  private setSubmitFormHandler(): void {
+    const submitButton = this.view.getSubmitButton();
+    submitButton.getHTML().addEventListener('click', async () => {
+      submitButton.setDisabled();
+      await this.saveNewPassword();
+    });
   }
 
-  private setSwitchNewPasswordVisibilityHandler(): boolean {
+  private setSwitchNewPasswordVisibilityHandler(): void {
     this.view.getShowNewPasswordElement().addEventListener('click', () => {
       const input = this.view.getNewPasswordField().getView().getInput().getHTML();
       input.type = input.type === INPUT_TYPE.PASSWORD ? INPUT_TYPE.TEXT : INPUT_TYPE.PASSWORD;
       input.placeholder = input.type === INPUT_TYPE.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
       this.view.switchPasswordElementSVG(input.type, this.view.getShowNewPasswordElement());
     });
-    return true;
   }
 
-  private setSwitchOldPasswordVisibilityHandler(): boolean {
+  private setSwitchOldPasswordVisibilityHandler(): void {
     this.view.getShowOldPasswordElement().addEventListener('click', () => {
       const input = this.view.getOldPasswordField().getView().getInput().getHTML();
       input.type = input.type === INPUT_TYPE.PASSWORD ? INPUT_TYPE.TEXT : INPUT_TYPE.PASSWORD;
       input.placeholder = input.type === INPUT_TYPE.PASSWORD ? PASSWORD_TEXT.HIDDEN : PASSWORD_TEXT.SHOWN;
       this.view.switchPasswordElementSVG(input.type, this.view.getShowOldPasswordElement());
     });
-    return true;
   }
 
-  private switchSubmitFormButtonAccess(): boolean {
+  private switchSubmitFormButtonAccess(): void {
     if (this.view.getInputFields().every((inputField) => inputField.getIsValid())) {
       this.view.getSubmitButton().setEnabled();
     } else {
       this.view.getSubmitButton().setDisabled();
     }
-    return true;
   }
 
   public getHTML(): HTMLFormElement {

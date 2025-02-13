@@ -113,7 +113,6 @@ class AddressEditModel {
     const cancelButton = this.view.getCancelButton().getHTML();
     cancelButton.addEventListener('click', () => {
       modal.hide();
-      modal.removeContent();
     });
     return true;
   }
@@ -130,8 +129,12 @@ class AddressEditModel {
   }
 
   private setSubmitFormHandler(): boolean {
-    const submitButton = this.view.getSaveChangesButton().getHTML();
-    submitButton.addEventListener('click', () => this.editAddressInfo());
+    const submitButton = this.view.getSaveChangesButton();
+    submitButton.getHTML().addEventListener('click', async () => {
+      submitButton.setDisabled();
+      await this.editAddressInfo();
+      submitButton.setEnabled();
+    });
     return true;
   }
 

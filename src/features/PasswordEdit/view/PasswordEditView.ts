@@ -32,8 +32,8 @@ class PasswordEditView {
   constructor() {
     this.submitButton = this.createSubmitButton();
     this.cancelButton = this.createCancelButton();
-    this.showOldPasswordElement = this.createShowOldPasswordElement();
-    this.showNewPasswordElement = this.createShowNewPasswordElement();
+    this.showOldPasswordElement = this.createShowPasswordElement();
+    this.showNewPasswordElement = this.createShowPasswordElement();
     this.oldPasswordField = this.createOldPasswordField();
     this.newPasswordField = this.createNewPasswordField();
     this.view = this.createHTML();
@@ -93,14 +93,7 @@ class PasswordEditView {
     return this.oldPasswordField;
   }
 
-  private createShowNewPasswordElement(): HTMLDivElement {
-    return createBaseElement({
-      cssClasses: [styles.showPasswordElement],
-      tag: 'div',
-    });
-  }
-
-  private createShowOldPasswordElement(): HTMLDivElement {
+  private createShowPasswordElement(): HTMLDivElement {
     return createBaseElement({
       cssClasses: [styles.showPasswordElement],
       tag: 'div',

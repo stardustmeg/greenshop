@@ -19,7 +19,6 @@ export const showErrorMessage = (param: unknown): boolean => {
 
   if (typeof param === 'string') {
     return serverMessageModel.showServerMessage({
-      key: SERVER_MESSAGE_KEY.BAD_REQUEST,
       message: param,
       status: MESSAGE_STATUS.ERROR,
     });
