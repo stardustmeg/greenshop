@@ -1,5 +1,6 @@
 .totalWrap {
   display: flex;
+  flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
   max-width: calc(var(--extra-large-offset) * 3.8);
