@@ -1,4 +1,4 @@
-export const TEST_PROJECT_KEY = 'green-shop-02';
+export const TEST_PROJECT_KEY = 'green-shop-04';
 export const TEST_CLIENT_SECRET = 'BPJMQ0';
 export const TEST_CLIENT_ID = 'Nlpz1Pod';
 export const TEST_REGION = 'europe-west1';
