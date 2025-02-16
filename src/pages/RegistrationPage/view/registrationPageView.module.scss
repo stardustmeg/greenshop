@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .registrationPage {
   position: relative;
@@ -67,12 +67,14 @@
 .loginLink {
   @include link;
 
-  padding: 0;
-  font: var(--medium-font);
-  text-transform: none;
+  & {
+    padding: 0;
+    font: var(--medium-font);
+    text-transform: none;
 
-  &::after {
-    bottom: calc(var(--one) * -4);
+    &::after {
+      bottom: calc(var(--one) * -4);
+    }
   }
 }
 

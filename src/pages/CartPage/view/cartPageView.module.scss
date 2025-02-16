@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .cartPage {
   display: flex;
@@ -177,7 +177,9 @@
 .button {
   @include green-btn;
 
-  padding: var(--tiny-offset);
+  & {
+    padding: var(--tiny-offset);
+  }
 }
 
 .applyBtn {
@@ -204,20 +206,24 @@ $color: var(--steam-green-800);
 .continue {
   @include link($padding, $color);
 
-  align-self: center;
-  width: max-content;
-  height: max-content;
-  text-transform: none;
+  & {
+    align-self: center;
+    width: max-content;
+    height: max-content;
+    text-transform: none;
 
-  &::after {
-    bottom: var(--five);
+    &::after {
+      bottom: var(--five);
+    }
   }
 }
 
 .clear {
   @include link(0 0, $color);
 
-  text-transform: none;
+  & {
+    text-transform: none;
+  }
 }
 
 .mobileHide {

@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .card {
   display: flex;
@@ -113,13 +113,15 @@
 .githubName {
   @include link;
 
-  margin-bottom: 0;
-  padding: 0;
-  padding-bottom: var(--two);
-  height: max-content;
-  max-width: max-content;
-  font: var(--regular-font);
-  text-transform: none;
+  & {
+    margin-bottom: 0;
+    padding: 0;
+    padding-bottom: var(--two);
+    height: max-content;
+    max-width: max-content;
+    font: var(--regular-font);
+    text-transform: none;
+  }
 }
 
 .githubWrapper {

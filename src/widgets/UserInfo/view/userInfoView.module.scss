@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .userInfoWrapper {
   position: relative;
@@ -29,9 +29,11 @@
 .editPasswordButton {
   @include round-btn;
 
-  grid-row: 1;
-  margin-right: 0;
-  margin-left: auto;
+  & {
+    grid-row: 1;
+    margin-right: 0;
+    margin-left: auto;
+  }
 }
 
 .info {
@@ -46,5 +48,7 @@
 .editInfoButton {
   @include green-btn;
 
-  grid-row: 6;
+  & {
+    grid-row: 6;
+  }
 }
