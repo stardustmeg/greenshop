@@ -54,7 +54,7 @@ class PromoCodeSliderView {
       cssClasses: [styles.sliderDateEnd],
       innerContent: currentUser
         ? calcUserBirthDayRange(currentUser.birthDate).end
-        : PROMO_SLIDER_CONTENT[index][currentLanguage].date.end ?? '',
+        : (PROMO_SLIDER_CONTENT[index][currentLanguage].date.end ?? ''),
       tag: 'span',
     });
 
