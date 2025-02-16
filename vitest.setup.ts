@@ -4,12 +4,35 @@ if (typeof window !== 'undefined') {
   window.scrollTo = (): void => {};
 }
 
+global.BroadcastChannel = class implements BroadcastChannel {
+  public addEventListener = vi.fn();
+
+  public close = vi.fn();
+
+  public dispatchEvent = vi.fn();
+
+  public name: string;
+
+  public onmessage: ((this: BroadcastChannel, ev: MessageEvent) => unknown) | null = null;
+
+  public onmessageerror: ((this: BroadcastChannel, ev: MessageEvent) => unknown) | null = null;
+
+  public postMessage = vi.fn();
+
+  public removeEventListener = vi.fn();
+
+  constructor(name: string) {
+    this.name = name;
+  }
+};
+
 beforeAll(() => {
+  process.env.VITE_APP_CTP_API_URL = 'https://api.commercetools.com';
   server.listen({
     onUnhandledRequest: 'warn',
   });
 
-  // Need it for debugging api requests
+  // Need it for debugging API requests
   // server.events.on('request:start', ({ request }) => {
   //   console.log('Outgoing:', request.method, request.url);
   // });

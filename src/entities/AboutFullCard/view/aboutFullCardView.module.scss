@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .aboutFullCard {
   border-radius: 0;
@@ -73,19 +73,21 @@
 .from {
   @include link;
 
-  display: flex;
-  align-items: center;
-  margin-bottom: var(--tiny-offset);
-  padding: 0;
-  padding-bottom: var(--two);
-  width: max-content;
-  height: max-content;
-  max-width: max-content;
-  font: var(--regular-font);
-  letter-spacing: var(--one);
-  text-transform: uppercase;
-  color: var(--noble-gray-500);
-  gap: var(--tiny-offset);
+  & {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--tiny-offset);
+    padding: 0;
+    padding-bottom: var(--two);
+    width: max-content;
+    height: max-content;
+    max-width: max-content;
+    font: var(--regular-font);
+    letter-spacing: var(--one);
+    text-transform: uppercase;
+    color: var(--noble-gray-500);
+    gap: var(--tiny-offset);
+  }
 }
 
 .avatar {

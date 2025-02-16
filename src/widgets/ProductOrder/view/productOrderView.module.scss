@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .style {
   display: block;
@@ -115,7 +115,9 @@ $color: var(--steam-green-800);
 .nameLink {
   @include link(0 0, $color);
 
-  text-transform: none;
+  & {
+    text-transform: none;
+  }
 }
 
 .nameCell {
@@ -220,13 +222,15 @@ $color: var(--steam-green-800);
 .quantityButton {
   @include green-btn;
 
-  border-radius: 50%;
-  padding: 0;
-  padding-bottom: var(--one);
-  width: calc(var(--tiny-offset) * 2.5);
-  height: calc(var(--tiny-offset) * 2.5);
-  font: var(--medium-font);
-  letter-spacing: 0;
+  & {
+    border-radius: 50%;
+    padding: 0;
+    padding-bottom: var(--one);
+    width: calc(var(--tiny-offset) * 2.5);
+    height: calc(var(--tiny-offset) * 2.5);
+    font: var(--medium-font);
+    letter-spacing: 0;
+  }
 }
 
 .mobileHide {

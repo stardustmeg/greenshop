@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .breadcrumbs {
   display: flex;
@@ -15,8 +15,10 @@
 .link {
   @include link;
 
-  padding: var(--tiny-offset) calc(var(--tiny-offset) / 2);
-  font-weight: 100;
+  & {
+    padding: var(--tiny-offset) calc(var(--tiny-offset) / 2);
+    font-weight: 100;
+  }
 }
 
 .active {
