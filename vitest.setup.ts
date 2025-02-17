@@ -27,7 +27,6 @@ global.BroadcastChannel = class implements BroadcastChannel {
 };
 
 beforeAll(() => {
-  process.env.VITE_APP_CTP_API_URL = 'https://api.commercetools.com';
   server.listen({
     onUnhandledRequest: 'warn',
   });

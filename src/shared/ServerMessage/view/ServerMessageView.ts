@@ -53,29 +53,24 @@ class ServerMessageView {
   }
 
   private startAnimation(): boolean {
-    if (this.serverWrapper && typeof this.serverWrapper.animate === 'function') {
-      this.serverWrapper.animate(SERVER_MESSAGE_ANIMATE_DETAILS.params, {
-        duration: SERVER_MESSAGE_ANIMATE_DETAILS.duration,
-        easing: SERVER_MESSAGE_ANIMATE_DETAILS.easing,
-      });
-    }
+    this.serverWrapper.animate(SERVER_MESSAGE_ANIMATE_DETAILS.params, {
+      duration: SERVER_MESSAGE_ANIMATE_DETAILS.duration,
+      easing: SERVER_MESSAGE_ANIMATE_DETAILS.easing,
+    });
 
-    if (this.progressBar && typeof this.progressBar.animate === 'function') {
-      this.progressBar.animate(SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_START.params, {
-        delay: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_START.delay,
-        duration: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_START.duration,
-        easing: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_START.easing,
-        fill: 'forwards',
-      });
+    this.progressBar.animate(SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_START.params, {
+      delay: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_START.delay,
+      duration: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_START.duration,
+      easing: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_START.easing,
+      fill: 'forwards',
+    });
 
-      this.progressBar.animate(SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_END.params, {
-        delay: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_END.delay,
-        duration: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_END.duration,
-        easing: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_END.easing,
-        fill: 'forwards',
-      });
-    }
-
+    this.progressBar.animate(SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_END.params, {
+      delay: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_END.delay,
+      duration: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_END.duration,
+      easing: SERVER_MESSAGE_PROGRESS_BAR_ANIMATE_DETAILS_END.easing,
+      fill: 'forwards',
+    });
     return true;
   }
 
