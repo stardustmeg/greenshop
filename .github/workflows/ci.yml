@@ -36,6 +36,7 @@ jobs:
       VITE_APP_CTP_SCOPES: ${{ secrets.VITE_APP_CTP_SCOPES }}
       VITE_APP_CTP_CLIENT_ID: ${{ secrets.VITE_APP_CTP_CLIENT_ID }}
       VITE_APP_CTP_CLIENT_SECRET: ${{ secrets.VITE_APP_CTP_CLIENT_SECRET }}
+      VITE_APP_CTP_AUTH_URL: ${{ secrets.VITE_APP_CTP_AUTH_URL }}
 
     steps:
       - name: Checkout code
