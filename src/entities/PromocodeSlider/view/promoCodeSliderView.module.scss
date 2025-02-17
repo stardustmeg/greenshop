@@ -116,28 +116,32 @@
 
 .birthday {
   height: 100%;
-  background-image: linear-gradient(to right, var(--white) 0%, var(--white) 20%, transparent 100%),
+  background-image:
+    linear-gradient(to right, var(--white) 0%, var(--white) 20%, transparent 100%),
     url('/img/webp/promo-slider-2_1.webp');
   background-position: right center;
   background-size: auto 100%;
   background-repeat: no-repeat;
 
   @media (max-width: 768px) {
-    background-image: linear-gradient(to right, var(--white) 0%, var(--white) 50%, transparent 100%),
+    background-image:
+      linear-gradient(to right, var(--white) 0%, var(--white) 50%, transparent 100%),
       url('/img/webp/promo-slider-2_2.webp');
   }
 }
 
 .succulent {
   height: 100%;
-  background-image: linear-gradient(to right, var(--white) 0%, var(--white) 20%, transparent 100%),
+  background-image:
+    linear-gradient(to right, var(--white) 0%, var(--white) 20%, transparent 100%),
     url('/img/webp/promo-slider-3_1.webp');
   background-position: right center;
   background-size: auto 100%;
   background-repeat: no-repeat;
 
   @media (max-width: 768px) {
-    background-image: linear-gradient(to right, var(--white) 0%, var(--white) 50%, transparent 100%),
+    background-image:
+      linear-gradient(to right, var(--white) 0%, var(--white) 50%, transparent 100%),
       url('/img/webp/promo-slider-3_2.webp');
   }
 }
@@ -148,8 +152,8 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  background-image: radial-gradient(circle at center, var(--white) 40%, transparent 40.1%),
-    url('/img/webp/promo-slider-1_2.webp');
+  background-image:
+    radial-gradient(circle at center, var(--white) 40%, transparent 40.1%), url('/img/webp/promo-slider-1_2.webp');
   background-position:
     center center,
     right center;
@@ -166,8 +170,8 @@
   }
 
   @media (max-width: 768px) {
-    background-image: radial-gradient(circle at center, var(--white) 55%, transparent 55.1%),
-      url('/img/webp/promo-slider-1_2.webp');
+    background-image:
+      radial-gradient(circle at center, var(--white) 55%, transparent 55.1%), url('/img/webp/promo-slider-1_2.webp');
   }
 }
 

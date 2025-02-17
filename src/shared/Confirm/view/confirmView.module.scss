@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .wrapper {
   display: grid;
@@ -27,7 +27,9 @@
 .confirmButton {
   @include green-btn;
 
-  grid-row: 2;
+  & {
+    grid-row: 2;
+  }
 }
 
 .cancelButton {

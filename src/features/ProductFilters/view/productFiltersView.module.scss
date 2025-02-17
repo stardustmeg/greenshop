@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .defaultFilters {
   outline: var(--two) solid var(--noble-white-200);
@@ -194,8 +194,10 @@
 .resetFiltersButton {
   @include green-btn;
 
-  margin: calc(var(--extra-small-offset) / 2) auto;
-  border-radius: var(--medium-br);
-  padding: calc(var(--small-offset) / 3) var(--small-offset);
-  font: var(--regular-font);
+  & {
+    margin: calc(var(--extra-small-offset) / 2) auto;
+    border-radius: var(--medium-br);
+    padding: calc(var(--small-offset) / 3) var(--small-offset);
+    font: var(--regular-font);
+  }
 }

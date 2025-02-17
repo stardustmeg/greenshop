@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .addressItem {
   position: relative;
@@ -71,23 +71,25 @@
 .deleteButton {
   @include green-btn;
 
-  padding: 0;
-  width: calc(var(--extra-small-offset) * 1.5);
-  height: calc(var(--extra-small-offset) * 1.5);
-  background-color: transparent;
-
-  svg {
+  & {
+    padding: 0;
     width: calc(var(--extra-small-offset) * 1.5);
     height: calc(var(--extra-small-offset) * 1.5);
+    background-color: transparent;
+
+    svg {
+      width: calc(var(--extra-small-offset) * 1.5);
+      height: calc(var(--extra-small-offset) * 1.5);
+
+      &:hover {
+        fill: var(--steam-green-800);
+        stroke: var(--steam-green-800);
+      }
+    }
 
     &:hover {
-      fill: var(--steam-green-800);
-      stroke: var(--steam-green-800);
+      filter: brightness(1);
     }
-  }
-
-  &:hover {
-    filter: brightness(1);
   }
 }
 

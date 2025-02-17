@@ -2,8 +2,8 @@ const PROMO_SLIDER_CONTENT = [
   {
     en: {
       date: {
-        end: '2024-06-30',
-        start: '2024-06-01',
+        end: '2025-06-30',
+        start: '2025-06-01',
       },
       description: `<span style="color: var(--black)">Everything for garden and<br> plants care with 10% discount</span>`,
       promoCode: 'SUMMER-SALE-10',
@@ -12,8 +12,8 @@ const PROMO_SLIDER_CONTENT = [
     },
     ru: {
       date: {
-        end: '2024-06-30',
-        start: '2024-06-01',
+        end: '2025-06-30',
+        start: '2025-06-01',
       },
       description: `<span style="color: var(--black)">Все для сада и ухода за<br> растениями со скидкой в 10%</span>`,
       promoCode: 'SUMMER-SALE-10',
@@ -46,8 +46,8 @@ const PROMO_SLIDER_CONTENT = [
   {
     en: {
       date: {
-        end: '2024-06-15',
-        start: '2024-06-01',
+        end: '2025-06-15',
+        start: '2025-06-01',
       },
       description: 'For all products from the<br> Succulents category',
       promoCode: 'SUCCULENT-SALE-15',
@@ -56,8 +56,8 @@ const PROMO_SLIDER_CONTENT = [
     },
     ru: {
       date: {
-        end: '2024-06-15',
-        start: '2024-06-01',
+        end: '2025-06-15',
+        start: '2025-06-01',
       },
       description: 'На все товары из<br> категории Суккуленты',
       promoCode: 'SUCCULENT-SALE-15',

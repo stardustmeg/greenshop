@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .header {
   position: fixed;
@@ -90,7 +90,9 @@
 .logoutButton {
   @include green-btn;
 
-  order: 5;
+  & {
+    order: 5;
+  }
 }
 
 .cartLink,
@@ -327,7 +329,9 @@
 .switchThemeLabel {
   @include switchLabel;
 
-  order: 3;
+  & {
+    order: 3;
+  }
 }
 
 .switchThemeCheckbox {
@@ -369,11 +373,13 @@
 .switchLanguageLabel {
   @include switchLabel;
 
-  order: 4;
+  & {
+    order: 4;
 
-  &:disabled {
-    background-color: var(--noble-gray-300);
-    pointer-events: none;
+    &:disabled {
+      background-color: var(--noble-gray-300);
+      pointer-events: none;
+    }
   }
 }
 
