@@ -80,7 +80,7 @@
     "sinon": "^19.0.2",
     "swiper": "^11.2.4",
     "uuid": "^11.0.5",
-    "vite-plugin-checker": "^0.8.0",
+    "vite-plugin-checker": "^0.9.0",
     "vite-plugin-image-optimizer": "^1.1.7",
     "vite-plugin-svg-spriter": "^1.0.0",
     "vite-tsconfig-paths": "^5.1.4",
