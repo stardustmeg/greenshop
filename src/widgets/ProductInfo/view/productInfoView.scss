@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .wrapper {
   display: flex;
@@ -265,9 +265,11 @@
 .switchToCartButton {
   @include green-btn;
 
-  padding: calc(var(--small-offset) / 3) calc(var(--small-offset) / 2);
-  width: 100%;
-  max-width: 14rem;
+  & {
+    padding: calc(var(--small-offset) / 3) calc(var(--small-offset) / 2);
+    width: 100%;
+    max-width: 14rem;
+  }
 }
 
 .buttonsWrapper {

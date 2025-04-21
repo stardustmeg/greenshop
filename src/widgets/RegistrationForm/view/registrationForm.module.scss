@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .registrationForm {
   display: grid;
@@ -17,13 +17,15 @@
 .submitFormButton {
   @include green-btn;
 
-  grid-column: 2 span;
-  grid-row: 5;
-  padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
-  max-height: var(--small-offset);
-  font: var(--bold-font);
+  & {
+    grid-column: 2 span;
+    grid-row: 5;
+    padding: calc(var(--extra-small-offset) / 2) var(--small-offset);
+    max-height: var(--small-offset);
+    font: var(--bold-font);
 
-  @media (max-width: 768px) {
-    grid-column: 1;
+    @media (max-width: 768px) {
+      grid-column: 1;
+    }
   }
 }

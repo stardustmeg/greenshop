@@ -1,4 +1,4 @@
-@import 'src/app/styles/mixins';
+@use '@/app/styles/mixins' as *;
 
 .notFoundPage {
   position: relative;
@@ -57,5 +57,7 @@
 .toMainButton {
   @include green-btn;
 
-  align-self: center;
+  & {
+    align-self: center;
+  }
 }
