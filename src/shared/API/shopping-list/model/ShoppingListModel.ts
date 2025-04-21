@@ -204,7 +204,11 @@ export class ShoppingListModel {
     let shopList: ShoppingList | null = null;
     const { anonymousId, anonymousShopListId } = getStore().getState();
     if (anonymousShopListId && anonymousId) {
-      shopList = await this.getAnonymousShoppingList(anonymousShopListId);
+      try {
+        shopList = await this.getAnonymousShoppingList(anonymousShopListId);
+      } catch {
+        getStore().dispatch(setAnonymousShopListId(null));
+      }
     }
     if (!shopList) {
       shopList = await this.getUserShoppingLists();
