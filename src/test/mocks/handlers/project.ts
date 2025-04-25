@@ -1,7 +1,5 @@
 import { HttpResponse, http } from 'msw';
 
-import { TEST_API_URL, TEST_PROJECT_KEY } from '../constant.ts';
-
 const project = {
   carts: {
     allowAddingUnpublishedProducts: false,
@@ -56,6 +54,10 @@ const project = {
   version: 14,
 };
 
-const handlers = [http.get(`${TEST_API_URL}/${TEST_PROJECT_KEY}`, () => HttpResponse.json(project))];
+const handlers = [
+  http.get(`${import.meta.env.VITE_APP_CTP_API_URL}/${import.meta.env.VITE_APP_CTP_PROJECT_KEY}`, () =>
+    HttpResponse.json(project),
+  ),
+];
 
 export default handlers;
