@@ -371,7 +371,11 @@ export class CartModel {
     let cart: Cart | null = null;
     const { anonymousCartId, anonymousId } = getStore().getState();
     if (anonymousCartId && anonymousId) {
-      cart = await this.getAnonymousCart(anonymousCartId);
+      try {
+        cart = await this.getAnonymousCart(anonymousCartId);
+      } catch {
+        getStore().dispatch(setAnonymousCartId(null));
+      }
     }
     if (!cart) {
       cart = await this.getUserCart();
