@@ -231,6 +231,7 @@ export class ProductModel {
     if (
       isClientResponse(data) &&
       isProductProjectionPagedSearchResponse(data.body) &&
+      data.body.facets &&
       ProductConstant.categoriesId in data.body.facets
     ) {
       const categoriesFacet = data.body.facets[ProductConstant.categoriesId];
@@ -259,6 +260,7 @@ export class ProductModel {
     if (
       isClientResponse(date) &&
       isProductProjectionPagedSearchResponse(date.body) &&
+      date.body.facets &&
       ProductConstant.variantsPriceCentAmount in date.body.facets
     ) {
       const variantsPrice = date.body.facets[ProductConstant.variantsPriceCentAmount];
@@ -298,6 +300,7 @@ export class ProductModel {
     if (
       isClientResponse(data) &&
       isProductProjectionPagedSearchResponse(data.body) &&
+      data.body.facets &&
       ProductConstant.variantsAttributesSizeKey in data.body.facets
     ) {
       const categoriesFacet = data.body.facets[ProductConstant.variantsAttributesSizeKey];
