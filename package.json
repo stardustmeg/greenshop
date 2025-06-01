@@ -58,11 +58,11 @@
     "vite-plugin-sass": "^0.1.0"
   },
   "dependencies": {
-    "@commercetools/api-request-builder": "^6.0.0",
+    "@commercetools/api-request-builder": "^7.0.0",
     "@commercetools/platform-sdk": "^8.2.0",
-    "@commercetools/sdk-client-v2": "^2.5.0",
-    "@commercetools/sdk-middleware-auth": "^7.0.1",
-    "@commercetools/sdk-middleware-http": "^7.0.4",
+    "@commercetools/sdk-client-v2": "^3.0.0",
+    "@commercetools/sdk-middleware-auth": "^8.0.0",
+    "@commercetools/sdk-middleware-http": "^8.0.0",
     "@types/hammerjs": "^2.0.45",
     "@types/js-cookie": "^3.0.6",
     "@types/sinon": "^17.0.3",
