@@ -125,6 +125,9 @@ export class ProductModel {
   }
 
   private adaptLevel(attribute: AttributeResponse): LevelType | null {
+    if (typeof attribute.value === 'number') {
+      return getLevel(attribute.value);
+    }
     if (Array.isArray(attribute.value) && attribute.value.length && isAttributePlainEnumValue(attribute.value[0])) {
       return getLevel(attribute.value[0].key);
     }

@@ -14,14 +14,8 @@ export function getSize(sizeString: string): SizeType | null {
   return null;
 }
 
-export function getLevel(levelString: string): LevelType | null {
-  const levelValues = Object.values(LEVEL);
+export function getLevel(level: number | string): LevelType | null {
+  const normalized = level.toString().toLowerCase();
 
-  const foundValue = levelValues.find((value) => value.toLowerCase() === levelString.toLowerCase());
-
-  if (foundValue) {
-    return foundValue;
-  }
-
-  return null;
+  return Object.values(LEVEL).find((value) => value.toLowerCase() === normalized) ?? null;
 }
