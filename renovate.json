@@ -1,10 +1,11 @@
 {
-  "extends": ["config:base"],
+  "extends": ["config:recommended"],
   "dependencyDashboard": true,
   "dependencyDashboardApproval": true,
-  "lockFileMaintenance": { "enabled": true },
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "labels": ["renovate"],
-  "transitiveRemediation": true,
   "platform": "github",
   "repositories": ["stardustmeg/greenshop"],
   "packageRules": [
@@ -19,7 +20,11 @@
       "groupName": "vite"
     },
     {
-      "matchPackageNames": ["typescript", "@typescript-eslint/eslint-plugin", "@typescript-eslint/parser"],
+      "matchPackageNames": [
+        "typescript",
+        "@typescript-eslint/eslint-plugin",
+        "@typescript-eslint/parser"
+      ],
       "groupName": "typescript"
     },
     {
@@ -57,12 +62,12 @@
       "groupName": "hammerjs"
     },
     {
-      "matchPackagePatterns": ["^@commercetools/"],
-      "groupName": "commercetools"
+      "groupName": "commercetools",
+      "matchPackageNames": ["/^@commercetools//"]
     },
     {
-      "matchPackagePatterns": ["^eslint"],
-      "enabled": false
+      "enabled": false,
+      "matchPackageNames": ["/^eslint/"]
     }
   ]
 }
