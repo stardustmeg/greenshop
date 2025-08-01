@@ -76,7 +76,7 @@
     "nouislider": "^15.7.1",
     "plop": "^4.0.1",
     "postcode-validator": "^3.8.20",
-    "sharp": "^0.33.3",
+    "sharp": "^0.34.0",
     "sinon": "^19.0.2",
     "swiper": "^11.2.4",
     "uuid": "^11.0.5",
