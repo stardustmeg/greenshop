@@ -2,7 +2,9 @@
   "extends": ["config:base"],
   "dependencyDashboard": true,
   "dependencyDashboardApproval": true,
-  "lockFileMaintenance": { "enabled": true },
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "labels": ["renovate"],
   "transitiveRemediation": true,
   "platform": "github",
@@ -64,5 +66,6 @@
       "matchPackagePatterns": ["^eslint"],
       "enabled": false
     }
-  ]
+  ],
+  "prCreation": "approval"
 }
