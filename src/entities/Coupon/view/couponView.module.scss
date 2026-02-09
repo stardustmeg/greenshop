@@ -1,0 +1,41 @@
+.couponWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.coupon {
+  display: flex;
+  align-items: center;
+}
+
+.deleteCoupon {
+  border-radius: var(--small-br);
+  padding: calc(var(--extra-small-offset) / 8);
+  width: calc(var(--extra-small-offset));
+  height: calc(var(--extra-small-offset));
+  background-image: url('../../../shared/img/svg/coupon-delete.svg');
+  background-position: center;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.title {
+  padding: var(--tiny-offset) 0;
+  font: var(--regular-font);
+  color: var(--noble-gray-800);
+  transition: all 0.2s;
+
+  @media (max-width: 768px) {
+    color: var(--noble-gray-1100);
+  }
+}

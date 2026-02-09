@@ -1,0 +1,23 @@
+.badgeWrap {
+  position: absolute;
+  right: -30%;
+  top: -20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  width: calc(var(--tiny-offset) * 2);
+  height: calc(var(--tiny-offset) * 2);
+  box-shadow: 0 0 0 var(--one) var(--noble-gray-tr-1000);
+  font: var(--regular-font);
+  background-color: var(--steam-green-800);
+}
+
+.badge {
+  display: block;
+  color: var(--noble-gray-200);
+}
+
+.hidden {
+  display: none;
+}

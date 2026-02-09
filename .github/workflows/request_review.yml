@@ -1,0 +1,43 @@
+name: Request Review on PR Open
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  automate-review:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR Author
+        id: pr_author
+        run: echo "::set-output name=author::${{ github.event.pull_request.user.login }}"
+
+      - name: Request Review
+        if: steps.pr_author.outputs.author == 'stardustmeg'
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/requested_reviewers
+          mediaType: '{"previews":["luke-cage"]}'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          reviewers: '["Kleostro", "YulikK"]'
+
+      - name: Request Review
+        if: steps.pr_author.outputs.author == 'Kleostro'
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/requested_reviewers
+          mediaType: '{"previews":["luke-cage"]}'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          reviewers: '["stardustmeg", "YulikK"]'
+
+      - name: Request Review
+        if: steps.pr_author.outputs.author == 'YulikK'
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/requested_reviewers
+          mediaType: '{"previews":["luke-cage"]}'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          reviewers: '["stardustmeg", "Kleostro"]'

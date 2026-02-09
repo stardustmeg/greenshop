@@ -1,0 +1,39 @@
+.itemPage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--small-offset);
+  min-height: 40rem;
+  animation: show 0.2s ease-out forwards;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    display: flex;
+    opacity: 1;
+  }
+}
+
+.fullDescriptionWrapper {
+  font: var(--regular-font);
+  line-height: 170%;
+  letter-spacing: var(--one);
+  color: var(--steam-green-400);
+
+  @media (max-width: 768px) {
+    margin: 0 auto;
+    width: 95%;
+  }
+}
+
+.fullDescription {
+  font: var(--regular-font);
+  line-height: 170%;
+  color: var(--noble-gray-800);
+}

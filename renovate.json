@@ -1,0 +1,71 @@
+{
+  "extends": ["config:base"],
+  "dependencyDashboard": true,
+  "dependencyDashboardApproval": true,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "labels": ["renovate"],
+  "transitiveRemediation": true,
+  "platform": "github",
+  "repositories": ["stardustmeg/greenshop"],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "vite",
+        "vite-tsconfig-paths",
+        "vite-plugin-checker",
+        "vite-plugin-image-optimizer",
+        "vite-plugin-svg-spriter"
+      ],
+      "groupName": "vite"
+    },
+    {
+      "matchPackageNames": ["typescript", "@typescript-eslint/eslint-plugin", "@typescript-eslint/parser"],
+      "groupName": "typescript"
+    },
+    {
+      "matchPackageNames": ["vitest", "@vitest/ui", "@vitest/coverage-v8"],
+      "groupName": "vitest"
+    },
+    {
+      "matchPackageNames": [
+        "stylelint",
+        "stylelint-config-standard",
+        "stylelint-config-clean-order",
+        "stylelint-config-standard-scss",
+        "stylelint-declaration-block-no-ignored-properties"
+      ],
+      "groupName": "stylelint"
+    },
+    {
+      "matchPackageNames": ["prettier"],
+      "groupName": "prettier"
+    },
+    {
+      "matchPackageNames": ["husky", "lint-staged"],
+      "groupName": "husky"
+    },
+    {
+      "matchPackageNames": ["js-cookie", "@types/js-cookie"],
+      "groupName": "js-cookie"
+    },
+    {
+      "matchPackageNames": ["sinon", "@types/sinon"],
+      "groupName": "sinon"
+    },
+    {
+      "matchPackageNames": ["hammerjs", "@types/hammerjs"],
+      "groupName": "hammerjs"
+    },
+    {
+      "matchPackagePatterns": ["^@commercetools/"],
+      "groupName": "commercetools"
+    },
+    {
+      "matchPackagePatterns": ["^eslint"],
+      "enabled": false
+    }
+  ],
+  "prCreation": "approval"
+}

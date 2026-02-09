@@ -1,0 +1,37 @@
+@use '@/app/styles/mixins' as *;
+
+.scrollToTopButton {
+  @include round-btn(
+    $btn-padding: var(--tiny-offset),
+    $btn-bg: var(--steam-green-900),
+    $btn-hover-bg: var(--steam-green-1000),
+    $btn-fill: none,
+    $btn-stroke: var(--steam-green-800)
+  );
+
+  & {
+    position: fixed;
+    right: var(--small-offset);
+    bottom: var(--small-offset);
+    z-index: 1;
+    width: calc(var(--small-offset) * 1.5);
+    height: calc(var(--small-offset) * 1.5);
+    fill: none;
+    stroke: var(--steam-green-800);
+    transition:
+      transform 0.2s,
+      opacity 0.2s,
+      visibility 0.2s;
+
+    svg {
+      width: var(--small-offset);
+      height: var(--small-offset);
+    }
+  }
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0);
+}

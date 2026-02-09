@@ -1,0 +1,53 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: '**/*.md'
+
+chore:
+  - any:
+      - changed-files:
+          - any-glob-to-all-files: '*'
+      - head-branch:
+          - '^chore'
+
+feature:
+  - head-branch:
+      - '^feat'
+
+fix:
+  - head-branch:
+      - '^fix'
+      - '^hotfix'
+
+refactor:
+  - head-branch:
+      - '^refactor'
+
+test:
+  - any:
+      - head-branch:
+          - '^test'
+      - changed-files:
+          - any-glob-to-any-file: '**/*.spec.ts'
+
+revert:
+  - head-branch:
+      - '^revert'
+
+style:
+  - changed-files:
+      - any-glob-to-any-file: '**/*.scss'
+
+sprint1:
+  - head-branch: 'ECOMM-1'
+
+sprint2:
+  - head-branch: 'ECOMM-2'
+
+sprint3:
+  - head-branch: 'ECOMM-3'
+
+sprint4:
+  - head-branch: 'ECOMM-4'
+
+sprint5:
+  - head-branch: 'ECOMM-5'
