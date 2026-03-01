@@ -78,7 +78,7 @@
     "postcode-validator": "^3.8.20",
     "sharp": "^0.33.3",
     "sinon": "^19.0.2",
-    "swiper": "^11.2.4",
+    "swiper": "^12.0.0",
     "uuid": "^11.0.5",
     "vite-plugin-checker": "^0.9.0",
     "vite-plugin-image-optimizer": "^1.1.7",
